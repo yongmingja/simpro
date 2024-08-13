@@ -180,8 +180,8 @@
                                             <td><input type="number" class="form-control" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
                                             <td><input type="text" class="form-control" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
                                             <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
-                                              <option value="1">Mandiri</option>
-                                              <option value="2">Kampus</option>
+                                              <option value="1">Kampus</option>
+                                              <option value="2">Mandiri</option>
                                               <option value="3">Hibah</option>
                                             </select></td>
                                             <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
@@ -322,7 +322,7 @@
     $("#tombol-add-anggaran").click(function(){
       ++j;
 
-      $("#dynamicAddRemoveAnggaran").append('<tr><td><input type="text" class="form-control" id="item" name="rows['+j+'][item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="biaya_satuan" name="rows['+j+'][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="quantity" name="rows['+j+'][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="frequency" name="rows['+j+'][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="text" class="form-control" id="total_biaya" name="rows['+j+'][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="sumber" name="rows['+j+'][sumber]" style="cursor:pointer;"><option value="1">Mandiri</option><option value="2">Kampus</option><option value="3">Hibah</option></select></td><td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
+      $("#dynamicAddRemoveAnggaran").append('<tr><td><input type="text" class="form-control" id="item" name="rows['+j+'][item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="biaya_satuan" name="rows['+j+'][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="quantity" name="rows['+j+'][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="frequency" name="rows['+j+'][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="text" class="form-control" id="total_biaya" name="rows['+j+'][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="sumber" name="rows['+j+'][sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option><option value="3">Hibah</option></select></td><td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
 
       OnChange();
 

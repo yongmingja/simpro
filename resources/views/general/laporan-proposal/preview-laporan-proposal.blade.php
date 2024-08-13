@@ -194,7 +194,7 @@
                         </td>
                         <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                             <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($datas as $wr) @if($wr->nama_jenis_kegiatan == 'RKAT') Benny Roesly, S.T., M.Pd @elseif($wr->nama_jenis_kegiatan == 'Non-RKAT') Yodi, S.Kom., M.S.I @else Benny Roesly, S.T., M.Pd @endif @endforeach</b><br><i>WRSDP</i>
+                            <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
                         </td>
                     @else
                         <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
@@ -207,7 +207,7 @@
                         </td>
                         <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                            <br><br><b>@foreach($datas as $wr) @if($wr->nama_jenis_kegiatan == 'RKAT') Benny Roesly, S.T., M.Pd @elseif($wr->nama_jenis_kegiatan == 'Non-RKAT') Yodi, S.Kom., M.S.I @else Benny Roesly, S.T., M.Pd @endif @endforeach</b><br><i>WRSDP</i>
+                            <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
                         </td>
                     @endif  
                 </tr> 

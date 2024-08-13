@@ -70,9 +70,25 @@
                 <div class="card table-responsive">
                     <div class="card-body">
                         <!-- MULAI TOMBOL TAMBAH -->
+                        @if($datas->count() > 0)
+                            @foreach($datas as $r) 
+                                @php $check = DB::table('laporan_proposals')->where([['id_proposal',$r->id],['status_laporan',1]])->count(); @endphp
+                            @endforeach 
+                                @if($check > 0)
+                                <div class="mb-3">
+                                    <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
+                                </div>
+                                @else
+                                <div class="mb-3">
+                                    <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
+                                </div>
+                                @endif 
+                            
+                        @else
                         <div class="mb-3">
                             <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
-                        </div>                        
+                        </div>
+                        @endif                      
                         <!-- AKHIR TOMBOL -->
                         <table class="table table-hover table-responsive" id="table_proposal">
                             <thead>

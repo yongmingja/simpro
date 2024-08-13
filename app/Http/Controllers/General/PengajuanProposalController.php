@@ -42,7 +42,7 @@ class PengajuanProposalController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('general.pengajuan-proposal.index');
+        return view('general.pengajuan-proposal.index', compact('datas'));
     }
 
     protected function statusProposal($id)
