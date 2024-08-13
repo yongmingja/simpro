@@ -80,7 +80,7 @@
                                 </div>
                                 @else
                                 <div class="mb-3">
-                                    <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
+                                    <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Silakan selesaikan laporan pertanggung-jawaban proposal Anda terlebih dahulu untuk dapat mengajukan proposal baru!')"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
                                 </div>
                                 @endif 
                             
@@ -231,7 +231,11 @@
                 {data: 'laporan',name: 'laporan'},
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'nama_user',name: 'nama_user'},
+                {data: 'nama_user',name: 'nama_user',
+                    render: function(data,type,row){
+                        return row.nama_user_dosen || row.nama_user_mahasiswa
+                    }
+                },
                 {data: 'nama_fakultas',name: 'nama_fakultas'},
                 {data: 'nama_prodi',name: 'nama_prodi'},
                 {data: 'action',name: 'action'},

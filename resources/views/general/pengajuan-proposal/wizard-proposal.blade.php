@@ -66,6 +66,16 @@
                                     <button type="button" class="step-trigger">
                                     <span class="bs-stepper-circle">4</span>
                                     <span class="bs-stepper-label mt-1">
+                                        <span class="bs-stepper-title">Lampiran</span>
+                                        <span class="bs-stepper-subtitle">Upload Lampiran</span>
+                                    </span>
+                                    </button>
+                                </div>
+                                <div class="line"></div>
+                                <div class="step" data-target="#page-5">
+                                    <button type="button" class="step-trigger">
+                                    <span class="bs-stepper-circle">5</span>
+                                    <span class="bs-stepper-label mt-1">
                                         <span class="bs-stepper-title">Penutup</span>
                                         <span class="bs-stepper-subtitle">Isi Penutup</span>
                                     </span>
@@ -91,10 +101,12 @@
                                               <option value="{{$data->id}}">{{$data->nama_jenis_kegiatan}}</option>
                                               @endforeach
                                             </select>
+                                            <span class="text-danger" id="kategoriErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
                                             <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
+                                            <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="id_fakultas">Fakultas</label>
@@ -104,37 +116,44 @@
                                                   <option value="{{$faculty->id}}">{{$faculty->nama_fakultas}}</option>
                                               @endforeach
                                             </select>
+                                            <span class="text-danger" id="fakultasErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label" for="id_prodi">Prodi</label>
                                             <select class="select2 form-control border border-primary" id="id_prodi" name="id_prodi" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" class="d-none">- Pilih prodi -</option>
                                             </select>
+                                            <span class="text-danger" id="prodiErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-sm-12">
                                             <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
                                             <input type="text" id="nama_kegiatan" name="nama_kegiatan" class="form-control">
+                                            <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                           <label for="pendahuluan" class="form-label">Pendahuluan</label>
                                           <div id="editor-pendahuluan" class="mb-3" style="height: 300px;"></div>
                                           <textarea rows="3" class="mb-3 d-none" name="pendahuluan" id="pendahuluan"></textarea>
+                                          <span class="text-danger" id="pendahuluanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                           <label for="tujuan_manfaat" class="form-label">Tujuan dan Manfaat</label>
                                           <div id="editor-tujuan-manfaat" class="mb-3" style="height: 300px;"></div>
                                           <textarea id="tujuan_manfaat" class="mb-3 d-none" name="tujuan_manfaat" rows="3"></textarea>
+                                          <span class="text-danger" id="tujuanManfaatErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         
                                         <div class="col-md-6">
                                           <label for="peserta" class="form-label">Peserta</label>
                                           <div id="editor-peserta" class="mb-3" style="height: 300px;"></div>
                                           <textarea class="mb-3 d-none" id="peserta" name="peserta" rows="5"></textarea>
+                                          <span class="text-danger" id="pesertaErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                           <label for="detil_kegiatan" class="form-label">Detil Kegiatan</label>
                                           <div id="editor-detil-kegiatan" class="mb-3" style="height: 300px;"></div>
                                           <textarea class="mb-3 d-none" id="detil_kegiatan" name="detil_kegiatan" rows="5"></textarea>
+                                          <span class="text-danger" id="detilKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-12 d-flex justify-content-between">
                                             <button class="btn btn-label-secondary btn-prev" disabled> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
@@ -225,8 +244,45 @@
                                   </div>
                                 </div>
 
+                                <!-- Lampiran Proposal -->
+                              <div id="page-4" class="content mt-3">
+                                <div class="content-header mb-3">
+                                  <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
+                                  <small>Upload Lampiran Proposal.</small>
+                                </div>
+                                <div class="row g-3">                                    
+                                    <div>
+                                        <div class="row firstRow">
+                                            <div class="col-md-3 form-group mb-3">
+                                                <label for="nama_berkas" class="form-label">Nama Berkas</label>
+                                                <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                                            </div>
+                                            <div class="col-md-3 form-group mb-3">
+                                                <label for="berkas" class="form-label">Berkas <i class="text-muted">(format lampiran: *.jpg, *.png)</i></label>
+                                                <input type="file" id="berkas" name="berkas[]" class="w-100 form-control">
+                                                <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-3 form-group mb-3">
+                                                <label for="keterangan" class="form-label">Keterangan</label>
+                                                <input type="text" name="keterangan[]" class="w-100 form-control">
+                                            </div>
+                                            <div class="col-md-3 form-group mb-3">
+                                                <button class="btn btn-warning addField mt-4" id="tombol"><i class="bx bx-plus-circle bx-xs"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 12px;" class="text-warning"><i>*Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                    <div class="col-12 d-flex justify-content-between">
+                                        <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                        </button>
+                                        <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                      </div>
+                                  </div>
+                                </div>
+
                                 <!-- Penutup -->
-                                <div id="page-4" class="content mt-3">
+                                <div id="page-5" class="content mt-3">
                                   <div class="content-header mb-3">
                                       <h6 class="mb-0">Penutup</h6>
                                       <small>Lengkapi Penutup Proposal</small>
@@ -236,15 +292,18 @@
                                         <label for="penutup" class="form-label">Penutup</label>
                                         <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
                                         <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
+                                        <span class="text-danger" id="penutupErrorMsg" style="font-size: 10px;"></span>
                                       </div>
                                       <div class="col-12 d-flex justify-content-between">
                                         <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
                                         </button>
                                         <button class="btn btn-success btn-submit" id="tombol-simpan">Submit</button>
-                                      </div>
+                                    </div>
+                                      
                                   </div>
-                              </div>
+                              </div>                              
+
                               </form>
                             </div>
                         </div>
@@ -301,16 +360,20 @@
             $("#form-proposal").validate({
                     submitHandler: function (form) {
                         var actionType = $('#tombol-simpan').val();
-                        $('#tombol-simpan').html('Saving..');
+                        var formData = new FormData($("#form-proposal")[0]);
+                        $('#tombol-simpan').html('Sumbitting..');
 
                         $.ajax({
-                            data: $('#form-proposal').serialize(),
+                            data: formData,
+                            contentType: false,
+                            processData: false,
                             url: "{{ route('insert-proposal') }}",
                             type: "POST",
                             dataType: 'json',
                             success: function (data) {
                                 $('#form-proposal').trigger("reset");
-                                $('#tombol-simpan').html('Save');
+                                $('#tombol-simpan').html('Submit');
+                                $('#tombol-simpan').prop("disabled", true);
                                 Swal.fire({
                                     title: 'Good job!',
                                     text: 'Proposal submitted successfully!',
@@ -324,7 +387,18 @@
                                 window.location = '{{ route("submission-of-proposal.index") }}';
                             },
                             error: function (response) {
-                                $('#tombol-simpan').html('Save');
+                                $('#kategoriErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
+                                $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
+                                $('#fakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
+                                $('#prodiErrorMsg').text(response.responseJSON.errors.id_prodi);
+                                $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
+                                $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
+                                $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
+                                $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
+                                $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
+                                $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
+                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
+                                $('#tombol-simpan').html('Submit');
                                 Swal.fire({
                                     title: 'Error!',
                                     text: ' Proposal failed to submit!',
@@ -399,6 +473,30 @@
             document.querySelector('input[name="rows['+j+'][total_biaya]"]').value = result;
         }
     }
+
+
+    $('.addField').click(function(){
+        $('.firstRow').parent().append(`
+            <div class="row">
+                <div class="col-md-3 form-group mb-3">
+                    <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <input type="file" name="berkas[]" class="w-100 form-control">
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <input type="text" name="keterangan[]" class="w-100 form-control">
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <button type=""button" class="btn btn-danger mb-3 deleteRow"><i class="bx bx-trash bx-xs"></i></button>
+                </div>
+            </div>
+        `);
+    });
+
+    $(document).on('click','.deleteRow', function(){
+        $(this).parent().parent().remove();
+    });
 
     // Editor Pendahuluan
     document.addEventListener('DOMContentLoaded', function() {

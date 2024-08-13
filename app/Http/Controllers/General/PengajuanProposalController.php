@@ -12,6 +12,9 @@ use App\Models\General\DataRencanaAnggaran;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Setting\Dekan;
 use App\Setting\Rektorat;
+use Illuminate\Support\Facades\Storage;
+use Redirect;
+use File;
 use Auth;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -25,7 +28,7 @@ class PengajuanProposalController extends Controller
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','dosens.name AS nama_user','mahasiswas.name AS nama_user')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','dosens.name AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
             ->where('proposals.user_id',Auth::user()->user_id)
             ->orderBy('proposals.id','DESC')
             ->get();
@@ -86,6 +89,34 @@ class PengajuanProposalController extends Controller
 
     public function insertProposal(Request $request)
     {
+
+        $request->validate([
+            'id_jenis_kegiatan' => 'required',
+            'id_fakultas'       => 'required',
+            'id_prodi'          => 'required',
+            'nama_kegiatan'     => 'required',
+            'pendahuluan'       => 'required',
+            'tujuan_manfaat'    => 'required',
+            'tgl_event'         => 'required',
+            'peserta'           => 'required',
+            'detil_kegiatan'    => 'required',
+            'penutup'           => 'required',
+            'berkas'            => 'mimes:jpeg,bmp,png|max:2000',
+        ],[
+            'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
+            'id_fakultas.required'          => 'Anda belum memilih fakultas', 
+            'id_prodi.required'             => 'Anda belum memilih prodi', 
+            'nama_kegiatan.required'        => 'Anda belum menginput nama kegiatan', 
+            'pendahuluan.required'          => 'Anda belum menginput pendahuluan', 
+            'tujuan_manfaat.required'       => 'Anda belum menginput tujuan manfaat', 
+            'tgl_event.required'            => 'Anda belum menginput tgl event', 
+            'peserta.required'              => 'Anda belum menginput peserta', 
+            'detil_kegiatan.required'       => 'Anda belum menginput detil kegiatan', 
+            'penutup.required'              => 'Anda belum menginput penutup', 
+            'berkas.mimes'                  => 'Format berkas harus berformat .jpeg, .bmp, .png',
+            'berkas.max'                    => 'Ukuran file lebih dari 2MB'
+        ]);
+
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
                     'id_jenis_kegiatan'     => $request->id_jenis_kegiatan,
@@ -151,12 +182,35 @@ class PengajuanProposalController extends Controller
                 'updated_at' => now()
             ]);
 
+        # Insert data into lampiran_proposals
+        if($request->berkas != ''){
+            $fileNames = [];
+            foreach($request->berkas as $file){
+                $fileName = time().'.'.$file->getClientOriginalName();
+                $file->move(public_path('uploads-lampiran/lampiran-proposal'),$fileName);
+                $fileNames[] = 'uploads-lampiran/lampiran-proposal/'.$fileName;
+            }
+
+            $insertData = [];
+            for($x = 0; $x < count($request->nama_berkas);$x++){
+                $insertData[] = [
+                    'id_proposal' => $latest,
+                    'nama_berkas' => $request->nama_berkas[$x],
+                    'berkas' => $fileNames[$x],
+                    'keterangan' => $request->keterangan[$x],
+                ];
+            }
+            $post = DB::table('lampiran_proposals')->insert($insertData);
+        } else {
+            return redirect()->route('submission-of-proposal.index');
+        }
         return response()->json($post);
     }
 
     public function destroy($id)
     {
-        $post = Proposal::where('id',$id)->delete();     
+        $post = Proposal::where('id',$id)->delete(); 
+        DB::table('lampiran_proposals')->where('id_proposal',$id)->delete();    
         return response()->json($post);
     }
 
@@ -390,13 +444,16 @@ class PengajuanProposalController extends Controller
             ->get();
         $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate('Proposal belum disetujui!'));
 
+        # get lampiran
+        $data_lampiran = DB::table('lampiran_proposals')->where('id_proposal',$ID)->get();
+
         # Get Dekan
         foreach($datas as $r){
             $getDekan = Dekan::where('id_fakultas',$r->id_fakultas)->select('name')->get();
         }
         
         $fileName = 'proposal_'.date(now()).'.pdf';
-        $pdf = PDF::loadview('general.pengajuan-proposal.preview-proposal', compact('datas','sarpras','anggarans','grandTotal','getQR','qrcode','getDekan'));
+        $pdf = PDF::loadview('general.pengajuan-proposal.preview-proposal', compact('datas','sarpras','anggarans','grandTotal','getQR','qrcode','getDekan','data_lampiran'));
         $pdf->setPaper('F4','P');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();

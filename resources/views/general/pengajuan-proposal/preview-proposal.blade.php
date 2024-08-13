@@ -39,6 +39,10 @@
         page-break-after: always;
         text-align: center;
     }
+    .page-break-lampiran {
+        page-break-before: always;
+        text-align: center;
+    }
     .cover_instansi {
         line-height: 8px;
         margin-top: 12em;
@@ -194,6 +198,17 @@
                 @endforeach                        
             </table>
             
+        </div>
+        <div class="page-break-lampiran">
+            @if($data_lampiran->count() > 0)
+            <h3 class="mb-3">Lampiran</h3>
+                @foreach($data_lampiran as $lampirans)
+                    <img src="{{ public_path(''.$lampirans->berkas.'') }}" alt="Default Image" style="max-width: 500px; max-height: 500px; text-align:center;" class="mb-3">
+                    <p class="mb-2"><i>{{$lampirans->nama_berkas}}</i></p>
+                @endforeach
+            @else
+                <p></p>
+            @endif
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
