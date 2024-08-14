@@ -101,7 +101,6 @@ class PengajuanProposalController extends Controller
             'peserta'           => 'required',
             'detil_kegiatan'    => 'required',
             'penutup'           => 'required',
-            'berkas'            => 'mimes:jpeg,bmp,png,pdf|max:2000',
         ],[
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
             'id_fakultas.required'          => 'Anda belum memilih fakultas', 
@@ -113,8 +112,6 @@ class PengajuanProposalController extends Controller
             'peserta.required'              => 'Anda belum menginput peserta', 
             'detil_kegiatan.required'       => 'Anda belum menginput detil kegiatan', 
             'penutup.required'              => 'Anda belum menginput penutup', 
-            'berkas.mimes'                  => 'Format berkas harus berformat .jpeg, .bmp, .png atau .pdf',
-            'berkas.max'                    => 'Ukuran file lebih dari 2MB'
         ]);
 
         $post = Proposal::updateOrCreate(['id' => $request->id],

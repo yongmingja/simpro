@@ -348,7 +348,6 @@
                                 window.location = '{{ route("my-report") }}';
                             },
                             error: function (response) {
-                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Save');
                                 Swal.fire({
                                     title: 'Error!',

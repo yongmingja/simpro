@@ -397,7 +397,6 @@
                                 $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
                                 $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
                                 $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
-                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Submit');
                                 Swal.fire({
                                     title: 'Error!',
