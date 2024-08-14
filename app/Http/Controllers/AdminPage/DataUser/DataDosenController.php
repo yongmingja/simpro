@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Setting\Dosen;
+use App\Imports\DosensImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataDosenController extends Controller
 {
@@ -65,6 +67,20 @@ class DataDosenController extends Controller
     public function destroy($id)
     {
         $post = Dosen::where('id',$id)->delete();     
+        return response()->json($post);
+    }
+
+    public function importDataDosen(Request $request) 
+    {
+    	$request->validate([
+           'file_csv' => 'required|file',
+        ],[
+            'file_csv.required' => 'Anda belum memilih berkas CSV'
+        ]);
+		$file = $request->file('file_csv'); 
+		$nama_file = rand().$file->getClientOriginalName();
+		$file->move('file_dosen',$nama_file);
+		$post = Excel::import(new DosensImport, public_path('/file_dosen/'.$nama_file));
         return response()->json($post);
     }
 }

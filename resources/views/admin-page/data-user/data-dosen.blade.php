@@ -28,6 +28,7 @@
                         <!-- MULAI TOMBOL TAMBAH -->
                         <div class="mb-3">
                             <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="tombol-tambah"><button type="button" class="btn btn-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> New data</button></a>
+                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="click-csv"><button type="button" class="btn btn-secondary"><i class="bx bx-xs bx-import bx-tada-hover"></i> Import CSV</button></a>
                         </div>
                         
                         <!-- AKHIR TOMBOL -->
@@ -94,6 +95,39 @@
                         </div>
                     </div>
                     <!-- AKHIR MODAL -->
+
+                    <div class="modal fade" id="import-dosen" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-import"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-import-csv" name="form-import-csv" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row">
+                                            <div class="mb-3">
+                                                <label for="file_csv" class="form-label">File Excel/CSV</label>
+                                                <div class="form-group mt-1 mb-1">
+                                                    <input id="file_csv" type="file" name="file_csv" data-preview-file-type="any" class="file form-control" required data-upload-url="#">
+                                                </div>
+                                                <span class="text-danger" id="fileErrorMsg"></span>
+                                            </div>                                          
+                                            
+                                            <div class="col-sm-offset-2 col-sm-12">
+                                                <hr class="mt-2">
+                                                <div class="float-sm-end">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary btn-block" id="tombol-import" value="import">Import</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                 </div>
             </div>
@@ -245,6 +279,62 @@
             },
         });
     });
+
+    $('#click-csv').click(function(){
+        $('#button-simpan').val("create-post");
+        $('#form-import-csv').trigger("reset");
+        $('#modal-judul-import').html("Import Dosen");
+        $('#import-dosen').modal('show');
+    });
+
+    if ($("#form-import-csv").length > 0) {
+        $("#form-import-csv").validate({
+            submitHandler: function (form) {
+                var actionType = $('#tombol-import').val();
+                var formData = new FormData($("#form-import-csv")[0]);
+                $('#tombol-import').html('Importing..');
+
+                $.ajax({
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    url: "{{ route('import-data-dosen') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#form-import-csv').trigger("reset");
+                        $('#import-dosen').modal('hide');
+                        $('#tombol-import').html('Import');
+                        $('#table_dosen').DataTable().ajax.reload(null, true);
+                        Swal.fire({
+                            title: 'Good job!',
+                            text: 'Data imported successfully!',
+                            type: 'success',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    },
+                    error: function(response) {
+                        $('#fileErrorMsg').text(response.responseJSON.errors.file_csv);
+                        $('#tombol-import').html('Import');
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Data failed to import!',
+                            type: 'error',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    }
+                });
+            }
+        })
+    }
 
 </script>
 

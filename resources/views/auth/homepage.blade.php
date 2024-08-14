@@ -80,14 +80,14 @@
                         <div class="col">
                           <div class="card shadow-none bg-transparent border border-success" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndDosen" aria-controls="offcanvasEnd">
                             <div class="card-body text-success">
-                              <p class="card-title">Dosen</p>
+                              <p class="card-title">Dosen dan Tendik</p>
                             </div>
                           </div>
                         </div>
                         <div class="col">
                           <div class="card shadow-none bg-transparent border border-warning" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndDekan" aria-controls="offcanvasEnd">
                             <div class="card-body text-warning">
-                              <p class="card-title">Dekan</p>
+                              <p class="card-title">Dekan dan Kepala Biro</p>
                             </div>
                           </div>
                         </div>

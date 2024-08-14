@@ -65,12 +65,12 @@
             </li>        
             <li class="menu-item">
                 <a href="{{route('data-user-dosen.index')}}" class="menu-link {{set_active('data-user-dosen.index')}}">
-                <div data-i18n="Data Dosen">Data Dosen</div>
+                <div data-i18n="Data Dosen & Tendik">Data Dosen & Tendik</div>
                 </a>
             </li>        
             <li class="menu-item">
                 <a href="{{route('data-user-dekan.index')}}" class="menu-link {{set_active('data-user-dekan.index')}}">
-                <div data-i18n="Data Dekan">Data Dekan</div>
+                <div data-i18n="Data Dekan & Kepala Biro">Data Dekan & Kepala Biro</div>
                 </a>
             </li>
             <li class="menu-item">
