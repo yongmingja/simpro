@@ -219,7 +219,7 @@
                                                     <input type="text" name="nama_berkas[]" class="w-100 form-control">
                                                 </div>
                                                 <div class="col-md-3 form-group mb-3">
-                                                    <label for="berkas" class="form-label">Berkas <i class="text-muted">(format lampiran: *.jpg, *.png)</i></label>
+                                                    <label for="berkas" class="form-label">Berkas <i class="text-muted">(format lampiran: *.jpg, *.png atau *.pdf)</i></label>
                                                     <input type="file" id="berkas" name="berkas[]" class="w-100 form-control">
                                                     <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
                                                 </div>
@@ -348,6 +348,7 @@
                                 window.location = '{{ route("my-report") }}';
                             },
                             error: function (response) {
+                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Save');
                                 Swal.fire({
                                     title: 'Error!',
