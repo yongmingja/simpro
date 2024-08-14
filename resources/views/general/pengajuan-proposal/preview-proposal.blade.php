@@ -67,8 +67,8 @@
             
             <div class="cover_instansi">
                 @foreach($datas as $nama)
-                <p style="text-transform: uppercase;">Program Studi {{$nama->nama_prodi}}</p>
-                <p style="text-transform: uppercase;">Fakultas {{$nama->nama_fakultas}}</p>
+                <p style="text-transform: uppercase;">{{$nama->nama_prodi}}</p>
+                <p style="text-transform: uppercase;">{{$nama->nama_fakultas}}</p>
                 @endforeach
                 <p style="text-transform: uppercase;">Universitas Universal</p>
                 @foreach($datas as $tahun)
@@ -170,7 +170,7 @@
                     @if($qr->status_approval != '5')
                         <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                             <p style="margin-top: 2em;"></p>
-                            <br><br><b>{{$qr->nama_dosen}}{{$qr->nama_mahasiswa}}</b><br><i>@foreach($datas as $nama_fk) Prodi {{$nama_fk->nama_prodi}} @endforeach</i>
+                            <br><br><b>{{$qr->nama_dosen}}{{$qr->nama_mahasiswa}}</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
                         </td>
                         <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
                             <p style="margin-top: 2em;"></p>
@@ -183,7 +183,7 @@
                     @else
                         <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                            <br><br><b>{{$qr->nama_dosen}}{{$qr->nama_mahasiswa}}</b><br><i>@foreach($datas as $nama_fk) Prodi {{$nama_fk->nama_prodi}} @endforeach</i>
+                            <br><br><b>{{$qr->nama_dosen}}{{$qr->nama_mahasiswa}}</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
                         </td>
                         <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
