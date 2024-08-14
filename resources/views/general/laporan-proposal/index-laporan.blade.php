@@ -66,6 +66,16 @@
                                     <button type="button" class="step-trigger">
                                     <span class="bs-stepper-circle">4</span>
                                     <span class="bs-stepper-label mt-1">
+                                        <span class="bs-stepper-title">Lampiran</span>
+                                        <span class="bs-stepper-subtitle">Upload Lampiran</span>
+                                    </span>
+                                    </button>
+                                </div>
+                                <div class="line"></div>
+                                <div class="step" data-target="#page-5">
+                                    <button type="button" class="step-trigger">
+                                    <span class="bs-stepper-circle">5</span>
+                                    <span class="bs-stepper-label mt-1">
                                         <span class="bs-stepper-title">Penutup</span>
                                         <span class="bs-stepper-subtitle">Isi Penutup</span>
                                     </span>
@@ -149,7 +159,7 @@
                                             <td>{{$data->frequency}}</td>
                                             @php $total = 0; $total = $data->biaya_satuan * $data->quantity * $data->frequency; @endphp
                                             <td>{{currency_IDR($total)}}</td>
-                                            <td>@if($data->sumber_dana == '1') Mandiri @elseif($data->sumber_dana == '2') Kampus @else Hibah @endif</td>
+                                            <td>@if($data->sumber_dana == '1') Kampus @elseif($data->sumber_dana == '2') Mandiri @else Hibah @endif</td>
                                         </tr>
                                         @endforeach
                                         <tr>
@@ -196,8 +206,44 @@
                                   </div>
                                 </div>
 
-                                <!-- Penutup -->
                                 <div id="page-4" class="content mt-3">
+                                    <div class="content-header mb-3">
+                                      <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
+                                      <small>Upload Lampiran Proposal.</small>
+                                    </div>
+                                    <div class="row g-3">                                    
+                                        <div>
+                                            <div class="row firstRow">
+                                                <div class="col-md-3 form-group mb-3">
+                                                    <label for="nama_berkas" class="form-label">Nama Berkas</label>
+                                                    <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                                                </div>
+                                                <div class="col-md-3 form-group mb-3">
+                                                    <label for="berkas" class="form-label">Berkas <i class="text-muted">(format lampiran: *.jpg, *.png)</i></label>
+                                                    <input type="file" id="berkas" name="berkas[]" class="w-100 form-control">
+                                                    <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
+                                                </div>
+                                                <div class="col-md-3 form-group mb-3">
+                                                    <label for="keterangan" class="form-label">Keterangan</label>
+                                                    <input type="text" name="keterangan[]" class="w-100 form-control">
+                                                </div>
+                                                <div class="col-md-3 form-group mb-3">
+                                                    <button class="btn btn-warning addField mt-4" id="tombol"><i class="bx bx-plus-circle bx-xs"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p style="font-size: 12px;" class="text-warning"><i>*Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                        <div class="col-12 d-flex justify-content-between">
+                                            <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                              <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                            </button>
+                                            <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                          </div>
+                                      </div>
+                                    </div>
+
+                                <!-- Penutup -->
+                                <div id="page-5" class="content mt-3">
                                   <div class="content-header mb-3">
                                       <h6 class="mb-0">Penutup</h6>
                                       <small>Lengkapi Penutup Laporan Proposal</small>
@@ -275,16 +321,20 @@
             $("#form-laporan-proposal").validate({
                     submitHandler: function (form) {
                         var actionType = $('#tombol-simpan').val();
+                        var formData = new FormData($("#form-laporan-proposal")[0]);
                         $('#tombol-simpan').html('Saving..');
 
                         $.ajax({
-                            data: $('#form-laporan-proposal').serialize(),
+                            data: formData,
+                            contentType: false,
+                            processData: false,
                             url: "{{ route('insert-laporan-proposal') }}",
                             type: "POST",
                             dataType: 'json',
                             success: function (data) {
                                 $('#form-laporan-proposal').trigger("reset");
                                 $('#tombol-simpan').html('Save');
+                                $('#tombol-simpan').prop("disabled", true);
                                 Swal.fire({
                                     title: 'Good job!',
                                     text: 'Proposal submitted successfully!',
@@ -341,6 +391,29 @@
             document.querySelector('input[name="rows['+j+'][total_biaya]"]').value = result;
         }
     }
+
+    $('.addField').click(function(){
+        $('.firstRow').parent().append(`
+            <div class="row">
+                <div class="col-md-3 form-group mb-3">
+                    <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <input type="file" name="berkas[]" class="w-100 form-control">
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <input type="text" name="keterangan[]" class="w-100 form-control">
+                </div>
+                <div class="col-md-3 form-group mb-3">
+                    <button type=""button" class="btn btn-danger mb-3 deleteRow"><i class="bx bx-trash bx-xs"></i></button>
+                </div>
+            </div>
+        `);
+    });
+
+    $(document).on('click','.deleteRow', function(){
+        $(this).parent().parent().remove();
+    });
 
     // Editor Hasil Kegiatan
     document.addEventListener('DOMContentLoaded', function() {

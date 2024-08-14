@@ -6,70 +6,9 @@
     <div class="container-fluid flex-grow-1 container-p-y">
 
         <div class="row">
-            <div class="col-sm-6 col-lg-3 mb-4">
-                <div class="card card-border-shadow-primary h-100">
-                    <div class="card-body">
-                    <div class="d-flex align-items-center mb-2 pb-1">
-                        <div class="avatar me-2">
-                        <span class="avatar-initial rounded bg-label-primary"><i class="bx bxs-group"></i></span>
-                        </div>
-                        <h4 class="ms-1 mb-0">@php $data = \App\Setting\Mahasiswa::all(); echo $data->count(); @endphp</h4>
-                    </div>
-                    <p class="mb-1">Mahasiswa</p>
-                    <p class="mb-0">
-                        <span class="fw-medium me-1">Total mahasiswa</span>
-                    </p>
-                    </div>
-                </div>
-                </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
-                <div class="card card-border-shadow-warning h-100">
-                    <div class="card-body">
-                    <div class="d-flex align-items-center mb-2 pb-1">
-                        <div class="avatar me-2">
-                        <span class="avatar-initial rounded bg-label-warning"><i class='bx bx-group'></i></span>
-                        </div>
-                        <h4 class="ms-1 mb-0">@php $data = \App\Setting\Dosen::all(); echo $data->count(); @endphp</h4>
-                    </div>
-                    <p class="mb-1">Dosen</p>
-                    <p class="mb-0">
-                        <span class="fw-medium me-1">Total dosen</span>
-                    </p>
-                    </div>
-                </div>
-                </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
-                <div class="card card-border-shadow-danger h-100">
-                    <div class="card-body">
-                    <div class="d-flex align-items-center mb-2 pb-1">
-                        <div class="avatar me-2">
-                        <span class="avatar-initial rounded bg-label-danger"><i class='bx bx-group'></i></span>
-                        </div>
-                        <h4 class="ms-1 mb-0">@php $data = \App\Setting\Dekan::all(); echo $data->count(); @endphp</h4>
-                    </div>
-                    <p class="mb-1">Dekan</p>
-                    <p class="mb-0">
-                        <span class="fw-medium me-1">Total dekan</span>
-                    </p>
-                    </div>
-                </div>
-                </div>
-                <div class="col-sm-6 col-lg-3 mb-4">
-                <div class="card card-border-shadow-info h-100">
-                    <div class="card-body">
-                    <div class="d-flex align-items-center mb-2 pb-1">
-                        <div class="avatar me-2">
-                        <span class="avatar-initial rounded bg-label-info"><i class='bx bx-group'></i></span>
-                        </div>
-                        <h4 class="ms-1 mb-0">@php $data = \App\Setting\Rektorat::all(); echo $data->count(); @endphp</h4>
-                    </div>
-                    <p class="mb-1">Rektorat</p>
-                    <p class="mb-0">
-                        <span class="fw-medium me-1">User Rektorat</span>
-                    </p>
-                    </div>
-                </div>
-            </div>
+            <h5>Hallo, {{Auth::user()->name}}</h5>
+            <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal</h4>
+            <p>Anda memiliki @php $count = DB::table('proposals')->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')->where([['proposals.id_fakultas',Auth::user()->id_fakultas],['status_proposals.status_approval','=',1]])->count(); @endphp <span class="badge bg-label-warning">{{$count}}</span> proposal untuk diperiksa. Anda dapat melihat proposal pada menu <a href="{{route('page-data-proposal.index')}}">Proposal Saya</a></p>
         </div>
     
     </div>

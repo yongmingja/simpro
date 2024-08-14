@@ -39,6 +39,10 @@
         page-break-after: always;
         text-align: center;
     }
+    .page-break-lampiran {
+        page-break-before: always;
+        text-align: center;
+    }
     .cover_instansi {
         line-height: 8px;
         margin-top: 12em;
@@ -128,7 +132,7 @@
                         <td style="text-align: center;" class="table_td">{{$anggaran->frequency}}</td>
                         @php $total = 0; $total = $anggaran->biaya_satuan * $anggaran->quantity * $anggaran->frequency; @endphp
                         <td style="text-align: right;" class="table_td">{{currency_IDR($total)}}</td>
-                        <td style="text-align: center;" class="table_td">@if($anggaran->sumber_dana == '1') Mandiri @elseif($anggaran->sumber_dana == '2') Kampus @else Hibah @endif</td>
+                        <td style="text-align: center;" class="table_td">@if($anggaran->sumber_dana == '1') Kampus @elseif($anggaran->sumber_dana == '2') Mandiri @else Hibah @endif</td>
                     </tr>
                     @endforeach
                     <tr>
@@ -163,7 +167,7 @@
                         <td style="text-align: center;" class="table_td">{{$realisasi->frequency}}</td>
                         @php $total = 0; $total = $realisasi->biaya_satuan * $realisasi->quantity * $realisasi->frequency; @endphp
                         <td style="text-align: right;" class="table_td">{{currency_IDR($total)}}</td>
-                        <td style="text-align: center;" class="table_td">@if($realisasi->sumber_dana == '1') Mandiri @elseif($realisasi->sumber_dana == '2') Kampus @else Hibah @endif</td>
+                        <td style="text-align: center;" class="table_td">@if($realisasi->sumber_dana == '1') Kampus @elseif($realisasi->sumber_dana == '2') Mandiri @else Hibah @endif</td>
                     </tr>
                     @endforeach
                     <tr>
@@ -214,6 +218,17 @@
                 @endforeach                        
             </table>
             
+        </div>
+        <div class="page-break-lampiran">
+            @if($data_lampiran->count() > 0)
+            <h3 class="mb-3">Lampiran</h3>
+                @foreach($data_lampiran as $lampirans)
+                    <img src="{{ public_path(''.$lampirans->berkas.'') }}" alt="Default Image" style="max-width: 500px; max-height: 500px; text-align:center;" class="mb-3">
+                    <p class="mb-2"><i>{{$lampirans->nama_berkas}}</i></p>
+                @endforeach
+            @else
+                <p></p>
+            @endif
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

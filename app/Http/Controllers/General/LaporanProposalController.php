@@ -49,6 +49,29 @@ class LaporanProposalController extends Controller
         }
         $post = DataRealisasiAnggaran::insert($dataRenang);
 
+        # Insert data into lampiran_laporan_proposals
+        if($request->berkas != ''){
+            $fileNames = [];
+            foreach($request->berkas as $file){
+                $fileName = time().'.'.$file->getClientOriginalName();
+                $file->move(public_path('uploads-lampiran/lampiran-laporan-proposal'),$fileName);
+                $fileNames[] = 'uploads-lampiran/lampiran-laporan-proposal/'.$fileName;
+            }
+
+            $insertData = [];
+            for($x = 0; $x < count($request->nama_berkas);$x++){
+                $insertData[] = [
+                    'id_proposal' => $getId,
+                    'nama_berkas' => $request->nama_berkas[$x],
+                    'berkas' => $fileNames[$x],
+                    'keterangan' => $request->keterangan[$x],
+                ];
+            }
+            $post = DB::table('lampiran_laporan_proposals')->insert($insertData);
+        } else {
+            return redirect()->route('my-report');
+        }
+
         return response()->json($post);
     }
 
@@ -134,9 +157,11 @@ class LaporanProposalController extends Controller
         foreach($datas as $r){
             $getDekan = Dekan::where('id_fakultas',$r->id_fakultas)->select('name')->get();
         }
+
+        $data_lampiran = DB::table('lampiran_laporan_proposals')->where('id_proposal',$ID)->get();
         
         $fileName = 'laporan_proposal_'.date(now()).'.pdf';
-        $pdf = PDF::loadview('general.laporan-proposal.preview-laporan-proposal', compact('datas','getQR','qrcode','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','getDekan'));
+        $pdf = PDF::loadview('general.laporan-proposal.preview-laporan-proposal', compact('datas','getQR','qrcode','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','getDekan','data_lampiran'));
         $pdf->setPaper('F4','P');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
