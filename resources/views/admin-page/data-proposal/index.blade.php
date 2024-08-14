@@ -125,7 +125,7 @@
                 }, 
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan',
                     render: function (data, type, row, meta){
-                        return row.nama_jenis_kegiatan +' '+ row.preview
+                        return row.preview +' '+ row.nama_jenis_kegiatan
                     }
                 },
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
