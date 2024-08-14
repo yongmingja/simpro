@@ -60,7 +60,7 @@
             <h3 style="text-transform: uppercase;">{{$kegiatan->nama_kegiatan}}</h3>
             <p>{{tanggal_indonesia($kegiatan->tgl_event)}}</p>
             @endforeach
-            <img src="{{asset('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 8em;">
+            <img src="{{public_path('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 8em;">
             <p style="margin-top: 3em;">Pengusul:</p>
             
             <p style="text-transform: uppercase;"><b> @foreach($getQR as $pengusul) {{$pengusul->nama_dosen}}{{$pengusul->nama_mahasiswa}} @endforeach &ndash; @foreach($datas as $userid) {{$userid->user_id}} @endforeach</b></p>
