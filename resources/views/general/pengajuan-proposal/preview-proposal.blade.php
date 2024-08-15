@@ -103,11 +103,11 @@
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
-                        <th class="tabel_th">No</th>
-                        <th class="tabel_th">Tgl Kegiatan</th>
-                        <th class="tabel_th">Item</th>
-                        <th class="tabel_th">Jumlah</th>
-                        <th class="tabel_th">Sumber (Mandiri/Kampus/Hibah)</th>
+                        <th class="tabel_th" width="2%">No</th>
+                        <th class="tabel_th" width="5%">Tgl Kegiatan</th>
+                        <th class="tabel_th" width="25%">Item</th>
+                        <th class="tabel_th" width="3%">Jumlah</th>
+                        <th class="tabel_th" width="5%">Sumber</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,13 +128,13 @@
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
-                        <th class="tabel_th">No</th>
-                        <th class="tabel_th">Item</th>
-                        <th class="tabel_th">Biaya Satuan</th>
-                        <th class="tabel_th">Total Qty</th>
-                        <th class="tabel_th">Frekuensi</th>
-                        <th class="tabel_th">Total</th>
-                        <th class="tabel_th">Sumber (Mandiri/Kampus/Hibah)</th>
+                        <th class="tabel_th" width="2%">No</th>
+                        <th class="tabel_th" width="20%">Item</th>
+                        <th class="tabel_th" width="8%">Biaya Satuan</th>
+                        <th class="tabel_th" width="3%">Total Qty</th>
+                        <th class="tabel_th" width="3%">Frekuensi</th>
+                        <th class="tabel_th" width="12%">Total</th>
+                        <th class="tabel_th" width="5%">Sumber</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -165,22 +165,9 @@
             @endforeach
 
             <table class="footer_auditor" width="100%">
-                @foreach($getQR as $qr) @endforeach
+                @if($getQR->count() > 0)
+                @foreach($getQR as $qr) 
                 <tr class="trfooterauditor">
-                    @if($qr->status_approval != '5')
-                        <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
-                        </td>
-                        <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} @endforeach</b><br><i>Dekan</i>
-                        </td>
-                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
-                        </td>
-                    @else
                         <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
                             <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
@@ -193,9 +180,24 @@
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
                             <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
                         </td>
-                    @endif  
-                                            
                 </tr> 
+                @endforeach
+                @else
+                <tr class="trfooterauditor">
+                    <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                        <p style="margin-top: 2em;"></p>
+                        <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
+                    </td>
+                    <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
+                        <p style="margin-top: 2em;"></p>
+                        <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} @endforeach</b><br><i>Dekan</i>
+                    </td>
+                    <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                        <p style="margin-top: 2em;"></p>
+                        <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
+                    </td>
+                </tr>
+                @endif
             </table>
             
         </div>

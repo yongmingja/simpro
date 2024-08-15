@@ -113,13 +113,13 @@
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
-                        <th class="tabel_th">No</th>
-                        <th class="tabel_th">Item</th>
-                        <th class="tabel_th">Biaya Satuan</th>
-                        <th class="tabel_th">Total Qty</th>
-                        <th class="tabel_th">Frekuensi</th>
-                        <th class="tabel_th">Total</th>
-                        <th class="tabel_th">Sumber (Mandiri/Kampus/Hibah)</th>
+                        <th class="tabel_th" width="2%">No</th>
+                        <th class="tabel_th" width="20%">Item</th>
+                        <th class="tabel_th" width="8%">Biaya Satuan</th>
+                        <th class="tabel_th" width="3%">Total Qty</th>
+                        <th class="tabel_th" width="3%">Frekuensi</th>
+                        <th class="tabel_th" width="12%">Total</th>
+                        <th class="tabel_th" width="5%">Sumber</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -148,13 +148,13 @@
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
-                        <th class="tabel_th">No</th>
-                        <th class="tabel_th">Item</th>
-                        <th class="tabel_th">Biaya Satuan</th>
-                        <th class="tabel_th">Total Qty</th>
-                        <th class="tabel_th">Frekuensi</th>
-                        <th class="tabel_th">Total</th>
-                        <th class="tabel_th">Sumber (Mandiri/Kampus/Hibah)</th>
+                        <th class="tabel_th" width="2%">No</th>
+                        <th class="tabel_th" width="20%">Item</th>
+                        <th class="tabel_th" width="8%">Biaya Satuan</th>
+                        <th class="tabel_th" width="3%">Total Qty</th>
+                        <th class="tabel_th" width="3%">Frekuensi</th>
+                        <th class="tabel_th" width="12%">Total</th>
+                        <th class="tabel_th" width="5%">Sumber</th>
                     </tr>
                 </thead>
                 <tbody>

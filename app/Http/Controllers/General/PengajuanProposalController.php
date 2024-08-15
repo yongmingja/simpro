@@ -437,7 +437,7 @@ class PengajuanProposalController extends Controller
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
             ->select('status_proposals.status_approval','status_proposals.generate_qrcode','dosens.name AS nama_dosen','mahasiswas.name AS nama_mahasiswa')
-            ->where('status_proposals.id_proposal',$ID)
+            ->where([['status_proposals.id_proposal',$ID],['status_proposals.status_approval',5]])
             ->get();
         $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate('Proposal belum disetujui!'));
 
