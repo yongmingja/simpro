@@ -63,7 +63,7 @@
             <img src="{{public_path('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 8em;">
             <p style="margin-top: 3em;">Pengusul:</p>
             
-            <p style="text-transform: uppercase;"><b> @foreach($getQR as $pengusul) {{$pengusul->nama_dosen}}{{$pengusul->nama_mahasiswa}} @endforeach &ndash; @foreach($datas as $userid) {{$userid->user_id}} @endforeach</b></p>
+            <p style="text-transform: uppercase;"><b> @foreach($datas as $pengusul) {{$pengusul->nama_user_dosen}}{{$pengusul->nama_user_mahasiswa}} @endforeach &ndash; @foreach($datas as $userid) {{$userid->user_id}} @endforeach</b></p>
             
             <div class="cover_instansi">
                 @foreach($datas as $nama)
@@ -185,12 +185,12 @@
             @endforeach
 
             <table class="footer_auditor" width="100%">
-                @foreach($getQR as $qr)
+                @foreach($getQR as $qr) @endforeach  
                 <tr class="trfooterauditor">
                     @if($qr->status_laporan == 0)
                         <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                             <p style="margin-top: 2em;"></p>
-                            <br><br><b>{{$qr->nama_dosen}}{{$qr->nama_mahasiswa}}</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
+                            <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
                         </td>
                         <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
                             <p style="margin-top: 2em;"></p>
@@ -203,7 +203,7 @@
                     @else
                         <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                            <br><br><b>{{$qr->nama_dosen}}{{$qr->nama_mahasiswa}}</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
+                            <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
                         </td>
                         <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
@@ -214,8 +214,7 @@
                             <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
                         </td>
                     @endif  
-                </tr> 
-                @endforeach                        
+                </tr>                                       
             </table>
             
         </div>

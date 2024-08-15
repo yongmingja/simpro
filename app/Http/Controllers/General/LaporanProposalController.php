@@ -132,7 +132,7 @@ class LaporanProposalController extends Controller
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
             ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','laporan_proposals.id AS id_laporan','laporan_proposals.*','laporan_proposals.penutup AS lap_penutup','laporan_proposals.created_at AS tgl_laporan')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','laporan_proposals.id AS id_laporan','laporan_proposals.*','laporan_proposals.penutup AS lap_penutup','laporan_proposals.created_at AS tgl_laporan','dosens.name AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
             ->where('proposals.id',$ID)
             ->orderBy('proposals.id','DESC')
             ->get();
