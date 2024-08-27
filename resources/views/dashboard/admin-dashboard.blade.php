@@ -3,7 +3,7 @@
 
 @section('content')
     <!-- Content -->
-    <div class="container-fluid flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y">
 
         <!-- Card Border Shadow -->
         <div class="row">
@@ -74,8 +74,14 @@
         </div>
         <!--/ Card Border Shadow -->
 
+        <div class="row">
+            <h5>Hallo, {{Auth::user()->name}}</h5>
+            <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal</h4>
+            <p>Anda memiliki @php $count = DB::table('data_pengajuan_sarpras')->where('status',1)->groupBy('id_proposal')->count(); @endphp <span class="badge bg-label-warning">{{$count}}</span> proposal untuk diperiksa. Anda dapat melihat proposal pada menu <a href="{{route('data-proposal.index')}}">Proposals</a></p>
+        </div>
+
         <!-- On route vehicles Table -->
-        <div class="col-12 order-5">
+        <!-- <div class="col-12 order-5">
             <div class="card">
                 <div class="card-body">
                     <table class="table table-hover table-responsive" id="table_sarpras">
@@ -149,7 +155,7 @@
                 {{-- Info detil keterangan --}}
             </div>
             </div>
-        </div>
+        </div> -->
         <!--/ On route vehicles Table -->
         
     

@@ -3,12 +3,12 @@
 
 @section('content')
     <!-- Content -->
-    <div class="container-fluid flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y">
 
         <div class="row">
             <h5>Hallo, {{Auth::user()->name}}</h5>
             <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal</h4>
-            <p>Anda memiliki @php $count = DB::table('proposals')->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')->where([['proposals.id_fakultas',Auth::user()->id_fakultas],['status_proposals.status_approval','=',1]])->count(); @endphp <span class="badge bg-label-warning">{{$count}}</span> proposal untuk diperiksa. Anda dapat melihat proposal pada menu <a href="{{route('page-data-proposal.index')}}">Proposal Saya</a></p>
+            <p>Anda memiliki @php $count = DB::table('proposals')->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')->where([['proposals.id_fakultas',Auth::user()->id_fakultas],['status_proposals.status_approval','=',1]])->count(); @endphp <span class="badge bg-label-warning">{{$count}}</span> proposal untuk diperiksa. Anda dapat melihat proposal pada menu <a href="{{route('page-data-proposal.index')}}">Proposals</a></p>
         </div>
     
     </div>
