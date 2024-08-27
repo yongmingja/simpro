@@ -35,7 +35,6 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Kode Fakultas</th>
                                   <th>Nama Fakultas</th>
                                   <th>Actions</th>
                                 </tr>
@@ -115,7 +114,6 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
-                {data: 'kode_fakultas',name: 'kode_fakultas'},
                 {data: 'nama_fakultas',name: 'nama_fakultas'},
                 {data: 'action',name: 'action'},
             ]

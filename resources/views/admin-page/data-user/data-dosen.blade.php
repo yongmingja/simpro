@@ -1,5 +1,5 @@
 @extends('layouts.backend')
-@section('title','Data Dosen')
+@section('title','Data Dosen & Tendik')
 
 @section('breadcrumbs')
 <div class="container-fluid">
@@ -36,7 +36,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Name</th>
+                                  <th>Nama Dosen & Tendik</th>
                                   <th>Email</th>
                                   <th>Actions</th>
                                 </tr>
@@ -58,12 +58,12 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Name</label>
+                                                <label for="name" class="form-label">Nama Lengkap <i class="text muted">(beserta gelar)</i></label>
                                                 <input type="text" class="form-control" id="name" name="name" value="" placeholder="e.g John Doe" autofocus />
                                                 <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="user_id" class="form-label">NIP</label>
+                                                <label for="user_id" class="form-label">N I P</label>
                                                 <input type="text" class="form-control" id="user_id" name="user_id" value="" placeholder="" />
                                                 <span class="text-danger" id="userIDErrorMsg" style="font-size: 10px;"></span>
                                             </div>

@@ -1,5 +1,5 @@
 @extends('layouts.backend')
-@section('title','Data Dekan')
+@section('title','Data Dekan & Ka. Biro')
 
 @section('breadcrumbs')
 <div class="container-fluid">
@@ -37,7 +37,7 @@
                                   <th>#</th>
                                   <th>Name</th>
                                   <th>Email</th>
-                                  <th>Dekan Fakultas</th>
+                                  <th>Dekan Fakultas / Ka. Biro</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -63,7 +63,7 @@
                                                 <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="id_fakultas" class="form-label">Dekan Fakultas</label>
+                                                <label for="id_fakultas" class="form-label">Dekan Fakultas / Ka. Biro</label>
                                                 <select class="form-select" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_fakultas">- Pilih -</option>
                                                     @foreach($getDataFakultas as $fakultas)
