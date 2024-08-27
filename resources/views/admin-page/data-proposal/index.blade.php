@@ -49,8 +49,12 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <div id="table" class="col-sm-12 table-responsive mb-3"></div>
+                                    
+                                    <div id="table" class="col-sm-12 table-responsive mb-3">
+                                    </div>
+                                    
                                     <div class="modal-footer">
+                                        <button class="btn btn-success d-none" id="acceptAll"> Terima semua</button>
                                         <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
                                     </div>
                                 </div>
@@ -227,6 +231,87 @@
             }
         })
     }
+
+    // Checkbox for delete data
+    $(document).on('click','input[name="main_checkbox"]', function(){
+        if(this.checked){
+            $('input[name="detail_checkbox"]').each(function(){
+                this.checked = true;
+            });
+        }else{
+            $('input[name="detail_checkbox"]').each(function(){
+                this.checked = false;
+            });
+        }
+        toggleAcceptAll();
+    });
+
+    $(document).on('change','input[name="detail_checkbox"]', function(){
+        if($('input[name="detail_checkbox"]').length == $('input[name="detail_checkbox"]:checked').length){
+            $('input[name="main_checkbox"]').prop('checked', true);
+        }else{
+            $('input[name="main_checkbox"]').prop('checked', false);
+        }
+        toggleAcceptAll();
+    });
+
+    // Delete Function with checkbox
+    function toggleAcceptAll(){
+        if($('input[name="detail_checkbox"]:checked').length > 0){
+            $('button#acceptAll').html('<i class="bx bx-check-double"></i>'+' acc sarpras ('+$('input[name="detail_checkbox"]:checked').length+')').removeClass('d-none');
+        }else{
+            $('button#acceptAll').addClass('d-none');
+        }
+    }
+
+    $(document).on('click','button#acceptAll', function(){
+        var checkedIdProposal = [];        
+        $('input[name="detail_checkbox"]:checked').each(function(){
+            checkedIdProposal.push($(this).data('id'));
+        });
+
+        if(checkedIdProposal.length > 0){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to accept all datas?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, accept it!',
+                showLoaderOnConfirm: true,
+                preConfirm: function () {
+                    return new Promise(function (resolve) {
+                        $.ajax({
+                            url: '{{ route("y-selected-id") }}',
+                            type: 'POST',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "id": checkedIdProposal
+                            },
+                            dataType: 'json'
+                        }).done(function (response) {
+                            Swal.fire({
+                                title: 'acceptd!',
+                                text: 'Your data has been acceptd successfully!',
+                                type: 'success',
+                                timer: 2000
+                            })
+                            location.reload();
+                            $('button#acceptAll').addClass('d-none');
+                        }).fail(function () {
+                            Swal.fire({
+                                title: 'Oops!',
+                                text: 'Something went wrong with ajax!',
+                                type: 'error',
+                                timer: 2000
+                            })
+                        });
+                    });
+                },
+            });
+        }
+    });
 
 </script>
 

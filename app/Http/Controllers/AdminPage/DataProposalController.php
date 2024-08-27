@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\Proposal;
 use App\Models\General\DataPengajuanSarpras;
+use Response;
 
 class DataProposalController extends Controller
 {
@@ -55,6 +56,7 @@ class DataProposalController extends Controller
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
+                    <th><input type="checkbox" name="main_checkbox"><label></label></th>
                     <th>#</th>
                     <th>Tgl Kegiatan</th>
                     <th>Sarpras Item</th>
@@ -65,6 +67,7 @@ class DataProposalController extends Controller
                 <tbody>';
         foreach($datas as $no => $data){
             $html .= '<tr>
+                <td><input type="checkbox" name="detail_checkbox" data-id="'.$data->id.'"><label></label></td>
                 <td>'.++$no.'</td>
                 <td>'.tanggal_indonesia($data->tgl_kegiatan).'</td>
                 <td>'.$data->sarpras_item.'</td>
@@ -83,7 +86,8 @@ class DataProposalController extends Controller
             </tr>';
         }
             $html .= '</tbody>
-                </table>            
+                </table> 
+                <div style="font-size: 12px;"><p class="mt-2 text-warning"><i>*Silahkan gunakan centang untuk validasi semua sarpras</i></p>   </div>        
                 </div>            
             </div>';
         return response()->json(['card' => $html]);
@@ -104,5 +108,19 @@ class DataProposalController extends Controller
             'alasan' => $request->alasan
         ]);
         return response()->json($post);
+    }
+
+    public function validYAll(Request $request)
+    {
+        $id   = $request->id;
+        $post = DataPengajuanSarpras::whereIn('id', $id)->update([
+            'status' => 2
+        ]);
+    
+        if ($post) {
+            return Response::json(array('msg' => 'berhasil'), 200);
+        }else{
+            return Response::json(array('msg' => 'gagal'), 200);
+        }
     }
 }

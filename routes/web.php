@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::post('valid-n','AdminPage\DataProposalController@validN')->name('valid-n');
     Route::post('import-mahasiswa','AdminPage\DataUser\DataMahasiswaController@importDataMahasiswa')->name('import-data-mahasiswa');
     Route::post('import-dosen','AdminPage\DataUser\DataDosenController@importDataDosen')->name('import-data-dosen');
+    Route::post('/y-selected-id','AdminPage\DataProposalController@validYAll')->name('y-selected-id');
 });
 
 Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
