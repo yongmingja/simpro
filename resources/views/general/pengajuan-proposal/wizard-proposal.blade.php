@@ -109,7 +109,7 @@
                                             <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_fakultas">Fakultas</label>
+                                            <label class="form-label" for="id_fakultas">Fakultas / Unit</label>
                                             <select class="select2 form-control border border-primary" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
                                               @foreach($getFakultas as $faculty)
@@ -119,7 +119,7 @@
                                             <span class="text-danger" id="fakultasErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_prodi">Prodi</label>
+                                            <label class="form-label" for="id_prodi">Prodi / Biro</label>
                                             <select class="select2 form-control border border-primary" id="id_prodi" name="id_prodi" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" class="d-none">- Pilih prodi -</option>
                                             </select>
@@ -288,7 +288,7 @@
                                       <small>Lengkapi Penutup Proposal</small>
                                   </div>
                                   <div class="row g-3">
-                                      <div class="col-md-12">
+                                      <div class="col-md-6">
                                         <label for="penutup" class="form-label">Penutup</label>
                                         <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
                                         <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
