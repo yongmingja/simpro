@@ -47,30 +47,16 @@ return [
             'hash' => false,
         ],
 
-        'admin' => [
+        'pegawai' => [
             'driver' => 'session',
-            'provider' => 'admins',
+            'provider' => 'pegawais',
         ],
-
+        
         'mahasiswa' => [
             'driver' => 'session',
             'provider' => 'mahasiswas',
         ],
 
-        'dosen' => [
-            'driver' => 'session',
-            'provider' => 'dosens',
-        ],
-
-        'dekan' => [
-            'driver' => 'session',
-            'provider' => 'dekans',
-        ],
-
-        'rektorat' => [
-            'driver' => 'session',
-            'provider' => 'rektorats',
-        ],
     ],
 
     /*
@@ -96,35 +82,15 @@ return [
             'model' => App\User::class,
         ],
 
-        'admins' => [
+        'pegawais' => [
             'driver' => 'eloquent',
-            'model' => App\Setting\Admin::class,
+            'model' => App\Models\Master\Pegawai::class,
         ],
 
         'mahasiswas' => [
             'driver' => 'eloquent',
             'model' => App\Setting\Mahasiswa::class,
         ],
-
-        'dosens' => [
-            'driver' => 'eloquent',
-            'model' => App\Setting\Dosen::class,
-        ],
-
-        'dekans' => [
-            'driver' => 'eloquent',
-            'model' => App\Setting\Dekan::class,
-        ],
-
-        'rektorats' => [
-            'driver' => 'eloquent',
-            'model' => App\Setting\Rektorat::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -149,36 +115,19 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-
-        'admins' => [
-            'provider' => 'admins',
+        
+        'pegawais' => [
+            'provider' => 'pegawais',
             'table' => 'password_resets',
             'expire' => 60,
         ],
-        
+
         'mahasiswas' => [
             'provider' => 'mahasiswas',
             'table' => 'password_resets',
             'expire' => 60,
         ],
         
-        'dosens' => [
-            'provider' => 'dosens',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-        
-        'dekans' => [
-            'provider' => 'dekans',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-        
-        'rektorats' => [
-            'provider' => 'rektorats',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
     ],
 
     /*

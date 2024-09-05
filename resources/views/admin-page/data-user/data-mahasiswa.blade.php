@@ -2,11 +2,11 @@
 @section('title','Data Mahasiswa')
 
 @section('breadcrumbs')
-<div class="container-fluid">
+<div class="container-xxl">
 <nav aria-label="breadcrumb mb-0">
     <ol class="breadcrumb breadcrumb-style2">
       <li class="breadcrumb-item">
-        <a href="{{route('dashboard-admin')}}">Home</a>
+        <a href="{{route('home')}}">Home</a>
       </li>
       <li class="breadcrumb-item">
         <a href="{{route('data-user-mahasiswa.index')}}">@yield('title')</a>
@@ -19,7 +19,7 @@
 
 @section('content')
 
-<div class="container-fluid flex-grow-1">
+<div class="container-xxl flex-grow-1">
     <section id="basic-datatable">
         <div class="row">
             <div class="col-12">

@@ -2,7 +2,7 @@
 @section('title','Ajukan Proposal')
 
 @section('breadcrumbs')
-<div class="container-fluid">
+<div class="container-xxl">
 <nav aria-label="breadcrumb mb-0">
     <ol class="breadcrumb breadcrumb-style2">
       <li class="breadcrumb-item">
@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/editor.css')}}" />
 @section('content')
 
-<div class="container-fluid flex-grow-1">
+<div class="container-xxl flex-grow-1">
     <section id="basic-datatable">
         <div class="row">
             <div class="col-12">

@@ -1,5 +1,5 @@
 @extends('layouts.backend')
-@section('title','Data Rektor')
+@section('title','Data Jabatan Akademik')
 
 @section('breadcrumbs')
 <div class="container-xxl">
@@ -9,7 +9,7 @@
         <a href="{{route('home')}}">Home</a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{{route('data-user-rektorat.index')}}">@yield('title')</a>
+        <a href="{{route('data-jabatan-akademik.index')}}">@yield('title')</a>
       </li>
       <li class="breadcrumb-item active">Data</li>
     </ol>
@@ -31,13 +31,13 @@
                         </div>
                         
                         <!-- AKHIR TOMBOL -->
-                            <table class="table table-hover table-responsive" id="table_rektorat">
+                            <table class="table table-hover table-responsive" id="table_jabatan">
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Name</th>
-                                  <th>Email</th>
-                                  <th>Kategori Proposal</th>
+                                  <th>Pegawai</th>
+                                  <th>NIP / User ID</th>
+                                  <th>Jabatan</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -57,21 +57,46 @@
                                     <form id="form-tambah-edit" name="form-tambah-edit" class="form-horizontal">
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
+
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="" placeholder="e.g John Doe" autofocus />
-                                                <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
+                                                <label for="id_pegawai" class="form-label">Pegawai</label>
+                                                <select class="select2 form-select" id="id_pegawai" name="id_pegawai" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_pegawai">- Pilih -</option>
+                                                    @foreach($getPegawai as $pegawai)
+                                                    <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="idPegawaiErrorMsg" style="font-size: 10px;"></span>
+                                            </div> 
+
+                                            <div class="mb-3">
+                                                <label for="id_jabatan" class="form-label">Jabatan</label>
+                                                <select class="select2 form-select" id="id_jabatan" name="id_jabatan" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_jabatan">- Pilih -</option>
+                                                    @foreach($getJabatan as $jabatan)
+                                                    <option value="{{$jabatan->id}}">{{$jabatan->nama_jabatan}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="idJabatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div> 
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="id_fakultas">Fakultas / Unit</label>
+                                                <select class="select2 form-control border border-primary" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
+                                                  <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
+                                                  @foreach($getFakultas as $faculty)
+                                                      <option value="{{$faculty->id}}">{{$faculty->nama_fakultas}}</option>
+                                                  @endforeach
+                                                </select>
+                                                <span class="text-danger" id="fakultasErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email" value="" placeholder="type an active email" />
-                                                <span class="text-danger" id="emailErrorMsg" style="font-size: 10px;"></span>
+                                                <label class="form-label" for="id_prodi">Prodi / Biro</label>
+                                                <select class="select2 form-control border border-primary" id="id_prodi" name="id_prodi" aria-label="Default select example" style="cursor:pointer;">
+                                                  <option value="" class="d-none">- Pilih prodi -</option>
+                                                </select>
+                                                <span class="text-danger" id="prodiErrorMsg" style="font-size: 10px;"></span>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="password" class="form-label">Password</label>
-                                                <input type="password" class="form-control" id="password" name="password" value="" />
-                                                <span class="text-danger" id="passwordErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                            
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -111,19 +136,19 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_rektorat').DataTable({
+        var table = $('#table_jabatan').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('data-user-rektorat.index') }}",
+            ajax: "{{ route('data-jabatan-akademik.index') }}",
             columns: [
                 {data: null,sortable:false,
                     render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
-                {data: 'name',name: 'name'},
-                {data: 'email',name: 'email'},
-                {data: 'id_jenis_kegiatan',name: 'id_jenis_kegiatan'},
+                {data: 'nama_pegawai',name: 'nama_pegawai'},
+                {data: 'nip',name: 'nip'},
+                {data: 'nama_jabatan',name: 'nama_jabatan'},
                 {data: 'action',name: 'action'},
             ]
         });
@@ -147,14 +172,14 @@
 
                 $.ajax({
                     data: $('#form-tambah-edit').serialize(), 
-                    url: "{{ route('data-user-rektorat.store') }}",
+                    url: "{{ route('data-jabatan-akademik.store') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
                         $('#form-tambah-edit').trigger("reset");
                         $('#tambah-edit-modal').modal('hide');
                         $('#tombol-simpan').html('Save');
-                        $('#table_rektorat').DataTable().ajax.reload(null, true);
+                        $('#table_jabatan').DataTable().ajax.reload(null, true);
                         Swal.fire({
                             title: 'Good job!',
                             text: 'Data saved successfully!',
@@ -167,9 +192,9 @@
                         })
                     },
                     error: function(response) {
-                        $('#nameErrorMsg').text(response.responseJSON.errors.name);
-                        $('#emailErrorMsg').text(response.responseJSON.errors.email);
-                        $('#passwordErrorMsg').text(response.responseJSON.errors.password);
+                        $('#kodeJabatanErrorMsg').text(response.responseJSON.errors.kode_jabatan);
+                        $('#namaJabatanErrorMsg').text(response.responseJSON.errors.nama_jabatan);
+                        $('#golJabatanErrorMsg').text(response.responseJSON.errors.golongan_jabatan);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',
@@ -190,14 +215,15 @@
     // EDIT DATA
     $('body').on('click', '.edit-post', function () {
         var data_id = $(this).data('id');
-        $.get('data-user-rektorat/' + data_id + '/edit', function (data) {
+        $.get('data-jabatan-akademik/' + data_id + '/edit', function (data) {
             $('#modal-judul').html("Edit data");
             $('#tombol-simpan').val("edit-post");
             $('#tambah-edit-modal').modal('show');
               
             $('#id').val(data.id);
-            $('#name').val(data.name);
-            $('#email').val(data.email);
+            $('#nama_pegawai').val(data.nama_pegawai);
+            $('#nip').val(data.nip);
+            $('#nama_jabatan').val(data.nama_jabatan);
         })
     });
 
@@ -216,7 +242,7 @@
             preConfirm: function() {
                 return new Promise(function(resolve) {
                     $.ajax({
-                        url: "data-user-rektorat/" + dataId,
+                        url: "data-jabatan-akademik/" + dataId,
                         type: 'DELETE',
                         data: {id:dataId},
                         dataType: 'json'
@@ -227,11 +253,11 @@
                             type: 'success',
                             timer: 2000
                         })
-                        $('#table_rektorat').DataTable().ajax.reload(null, true);
+                        $('#table_jabatan').DataTable().ajax.reload(null, true);
                     }).fail(function() {
                         Swal.fire({
                             title: 'Oops!',
-                            text: 'Something went wrong with ajax!',
+                            text: 'Something went wrong!',
                             type: 'error',
                             timer: 2000
                         })
@@ -239,6 +265,27 @@
                 });
             },
         });
+    });
+
+    $('select[name="id_fakultas"]').on('change', function() {
+        $('#id_prodi').empty();
+        var facultyID = $(this).val();
+        if(facultyID) {
+            $.ajax({
+                url: '{{route("daftar-fakultas", ":id")}}'.replace(":id", facultyID),
+                type: "GET",
+                dataType: "json",
+                success:function(data) { 
+                    $('select[name="id_prodi"]').removeClass('d-none');
+                    $('select[name="id_prodi"]').append('<option value="">'+ '- Pilih prodi -' +'</option>');
+                    $.each(data, function(key, value) {
+                    $('select[name="id_prodi"]').append('<option value="'+ key +'">'+ value +'</option>');
+                    });
+                }
+            });
+        }else{
+            $('select[name="id_prodi"]').removeClass('d-none');
+        }
     });
 
 </script>

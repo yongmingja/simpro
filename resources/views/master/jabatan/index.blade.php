@@ -1,5 +1,5 @@
 @extends('layouts.backend')
-@section('title','Data Rektor')
+@section('title','Data Jabatan')
 
 @section('breadcrumbs')
 <div class="container-xxl">
@@ -9,7 +9,7 @@
         <a href="{{route('home')}}">Home</a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{{route('data-user-rektorat.index')}}">@yield('title')</a>
+        <a href="{{route('data-jabatan.index')}}">@yield('title')</a>
       </li>
       <li class="breadcrumb-item active">Data</li>
     </ol>
@@ -31,13 +31,13 @@
                         </div>
                         
                         <!-- AKHIR TOMBOL -->
-                            <table class="table table-hover table-responsive" id="table_rektorat">
+                            <table class="table table-hover table-responsive" id="table_jabatan">
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Name</th>
-                                  <th>Email</th>
-                                  <th>Kategori Proposal</th>
+                                  <th>Kode Jabatan</th>
+                                  <th>Nama Jabatan</th>
+                                  <th>Gol Jabatan</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -58,20 +58,24 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="" placeholder="e.g John Doe" autofocus />
-                                                <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
-                                            </div>
+                                                <label for="kode_jabatan" class="form-label">Kode Jabatan</label>
+                                                <input type="text" class="form-control" id="kode_jabatan" name="kode_jabatan" value="" />
+                                                <span class="text-danger" id="kodeJabatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>                                          
                                             <div class="mb-3">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email" value="" placeholder="type an active email" />
-                                                <span class="text-danger" id="emailErrorMsg" style="font-size: 10px;"></span>
-                                            </div>
+                                                <label for="nama_jabatan" class="form-label">Nama Jabatan</label>
+                                                <input type="text" class="form-control" id="nama_jabatan" name="nama_jabatan" value="" />
+                                                <span class="text-danger" id="namaJabatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>                                              
                                             <div class="mb-3">
-                                                <label for="password" class="form-label">Password</label>
-                                                <input type="password" class="form-control" id="password" name="password" value="" />
-                                                <span class="text-danger" id="passwordErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                            
+                                                <label for="golongan_jabatan" class="form-label">Gol. Jabatan</label>
+                                                <select class="select2 form-select" id="golongan_jabatan" name="golongan_jabatan" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_fakultas">- Pilih -</option>
+                                                    <option value="1">Pendidik</option>
+                                                    <option value="2">Tenaga Kependidikan</option>
+                                                </select>
+                                                <span class="text-danger" id="golJabatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>   
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -111,19 +115,23 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_rektorat').DataTable({
+        var table = $('#table_jabatan').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('data-user-rektorat.index') }}",
+            ajax: "{{ route('data-jabatan.index') }}",
             columns: [
                 {data: null,sortable:false,
                     render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
-                {data: 'name',name: 'name'},
-                {data: 'email',name: 'email'},
-                {data: 'id_jenis_kegiatan',name: 'id_jenis_kegiatan'},
+                {data: 'kode_jabatan',name: 'kode_jabatan'},
+                {data: 'nama_jabatan',name: 'nama_jabatan'},
+                {data: 'golongan_jabatan',name: 'golongan_jabatan',
+                    render: function(data, type, row){
+                        return (row.golongan_jabatan == 1) ? 'Pendidik' : 'Tenaga Kependidikan'
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });
@@ -147,14 +155,14 @@
 
                 $.ajax({
                     data: $('#form-tambah-edit').serialize(), 
-                    url: "{{ route('data-user-rektorat.store') }}",
+                    url: "{{ route('data-jabatan.store') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
                         $('#form-tambah-edit').trigger("reset");
                         $('#tambah-edit-modal').modal('hide');
                         $('#tombol-simpan').html('Save');
-                        $('#table_rektorat').DataTable().ajax.reload(null, true);
+                        $('#table_jabatan').DataTable().ajax.reload(null, true);
                         Swal.fire({
                             title: 'Good job!',
                             text: 'Data saved successfully!',
@@ -167,9 +175,9 @@
                         })
                     },
                     error: function(response) {
-                        $('#nameErrorMsg').text(response.responseJSON.errors.name);
-                        $('#emailErrorMsg').text(response.responseJSON.errors.email);
-                        $('#passwordErrorMsg').text(response.responseJSON.errors.password);
+                        $('#kodeJabatanErrorMsg').text(response.responseJSON.errors.kode_jabatan);
+                        $('#namaJabatanErrorMsg').text(response.responseJSON.errors.nama_jabatan);
+                        $('#golJabatanErrorMsg').text(response.responseJSON.errors.golongan_jabatan);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',
@@ -190,14 +198,15 @@
     // EDIT DATA
     $('body').on('click', '.edit-post', function () {
         var data_id = $(this).data('id');
-        $.get('data-user-rektorat/' + data_id + '/edit', function (data) {
+        $.get('data-jabatan/' + data_id + '/edit', function (data) {
             $('#modal-judul').html("Edit data");
             $('#tombol-simpan').val("edit-post");
             $('#tambah-edit-modal').modal('show');
               
             $('#id').val(data.id);
-            $('#name').val(data.name);
-            $('#email').val(data.email);
+            $('#kode_jabatan').val(data.kode_jabatan);
+            $('#nama_jabatan').val(data.nama_jabatan);
+            $('#golongan_jabatan').val(data.golongan_jabatan);
         })
     });
 
@@ -216,7 +225,7 @@
             preConfirm: function() {
                 return new Promise(function(resolve) {
                     $.ajax({
-                        url: "data-user-rektorat/" + dataId,
+                        url: "data-jabatan/" + dataId,
                         type: 'DELETE',
                         data: {id:dataId},
                         dataType: 'json'
@@ -227,11 +236,11 @@
                             type: 'success',
                             timer: 2000
                         })
-                        $('#table_rektorat').DataTable().ajax.reload(null, true);
+                        $('#table_jabatan').DataTable().ajax.reload(null, true);
                     }).fail(function() {
                         Swal.fire({
                             title: 'Oops!',
-                            text: 'Something went wrong with ajax!',
+                            text: 'Something went wrong!',
                             type: 'error',
                             timer: 2000
                         })

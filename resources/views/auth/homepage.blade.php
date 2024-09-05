@@ -57,52 +57,10 @@
     <div class="authentication-wrapper authentication-cover">
       <div class="authentication-inner row m-0">
         <!-- /Left Text -->
-        <div class="d-lg-flex col-lg-7 col-xl-12 align-items-center">
-          <div class="text-center mx-auto">
+        <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center">
+          <div class="flex-row text-center mx-auto">
             <img src="{{asset('assets/img/backgrounds/event.jpg')}}" alt="logo lpm" width="520" class="img-fluid authentication-cover-img">
-            <!-- Login -->
-              <div class="container-fluid col-sm-12 mb-3">
-                  <div class="row row-cols-12">
-                        <div class="col">
-                          <div class="card shadow-none bg-transparent border border-primary" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndAdmin" aria-controls="offcanvasEnd">
-                            <div class="card-body text-primary">
-                              <p class="card-title">Admin</p>                    
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="card shadow-none bg-transparent border border-secondary" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndMahasiswa" aria-controls="offcanvasEnd">
-                            <div class="card-body text-secondary">
-                              <p class="card-title">Mahasiswa</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="card shadow-none bg-transparent border border-success" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndDosen" aria-controls="offcanvasEnd">
-                            <div class="card-body text-success">
-                              <p class="card-title">Dosen dan Tendik</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="card shadow-none bg-transparent border border-warning" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndDekan" aria-controls="offcanvasEnd">
-                            <div class="card-body text-warning">
-                              <p class="card-title">Dekan dan Kepala Biro</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col">
-                          <div class="card shadow-none bg-transparent border border-danger" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEndRekorat" aria-controls="offcanvasEnd">
-                            <div class="card-body text-danger">
-                              <p class="card-title">Rektorat</p>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-          
-              </div>
-              <!-- /Login -->
-            <div class="mx-auto mt-3">
+            <div class="mx-auto">
               <h3>Salam Dunia Satu Keluarga</h3>
               <p>
                 <b>SIMPRO (Sistem Informasi Pengajuan Proposal)</b><br>merupakan sistem yang dikembangkan untuk pengajuan proposal termasuk sarana prasarana yang ada di Universitas Universal.
@@ -111,133 +69,38 @@
           </div>
         </div>
         <!-- /Left Text -->
-
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEndAdmin" aria-labelledby="offcanvasEndLabel">          
-          <div class="offcanvas-body my-auto mx-0 flex-grow-0">
-            <form id="formAuthentication" class="mb-3" action="{{route('login.admin')}}" method="POST">
-              <h5 id="offcanvasEndLabel" class="offcanvas-title mb-3">Login as Admin</h5>
-              @csrf
-              <div class="mb-3">
-                <label for="email" class="form-label">Email or Username</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" placeholder="Enter your email or username" autofocus />
-              </div>
-              <div class="mb-3 form-password-toggle">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password">Password</label>
-                </div>
-                <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                </div>
-              </div>
-              <button class="btn btn-primary d-grid w-100">
-                Sign in
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEndMahasiswa" aria-labelledby="offcanvasEndLabel">          
-          <div class="offcanvas-body my-auto mx-0 flex-grow-0">
-            <form id="formAuthentication" class="mb-3" action="{{route('login.mahasiswa')}}" method="POST">
-              <h5 id="offcanvasEndLabel" class="offcanvas-title mb-3">Login as Mahasiswa</h5>
-              @csrf
-              <div class="mb-3">
-                <label for="email" class="form-label">Email or Username</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" placeholder="Enter your email or username" autofocus />
-              </div>
-              <div class="mb-3 form-password-toggle">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password">Password</label>
-                </div>
-                <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                </div>
-              </div>
-              <button class="btn btn-primary d-grid w-100">
-                Sign in
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEndDosen" aria-labelledby="offcanvasEndLabel">          
-          <div class="offcanvas-body my-auto mx-0 flex-grow-0">
-            <form id="formAuthentication" class="mb-3" action="{{route('login.dosen')}}" method="POST">
-              <h5 id="offcanvasEndLabel" class="offcanvas-title mb-3">Login as Dosen</h5>
-              @csrf
-              <div class="mb-3">
-                <label for="email" class="form-label">Email or Username</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" placeholder="Enter your email or username" autofocus />
-              </div>
-              <div class="mb-3 form-password-toggle">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password">Password</label>
-                </div>
-                <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                </div>
-              </div>
-              <button class="btn btn-primary d-grid w-100">
-                Sign in
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEndDekan" aria-labelledby="offcanvasEndLabel">          
-          <div class="offcanvas-body my-auto mx-0 flex-grow-0">
-            <form id="formAuthentication" class="mb-3" action="{{route('login.dekan')}}" method="POST">
-              <h5 id="offcanvasEndLabel" class="offcanvas-title mb-3">Login as Dekan</h5>
-              @csrf
-              <div class="mb-3">
-                <label for="email" class="form-label">Email or Username</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" placeholder="Enter your email or username" autofocus />
-              </div>
-              <div class="mb-3 form-password-toggle">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password">Password</label>
-                </div>
-                <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                </div>
-              </div>
-              <button class="btn btn-primary d-grid w-100">
-                Sign in
-              </button>
-            </form>
-          </div>
-        </div>
-
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEndRekorat" aria-labelledby="offcanvasEndLabel">          
-          <div class="offcanvas-body my-auto mx-0 flex-grow-0">
-            <form id="formAuthentication" class="mb-3" action="{{route('login.rektorat')}}" method="POST">
-              <h5 id="offcanvasEndLabel" class="offcanvas-title mb-3">Login as Rektorat</h5>
-              @csrf
-              <div class="mb-3">
-                <label for="email" class="form-label">Email or Username</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" placeholder="Enter your email or username" autofocus />
-              </div>
-              <div class="mb-3 form-password-toggle">
-                <div class="d-flex justify-content-between">
-                  <label class="form-label" for="password">Password</label>
-                </div>
-                <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                </div>
-              </div>
-              <button class="btn btn-primary d-grid w-100">
-                Sign in
-              </button>
-            </form>
-          </div>
-        </div>
     
-        
+        <!-- Login -->
+        <div class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg p-sm-5 p-4">
+          <div class="w-px-400 mx-auto">
+            <!-- Logo -->
+            <h4 class="mb-2">Welcome to SIMPRO! 👋</h4>
+            <p class="mb-4">Please sign-in to your account and start the adventure</p>
+            <!-- /Logo -->
+    
+            <form id="formAuthentication" class="mb-3" action="{{route('postLogin')}}" method="POST">
+              @csrf
+              <div class="mb-3">
+                <label for="user_id" class="form-label">User ID</label>
+                <input type="text" class="form-control" id="user_id" name="user_id" value="{{old('user_id')}}" placeholder="Enter your user ID" autofocus />
+              </div>
+              <div class="mb-3 form-password-toggle">
+                <div class="d-flex justify-content-between">
+                  <label class="form-label" for="password">Password</label>
+                </div>
+                <div class="input-group input-group-merge">
+                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                </div>
+              </div>
+              <button class="btn btn-primary d-grid w-100">
+                Sign in
+              </button>
+            </form>
+    
+          </div>
+        </div>
+        <!-- /Login -->
       </div>
     </div>
     

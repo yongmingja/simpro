@@ -1,5 +1,5 @@
 @extends('layouts.backend')
-@section('title','Data Dosen & Tendik')
+@section('title','Data Pegawai')
 
 @section('breadcrumbs')
 <div class="container-xxl">
@@ -9,7 +9,7 @@
         <a href="{{route('home')}}">Home</a>
       </li>
       <li class="breadcrumb-item">
-        <a href="{{route('data-user-dosen.index')}}">@yield('title')</a>
+        <a href="{{route('data-pegawai.index')}}">@yield('title')</a>
       </li>
       <li class="breadcrumb-item active">Data</li>
     </ol>
@@ -27,21 +27,23 @@
                     <div class="card-body">
                         <!-- MULAI TOMBOL TAMBAH -->
                         <div class="mb-3">
-                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="tombol-tambah"><button type="button" class="btn btn-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> New data</button></a>
+                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="tombol-tambah"><button type="button" class="btn btn-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> New data</button></a>&nbsp;
                             <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="click-csv"><button type="button" class="btn btn-secondary"><i class="bx bx-xs bx-import bx-tada-hover"></i> Import CSV</button></a>
                         </div>
                         
                         <!-- AKHIR TOMBOL -->
-                            <table class="table table-hover table-responsive" id="table_dosen">
+                            <table class="table table-hover table-responsive" id="table_pegawai">
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Nama Dosen & Tendik</th>
+                                  <th>Nama Pegawai</th>
+                                  <th>N I P</th>
                                   <th>Email</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
                             </table>
+
                         </div>
                     </div>
 
@@ -58,14 +60,14 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="name" class="form-label">Nama Lengkap <i class="text muted">(beserta gelar)</i></label>
-                                                <input type="text" class="form-control" id="name" name="name" value="" placeholder="e.g John Doe" autofocus />
-                                                <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
+                                                <label for="nip" class="form-label">N I P*</i></label>
+                                                <input type="text" class="form-control" id="nip" name="nip" value="" />
+                                                <span class="text-danger" id="nipErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="user_id" class="form-label">N I P</label>
-                                                <input type="text" class="form-control" id="user_id" name="user_id" value="" placeholder="" />
-                                                <span class="text-danger" id="userIDErrorMsg" style="font-size: 10px;"></span>
+                                                <label for="nama_pegawai" class="form-label">Nama Lengkap <i class="text muted">(beserta gelar)</i></label>
+                                                <input type="text" class="form-control" id="nama_pegawai" name="nama_pegawai" value="" />
+                                                <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="email" class="form-label">Email</label>
@@ -76,7 +78,33 @@
                                                 <label for="password" class="form-label">Password</label>
                                                 <input type="password" class="form-control" id="password" name="password" value="" />
                                                 <span class="text-danger" id="passwordErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                            
+                                            </div> 
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label" for="jenis_kelamin">Jenis Kelamin</label>
+                                                <select class="select2 form-control border border-primary" id="jenis_kelamin" name="jenis_kelamin" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option option value="" id="choose_jenis_kelamin" readonly>- Select -</option>
+                                                    <option value="L">Laki-laki</option>
+                                                    <option value="P">Perempuan</option>
+                                                </select>
+                                                <span class="text-danger" id="jenisKelaminErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label" for="agama">Agama</label>
+                                                <select class="select2 form-control border border-primary" id="agama" name="agama" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option option value="" id="choose_agama" readonly>- Select -</option>
+                                                    <option value="Buddha">Buddha</option>
+                                                    <option value="Buddha Maitreya">Buddha Maitreya</option>
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Katholik">Katholik</option>
+                                                    <option value="Kristen">Kristen</option>
+                                                    <option value="Konghucu">Konghucu</option>
+                                                    <option value="Hindu">Hindu</option>
+                                                    <option value="Lainnya">Lainnya</option>
+                                                </select>
+                                                <span class="text-danger" id="agamaErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -96,7 +124,7 @@
                     </div>
                     <!-- AKHIR MODAL -->
 
-                    <div class="modal fade" id="import-dosen" aria-hidden="true">
+                    <div class="modal fade" id="import-pegawai" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -149,17 +177,18 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_dosen').DataTable({
+        var table = $('#table_pegawai').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('data-user-dosen.index') }}",
+            ajax: "{{ route('data-pegawai.index') }}",
             columns: [
                 {data: null,sortable:false,
                     render: function (data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
-                {data: 'name',name: 'name'},
+                {data: 'nama_pegawai',name: 'nama_pegawai'},
+                {data: 'nip',name: 'nip'},
                 {data: 'email',name: 'email'},
                 {data: 'action',name: 'action'},
             ]
@@ -184,14 +213,14 @@
 
                 $.ajax({
                     data: $('#form-tambah-edit').serialize(), 
-                    url: "{{ route('data-user-dosen.store') }}",
+                    url: "{{ route('data-pegawai.store') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
                         $('#form-tambah-edit').trigger("reset");
                         $('#tambah-edit-modal').modal('hide');
                         $('#tombol-simpan').html('Save');
-                        $('#table_dosen').DataTable().ajax.reload(null, true);
+                        $('#table_pegawai').DataTable().ajax.reload(null, true);
                         Swal.fire({
                             title: 'Good job!',
                             text: 'Data saved successfully!',
@@ -204,10 +233,11 @@
                         })
                     },
                     error: function(response) {
-                        $('#nameErrorMsg').text(response.responseJSON.errors.name);
-                        $('#userIDErrorMsg').text(response.responseJSON.errors.user_id);
+                        $('#nipErrorMsg').text(response.responseJSON.errors.nip);
+                        $('#namaPegawaiErrorMsg').text(response.responseJSON.errors.nama_pegawai);
                         $('#emailErrorMsg').text(response.responseJSON.errors.email);
                         $('#passwordErrorMsg').text(response.responseJSON.errors.password);
+                        $('#jenisKelaminErrorMsg').text(response.responseJSON.errors.jenis_kelamin);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',
@@ -228,15 +258,17 @@
     // EDIT DATA
     $('body').on('click', '.edit-post', function () {
         var data_id = $(this).data('id');
-        $.get('data-user-dosen/' + data_id + '/edit', function (data) {
+        $.get('data-pegawai/' + data_id + '/edit', function (data) {
             $('#modal-judul').html("Edit data");
             $('#tombol-simpan').val("edit-post");
             $('#tambah-edit-modal').modal('show');
               
             $('#id').val(data.id);
-            $('#name').val(data.name);
-            $('#user_id').val(data.user_id);
+            $('#nip').val(data.nip);
+            $('#nama_pegawai').val(data.nama_pegawai);
             $('#email').val(data.email);
+            $('#jenis_kelamin').val(data.jenis_kelamin);
+            $('#agama').val(data.agama);
         })
     });
 
@@ -255,7 +287,7 @@
             preConfirm: function() {
                 return new Promise(function(resolve) {
                     $.ajax({
-                        url: "data-user-dosen/" + dataId,
+                        url: "data-pegawai/" + dataId,
                         type: 'DELETE',
                         data: {id:dataId},
                         dataType: 'json'
@@ -266,7 +298,7 @@
                             type: 'success',
                             timer: 2000
                         })
-                        $('#table_dosen').DataTable().ajax.reload(null, true);
+                        $('#table_pegawai').DataTable().ajax.reload(null, true);
                     }).fail(function() {
                         Swal.fire({
                             title: 'Oops!',
@@ -283,8 +315,8 @@
     $('#click-csv').click(function(){
         $('#button-simpan').val("create-post");
         $('#form-import-csv').trigger("reset");
-        $('#modal-judul-import').html("Import Dosen");
-        $('#import-dosen').modal('show');
+        $('#modal-judul-import').html("Import Pegawai");
+        $('#import-pegawai').modal('show');
     });
 
     if ($("#form-import-csv").length > 0) {
@@ -298,14 +330,14 @@
                     data: formData,
                     contentType: false,
                     processData: false,
-                    url: "{{ route('import-data-dosen') }}",
+                    url: "{{ route('import-data-pegawai') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
                         $('#form-import-csv').trigger("reset");
-                        $('#import-dosen').modal('hide');
+                        $('#import-pegawai').modal('hide');
                         $('#tombol-import').html('Import');
-                        $('#table_dosen').DataTable().ajax.reload(null, true);
+                        $('#table_pegawai').DataTable().ajax.reload(null, true);
                         Swal.fire({
                             title: 'Good job!',
                             text: 'Data imported successfully!',

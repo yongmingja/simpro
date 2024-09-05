@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('auth.homepage');
@@ -8,17 +9,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/login-admin', 'Auth\LoginController@showAdminLoginForm')->name('login.admin');
-Route::get('/login-mahasiswa', 'Auth\LoginController@showMahasiswaLoginForm')->name('login.mahasiswa');
-Route::get('/login-dosen', 'Auth\LoginController@showDosenLoginForm')->name('login.dosen');
-Route::get('/login-dekan', 'Auth\LoginController@showDekanLoginForm')->name('login.dekan');
-Route::get('/login-rektorat', 'Auth\LoginController@showRektoratLoginForm')->name('login.rektorat');
-
-Route::post('/login-admin', 'Auth\LoginController@adminLogin');
-Route::post('/login-mahasiswa', 'Auth\LoginController@mahasiswaLogin');
-Route::post('/login-dosen', 'Auth\LoginController@dosenLogin');
-Route::post('/login-dekan', 'Auth\LoginController@dekanLogin');
-Route::post('/login-rektorat', 'Auth\LoginController@rektoratLogin');
+Route::get('login', function () {
+    return view('auth.homepage');
+})->name('login');
+Route::post('login','Auth\AuthPegawaiController@postLogin')->name('postLogin');
+Route::get('logout','Auth\AuthPegawaiController@logout')->name('logout');
 
 /* 
 |---------------------------------------------
@@ -26,9 +21,18 @@ Route::post('/login-rektorat', 'Auth\LoginController@rektoratLogin');
 |---------------------------------------------
 */
 
-Route::view('/home', 'home')->middleware('auth');
-Route::group(['middleware' => 'auth:admin'], function () {
-    Route::view('/admin', 'dashboard.admin-dashboard')->name('dashboard-admin');
+// Route::view('/home', 'home')->middleware('auth');
+Route::get('/home', 'HomeController@index')->middleware('auth:pegawai,mahasiswa')->name('home');
+Route::post('/ubah-peran', function(Request $request){
+    $peran = $request->peran;
+    if ($peran) {
+        session(['selected_peran' => $peran]);
+        return response()->json(['message' => 'Peran berhasil diubah']);
+    } 
+})->name('ubah-peran');
+
+
+Route::middleware(['auth:pegawai','verified', 'cekrole:SADM'])->group(function() {
     Route::get('data-dash-admin','AdminPage\DataUser\DataAdminController@dashAdmin')->name('data-dash-admin');
     Route::resource('data-user-admin', 'AdminPage\DataUser\DataAdminController');
     Route::resource('data-user-mahasiswa', 'AdminPage\DataUser\DataMahasiswaController');
@@ -45,12 +49,22 @@ Route::group(['middleware' => 'auth:admin'], function () {
     Route::post('import-mahasiswa','AdminPage\DataUser\DataMahasiswaController@importDataMahasiswa')->name('import-data-mahasiswa');
     Route::post('import-dosen','AdminPage\DataUser\DataDosenController@importDataDosen')->name('import-data-dosen');
     Route::post('/y-selected-id','AdminPage\DataProposalController@validYAll')->name('y-selected-id');
+
+    Route::resource('data-jabatan', 'Master\JabatanController');
+    Route::resource('data-jabatan-akademik', 'Master\JabatanAkademikController');
+    Route::get('daftar-fakultas/{id}','Master\JabatanAkademikController@faculties')->name('daftar-fakultas');
+    Route::resource('data-jabatan-pegawai', 'Master\JabatanPegawaiController');
+
+    Route::resource('data-pegawai', 'AdminPage\DataUser\DataPegawaiController');
+    Route::post('import-pegawai','AdminPage\DataUser\DataPegawaiController@importDataPegawai')->name('import-data-pegawai');
 });
 
-Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
-Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
-Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
-Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
+Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function(){
+    Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
+    Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
+    Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
+    Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
+});
 
 /* 
 |---------------------------------------------
@@ -58,17 +72,13 @@ Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
 |---------------------------------------------
 */
 
-Route::group(['middleware' => 'auth:mahasiswa'], function () {
-    Route::view('/mahasiswa', 'dashboard.mahasiswa-dashboard')->name('dashboard-mahasiswa');
-});
-
 /* 
 |---------------------------------------------
 | All routes for dosen
 |---------------------------------------------
 */
 
-Route::group(['middleware' => 'auth:dosen'], function () {
+Route::middleware(['auth:pegawai','verified', 'cekrole:DSN'])->group(function() {
     Route::view('/dosen', 'dashboard.dosen-dashboard')->name('dashboard-dosen');
 });
 
@@ -77,7 +87,8 @@ Route::group(['middleware' => 'auth:dosen'], function () {
 | All routes for mahasiswa and dekan
 |---------------------------------------------
 */
-Route::group(['middleware' => 'auth:mahasiswa,dosen'], function () {
+Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
+    Route::view('/mahasiswa', 'dashboard.mahasiswa-dashboard')->name('dashboard-mahasiswa');
     Route::resource('submission-of-proposal', 'General\PengajuanProposalController');
     Route::get('/proposal-baru','General\PengajuanProposalController@tampilkanWizard')->name('tampilan-proposal-baru');
     Route::post('insert-proposal-baru','General\PengajuanProposalController@insertProposal')->name('insert-proposal');
@@ -96,7 +107,7 @@ Route::group(['middleware' => 'auth:mahasiswa,dosen'], function () {
 |---------------------------------------------
 */
 
-Route::group(['middleware' => 'auth:dekan'], function () {
+Route::middleware(['auth:pegawai','verified', 'cekrole:DKN'])->group(function() {
     Route::view('/dekan', 'dashboard.dekan-dashboard')->name('dashboard-dekan');
     Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');
     Route::resource('page-data-proposal', 'DekanPage\DataProposalController');
@@ -111,7 +122,7 @@ Route::group(['middleware' => 'auth:dekan'], function () {
 |---------------------------------------------
 */
 
-Route::group(['middleware' => 'auth:rektorat'], function () {
+Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK'])->group(function() {
     Route::get('/rektorat', 'RektoratPage\DashboardController@index')->name('dashboard-rektorat');
     Route::post('approval-n','RektoratPage\DashboardController@approvalN')->name('approval-n');
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');

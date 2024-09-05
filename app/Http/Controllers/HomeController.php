@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:pegawai,mahasiswa');
     }
 
     /**
@@ -23,6 +24,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if(Auth::guard('pegawai')->user()){
+            return view('dashboard.admin-dashboard');
+        } elseif(Auth::guard('mahasiswa')->user()){
+            return view('dashboard.mahasiswa-dashboard');
+        } else {
+            return redirect()->intended('/');
+        }
     }
 }

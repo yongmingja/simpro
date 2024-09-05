@@ -3,13 +3,9 @@
         <div class="layout-page">
 
             <div class="content-wrapper">
-                @include('rsc.navbar')
-
                 @yield('breadcrumbs')
                 @yield('content')
-
-                @include('rsc.sidebar')
-                
+                @include('rsc.sidebar')                
                 @include('rsc.footer')
 
             </div>
