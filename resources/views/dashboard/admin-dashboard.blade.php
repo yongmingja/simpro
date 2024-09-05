@@ -81,7 +81,6 @@
                 {{ Auth::guard('mahasiswa')->user()->name }}
                 @endif</h5>
             <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal</h4>
-            <p>Anda memiliki @php $count = DB::table('data_pengajuan_sarpras')->where('status',1)->groupBy('id_proposal')->count(); @endphp <span class="badge bg-label-warning">{{$count}}</span> data sarpras untuk diperiksa. Anda dapat melihat proposal pada menu <a href="{{route('data-proposal.index')}}">Proposals</a></p>
         </div>
 
         <!-- On route vehicles Table -->

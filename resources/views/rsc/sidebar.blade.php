@@ -201,73 +201,19 @@
 
     <!-- Admin Page -->
     @if(Str::length(Auth::guard('pegawai')->user()) > 0)    
-        @if($roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('home')}}" class="menu-link {{set_active('home')}}">
             <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
             <div data-i18n="Dashboard">Dashboard</div>
             </a>
         </li>
+        @if($roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('data-proposal.index')}}" class="menu-link {{set_active('data-proposal.index')}}">
             <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
             <div data-i18n="Proposals">Proposals</div>
             </a>
         </li>
-        @endif
-
-        @if($roleDefault == "DSN")
-        <li class="menu-item">
-            <a href="{{route('dashboard-dosen')}}" class="menu-link {{set_active('dashboard-dosen')}}">
-            <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
-            <div data-i18n="Dashboard">Dashboard</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="{{route('submission-of-proposal.index')}}" class="menu-link {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}}">
-            <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-            <div data-i18n="Proposal Saya">Proposal Saya</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="{{route('my-report')}}" class="menu-link {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
-            <i class="menu-icon tf-icons bx bx-archive bx-tada-hover"></i>
-            <div data-i18n="Laporan Saya">Laporan Saya</div>
-            </a>
-        </li>
-        @endif
-
-        @if($roleDefault == "DKN")
-        <li class="menu-item">
-            <a href="{{route('dashboard-dekan')}}" class="menu-link {{set_active('dashboard-dekan')}}">
-            <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
-            <div data-i18n="Dashboard">Dashboard</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="{{route('page-data-proposal.index')}}" class="menu-link {{set_active('page-data-proposal.index')}}">
-            <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-            <div data-i18n="Proposals">Proposals</div>
-            </a>
-        </li>
-        @endif
-
-        @if($roleDefault == "WRAK")
-        <li class="menu-item">
-            <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
-            <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
-            <div data-i18n="Dashboard">Dashboard</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="{{route('index-hal-laporan')}}" class="menu-link {{set_active('index-hal-laporan')}}">
-            <i class="menu-icon tf-icons bx bx-archive bx-tada-hover"></i>
-            <div data-i18n="Laporan Proposal">Laporan Proposal</div>
-            </a>
-        </li>
-        @endif
-
-        @if($roleDefault == "DAK" || $roleDefault == "SADM")
         <li class="menu-header small fw-medium">
             <div data-i18n="DATABASE MASTER">DATABASE MASTER</div>
         </li>
@@ -309,9 +255,6 @@
                 </li> --}}
             </ul>
         </li>
-        @endif
-
-        @if($roleDefault == "SDKN" || $roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('data-jenis-kegiatan.index')}}" class="menu-link {{set_active('data-jenis-kegiatan.index')}}">
             <i class="menu-icon tf-icons bx bx-list-ol bx-tada-hover"></i>
@@ -336,9 +279,6 @@
                 </li> 
             </ul>
         </li>
-        @endif
-
-        @if($roleDefault == "SADM")
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-jabatan.index')}} OR {{set_active('data-jabatan-akademik.index')}} OR {{set_active('data-jabatan-pegawai.index')}}">
             <i class="menu-icon tf-icons bx bx-sitemap bx-tada-hover"></i>
@@ -361,6 +301,45 @@
                     </a>
                 </li> 
             </ul>
+        </li>
+        @endif
+
+        @if($roleDefault == "DSN")
+        <li class="menu-item">
+            <a href="{{route('submission-of-proposal.index')}}" class="menu-link {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}}">
+            <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
+            <div data-i18n="Proposal Saya">Proposal Saya</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="{{route('my-report')}}" class="menu-link {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
+            <i class="menu-icon tf-icons bx bx-archive bx-tada-hover"></i>
+            <div data-i18n="Laporan Saya">Laporan Saya</div>
+            </a>
+        </li>
+        @endif
+
+        @if($roleDefault == "DKN")
+        <li class="menu-item">
+            <a href="{{route('page-data-proposal.index')}}" class="menu-link {{set_active('page-data-proposal.index')}}">
+            <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
+            <div data-i18n="Proposals">Proposals</div>
+            </a>
+        </li>
+        @endif
+
+        @if($roleDefault == "WRAK")
+        <li class="menu-item">
+            <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
+            <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
+            <div data-i18n="Proposal">Proposal</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="{{route('index-hal-laporan')}}" class="menu-link {{set_active('index-hal-laporan')}}">
+            <i class="menu-icon tf-icons bx bx-archive bx-tada-hover"></i>
+            <div data-i18n="Laporan Proposal">Laporan Proposal</div>
+            </a>
         </li>
         @endif
 

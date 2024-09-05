@@ -23,7 +23,7 @@ class DashboardController extends Controller
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
             ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','dosens.name AS nama_user','mahasiswas.name AS nama_user')
-            ->whereIn('proposals.id_jenis_kegiatan',$exp_arr)
+            // ->whereIn('proposals.id_jenis_kegiatan',$exp_arr) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
             ->orderBy('proposals.id','DESC')
             ->get();
 
