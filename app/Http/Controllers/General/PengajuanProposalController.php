@@ -54,11 +54,11 @@ class PengajuanProposalController extends Controller
         if($query){
             foreach($query as $data){                
                 if($data->status_approval == 1){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;&nbsp;<button type="button" name="delete" id="'.$id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-sm"><i class="bx bx-xs bx-trash"></i></button>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<button type="button" name="delete" id="'.$id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-sm"><i class="bx bx-xs bx-trash"></i></button>';
                 } elseif($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;&nbsp;<span class="badge bg-label-danger">Ditolak Dekan</span>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<span class="badge bg-label-danger">Ditolak Dekan</span>';
                 } elseif($data->status_approval == 3) {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;&nbsp;<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan</span>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan</span>';
                 } elseif($data->status_approval == 4) {
                     return '<span class="badge bg-label-warning">Pending WR</span>';
                 } elseif($data->status_approval == 5) {

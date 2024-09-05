@@ -76,11 +76,11 @@
                             @endforeach 
                                 @if($check > 0)
                                 <div class="mb-3">
-                                    <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
+                                    <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
                                 </div>
                                 @else
                                 <div class="mb-3">
-                                    <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Silakan selesaikan laporan pertanggung-jawaban proposal Anda terlebih dahulu untuk dapat mengajukan proposal baru!')"><i class="bx bx-plus-circle bx-spin-hover"></i> Ajukan Proposal Baru</button></a>
+                                    <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Silakan selesaikan laporan pertanggung-jawaban proposal Anda terlebih dahulu untuk dapat mengajukan proposal baru!')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
                                 </div>
                                 @endif 
                             
@@ -94,13 +94,13 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Preview</th>
+                                <th>Previewa</th>
                                 <th>Proposal</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Nama Pengaju</th>
                                 <th>Fakultas</th>
                                 <th>Prodi</th>
-                                <th>Actions</th>
+                                <th width="12%;">Actions</th>
                             </tr>
                             </thead>
                         </table>
