@@ -32,4 +32,9 @@ class HomeController extends Controller
             return redirect()->intended('/');
         }
     }
+
+    public function uiModul()
+    {
+        return view('ui-modul');
+    }
 }

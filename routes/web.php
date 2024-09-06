@@ -9,9 +9,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('login', function () {
-    return view('auth.homepage');
-})->name('login');
+
 Route::post('login','Auth\AuthPegawaiController@postLogin')->name('postLogin');
 Route::get('logout','Auth\AuthPegawaiController@logout')->name('logout');
 
@@ -20,6 +18,8 @@ Route::get('logout','Auth\AuthPegawaiController@logout')->name('logout');
 | All routes for admin
 |---------------------------------------------
 */
+
+Route::get('/ui-modul','HomeController@uiModul')->name('ui-modul');
 
 // Route::view('/home', 'home')->middleware('auth');
 Route::get('/home', 'HomeController@index')->middleware('auth:pegawai,mahasiswa')->name('home');
