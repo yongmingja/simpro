@@ -19,7 +19,7 @@ Route::get('logout','Auth\AuthPegawaiController@logout')->name('logout');
 |---------------------------------------------
 */
 
-Route::get('/ui-modul','HomeController@uiModul')->name('ui-modul');
+Route::get('/homepage-ui','HomeController@uiModul')->name('ui-modul');
 
 // Route::view('/home', 'home')->middleware('auth');
 Route::get('/home', 'HomeController@index')->middleware('auth:pegawai,mahasiswa')->name('home');

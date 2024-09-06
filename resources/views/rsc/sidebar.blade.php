@@ -150,8 +150,8 @@
                     </a> --}}
 
                     <a class="dropdown-item" href="{{ route('ui-modul') }}">
-                    <i class="bx bx-power-off me-2"></i>
-                    <span class="align-middle">Sign out</span>
+                    <i class="bx bx-log-out me-2"></i>
+                    <span class="align-middle">Back to homepage</span>
                     </a>
                 </li>
                 </ul>

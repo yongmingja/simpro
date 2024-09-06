@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Menu Moduls</title>
+    <title>Homepage</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="{{asset('assets/vendor/css/rtl/core-dark.css')}}" class="template-customizer-core-css" />
@@ -58,7 +57,7 @@
                         </a>
                     </div>
                     <div class="col-sm-6 col-lg-3 mb-4">                        
-                        <a href="javascript:void()">
+                        <a href="javascript:void(0)">
                             <div class="card border border-primary bg-transparent text-white card-border-shadow-primary h-100">
                                 <div class="card-body">
                                 <div class="d-flex align-items-center mb-2 pb-1">
@@ -72,7 +71,7 @@
                         </a>                      
                     </div>
                     <div class="col-sm-6 col-lg-3 mb-4">
-                        <a href="javascript:void()">
+                        <a href="javascript:void(0)">
                             <div class="card border border-success bg-transparent text-white card-border-shadow-primary h-100">
                                 <div class="card-body">
                                 <div class="d-flex align-items-center mb-2 pb-1">
@@ -86,7 +85,7 @@
                         </a>
                     </div>
                     <div class="col-sm-6 col-lg-3 mb-4">
-                        <a href="javascript:void()">
+                        <a href="javascript:void(0)">
                             <div class="card border border-info bg-transparent text-white card-border-shadow-primary h-100">
                                 <div class="card-body">
                                 <div class="d-flex align-items-center mb-2 pb-1">
