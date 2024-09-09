@@ -206,13 +206,13 @@
 
     <!-- Admin Page -->
     @if(Str::length(Auth::guard('pegawai')->user()) > 0)    
+        @if($roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('home')}}" class="menu-link {{set_active('home')}}">
             <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
-            <div data-i18n="Dashboard">Dashboard</div>
+            <div data-i18n="Dashboard">Dashboard SADM</div>
             </a>
         </li>
-        @if($roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('data-proposal.index')}}" class="menu-link {{set_active('data-proposal.index')}}">
             <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
