@@ -35,7 +35,7 @@ Route::post('/ubah-peran', function(Request $request){
 Route::redirect('/simak-uvers-webpage', 'https://sia.uvers.ac.id/')->name('simak-uvers');
 
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:SADM'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(function() {
     Route::get('data-dash-admin','AdminPage\DataUser\DataAdminController@dashAdmin')->name('data-dash-admin');
     Route::resource('data-user-admin', 'AdminPage\DataUser\DataAdminController');
     Route::resource('data-user-mahasiswa', 'AdminPage\DataUser\DataMahasiswaController');

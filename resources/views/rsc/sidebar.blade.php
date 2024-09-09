@@ -206,7 +206,7 @@
 
     <!-- Admin Page -->
     @if(Str::length(Auth::guard('pegawai')->user()) > 0)    
-        @if($roleDefault == "SADM")
+        @if($roleDefault == "SADM" || $roleDefault == "ADU")
         <li class="menu-item">
             <a href="{{route('home')}}" class="menu-link {{set_active('home')}}">
             <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
@@ -219,6 +219,9 @@
             <div data-i18n="Proposals">Proposals</div>
             </a>
         </li>
+        @endif
+
+        @if($roleDefault == "SADM")
         <li class="menu-header small fw-medium">
             <div data-i18n="DATABASE MASTER">DATABASE MASTER</div>
         </li>
