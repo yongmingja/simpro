@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Redirect;
 use File;
 use Auth;
-use DB;
+use DB; use URL;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PengajuanProposalController extends Controller
@@ -459,7 +459,7 @@ class PengajuanProposalController extends Controller
 
     public function showQR($slug)
     {
-        $initial = 'http://simpro.test/in/'.$slug;
+        $initial = ''.URL::to('/').'/in/'.$slug;
         $datas = DB::table('status_proposals')
             ->leftJoin('proposals','proposals.id','=','status_proposals.id_proposal')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')

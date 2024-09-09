@@ -39,8 +39,8 @@
                         </tr>
                         @endforeach
                         <tr>
-                            <td>Wakil Rektor</td>
-                            <td>@foreach($datas as $wr) @if($wr->nama_jenis_kegiatan == 'RKAT') Yodi, S.Kom., M.S.I @elseif($wr->nama_jenis_kegiatan == 'Non-RKAT') Benny Roesly, S.T., M.Pd @else Yodi, S.Kom., M.S.I /<br> Benny Roesly, S.T., M.Pd @endif @endforeach</td>
+                            <td>Wakil Rektor <br>Bidang Akademik</td>
+                            <td>Yodi, S.Kom., M.S.I</td>
                         </tr>
                         @foreach($datas as $tgl)
                         <tr>

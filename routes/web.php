@@ -31,6 +31,9 @@ Route::post('/ubah-peran', function(Request $request){
     } 
 })->name('ubah-peran');
 
+# Another Apps
+Route::redirect('/simak-uvers-webpage', 'https://uvers.ac.id/test/main/')->name('simak-uvers');
+
 
 Route::middleware(['auth:pegawai','verified', 'cekrole:SADM'])->group(function() {
     Route::get('data-dash-admin','AdminPage\DataUser\DataAdminController@dashAdmin')->name('data-dash-admin');

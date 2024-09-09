@@ -12,7 +12,7 @@ use App\Setting\Dekan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use DB;
-use Auth;
+use Auth; use URL;
 
 class LaporanProposalController extends Controller
 {
@@ -177,7 +177,7 @@ class LaporanProposalController extends Controller
 
     public function qrlaporan($slug)
     {
-        $initial = 'http://simpro.test/report/'.$slug;
+        $initial = ''.URL::to('/').'/report/'.$slug;
         $datas = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('dosens','dosens.user_id','=','proposals.user_id')

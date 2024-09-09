@@ -57,15 +57,22 @@
                         </a>
                     </div>
                     <div class="col-sm-6 col-lg-3 mb-4">                        
-                        <a href="javascript:void(0)">
+                        <a href="{{route('simak-uvers')}}" target="_blank">
                             <div class="card border border-primary bg-transparent text-white card-border-shadow-primary h-100">
                                 <div class="card-body">
-                                <div class="d-flex align-items-center mb-2 pb-1">
-                                    <h4 class="ms-1 mb-0 text-white">APPS 1</h4>
-                                </div>
-                                <p class="mb-0">
-                                    <span class="fw-medium me-1">Sampel</span>
-                                </p>
+                                    <div class="row">
+                                        <div class="col-sm-3 rounded-3">
+                                            <i class="bx bx-window-alt bx-lg mt-3"></i>
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <div class="d-flex align-items-center mb-2 pb-1">
+                                                <h4 class="mb-0 fw-bold text-white">SIMAK</h4>
+                                            </div>
+                                            <p class="mb-0">
+                                                <span class="fw-medium me-1">Sistem Informasi Akademik</span>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </a>                      
