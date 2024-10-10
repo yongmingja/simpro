@@ -21,11 +21,11 @@ class DataProposalController extends Controller
             ->first();
 
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('dosens','dosens.user_id','=','proposals.user_id')
+            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','dosens.name AS nama_user','mahasiswas.name AS nama_user')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user','mahasiswas.name AS nama_user')
             ->where('proposals.id_fakultas',$checkJabatanAk->id_fakultas)
             ->orderBy('proposals.id','DESC')
             ->get();
