@@ -33,12 +33,12 @@ class DataPegawaiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nip' => 'required',
+            'user_id' => 'required',
             'nama_pegawai' => 'required',
             'email' => 'required',
             'password' => 'required',
         ],[
-            'nip.required' => 'Anda belum menginputkan nama',
+            'user_id.required' => 'Anda belum menginputkan nama',
             'nama_pegawai.required' => 'Anda belum menginputkan NIP',
             'email.required' => 'Anda belum menginputkan email',
             'password.required' => 'Anda belum menginputkan password',
@@ -46,7 +46,7 @@ class DataPegawaiController extends Controller
 
         $post = Pegawai::updateOrCreate(['id' => $request->id],
                 [
-                    'nip' => $request->nip,
+                    'user_id' => $request->user_id,
                     'nama_pegawai' => $request->nama_pegawai,
                     'email' => $request->email,
                     'password'  => Hash::make($request['password']),
