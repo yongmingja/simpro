@@ -147,7 +147,7 @@
                     }
                 }, 
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
-                {data: 'nip',name: 'nip'},
+                {data: 'user_id',name: 'user_id'},
                 {data: 'nama_jabatan',name: 'nama_jabatan'},
                 {data: 'action',name: 'action'},
             ]
@@ -222,7 +222,7 @@
               
             $('#id').val(data.id);
             $('#nama_pegawai').val(data.nama_pegawai);
-            $('#nip').val(data.nip);
+            $('#user_id').val(data.user_id);
             $('#nama_jabatan').val(data.nama_jabatan);
         })
     });

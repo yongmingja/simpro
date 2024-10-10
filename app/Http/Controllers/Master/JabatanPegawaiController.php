@@ -14,7 +14,7 @@ class JabatanPegawaiController extends Controller
     {
         $datas = JabatanPegawai::leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
             ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->select('jabatan_pegawais.id AS id','pegawais.nama_pegawai','pegawais.nip','jabatans.nama_jabatan')
+            ->select('jabatan_pegawais.id AS id','pegawais.nama_pegawai','pegawais.user_id','jabatans.nama_jabatan')
             ->get();
         if($request->ajax()){
             return datatables()->of($datas)
@@ -29,7 +29,7 @@ class JabatanPegawaiController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        $getPegawai = Pegawai::select('id','nip','nama_pegawai')->orderBy('nama_pegawai','ASC')->get();
+        $getPegawai = Pegawai::select('id','user_id','nama_pegawai')->orderBy('nama_pegawai','ASC')->get();
         $getJabatan = Jabatan::select('id','nama_jabatan')->orderBy('nama_jabatan','ASC')->get();
         return view('master.jabatan-pegawai.index', compact('getPegawai','getJabatan'));
     }
