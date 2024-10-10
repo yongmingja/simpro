@@ -60,8 +60,8 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="nip" class="form-label">N I P*</i></label>
-                                                <input type="text" class="form-control" id="nip" name="nip" value="" />
+                                                <label for="user_id" class="form-label">N I P*</i></label>
+                                                <input type="text" class="form-control" id="user_id" name="user_id" value="" />
                                                 <span class="text-danger" id="nipErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
@@ -188,7 +188,7 @@
                     }
                 }, 
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
-                {data: 'nip',name: 'nip'},
+                {data: 'user_id',name: 'user_id'},
                 {data: 'email',name: 'email'},
                 {data: 'action',name: 'action'},
             ]
@@ -233,7 +233,7 @@
                         })
                     },
                     error: function(response) {
-                        $('#nipErrorMsg').text(response.responseJSON.errors.nip);
+                        $('#nipErrorMsg').text(response.responseJSON.errors.user_id);
                         $('#namaPegawaiErrorMsg').text(response.responseJSON.errors.nama_pegawai);
                         $('#emailErrorMsg').text(response.responseJSON.errors.email);
                         $('#passwordErrorMsg').text(response.responseJSON.errors.password);
