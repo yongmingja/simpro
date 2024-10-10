@@ -24,11 +24,11 @@ class PengajuanProposalController extends Controller
     public function index(Request $request)
     {
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('dosens','dosens.user_id','=','proposals.user_id')
+            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','dosens.name AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
             ->where('proposals.user_id',Auth::user()->user_id)
             ->orderBy('proposals.id','DESC')
             ->get();
@@ -416,11 +416,11 @@ class PengajuanProposalController extends Controller
     {
         $ID = decrypt($id);
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('dosens','dosens.user_id','=','proposals.user_id')
+            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','dosens.name AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
             ->where('proposals.id',$ID)
             ->orderBy('proposals.id','DESC')
             ->get();
@@ -433,10 +433,10 @@ class PengajuanProposalController extends Controller
         $getQR = DB::table('status_proposals')
             ->leftJoin('proposals','proposals.id','=','status_proposals.id_proposal')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('dosens','dosens.user_id','=','proposals.user_id')
+            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
-            ->select('status_proposals.status_approval','status_proposals.generate_qrcode','dosens.name AS nama_dosen','mahasiswas.name AS nama_mahasiswa')
+            ->select('status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa')
             ->where([['status_proposals.id_proposal',$ID],['status_proposals.status_approval',5]])
             ->get();
         $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate('Proposal belum disetujui!'));
@@ -463,10 +463,10 @@ class PengajuanProposalController extends Controller
         $datas = DB::table('status_proposals')
             ->leftJoin('proposals','proposals.id','=','status_proposals.id_proposal')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('dosens','dosens.user_id','=','proposals.user_id')
+            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
-            ->select('proposals.id AS id_proposal','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','status_proposals.status_approval','status_proposals.generate_qrcode','dosens.name AS nama_dosen','mahasiswas.name AS nama_mahasiswa','status_proposals.updated_at','jenis_kegiatans.nama_jenis_kegiatan')
+            ->select('proposals.id AS id_proposal','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa','status_proposals.updated_at','jenis_kegiatans.nama_jenis_kegiatan')
             ->where('status_proposals.generate_qrcode',$initial)
             ->get();
 

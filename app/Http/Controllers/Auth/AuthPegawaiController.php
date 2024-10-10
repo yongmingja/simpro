@@ -19,7 +19,7 @@ class AuthPegawaiController extends Controller
             'user_id.required' => 'Anda belum menginputkan id pengguna'
         ]);
 
-        if(Auth::guard('pegawai')->attempt(['nip' => $request->user_id, 'password' => $request->password])){
+        if(Auth::guard('pegawai')->attempt(['user_id' => $request->user_id, 'password' => $request->password])){
             return redirect()->route('ui-modul');
         } elseif(Auth::guard('mahasiswa')->attempt(['user_id' => $request->user_id, 'password' => $request->password])){
             return redirect()->route('ui-modul');
