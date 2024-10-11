@@ -45,7 +45,8 @@ class PengajuanProposalController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('general.pengajuan-proposal.index', compact('datas'));
+        $checkLap = DB::table('laporan_proposals')->rightJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')->select('proposals.id','laporan_proposals.status_laporan')->where('proposals.user_id',Auth::user()->user_id)->get();
+        return view('general.pengajuan-proposal.index', compact('datas','checkLap'));
     }
 
     protected function statusProposal($id)
