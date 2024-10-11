@@ -76,8 +76,6 @@
                         ->get();
                 @endphp
 
-                @if(count($jabatanPegawaiIds) > 0)
-
                 <li class="nav-item">
                     <select class="select2 form-control" id="selectPeran">
                         @foreach($checkJabatanPeg as $japeg)
@@ -88,7 +86,6 @@
                         @endforeach
                     </select>
                 </li> 
-                @endif
             @endif
             <!-- / Switching role -->
 
@@ -123,7 +120,7 @@
                             {{ Auth::guard('mahasiswa')->user()->name }}
                             @endif</span>
                         <small>@if (Str::length(Auth::guard('pegawai')->user()) > 0 )
-                            {{ Auth::guard('pegawai')->user()->nip }}
+                            {{ Auth::guard('pegawai')->user()->user_id }}
                             @elseif(Str::length(Auth::guard('mahasiswa')->user()) > 0)
                             {{ Auth::guard('mahasiswa')->user()->user_id }}
                             @endif</small>
@@ -336,7 +333,7 @@
         </li>
         @endif
 
-        @if($roleDefault == "WRAK")
+        @if($roleDefault == "WRAK" || $roleDefault == "WRSDP")
         <li class="menu-item">
             <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
             <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
