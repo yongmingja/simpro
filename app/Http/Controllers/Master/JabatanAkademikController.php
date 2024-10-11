@@ -35,7 +35,7 @@ class JabatanAkademikController extends Controller
                     foreach ($jabeg as $data) {
                         if($data->id_jabatan == $dataJabatan->id)
                         {
-                            $jabatan[] = '<span class="badge bg-label-warning">'.$dataJabatan->nama_jabatan.'</span>'.'&nbsp;';
+                            $jabatan[] = '<span class="badge '.$dataJabatan->warna_label.'">'.$dataJabatan->nama_jabatan.'</span>'.'&nbsp;';
                         }
                     }
                 }

@@ -12,10 +12,11 @@ class JabatanPegawaiController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = JabatanPegawai::leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        $query = JabatanPegawai::leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
             ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->select('jabatan_pegawais.id AS id','pegawais.nama_pegawai','pegawais.user_id','jabatans.nama_jabatan')
+            ->select('jabatan_pegawais.id AS id','pegawais.id AS id_pegawai','pegawais.nama_pegawai','pegawais.user_id','jabatans.nama_jabatan')
             ->get();
+        $datas = $query->unique('id_pegawai');
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
@@ -24,8 +25,21 @@ class JabatanPegawaiController extends Controller
                 $button .= '<button type="button" name="delete" id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
 
                 return $button;
+            })->addColumn('jabatan_nama', function($data){
+                $getJabatan = Jabatan::where('golongan_jabatan', 2)->get();
+                $jabeg = JabatanPegawai::where([['id_pegawai', $data->id_pegawai]])->get();
+                $jabatan = array();
+                foreach ($getJabatan as $dataJabatan) {
+                    foreach ($jabeg as $data) {
+                        if($data->id_jabatan == $dataJabatan->id)
+                        {
+                            $jabatan[] = '<span class="badge '.$dataJabatan->warna_label.'">'.$dataJabatan->nama_jabatan.'</span>'.'&nbsp;';
+                        }
+                    }
+                }
+                return implode($jabatan);
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','jabatan_nama'])
             ->addIndexColumn(true)
             ->make(true);
         }

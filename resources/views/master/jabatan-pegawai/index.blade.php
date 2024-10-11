@@ -130,7 +130,7 @@
                 }, 
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'user_id',name: 'user_id'},
-                {data: 'nama_jabatan',name: 'nama_jabatan'},
+                {data: 'jabatan_nama',name: 'jabatan_nama'},
                 {data: 'action',name: 'action'},
             ]
         });
