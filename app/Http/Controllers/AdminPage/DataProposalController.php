@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\General\Proposal;
 use App\Models\General\DataPengajuanSarpras;
 use Response;
+use DB;
 
 class DataProposalController extends Controller
 {
@@ -37,8 +38,14 @@ class DataProposalController extends Controller
                 }
                 
             })->addColumn('preview', function($data){
-                $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat proposal</a>';
-                return $button;
+                # check any attachment
+                $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($q > 0){
+                    $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
+                    return $button;
+                } else {
+                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
+                }
             })
             ->rawColumns(['action','preview'])
             ->addIndexColumn(true)

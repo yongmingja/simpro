@@ -39,7 +39,13 @@ class PengajuanProposalController extends Controller
                 $btn = $this->statusProposal($data->id);                
                 return $btn;
             })->addColumn('laporan', function($data){
-                return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> preview proposal</a>';
+                # check any attachment
+                $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($q > 0){
+                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
+                } else {
+                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
+                }
             })
             ->rawColumns(['action','laporan'])
             ->addIndexColumn(true)
@@ -174,17 +180,17 @@ class PengajuanProposalController extends Controller
 
         $post = DB::table('status_proposals')->insert(
             [
-                'id_proposal' => $latest,
-                'status_approval' => 1,
-                'created_at' => now(),
-                'updated_at' => now()
+                'id_proposal'       => $latest,
+                'status_approval'   => 1,
+                'created_at'        => now(),
+                'updated_at'        => now()
             ]);
 
         # Insert data into lampiran_proposals
         if($request->berkas != ''){
             $fileNames = [];
             foreach($request->berkas as $file){
-                $fileName = time().'.'.$file->getClientOriginalName();
+                $fileName = time().'_'.Auth::user()->user_id.'_'.$file->getClientOriginalName();
                 $file->move(public_path('uploads-lampiran/lampiran-proposal'),$fileName);
                 $fileNames[] = 'uploads-lampiran/lampiran-proposal/'.$fileName;
             }
@@ -192,10 +198,12 @@ class PengajuanProposalController extends Controller
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
                 $insertData[] = [
-                    'id_proposal' => $latest,
-                    'nama_berkas' => $request->nama_berkas[$x],
-                    'berkas' => $fileNames[$x],
-                    'keterangan' => $request->keterangan[$x],
+                    'id_proposal'   => $latest,
+                    'nama_berkas'   => $request->nama_berkas[$x],
+                    'berkas'        => $fileNames[$x],
+                    'keterangan'    => $request->keterangan[$x],
+                    'created_at'    => now(),
+                    'updated_at'    => now()
                 ];
             }
             $post = DB::table('lampiran_proposals')->insert($insertData);
@@ -403,12 +411,12 @@ class PengajuanProposalController extends Controller
 
     public function updatepengajuan(Request $request){
         $post = DataPengajuanSarpras::where('id',$request->e_sarpras_id)->update([
-            'tgl_kegiatan' => $request->e_tgl_kegiatan,
-            'sarpras_item' => $request->e_sarpras_item,
-            'jumlah' => $request->e_jumlah,
-            'sumber_dana' => $request->e_sumber,
-            'status' => 1,
-            'alasan' => '',
+            'tgl_kegiatan'  => $request->e_tgl_kegiatan,
+            'sarpras_item'  => $request->e_sarpras_item,
+            'jumlah'        => $request->e_jumlah,
+            'sumber_dana'   => $request->e_sumber,
+            'status'        => 1,
+            'alasan'        => '',
         ]);
         return response()->json($post);
     }
@@ -475,5 +483,32 @@ class PengajuanProposalController extends Controller
             $getDekan = Dekan::where('id_fakultas',$r->id_fakultas)->select('name')->get();
         }
         return view('general.pengajuan-proposal.show_qrcode', compact('datas','getDekan'));
+    }
+
+    public function viewlampiran(Request $request)
+    {
+        $datas = DB::table('lampiran_proposals')->where('id_proposal',$request->proposal_id)->select('id','nama_berkas','berkas','keterangan')->get();
+        $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Berkas</th>
+                            <th>Ket</th>
+                            <th>Lihat</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach($datas as $no => $data){
+                        $html .= 
+                            '<tr>
+                                <td>'.++$no.'</td>
+                                <td>'.$data->nama_berkas.'</td>
+                                <td>'.$data->keterangan.'</td>
+                                <td><button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button></td>
+                            </tr>';
+                    }
+            $html .= '</tbody>
+                </table>';
+        return response()->json(['card' => $html]);
     }
 }

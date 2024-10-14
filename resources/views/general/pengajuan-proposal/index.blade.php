@@ -92,12 +92,10 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Previewa</th>
+                                <th>Preview</th>
                                 <th>Proposal</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Nama Pengaju</th>
-                                <th>Fakultas</th>
-                                <th>Prodi</th>
                                 <th width="12%;">Actions</th>
                             </tr>
                             </thead>
@@ -196,6 +194,25 @@
                         </div>
                     </div>
 
+                    <!-- Mulai modal lihat lampiran -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Lampiran Proposal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_lampiran" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal lihat lampiran-->
+
                 </div>
             </div>
         </div>
@@ -234,8 +251,6 @@
                         return row.nama_user_dosen || row.nama_user_mahasiswa
                     }
                 },
-                {data: 'nama_fakultas',name: 'nama_fakultas'},
-                {data: 'nama_prodi',name: 'nama_prodi'},
                 {data: 'action',name: 'action'},
             ]
         });
@@ -361,6 +376,22 @@
             },
         });
     });
+
+    $('body').on('click','.v-lampiran', function(){
+        var data_id = $(this).data('id');
+        $.ajax({
+            url: "{{route('view-lampiran-proposal')}}",
+            method: "GET",
+            data: {
+                proposal_id: data_id,  
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response, data){
+                $('#show-lampiran').modal('show');
+                $("#table_lampiran").html(response.card)
+            }
+        })
+    })
 
 </script>
 

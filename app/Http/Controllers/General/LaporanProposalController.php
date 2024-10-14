@@ -53,7 +53,7 @@ class LaporanProposalController extends Controller
         if($request->berkas != ''){
             $fileNames = [];
             foreach($request->berkas as $file){
-                $fileName = time().'.'.$file->getClientOriginalName();
+                $fileName = time().'_'.Auth::user()->user_id.'_'.$file->getClientOriginalName();
                 $file->move(public_path('uploads-lampiran/lampiran-laporan-proposal'),$fileName);
                 $fileNames[] = 'uploads-lampiran/lampiran-laporan-proposal/'.$fileName;
             }
@@ -61,10 +61,12 @@ class LaporanProposalController extends Controller
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
                 $insertData[] = [
-                    'id_proposal' => $getId,
-                    'nama_berkas' => $request->nama_berkas[$x],
-                    'berkas' => $fileNames[$x],
-                    'keterangan' => $request->keterangan[$x],
+                    'id_proposal'   => $getId,
+                    'nama_berkas'   => $request->nama_berkas[$x],
+                    'berkas'        => $fileNames[$x],
+                    'keterangan'    => $request->keterangan[$x],
+                    'created_at'    => now(),
+                    'updated_at'    => now()
                 ];
             }
             $post = DB::table('lampiran_laporan_proposals')->insert($insertData);
