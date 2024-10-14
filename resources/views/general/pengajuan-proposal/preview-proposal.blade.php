@@ -178,7 +178,7 @@
                         </td>
                         <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                            <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
+                            <br><br> @foreach($datas as $jenpro) @if($jenpro->id_jenis_kegiatan == 1) <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i> @else <b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i> @endif @endforeach
                         </td>
                 </tr> 
                 @endforeach
@@ -193,8 +193,7 @@
                         <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} @endforeach</b><br><i>Dekan</i>
                     </td>
                     <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                        <p style="margin-top: 2em;"></p>
-                        <br><br><b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i>
+                        <br><br> @foreach($datas as $jenpro) @if($jenpro->id_jenis_kegiatan == 1) <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i> @else <b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i> @endif @endforeach
                     </td>
                 </tr>
                 @endif
