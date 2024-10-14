@@ -483,7 +483,7 @@
                     <input type="text" name="nama_berkas[]" class="w-100 form-control">
                 </div>
                 <div class="col-md-3 form-group mb-3">
-                    <input type="file" name="berkas[]" class="w-100 form-control">
+                    <input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png">
                 </div>
                 <div class="col-md-3 form-group mb-3">
                     <input type="text" name="keterangan[]" class="w-100 form-control">
