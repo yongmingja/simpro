@@ -475,7 +475,7 @@ class PengajuanProposalController extends Controller
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
-            ->select('proposals.id AS id_proposal','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa','status_proposals.updated_at','jenis_kegiatans.nama_jenis_kegiatan')
+            ->select('proposals.id AS id_proposal','proposals.id_jenis_kegiatan','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa','status_proposals.updated_at','jenis_kegiatans.nama_jenis_kegiatan')
             ->where('status_proposals.generate_qrcode',$initial)
             ->get();
 
