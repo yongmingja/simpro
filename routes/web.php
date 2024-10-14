@@ -62,13 +62,6 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
     Route::post('import-pegawai','AdminPage\DataUser\DataPegawaiController@importDataPegawai')->name('import-data-pegawai');
 });
 
-Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function(){
-    Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
-    Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
-    Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
-    Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
-});
-
 /* 
 |---------------------------------------------
 | All routes for mahasiswa
@@ -87,7 +80,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:DSN'])->group(function() 
 
 /* 
 |---------------------------------------------
-| All routes for mahasiswa and dekan
+| All routes for all general 
 |---------------------------------------------
 */
 Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
@@ -102,6 +95,12 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::post('insert-laporan-proposal','General\LaporanProposalController@insertLaporanProposal')->name('insert-laporan-proposal');
     Route::get('my-report','General\LaporanProposalController@laporansaya')->name('my-report');
     Route::delete('delete-my-report','General\LaporanProposalController@hapuslaporan')->name('delete-my-report');
+
+    Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
+    Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
+    Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
+    Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
+    Route::get('view-lampiran','General\PengajuanProposalController@viewlampiran')->name('view-lampiran-proposal');
 });
 
 /* 
@@ -125,7 +124,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:DKN'])->group(function() 
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP'])->group(function() {
     Route::get('/rektorat', 'RektoratPage\DashboardController@index')->name('dashboard-rektorat');
     Route::post('approval-n','RektoratPage\DashboardController@approvalN')->name('approval-n');
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');
