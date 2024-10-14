@@ -258,8 +258,9 @@
                                                 <input type="text" name="nama_berkas[]" class="w-100 form-control">
                                             </div>
                                             <div class="col-md-3 form-group mb-3">
-                                                <label for="berkas" class="form-label">Berkas <i class="text-muted">(format lampiran: *.jpg, *.png atau *.pdf)</i></label>
-                                                <input type="file" id="berkas" name="berkas[]" class="w-100 form-control">
+                                                <label for="berkas" class="form-label">Berkas </label>
+                                                <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png">
+                                                <div style="font-size: 11px;" class="mt-2"><i class="text-muted">*format lampiran: *.jpg, *.png atau *.pdf</i></div>
                                                 <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="col-md-3 form-group mb-3">
@@ -397,6 +398,7 @@
                                 $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
                                 $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
                                 $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
+                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Submit');
                                 Swal.fire({
                                     title: 'Error!',

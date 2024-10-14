@@ -108,6 +108,7 @@ class PengajuanProposalController extends Controller
             'peserta'           => 'required',
             'detil_kegiatan'    => 'required',
             'penutup'           => 'required',
+            'berkas'            => 'max:2048'
         ],[
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
             'id_fakultas.required'          => 'Anda belum memilih fakultas', 
@@ -118,7 +119,8 @@ class PengajuanProposalController extends Controller
             'tgl_event.required'            => 'Anda belum menginput tgl event', 
             'peserta.required'              => 'Anda belum menginput peserta', 
             'detil_kegiatan.required'       => 'Anda belum menginput detil kegiatan', 
-            'penutup.required'              => 'Anda belum menginput penutup', 
+            'penutup.required'              => 'Anda belum menginput penutup',
+            'berkas.max'                    => 'Ukuran berkas tidak boleh melebihi 2MB', 
         ]);
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
