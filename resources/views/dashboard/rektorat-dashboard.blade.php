@@ -19,6 +19,7 @@
                                   <th>Nama Fakultas</th>
                                   <th>Nama Prodi</th>
                                   <th>Actions</th>
+                                  <th>Lampiran</th>
                                 </tr>
                               </thead>
                             </table>
@@ -41,6 +42,25 @@
                         </div>
                     </div>
                     <!-- End of validasi proposal-->
+
+                    <!-- Mulai modal detail -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-detail" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Lampiran Proposal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_l" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal detail-->
 
                 </div>
             </div>
@@ -81,6 +101,7 @@
                         return row.action +''+row.validasi
                     }
                 },
+                {data: 'vlampiran',name: 'vlampiran'},
             ]
         });
     });
@@ -136,5 +157,18 @@
             }
         });
     });
+
+    $('body').on('click','.v-lampiran', function(){
+        var data_id = $(this).data('id');
+        $.ajax({
+            url: "{{route('view-lampiran-proposal')}}",
+            method: "GET",
+            data: {proposal_id: data_id},
+            success: function(response, data){
+                $('#show-detail').modal('show');
+                $("#table_l").html(response.card)
+            }
+        })
+    })
 </script>
 @endsection
