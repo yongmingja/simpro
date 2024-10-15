@@ -53,7 +53,13 @@ class DashboardController extends Controller
                     return '';
                 }
             })->addColumn('vlampiran', function($data){
+                # check any attachment
+                $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($q > 0){
                 return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="View Lampiran" data-original-title="View Lampiran" class="btn btn-info btn-sm v-lampiran"><i class="bx bx-xs bx-show"></i></a>';
+                }else{
+                    return '<small>Tidak ada lampiran</small>';
+                }
             })
             ->rawColumns(['action','validasi','vlampiran'])
             ->addIndexColumn(true)
