@@ -219,8 +219,9 @@
                                                     <input type="text" name="nama_berkas[]" class="w-100 form-control">
                                                 </div>
                                                 <div class="col-md-3 form-group mb-3">
-                                                    <label for="berkas" class="form-label">Berkas <i class="text-muted">(format lampiran: *.jpg, *.png atau *.pdf)</i></label>
-                                                    <input type="file" id="berkas" name="berkas[]" class="w-100 form-control">
+                                                    <label for="berkas" class="form-label">Berkas</label>
+                                                    <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png">
+                                                    <div style="font-size: 11px;" class="mt-2"><i class="text-muted">*format lampiran: *.jpg, *.png atau *.pdf</i></div>
                                                     <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
                                                 </div>
                                                 <div class="col-md-3 form-group mb-3">
@@ -348,6 +349,7 @@
                                 window.location = '{{ route("my-report") }}';
                             },
                             error: function (response) {
+                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Save');
                                 Swal.fire({
                                     title: 'Error!',
@@ -399,7 +401,7 @@
                     <input type="text" name="nama_berkas[]" class="w-100 form-control">
                 </div>
                 <div class="col-md-3 form-group mb-3">
-                    <input type="file" name="berkas[]" class="w-100 form-control">
+                    <input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png">
                 </div>
                 <div class="col-md-3 form-group mb-3">
                     <input type="text" name="keterangan[]" class="w-100 form-control">

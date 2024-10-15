@@ -117,7 +117,11 @@
                 {data: 'laporan',name: 'laporan'},
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'nama_user',name: 'nama_user'},
+                {data: 'nama_user',name: 'nama_user',
+                render: function(data,type,row){
+                        return row.nama_pegawai || row.nama_user
+                    }
+                },
                 {data: 'tgl_proposal',name: 'tgl_proposal',render: function ( data, type, row ) {return moment(row.tgl_proposal).format("LL")}},
                 {data: 'action',name: 'action'},
             ]

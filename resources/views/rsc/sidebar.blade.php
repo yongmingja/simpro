@@ -203,13 +203,13 @@
 
     <!-- Admin Page -->
     @if(Str::length(Auth::guard('pegawai')->user()) > 0)    
-        @if($roleDefault == "SADM" || $roleDefault == "ADU")
         <li class="menu-item">
             <a href="{{route('home')}}" class="menu-link {{set_active('home')}}">
             <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
             <div data-i18n="Dashboard">Dashboard</div>
             </a>
         </li>
+        @if($roleDefault == "SADM" || $roleDefault == "ADU")
         <li class="menu-item">
             <a href="{{route('data-proposal.index')}}" class="menu-link {{set_active('data-proposal.index')}}">
             <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
@@ -336,7 +336,7 @@
         @if($roleDefault == "WRAK" || $roleDefault == "WRSDP")
         <li class="menu-item">
             <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
-            <i class="menu-icon tf-icons bx bx-home-circle bx-tada-hover"></i>
+            <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
             <div data-i18n="Proposal">Proposal</div>
             </a>
         </li>

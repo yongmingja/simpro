@@ -101,7 +101,7 @@ class DashboardController extends Controller
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
             ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user','mahasiswas.name AS nama_user','laporan_proposals.created_at AS tgl_proposal')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai','mahasiswas.name AS nama_user','laporan_proposals.created_at AS tgl_proposal')
             ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
             ->orderBy('proposals.id','DESC')
             ->get();

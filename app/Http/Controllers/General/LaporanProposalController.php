@@ -27,12 +27,19 @@ class LaporanProposalController extends Controller
 
     public function insertLaporanProposal(Request $request)
     {
+        $request->validate([
+            'berkas'     => 'max:2048'
+        ],[
+            'berkas.max' => 'Ukuran berkas tidak boleh melebihi 2MB', 
+        ]);
+
         $getId = $request->id_pro;
         $post = LaporanProposal::updateOrCreate([
             'id_proposal'                   => $getId,
             'hasil_kegiatan'                => $request->hasil_kegiatan,
             'evaluasi_catatan_kegiatan'     => $request->evaluasi_catatan_kegiatan,
-            'penutup'                       => $request->penutup
+            'penutup'                       => $request->penutup,
+            'berkas'                        => 'max:2048'
         ]);
 
         foreach($request->rows as $k => $renang){
