@@ -161,7 +161,7 @@
             <h3>Penutup</h3>
             @foreach($datas as $penutup)
             <p style="text-align: justify;">{!!$penutup->penutup!!}</p>
-            <p style="margin-top: 2em;">Batam, {{date('d-m-Y', strtotime($penutup->created_at))}}</p>
+            <p style="margin-top: 2em;">Batam, {{tanggal_indonesia($penutup->created_at)}}</p>
             @endforeach
 
             <table class="footer_auditor" width="100%">
