@@ -96,7 +96,7 @@
                                 <th>Proposal</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Nama Pengaju</th>
-                                <th width="10%;">Aksi</th>
+                                <th width="12%;">Aksi</th>
                                 <th width="12%;">Status</th>
                             </tr>
                             </thead>

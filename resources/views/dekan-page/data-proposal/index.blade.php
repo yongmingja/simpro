@@ -33,7 +33,7 @@
                                   <th>Nama Kegiatan</th>
                                   <th>Nama Fakultas</th>
                                   <th>Nama Prodi</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>
@@ -149,28 +149,43 @@
 
     $('body').on('click','.tombol-yes', function(){
         var data_id = $(this).attr('data-id');
-        $.ajax({
-            url: "{{route('dean-approval-y')}}",
-            type: "POST",
-            data: {
-                proposal_id: data_id,
-                _token: '{{csrf_token()}}'
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Please click yes to accept the proposal!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, accept it!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('dean-approval-y')}}",
+                        type: "POST",
+                        data: {
+                            proposal_id: data_id,
+                            _token: '{{csrf_token()}}'
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Agree!',
+                                text: 'Data saved successfully!',
+                                type: 'success',
+                                customClass: {
+                                confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                                timer: 2000
+                            })
+                            location.reload();
+                        }
+                    });
+                });
             },
-            dataType: 'json',
-            success: function (data) {
-                Swal.fire({
-                    title: 'Agree!',
-                    text: 'Data saved successfully!',
-                    type: 'success',
-                    customClass: {
-                    confirmButton: 'btn btn-primary'
-                    },
-                    buttonsStyling: false,
-                    timer: 2000
-                })
-                location.reload();
-            }
         });
+        
     });
 
     $('body').on('click','.tombol-no', function(){
