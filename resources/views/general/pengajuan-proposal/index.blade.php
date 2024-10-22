@@ -71,7 +71,7 @@
                     <div class="card-body">
                         <!-- MULAI TOMBOL TAMBAH -->
                         @if($checkLap->count() > 0)
-                            @foreach($checkLap as $p)  
+                            @foreach($checkLap as $p)  @endforeach
                                 @if($p->status_laporan == '')
                                     <div class="mb-3">
                                         <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di verifikasi oleh Rektorat! Mohon periksa kembali status proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
@@ -81,7 +81,7 @@
                                         <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
                                     </div>
                                 @endif
-                            @endforeach
+                           
                         @else
                             <div class="mb-3">
                                 <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
