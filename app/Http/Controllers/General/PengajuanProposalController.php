@@ -36,6 +36,23 @@ class PengajuanProposalController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
+                $query = DB::table('status_proposals')->select('status_approval','id_proposal')->where('id_proposal','=',$data->id)->get();
+                if($query){
+                    foreach($query as $get){                
+                        if($get->status_approval == 1){
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$get->id_proposal.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<button type="button" name="delete" id="'.$get->id_proposal.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-sm"><i class="bx bx-xs bx-trash"></i></button>';
+                        } elseif($get->status_approval == 2){
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$get->id_proposal.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>';
+                        } elseif($get->status_approval == 3) {
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$get->id_proposal.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>';
+                        } else {
+                            return '';
+                        }
+                    }
+                } else {
+                    return 'x';
+                }
+            })->addColumn('status', function($data){
                 $btn = $this->statusProposal($data->id);                
                 return $btn;
             })->addColumn('laporan', function($data){
@@ -47,11 +64,16 @@ class PengajuanProposalController extends Controller
                     return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
                 }
             })
-            ->rawColumns(['action','laporan'])
+            ->rawColumns(['action','laporan','status'])
             ->addIndexColumn(true)
             ->make(true);
         }
-        $checkLap = DB::table('laporan_proposals')->rightJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')->select('proposals.id','laporan_proposals.status_laporan')->where('proposals.user_id',Auth::user()->user_id)->get();
+        $checkLap = DB::table('laporan_proposals')->rightJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
+            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+            ->select('proposals.id','laporan_proposals.status_laporan','status_proposals.status_approval')
+            ->where('proposals.user_id',Auth::user()->user_id)
+            ->whereIn('status_proposals.status_approval',[1,3,5]) # Check status approval to activate new proposal button
+            ->get();
         return view('general.pengajuan-proposal.index', compact('datas','checkLap'));
     }
 
@@ -60,12 +82,10 @@ class PengajuanProposalController extends Controller
         $query = DB::table('status_proposals')->select('status_approval')->where('id_proposal','=',$id)->get();
         if($query){
             foreach($query as $data){                
-                if($data->status_approval == 1){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<button type="button" name="delete" id="'.$id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-sm"><i class="bx bx-xs bx-trash"></i></button>';
-                } elseif($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<span class="badge bg-label-danger">Ditolak Dekan</span>';
+                if($data->status_approval == 2){
+                    return '<span class="badge bg-label-danger">Ditolak Dekan</span>';
                 } elseif($data->status_approval == 3) {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan</span>';
+                    return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan</span>';
                 } elseif($data->status_approval == 4) {
                     return '<span class="badge bg-label-warning">Pending WR</span>';
                 } elseif($data->status_approval == 5) {
