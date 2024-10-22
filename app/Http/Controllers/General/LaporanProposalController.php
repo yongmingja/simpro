@@ -39,7 +39,6 @@ class LaporanProposalController extends Controller
             'hasil_kegiatan'                => $request->hasil_kegiatan,
             'evaluasi_catatan_kegiatan'     => $request->evaluasi_catatan_kegiatan,
             'penutup'                       => $request->penutup,
-            'berkas'                        => 'max:2048'
         ]);
 
         foreach($request->rows as $k => $renang){

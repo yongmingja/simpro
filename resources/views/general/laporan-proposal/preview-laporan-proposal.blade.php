@@ -58,6 +58,7 @@
             <p style="text-transform: uppercase; margin-top: 3em; font-style: bold;">LAPORAN PERTANGGUNGJAWABAN KEGIATAN</p>
             @foreach($datas as $kegiatan)
             <h3 style="text-transform: uppercase;">{{$kegiatan->nama_kegiatan}}</h3>
+            <h3 style="text-transform: uppercase; font-size: 14px;">{{$kegiatan->lokasi_tempat}}</h3>
             <p>{{tanggal_indonesia($kegiatan->tgl_event)}}</p>
             @endforeach
             <img src="{{public_path('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 8em;">
@@ -136,7 +137,7 @@
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="5" style="text-align: right; font-style:bold;" class="table_td">Grand Total</td>
+                        <td colspan="5" style="text-align: right; font-style:bold;" class="table_td">Total Biaya</td>
                         <td style="text-align: right; font-style:bold;" class="table_td">{{currency_IDR($grandTotalAnggarans['grandTotal'])}}</td>
                         <td></td>
                     </tr>
@@ -171,7 +172,7 @@
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="5" style="text-align: right; font-style:bold;" class="table_td">Grand Total</td>
+                        <td colspan="5" style="text-align: right; font-style:bold;" class="table_td">Total Biaya</td>
                         <td style="text-align: right; font-style:bold;" class="table_td">{{currency_IDR($grandTotalRealisasiAnggarans['grandTotalRealisasi'])}}</td>
                         <td></td>
                     </tr>
