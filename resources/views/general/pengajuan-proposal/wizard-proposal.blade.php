@@ -109,7 +109,7 @@
                                             <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_fakultas">Fakultas / Unit</label>
+                                            <label class="form-label" for="id_fakultas">Fakultas atau Unit</label>
                                             <select class="select2 form-control border border-primary" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
                                               @foreach($getFakultas as $faculty)
@@ -119,16 +119,21 @@
                                             <span class="text-danger" id="fakultasErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_prodi">Prodi / Biro</label>
+                                            <label class="form-label" for="id_prodi">Prodi atau Biro</label>
                                             <select class="select2 form-control border border-primary" id="id_prodi" name="id_prodi" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" class="d-none">- Pilih prodi -</option>
                                             </select>
                                             <span class="text-danger" id="prodiErrorMsg" style="font-size: 10px;"></span>
                                         </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-md-6">
                                             <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
                                             <input type="text" id="nama_kegiatan" name="nama_kegiatan" class="form-control">
                                             <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="lokasi_tempat" class="form-label">Tempat atau Lokasi Kegiatan</label>
+                                            <input type="text" id="lokasi_tempat" name="lokasi_tempat" class="form-control">
+                                            <span class="text-danger" id="lokasiErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                           <label for="pendahuluan" class="form-label">Pendahuluan</label>
@@ -395,6 +400,7 @@
                                 $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
                                 $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
                                 $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
+                                $('#lokasiErrorMsg').text(response.responseJSON.errors.lokasi_tempat);
                                 $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
                                 $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
                                 $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);

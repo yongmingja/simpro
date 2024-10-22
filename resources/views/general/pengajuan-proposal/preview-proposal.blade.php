@@ -55,9 +55,10 @@
 <body>
     <div class="main-table">
         <div class="page-break">
-            <p style="text-transform: uppercase; margin-top: 3em; font-style: bold;">PROPOSAL KEGIATAN</p>
+            <p style="text-transform: uppercase; margin-top: 3em; font-style: bold; font-size:14px;">PROPOSAL KEGIATAN</p>
             @foreach($datas as $kegiatan)
             <h3 style="text-transform: uppercase;">{{$kegiatan->nama_kegiatan}}</h3>
+            <h3 style="text-transform: uppercase; font-size:12px;">{{$kegiatan->lokasi_tempat}}</h3>
             <p>{{tanggal_indonesia($kegiatan->tgl_event)}}</p>
             @endforeach
             <img src="{{public_path('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 8em;">

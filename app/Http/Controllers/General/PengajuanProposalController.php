@@ -128,6 +128,7 @@ class PengajuanProposalController extends Controller
             'peserta'           => 'required',
             'detil_kegiatan'    => 'required',
             'penutup'           => 'required',
+            'lokasi_tempat'     => 'required',
             'berkas'            => 'max:2048'
         ],[
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
@@ -140,6 +141,7 @@ class PengajuanProposalController extends Controller
             'peserta.required'              => 'Anda belum menginput peserta', 
             'detil_kegiatan.required'       => 'Anda belum menginput detil kegiatan', 
             'penutup.required'              => 'Anda belum menginput penutup',
+            'lokasi_tempat.required'        => 'Anda belum menginput lokasi kegiatan',
             'berkas.max'                    => 'Ukuran berkas tidak boleh melebihi 2MB', 
         ]);
 
@@ -153,6 +155,7 @@ class PengajuanProposalController extends Controller
                     'pendahuluan'           => $request->pendahuluan,
                     'tujuan_manfaat'        => $request->tujuan_manfaat,
                     'tgl_event'             => $request->tgl_event,
+                    'lokasi_tempat'         => $request->lokasi_tempat,
                     'peserta'               => $request->peserta,
                     'detil_kegiatan'        => $request->detil_kegiatan,
                     'penutup'               => $request->penutup,
