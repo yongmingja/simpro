@@ -90,7 +90,8 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::post('insert-proposal-baru','General\PengajuanProposalController@insertProposal')->name('insert-proposal');
     Route::get('list-faculties/{id}','General\PengajuanProposalController@faculties')->name('list-faculties');
     Route::get('check-status','General\PengajuanProposalController@checkstatus')->name('check-status-proposal');
-    Route::post('update-peganjuan-sarpras','General\PengajuanProposalController@updatepengajuan')->name('update-peganjuan-sarpras');
+    Route::post('update-pegajuan-sarpras','General\PengajuanProposalController@updatepengajuan')->name('update-pegajuan-sarpras');
+    Route::delete('delete-item-sarpras','General\PengajuanProposalController@hapusItem')->name('delete-item-sarpras');
     Route::get('proposal-report/{id}','General\LaporanProposalController@indexlaporan')->name('index-laporan');
     Route::post('insert-laporan-proposal','General\LaporanProposalController@insertLaporanProposal')->name('insert-laporan-proposal');
     Route::get('my-report','General\LaporanProposalController@laporansaya')->name('my-report');

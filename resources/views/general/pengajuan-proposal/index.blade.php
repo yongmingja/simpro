@@ -300,7 +300,7 @@
 
                 $.ajax({
                     data: $('#form-edit-sarpras').serialize(),
-                    url: "{{ route('update-peganjuan-sarpras') }}",
+                    url: "{{ route('update-pegajuan-sarpras') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
@@ -393,7 +393,47 @@
                 $("#table_lampiran").html(response.card)
             }
         })
-    })
+    });
+
+    // TOMBOL DELETE ITEM SARPRAS
+    $(document).on('click', '.delete-post', function () {
+        dataId = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be deleted permanently!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('delete-item-sarpras')}}",
+                        type: 'DELETE',
+                        data: {id:dataId},
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Your data has been deleted.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        location.reload();
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Something went wrong with ajax!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
+    });
 
 </script>
 
