@@ -191,7 +191,7 @@ class LaporanProposalController extends Controller
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
-            ->select('proposals.id AS id_proposal','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa','jenis_kegiatans.nama_jenis_kegiatan','laporan_proposals.updated_at')
+            ->select('proposals.id AS id_proposal','proposals.id_jenis_kegiatan','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa','jenis_kegiatans.nama_jenis_kegiatan','laporan_proposals.updated_at')
             ->where('laporan_proposals.qrcode',$initial)
             ->get();
 
