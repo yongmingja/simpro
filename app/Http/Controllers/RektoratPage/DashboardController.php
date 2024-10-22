@@ -36,17 +36,16 @@ class DashboardController extends Controller
                 if($checkState->count() > 0){
                     foreach($checkState as $state){
                         if($state->status_approval == 3){                            
-                            $button = '&nbsp;&nbsp;'; 
-                            $button .= '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-outline-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
-                            $button .= '&nbsp;&nbsp;';
-                            $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-outline-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
+                            $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                            $button .= '&nbsp;';
+                            $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
                             return $button;
                         } elseif($state->status_approval == 4){
-                            return '&nbsp;&nbsp;<span class="badge bg-label-danger">Ditolak</span>';
+                            return '<span class="badge bg-label-danger">Ditolak</span>';
                         } elseif($state->status_approval == 5) {
-                            return '&nbsp;&nbsp;<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
+                            return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
                         } else {
-                            return '&nbsp;&nbsp;<span class="badge bg-label-secondary">Pending</span>';
+                            return '<span class="badge bg-label-secondary">Pending</span>';
                         }
                     }
                 } else {
@@ -86,6 +85,7 @@ class DashboardController extends Controller
     {
         $post = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->update([
             'status_approval' => 5,
+            'keterangan_ditolak' => '',
             'generate_qrcode' => ''.URL::to('/').'/in/'.time().'.png'
         ]);
         return response()->json($post);
@@ -93,8 +93,9 @@ class DashboardController extends Controller
 
     public function approvalN(Request $request)
     {
-        $post = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->update([
-            'status_approval' => 4
+        $post = DB::table('status_proposals')->where('id_proposal',$request->propsl_id)->update([
+            'status_approval' => 4,
+            'keterangan_ditolak' => $request->keterangan_ditolak
         ]);
         return response()->json($post);
     }
