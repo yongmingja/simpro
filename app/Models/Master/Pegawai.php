@@ -11,7 +11,7 @@ class Pegawai extends Authenticatable
     use Notifiable;
     
     protected $fillable = [
-        'nip','email', 'nama_pegawai','agama','jenis_kelamin', 'password','id_status_pegawai',
+        'user_id','email', 'nama_pegawai','agama','jenis_kelamin', 'password','id_status_pegawai',
     ];
 
     protected $hidden = [
