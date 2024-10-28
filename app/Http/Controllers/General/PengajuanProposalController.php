@@ -573,8 +573,12 @@ class PengajuanProposalController extends Controller
         $datas = DataRencanaAnggaran::where('id_proposal',$request->proposal_id)->get();
         if($checkKeteranganDiTolak->count() > 0){
             foreach($checkKeteranganDiTolak as $dataKet){
-                $html = '<i class="bx bx-spa mb-1"></i> Proposal pending:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
-                <hr>';
+                if($dataKet->keterangan_ditolak == ''){
+                    $html = '';
+                } else {
+                    $html = '<i class="bx bx-spa mb-1"></i> Keterangan pending:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
+                    <hr>';
+                }
             }
         } else {
             $html .= '';
