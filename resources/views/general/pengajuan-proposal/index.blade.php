@@ -144,7 +144,7 @@
                     </div>
                     {{-- Info detil keterangan --}}
 
-                    <div class="modal animate__animated animate__swing mt-3" tabindex="-1" role="dialog" id="pushedit-modal" aria-hidden="true">
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="pushedit-modal" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -234,7 +234,7 @@
                     <!-- End of modal lihat anggaran-->
                     
                     <!-- modal edit anggaran-->
-                    <div class="modal animate__animated animate__swing mt-3" tabindex="-1" role="dialog" id="editanggaran-modal" aria-hidden="true">
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editanggaran-modal" aria-hidden="true">
                         <div class="modal-dialog modal-sm">
                             <div class="modal-content">
                                 <div class="modal-header">
