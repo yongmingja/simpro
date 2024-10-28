@@ -59,7 +59,6 @@ class PengajuanProposalController extends Controller
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                     <div class="dropdown-menu">
                                     <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
-                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-primary"></i>Lihat Anggaran</a>
                                     </div>
                                 </div>';
                         } elseif($get->status_approval == 4) {
@@ -112,7 +111,7 @@ class PengajuanProposalController extends Controller
                 } elseif($data->status_approval == 3) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan</span>';
                 } elseif($data->status_approval == 4) {
-                    return '<span class="badge bg-label-warning">Pending WR</span>';
+                    return '<span class="badge bg-label-warning">Pending WR&nbsp;<div class="spinner-grow spinner-grow-sm text-warning me-1" role="status"><span class="visually-hidden"></span></div></span>';
                 } elseif($data->status_approval == 5) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC WR</span>';
                 } else {
@@ -570,16 +569,24 @@ class PengajuanProposalController extends Controller
 
     public function checkanggaran(Request $request)
     {
+        $checkKeteranganDiTolak = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->select('keterangan_ditolak')->get();
         $datas = DataRencanaAnggaran::where('id_proposal',$request->proposal_id)->get();
-        $html = '<table class="table table-bordered table-hover">
+        if($checkKeteranganDiTolak->count() > 0){
+            foreach($checkKeteranganDiTolak as $dataKet){
+                $html = '<i class="bx bx-spa mb-1"></i> Proposal pending:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
+                <hr>';
+            }
+        } else {
+            $html .= '';
+        }
+        $html .= '<table class="table table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
                             <th>Item</th>
                             <th>Biaya Satuan</th>
                             <th>Jumlah</th>
-                            <th>Status</th>
-                            <th>Ket</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -590,18 +597,8 @@ class PengajuanProposalController extends Controller
                         <td>'.$item->item.'</td>
                         <td>'.currency_IDR($item->biaya_satuan).'</td>
                         <td>'.$item->quantity.'</td>';
-                            if($item->status == '1'){
-                                $x = '<span class="badge bg-label-warning">Pending</span>';
-                            }else if($item->status == '2'){
-                                $x = '<span class="badge bg-label-success">Disetujui</span>';
-                            }elseif($item->status == '3'){
-                                $x = '<span class="badge bg-label-danger">Ditolak</span>';
-                            }else{
-                                $x = '<span class="badge bg-label-success">Disetujui</span>';
-                            }
-            $html .=    '<td>'.$x.'</td>';
-                    if($item->status == '3'){
-                        $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-alasan="'.$item->alasan.'" data-placement="bottom" title="Detil keterangan ditolak" data-original-title="Detil keterangan ditolak" class="alasan"><i class="bx bx-show-alt bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-item="'.$item->item.'" data-jumlah="'.$item->biaya_satuan.'" data-sumber="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data sarpras" data-original-title="Edit data sarpras" class="edit-post"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-post"><i class="bx bx-trash bx-xs"></i></a></td>';
+                    if($item->status == '1'){
+                        $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-id="'.$item->id.'" data-item="'.$item->item.'" data-biaya-satuan="'.$item->biaya_satuan.'" data-quantity="'.$item->quantity.'" data-frequency="'.$item->frequency.'" data-sumber-dana="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-anggaran"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-anggaran-post"><i class="bx bx-trash bx-xs"></i></a></td>';
                     } else {
                         $html .= '<td></td></tr>';
                     }
@@ -627,5 +624,26 @@ class PengajuanProposalController extends Controller
                     </tbody>';
         }
         return response()->json(['card' => $html]);
+    }
+
+    public function updateAnggaranItem(Request $request){
+        $post = DataRencanaAnggaran::where('id',$request->e_anggaran_id)->update([
+            'item'          => $request->e_anggaran_item,
+            'biaya_satuan'  => $request->e_anggaran_biaya_satuan,
+            'quantity'      => $request->e_anggaran_quantity,
+            'frequency'     => $request->e_anggaran_frequency,
+            'sumber_dana'   => $request->e_anggaran_sumber_dana
+        ]);
+        DB::table('status_proposals')->where('id_proposal',$request->props_id)->update([
+            'status_approval'       => 3,
+            'keterangan_ditolak'    => '',
+        ]);
+        return response()->json($post);
+    }
+
+    public function hapusItemAnggaran(Request $request)
+    {
+        $post = DataRencanaAnggaran::where('id',$request->id)->delete(); 
+        return response()->json($post);
     }
 }

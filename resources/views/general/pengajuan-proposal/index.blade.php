@@ -173,8 +173,8 @@
                                                 <div class="col-sm-6 mb-2">
                                                     <label for="e_sumber" class="form-label">Sumber dana</label>
                                                     <select class="select2 form-select" id="e_sumber" name="e_sumber" style="cursor:pointer;">
-                                                        <option value="1">Mandiri</option>
-                                                        <option value="2">Kampus</option>
+                                                        <option value="1">Kampus</option>
+                                                        <option value="2">Mandiri</option>
                                                         <option value="3">Hibah</option>
                                                       </select>
                                                 </div>
@@ -232,6 +232,58 @@
                         </div>
                     </div>
                     <!-- End of modal lihat anggaran-->
+                    
+                    <!-- modal edit anggaran-->
+                    <div class="modal animate__animated animate__swing mt-3" tabindex="-1" role="dialog" id="editanggaran-modal" aria-hidden="true">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-anggaran">Edit Anggaran</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-anggaran" name="form-edit-anggaran" class="form-horizontal">
+                                        <input type="hidden" id="props_id" name="props_id" class="form-control">  
+                                        <input type="hidden" id="e_anggaran_id" name="e_anggaran_id" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_anggaran_item" class="form-label">Item</label>
+                                            <input type="text" class="form-control" id="e_anggaran_item" name="e_anggaran_item" value="" />
+                                        </div>  
+                                        <div class="mb-2">
+                                            <label for="e_anggaran_biaya_satuan" class="form-label">Biaya Satuan</label>
+                                            <input type="number" min="0" class="form-control" id="e_anggaran_biaya_satuan" name="e_anggaran_biaya_satuan" value="" />
+                                        </div>
+                                        <div class="mb-2">
+                                            <label for="e_anggaran_quantity" class="form-label">Jumlah (Qty)</label>
+                                            <input type="number" min="0" class="form-control" id="e_anggaran_quantity" name="e_anggaran_quantity" value="" />
+                                        </div>   
+                                        <div class="mb-2">
+                                            <label for="e_anggaran_frequency" class="form-label">Frekuensi</label>
+                                            <input type="number" min="0" class="form-control" id="e_anggaran_frequency" name="e_anggaran_frequency" value="" />
+                                        </div>   
+                                        <div class="mb-2">
+                                            <label for="e_anggaran_sumber_dana" class="form-label">Sumber dana</label>
+                                            <select class="select2 form-select" id="e_anggaran_sumber_dana" name="e_anggaran_sumber_dana" style="cursor:pointer;">
+                                                <option value="1">Kampus</option>
+                                                <option value="2">Mandiri</option>
+                                                <option value="3">Hibah</option>
+                                              </select>
+                                        </div>
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-anggaran" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of modal edit anggaran-->
 
                 </div>
             </div>
@@ -466,6 +518,111 @@
             }
         })
     });
+
+    // Edit Anggaran
+    $('body').on('click','.edit-anggaran', function(){
+        var dataId = $(this).data('id');
+        var idProps = $(this).attr('data-id-proposal');
+        var dataItem = $(this).attr('data-item');
+        var dataBiayaSatuan = $(this).attr('data-biaya-satuan');
+        var dataQuantity = $(this).attr('data-quantity');
+        var dataFrequency = $(this).attr('data-frequency');
+        var dataSumberDana = $(this).attr('data-sumber-dana');
+        $('#modal-judul-edit-anggaran').html("Edit Anggaran");
+        $('#editanggaran-modal').modal('show');
+        $('#props_id').val(idProps);
+        $('#e_anggaran_id').val(dataId);
+        $('#e_anggaran_item').val(dataItem);
+        $('#e_anggaran_biaya_satuan').val(dataBiayaSatuan);
+        $('#e_anggaran_quantity').val(dataQuantity);
+        $('#e_anggaran_frequency').val(dataFrequency);
+        $('#e_anggaran_sumber_dana').val(dataSumberDana);
+    });
+    if ($("#form-edit-anggaran").length > 0) {
+        $("#form-edit-anggaran").validate({
+            submitHandler: function (form) {
+                var actionType = $('#btn-update-anggaran').val();
+                $('#btn-update-anggaran').html('Updating..');
+
+                $.ajax({
+                    data: $('#form-edit-anggaran').serialize(),
+                    url: "{{ route('update-anggaran-item') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#form-edit-anggaran').trigger("reset");
+                        $('#pushedit-modal').modal('hide');
+                        $('#btn-update-anggaran').html('Update');
+                        $('#table_proposal').DataTable().ajax.reload(null, true);
+                        Swal.fire({
+                            title: 'Good job!',
+                            text: 'Data updated successfully!',
+                            type: 'success',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                        location.reload();
+                    },
+                    error: function(response) {
+                        $('#btn-update-anggaran').html('Update');
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Data failed to update!',
+                            type: 'error',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    }
+                });
+            }
+        })
+    }
+
+    $(document).on('click', '.delete-anggaran-post', function () {
+        dataId = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be deleted permanently!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('delete-item-anggaran')}}",
+                        type: 'DELETE',
+                        data: {id:dataId},
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Your data has been deleted.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        location.reload();
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Something went wrong with ajax!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
+    });
+
 
 </script>
 

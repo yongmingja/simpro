@@ -104,6 +104,8 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::get('view-lampiran','General\PengajuanProposalController@viewlampiran')->name('view-lampiran-proposal');
 
     Route::get('check-anggaran','General\PengajuanProposalController@checkanggaran')->name('check-anggaran-proposal');
+    Route::post('update-anggaran-item','General\PengajuanProposalController@updateAnggaranItem')->name('update-anggaran-item');
+    Route::delete('delete-item-anggaran','General\PengajuanProposalController@hapusItemAnggaran')->name('delete-item-anggaran');
 });
 
 /* 
