@@ -96,8 +96,8 @@
                                 <th>Proposal</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Nama Pengaju</th>
-                                <th width="12%;">Aksi</th>
                                 <th width="12%;">Status</th>
+                                <th width="12%;">Aksi</th>
                             </tr>
                             </thead>
                         </table>
@@ -214,6 +214,25 @@
                     </div>
                     <!-- End of modal lihat lampiran-->
 
+                     <!-- Mulai modal lihat anggaran -->
+                     <div class="modal fade" tabindex="-1" role="dialog" id="show-anggaran" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Anggaran Proposal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_show_anggaran" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal lihat anggaran-->
+
                 </div>
             </div>
         </div>
@@ -252,8 +271,8 @@
                         return row.nama_user_dosen || row.nama_user_mahasiswa
                     }
                 },
-                {data: 'action',name: 'action'},
                 {data: 'status',name: 'status'},
+                {data: 'action',name: 'action'},
             ]
         });
     });
@@ -433,6 +452,19 @@
                 });
             },
         });
+    });
+
+    $(document).on('click','.lihat-anggaran', function(){
+        dataId = $(this).data('id');
+        $.ajax({
+            url: "{{route('check-anggaran-proposal')}}",
+            method: "GET",
+            data: {proposal_id: dataId},
+            success: function(response, data){
+                $('#show-anggaran').modal('show');
+                $("#table_show_anggaran").html(response.card)
+            }
+        })
     });
 
 </script>

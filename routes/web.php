@@ -102,6 +102,8 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
     Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
     Route::get('view-lampiran','General\PengajuanProposalController@viewlampiran')->name('view-lampiran-proposal');
+
+    Route::get('check-anggaran','General\PengajuanProposalController@checkanggaran')->name('check-anggaran-proposal');
 });
 
 /* 

@@ -40,11 +40,35 @@ class PengajuanProposalController extends Controller
                 if($query){
                     foreach($query as $get){                
                         if($get->status_approval == 1){
-                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$get->id_proposal.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>&nbsp;<button type="button" name="delete" id="'.$get->id_proposal.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-sm"><i class="bx bx-xs bx-trash"></i></button>';
+                            return '<div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                    <a class="dropdown-item delete" name="delete" id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-trash me-2 text-danger"></i>Hapus Proposal</a>
+                                    </div>
+                                </div>';
                         } elseif($get->status_approval == 2){
-                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$get->id_proposal.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>';
+                            return '<div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2"></i>Lihat Sarpras</a>
+                                    </div>
+                                </div>';
                         } elseif($get->status_approval == 3) {
-                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$get->id_proposal.'" data-placement="bottom" title="Progress timeline proposal" data-original-title="Progress timeline proposal" class="lihat-proposal btn btn-primary btn-sm"><i class="bx bx-xs bx-show"></i></a>';
+                            return '<div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-primary"></i>Lihat Anggaran</a>
+                                    </div>
+                                </div>';
+                        } elseif($get->status_approval == 4) {
+                            return '<div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2"></i>Lihat Anggaran</a>
+                                    </div>
+                                </div>';
                         } else {
                             return '';
                         }
@@ -52,6 +76,7 @@ class PengajuanProposalController extends Controller
                 } else {
                     return 'x';
                 }
+                
             })->addColumn('status', function($data){
                 $btn = $this->statusProposal($data->id);                
                 return $btn;
@@ -540,6 +565,67 @@ class PengajuanProposalController extends Controller
                     }
             $html .= '</tbody>
                 </table>';
+        return response()->json(['card' => $html]);
+    }
+
+    public function checkanggaran(Request $request)
+    {
+        $datas = DataRencanaAnggaran::where('id_proposal',$request->proposal_id)->get();
+        $html = '<table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Biaya Satuan</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Ket</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        if($datas->count() > 0){
+            foreach($datas as $no => $item){
+                $html .= '<tr>
+                        <td>'.++$no.'</td>
+                        <td>'.$item->item.'</td>
+                        <td>'.currency_IDR($item->biaya_satuan).'</td>
+                        <td>'.$item->quantity.'</td>';
+                            if($item->status == '1'){
+                                $x = '<span class="badge bg-label-warning">Pending</span>';
+                            }else if($item->status == '2'){
+                                $x = '<span class="badge bg-label-success">Disetujui</span>';
+                            }elseif($item->status == '3'){
+                                $x = '<span class="badge bg-label-danger">Ditolak</span>';
+                            }else{
+                                $x = '<span class="badge bg-label-success">Disetujui</span>';
+                            }
+            $html .=    '<td>'.$x.'</td>';
+                    if($item->status == '3'){
+                        $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-alasan="'.$item->alasan.'" data-placement="bottom" title="Detil keterangan ditolak" data-original-title="Detil keterangan ditolak" class="alasan"><i class="bx bx-show-alt bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-item="'.$item->item.'" data-jumlah="'.$item->biaya_satuan.'" data-sumber="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data sarpras" data-original-title="Edit data sarpras" class="edit-post"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-post"><i class="bx bx-trash bx-xs"></i></a></td>';
+                    } else {
+                        $html .= '<td></td></tr>';
+                    }
+            }
+            $html .= '</tbody>
+                </table>';
+        } else {
+            $html .= '<table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Biaya Satuan</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Ket</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6">No data available in table</td>
+                        </tr>
+                    </tbody>';
+        }
         return response()->json(['card' => $html]);
     }
 }
