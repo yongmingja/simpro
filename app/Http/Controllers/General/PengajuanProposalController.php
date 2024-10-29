@@ -18,6 +18,8 @@ use File;
 use Auth;
 use DB; use URL;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\KirimEmail;
 
 class PengajuanProposalController extends Controller
 {
@@ -140,7 +142,7 @@ class PengajuanProposalController extends Controller
 
     public function insertProposal(Request $request)
     {
-
+        $getPegawaiName = DB::table('pegawais')->select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
         $request->validate([
             'id_jenis_kegiatan' => 'required',
             'id_fakultas'       => 'required',
@@ -169,6 +171,15 @@ class PengajuanProposalController extends Controller
             'berkas.max'                    => 'Ukuran berkas tidak boleh melebihi 2MB', 
         ]);
 
+        $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
+        $getEmailAddress = DB::table('pegawais')->select('email')->where('user_id',$catchUserID->user_id)->first();
+        $listEmail = ['bennyalfian@uvers.ac.id',$getEmailAddress->email];
+
+        $isiData = [
+            'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+            'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
+        ];
+
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
                     'id_jenis_kegiatan'     => $request->id_jenis_kegiatan,
@@ -185,6 +196,7 @@ class PengajuanProposalController extends Controller
                     'penutup'               => $request->penutup,
                     'validasi'              => 1,
                 ]);
+        Mail::to($listEmail)->send(new KirimEmail($isiData));
 
         $latest_id = Proposal::latest()->first();
 
