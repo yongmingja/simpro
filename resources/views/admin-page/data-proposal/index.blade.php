@@ -169,28 +169,42 @@
     });
 
     $('body').on('click','.tombol-yes', function(){
-        var data_id = $(this).attr('data-id');
-        $.ajax({
-            url: "{{route('valid-y')}}",
-            type: "POST",
-            data: {
-                sarpras_id: data_id,
-                _token: '{{csrf_token()}}'
+        var data_id = $(this).attr('data-id');            
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Please click yes to accept the proposal!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, accept it!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('valid-y')}}",
+                        type: "POST",
+                        data: {
+                            sarpras_id: data_id,
+                            _token: '{{csrf_token()}}'
+                        },
+                    dataType: 'json',
+                    success: function (data) {
+                        Swal.fire({
+                            title: 'Agree!',
+                            text: 'Data saved successfully!',
+                            type: 'success',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                        location.reload();
+                    }
+                });
+                });
             },
-            dataType: 'json',
-            success: function (data) {
-                Swal.fire({
-                    title: 'Agree!',
-                    text: 'Data saved successfully!',
-                    type: 'success',
-                    customClass: {
-                    confirmButton: 'btn btn-primary'
-                    },
-                    buttonsStyling: false,
-                    timer: 2000
-                })
-                location.reload();
-            }
         });
     });
 
