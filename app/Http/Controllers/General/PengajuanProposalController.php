@@ -20,6 +20,7 @@ use DB; use URL;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\KirimEmail;
+use App\Models\Master\JabatanAkademik;
 
 class PengajuanProposalController extends Controller
 {
@@ -173,7 +174,13 @@ class PengajuanProposalController extends Controller
 
         $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
         $getEmailAddress = DB::table('pegawais')->select('email')->where('user_id',$catchUserID->user_id)->first();
-        $listEmail = ['bennyalfian@uvers.ac.id',$getEmailAddress->email];
+        # get Email Dekan
+        $checkJabatanAk = jabatanAkademik::rightJoin('jabatans','jabatans.id','=','jabatan_akademiks.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_akademiks.id_pegawai')
+            ->where([['jabatan_akademiks.id_jabatan',7],['jabatan_akademiks.id_fakultas',$request->id_fakultas]])
+            ->select('pegawais.email')
+            ->first();
+        $listEmail = ['bennyalfian@uvers.ac.id',$getEmailAddress->email,$checkJabatanAk->email];
 
         $isiData = [
             'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
