@@ -535,6 +535,8 @@ class PengajuanProposalController extends Controller
         $fileName = 'proposal_'.date(now()).'.pdf';
         $pdf = PDF::loadview('general.pengajuan-proposal.preview-proposal', compact('datas','sarpras','anggarans','grandTotal','getQR','qrcode','getDekan','data_lampiran'));
         $pdf->setPaper('F4','P');
+        $pdf->getDomPDF()->set_option("isPhpEnabled", true);
+        $pdf->getFontMetrics()->get_font("helvetica", "bold");
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         return $pdf->stream($fileName);
