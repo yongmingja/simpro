@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Preview Proposal</title>
+	<title>Preview Laporan Proposal</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <style>
@@ -57,6 +57,9 @@
         width: 98%;
         margin-top: -130px;
     }
+    .justify-text {
+        text-align: justify;
+    }
 </style>
 <body>
     <header>
@@ -107,32 +110,44 @@
         <div class="content_proposal">
             <h3>Pendahuluan</h3>
             @foreach($datas as $pendahuluan)
-            <p style="text-align: justify;">{!!$pendahuluan->pendahuluan!!}</p>
+            <div class="justify-text">
+                <p>{!!$pendahuluan->pendahuluan!!}</p>
+            </div>
             @endforeach
 
             <h3>Tujuan dan Manfaat</h3>
             @foreach($datas as $tujuan)
-            <p style="text-align: justify;">{!!$tujuan->tujuan_manfaat!!}</p>
+            <div class="justify-text">
+                <p>{!!$tujuan->tujuan_manfaat!!}</p>
+            </div>
             @endforeach
 
             <h3>Peserta</h3>
             @foreach($datas as $peserta)
-            <p style="text-align: justify;">{!!$peserta->peserta!!}</p>
+            <div class="justify-text">
+                <p>{!!$peserta->peserta!!}</p>
+            </div>
             @endforeach
 
             <h3>Detil Kegiatan</h3>
             @foreach($datas as $detil)
-            <p style="text-align: justify;">{!!$detil->detil_kegiatan!!}</p>
+            <div class="justify-text">
+                <p>{!!$detil->detil_kegiatan!!}</p>
+            </div>
             @endforeach
 
             <h3>Hasil Kegiatan</h3>
             @foreach($datas as $hasil)
-            <p style="text-align: justify;">{!!$hasil->hasil_kegiatan!!}</p>
+            <div class="justify-text">
+                <p>{!!$hasil->hasil_kegiatan!!}</p>
+            </div>
             @endforeach
 
             <h3>Evaluasi dan Catatan Kegiatan</h3>
             @foreach($datas as $evaluasi)
-            <p style="text-align: justify;">{!!$evaluasi->evaluasi_catatan_kegiatan!!}</p>
+            <div class="justify-text">
+                <p>{!!$evaluasi->evaluasi_catatan_kegiatan!!}</p>
+            </div>
             @endforeach
 
             <h3>Rencana Anggaran</h3>
@@ -207,7 +222,9 @@
 
             <h3>Penutup</h3>
             @foreach($datas as $penutup)
-            <p style="text-align: justify;">{!!$penutup->lap_penutup!!}</p>
+            <div class="justify-text">
+                <p>{!!$penutup->lap_penutup!!}</p>
+            </div>
             <p style="margin-top: 2em;">Batam, {{date('d-m-Y', strtotime($penutup->tgl_laporan))}}</p>
             @endforeach
 

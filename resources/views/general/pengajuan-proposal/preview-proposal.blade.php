@@ -57,12 +57,11 @@
         width: 98%;
         margin-top: -130px;
     }
-    .main-table {
-        
+    .justify-text {
+        text-align: justify;
     }
 </style>
 <body>
-    
         <header>
             <table class="table table-bordered">
                 <tr>
@@ -112,22 +111,30 @@
             <div class="content_proposal">
                 <h3>Pendahuluan</h3>
                 @foreach($datas as $pendahuluan)
-                <p style="text-align: justify;">{!!$pendahuluan->pendahuluan!!}</p>
+                <div class="justify-text">
+                    <p>{!!$pendahuluan->pendahuluan!!}</p>
+                </div>
                 @endforeach
 
                 <h3>Tujuan dan Manfaat</h3>
                 @foreach($datas as $tujuan)
-                <p style="text-align: justify;">{!!$tujuan->tujuan_manfaat!!}</p>
+                <div class="justify-text">
+                    <p>{!!$tujuan->tujuan_manfaat!!}</p>
+                </div>
                 @endforeach
 
                 <h3>Peserta</h3>
                 @foreach($datas as $peserta)
-                <p style="text-align: justify;">{!!$peserta->peserta!!}</p>
+                <div class="justify-text">
+                    <p>{!!$peserta->peserta!!}</p>
+                </div>
                 @endforeach
 
                 <h3>Detil Kegiatan</h3>
                 @foreach($datas as $detil)
-                <p style="text-align: justify;">{!!$detil->detil_kegiatan!!}</p>
+                <div class="justify-text">
+                    <p>{!!$detil->detil_kegiatan!!}</p>
+                </div>
                 @endforeach
 
                 <h3>Keperluan Sarana Prasarana</h3>
@@ -196,7 +203,9 @@
 
                 <h3>Penutup</h3>
                 @foreach($datas as $penutup)
-                <p style="text-align: justify;">{!!$penutup->penutup!!}</p>
+                <div class="justify-text">
+                    <p>{!!$penutup->penutup!!}</p>
+                </div>
                 <p style="margin-top: 2em;">Batam, {{tanggal_indonesia($penutup->created_at)}}</p>
                 @endforeach
 
