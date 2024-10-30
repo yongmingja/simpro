@@ -7,6 +7,9 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <style>
+    @page {
+        margin-top: 180px;
+    }
     .body{
         font-size: 14px;
     }
@@ -39,47 +42,70 @@
         page-break-after: always;
         text-align: center;
     }
-    .page-break-lampiran {
-        page-break-before: always;
-        text-align: center;
-    }
     .cover_instansi {
         line-height: 8px;
-        margin-top: 12em;
+        margin-top: 8em;
         font-style: bold;
     }
     .content_proposal {
         margin-left: 1em;
     }
+    header {
+        margin-left: 1em;
+        margin-right: 0em;
+        position: fixed;
+        width: 98%;
+        margin-top: -130px;
+    }
 </style>
 <body>
-    <div class="main-table">
-        <div class="page-break">
-            <p style="text-transform: uppercase; margin-top: 3em; font-style: bold;">LAPORAN PERTANGGUNGJAWABAN KEGIATAN</p>
-            @foreach($datas as $kegiatan)
-            <h3 style="text-transform: uppercase;">{{$kegiatan->nama_kegiatan}}</h3>
-            <h3 style="text-transform: uppercase; font-size: 14px;">{{$kegiatan->lokasi_tempat}}</h3>
-            <p>{{tanggal_indonesia($kegiatan->tgl_event)}}</p>
+    <header>
+        <table class="table table-bordered">
+            <tr>
+                <td style="vertical-align: middle; text-align:center; width: 24%;"><img src="{{public_path('assets/img/logo-uvers-blue.jpg')}}" alt="logo-uvers-blue" style="height:60px;"></td>
+                <td colspan="3" style="vertical-align: middle; text-align:center; font-style: bold;">LAPORAN PERTANGGUNGJAWABAN KEGIATAN AKADEMIK</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">No. Dokumen</td>
+                <td style="text-align: center;">Revisi</td>
+                <td style="text-align: center;">Tanggal</td>
+                <td style="text-align: center;">Halaman</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">F-M2.STD-PD-8.3</td>
+                <td style="text-align: center;">2</td>
+                <td style="text-align: center;">21 Juli 2023</td>
+                <td style="text-align: center;"></td>
+            </tr>
+        </table>
+    </header>     
+    <div class="page-break">
+        <p style="text-transform: uppercase; margin-top: 2em; font-style: bold;">LAPORAN PERTANGGUNGJAWABAN KEGIATAN</p>
+        @foreach($datas as $kegiatan)
+        <h3 style="text-transform: uppercase;">{{$kegiatan->nama_kegiatan}}</h3>
+        <h3 style="text-transform: uppercase; font-size: 14px;">{{$kegiatan->lokasi_tempat}}</h3>
+        <p>{{tanggal_indonesia($kegiatan->tgl_event)}}</p>
+        @endforeach
+        <img src="{{public_path('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 6em;">
+        <p style="margin-top: 3em;">Pengusul:</p>
+        
+        <p style="text-transform: uppercase;"><b> @foreach($datas as $pengusul) {{$pengusul->nama_user_dosen}}{{$pengusul->nama_user_mahasiswa}} @endforeach &ndash; @foreach($datas as $userid) {{$userid->user_id}} @endforeach</b></p>
+        
+        <div class="cover_instansi">
+            @foreach($datas as $nama)
+            <p style="text-transform: uppercase;">{{$nama->nama_prodi}}</p>
+            <p style="text-transform: uppercase;">{{$nama->nama_fakultas}}</p>
             @endforeach
-            <img src="{{public_path('assets/img/logo-uvers.png')}}" alt="logo-uvers" style="margin-top: 8em;">
-            <p style="margin-top: 3em;">Pengusul:</p>
-            
-            <p style="text-transform: uppercase;"><b> @foreach($datas as $pengusul) {{$pengusul->nama_user_dosen}}{{$pengusul->nama_user_mahasiswa}} @endforeach &ndash; @foreach($datas as $userid) {{$userid->user_id}} @endforeach</b></p>
-            
-            <div class="cover_instansi">
-                @foreach($datas as $nama)
-                <p style="text-transform: uppercase;">{{$nama->nama_prodi}}</p>
-                <p style="text-transform: uppercase;">{{$nama->nama_fakultas}}</p>
-                @endforeach
-                <p style="text-transform: uppercase;">Universitas Universal</p>
-                @foreach($datas as $tahun)
-                <p style="text-transform: uppercase;">{{date('Y', strtotime($tahun->tgl_event))}}</p>
-                @endforeach
-            </div>
-
+            <p style="text-transform: uppercase;">Universitas Universal</p>
+            @foreach($datas as $tahun)
+            <p style="text-transform: uppercase;">{{date('Y', strtotime($tahun->tgl_event))}}</p>
+            @endforeach
         </div>
+
+    </div>
+    <div class="main-table">
         <div class="content_proposal">
-            <h3 style="margin-top: 1.5em;">Pendahuluan</h3>
+            <h3>Pendahuluan</h3>
             @foreach($datas as $pendahuluan)
             <p style="text-align: justify;">{!!$pendahuluan->pendahuluan!!}</p>
             @endforeach
@@ -219,18 +245,21 @@
             </table>
             
         </div>
-        {{-- <div class="page-break-lampiran">
-            @if($data_lampiran->count() > 0)
-            <h3 class="mb-3">Lampiran</h3>
-                @foreach($data_lampiran as $lampirans)
-                    <img src="{{ public_path(''.$lampirans->berkas.'') }}" alt="Default Image" style="max-width: 500px; max-height: 500px; text-align:center;" class="mb-3">
-                    <p class="mb-2"><i>{{$lampirans->nama_berkas}}</i></p>
-                @endforeach
-            @else
-                <p></p>
-            @endif
-        </div> --}}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script type="text/php">        
+        if (isset($pdf)) {
+            $x = 500;
+            $y = 103;
+            $text = "{PAGE_NUM} / {PAGE_COUNT}";
+            $font = "Times New Roman";
+            $size = 11;
+            $color = array(0,0,0);
+            $word_space = 0.0;  //  default
+            $char_space = 0.0;  //  default
+            $angle = 0.0;   //  default
+            $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+        }
+    </script>
 </body>
 </html>
