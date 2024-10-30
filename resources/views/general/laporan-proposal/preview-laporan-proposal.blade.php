@@ -44,7 +44,7 @@
     }
     .cover_instansi {
         line-height: 8px;
-        margin-top: 8em;
+        margin-top: 10em;
         font-style: bold;
     }
     .content_proposal {
@@ -83,7 +83,7 @@
         </table>
     </header>     
     <div class="page-break">
-        <p style="text-transform: uppercase; margin-top: 2em; font-style: bold;">LAPORAN PERTANGGUNGJAWABAN KEGIATAN</p>
+        <p style="text-transform: uppercase; margin-top: 1em; font-style: bold; font-size:14px;">LAPORAN PERTANGGUNGJAWABAN KEGIATAN</p>
         @foreach($datas as $kegiatan)
         <h3 style="text-transform: uppercase;">{{$kegiatan->nama_kegiatan}}</h3>
         <h3 style="text-transform: uppercase; font-size: 14px;">{{$kegiatan->lokasi_tempat}}</h3>
@@ -108,47 +108,37 @@
     </div>
     <div class="main-table">
         <div class="content_proposal">
-            <h3>Pendahuluan</h3>
-            @foreach($datas as $pendahuluan)
             <div class="justify-text">
-                <p>{!!$pendahuluan->pendahuluan!!}</p>
-            </div>
-            @endforeach
+                <h3>Pendahuluan</h3>
+                @foreach($datas as $pendahuluan)
+                    <p>{!!$pendahuluan->pendahuluan!!}</p>
+                @endforeach
 
-            <h3>Tujuan dan Manfaat</h3>
-            @foreach($datas as $tujuan)
-            <div class="justify-text">
-                <p>{!!$tujuan->tujuan_manfaat!!}</p>
-            </div>
-            @endforeach
+                <h3>Tujuan dan Manfaat</h3>
+                @foreach($datas as $tujuan)
+                    <p>{!!$tujuan->tujuan_manfaat!!}</p>
+                @endforeach
 
-            <h3>Peserta</h3>
-            @foreach($datas as $peserta)
-            <div class="justify-text">
-                <p>{!!$peserta->peserta!!}</p>
-            </div>
-            @endforeach
+                <h3>Peserta</h3>
+                @foreach($datas as $peserta)
+                    <p>{!!$peserta->peserta!!}</p>
+                @endforeach
 
-            <h3>Detil Kegiatan</h3>
-            @foreach($datas as $detil)
-            <div class="justify-text">
-                <p>{!!$detil->detil_kegiatan!!}</p>
-            </div>
-            @endforeach
+                <h3>Detil Kegiatan</h3>
+                @foreach($datas as $detil)
+                    <p>{!!$detil->detil_kegiatan!!}</p>
+                @endforeach
 
-            <h3>Hasil Kegiatan</h3>
-            @foreach($datas as $hasil)
-            <div class="justify-text">
-                <p>{!!$hasil->hasil_kegiatan!!}</p>
-            </div>
-            @endforeach
+                <h3>Hasil Kegiatan</h3>
+                @foreach($datas as $hasil)
+                    <p>{!!$hasil->hasil_kegiatan!!}</p>
+                @endforeach
 
-            <h3>Evaluasi dan Catatan Kegiatan</h3>
-            @foreach($datas as $evaluasi)
-            <div class="justify-text">
-                <p>{!!$evaluasi->evaluasi_catatan_kegiatan!!}</p>
+                <h3>Evaluasi dan Catatan Kegiatan</h3>
+                @foreach($datas as $evaluasi)
+                    <p>{!!$evaluasi->evaluasi_catatan_kegiatan!!}</p>
+                @endforeach
             </div>
-            @endforeach
 
             <h3>Rencana Anggaran</h3>
             
