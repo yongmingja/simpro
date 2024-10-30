@@ -60,6 +60,13 @@
     .justify-text {
         text-align: justify;
     }
+    .tag-kode {
+        text-align: left;
+        font-size: 12px;
+        line-height: 14px;
+        margin-left: 1em;
+        margin-top: 3em;
+    }
 </style>
 <body>
         <header>
@@ -106,7 +113,11 @@
                 @endforeach
             </div>
 
+            <div class="tag-kode">
+                <p>KODE RENSTRA:<br>Kode AKUN:</p>
+            </div>
         </div>
+
         <div class="main-table">
             <div class="content_proposal">
                 <div class="justify-text">

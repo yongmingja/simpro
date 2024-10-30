@@ -143,28 +143,43 @@
 
     $('body').on('click','.tombol-yes', function(){
         var data_id = $(this).attr('data-id');
-        $.ajax({
-            url: "{{route('laporan-selesai')}}",
-            type: "POST",
-            data: {
-                proposal_id: data_id,
-                _token: '{{csrf_token()}}'
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Click yes to confirm that it's done!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('laporan-selesai')}}",
+                        type: "POST",
+                        data: {
+                            proposal_id: data_id,
+                            _token: '{{csrf_token()}}'
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            Swal.fire({
+                                title: 'Agree!',
+                                text: 'Data saved successfully!',
+                                type: 'success',
+                                customClass: {
+                                confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                                timer: 2000
+                            })
+                            $('#table_proposal').DataTable().ajax.reload(null, true);
+                        }
+                    });
+                });
             },
-            dataType: 'json',
-            success: function (data) {
-                Swal.fire({
-                    title: 'Agree!',
-                    text: 'Data saved successfully!',
-                    type: 'success',
-                    customClass: {
-                    confirmButton: 'btn btn-primary'
-                    },
-                    buttonsStyling: false,
-                    timer: 2000
-                })
-                $('#table_proposal').DataTable().ajax.reload(null, true);
-            }
         });
+        
     });
 </script>
 
