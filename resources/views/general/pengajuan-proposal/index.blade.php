@@ -61,6 +61,10 @@
     }
 </style>
 
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/typography.css')}}" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/editor.css')}}" />
+
 @section('content')
 
 <div class="container-xxl flex-grow-1">
@@ -284,6 +288,256 @@
                         </div>
                     </div>
                     <!-- end of modal edit anggaran-->
+
+                    <!-- Mulai modal lihat informasi -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-informasi" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Informasi Proposal</h5>                                    
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_show_informasi" class="col-sm-12 table-responsive mb-3"></div>
+                                    <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal lihat informasi-->
+
+                    {{-- EDIT INFORMASI PROPOSAL --}}
+                    <!-- modal edit nama kegiatan-->
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editnamakegiatan-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-nama-kegiatan">Edit Nama Kegiatan</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-nama-kegiatan" name="form-edit-nama-kegiatan" class="form-horizontal">
+                                        <input type="hidden" id="props_id_nama_kegiatan" name="props_id_nama_kegiatan" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_nama_kegiatan" class="form-label">Nama Kegiatan</label>
+                                            <input type="text" class="form-control" id="e_nama_kegiatan" name="e_nama_kegiatan" value="" />
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-nama-kegiatan" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editpendahuluan-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-pendahuluan">Edit Pendahuluan</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-pendahuluan" name="form-edit-pendahuluan" class="form-horizontal">
+                                        <input type="hidden" id="props_id_pendahuluan" name="props_id_pendahuluan" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_pendahuluan" class="form-label">Pendahuluan</label>
+                                            <div id="editor-pendahuluan" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" name="e_pendahuluan" id="e_pendahuluan"></textarea>
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-pendahuluan" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="edittujuanmanfaat-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-tujuan-manfaat">Edit Tujuan dan Manfaat</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-tujuan-manfaat" name="form-edit-tujuan-manfaat" class="form-horizontal">
+                                        <input type="hidden" id="props_id_tujuan_manfaat" name="props_id_tujuan_manfaat" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_tujuan_manfaat" class="form-label">Tujuan dan Manfaat</label>
+                                            <div id="editor-tujuan-manfaat" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" name="e_tujuan_manfaat" id="e_tujuan_manfaat"></textarea>
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-tujuan-manfaat" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="edittglevent-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-tglevent">Edit Tujuan dan Manfaat</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-tglevent" name="form-edit-tglevent" class="form-horizontal">
+                                        <input type="hidden" id="props_id_tglevent" name="props_id_tglevent" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_tglevent" class="form-label">Tujuan dan Manfaat</label>
+                                            <input type="date" class="form-control" id="e_tglevent" name="e_tglevent" value="" placeholder="mm/dd/yyyy" />
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-tglevent" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editlokasitempat-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-lokasitempat">Edit Lokasi atau Tempat</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-lokasitempat" name="form-edit-lokasitempat" class="form-horizontal">
+                                        <input type="hidden" id="props_id_lokasitempat" name="props_id_lokasitempat" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_lokasitempat" class="form-label">Lokasi atau Tempat</label>
+                                            <input type="text" class="form-control" id="e_lokasitempat" name="e_lokasitempat" value="" />
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-lokasitempat" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editpeserta-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-peserta">Edit Peserta</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-peserta" name="form-edit-peserta" class="form-horizontal">
+                                        <input type="hidden" id="props_id_peserta" name="props_id_peserta" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_peserta" class="form-label">Peserta</label>
+                                            <div id="editor-peserta" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" name="e_peserta" id="e_peserta"></textarea>
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-peserta" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editdetilkegiatan-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-detilkegiatan">Edit Detil Kegiatan</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-detilkegiatan" name="form-edit-detilkegiatan" class="form-horizontal">
+                                        <input type="hidden" id="props_id_detilkegiatan" name="props_id_detilkegiatan" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_detil_kegiatan" class="form-label">Detil Kegiatan</label>
+                                            <div id="editor-detilkegiatan" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" name="e_detilkegiatan" id="e_detilkegiatan"></textarea>
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-detilkegiatan" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editpenutup-modal" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-edit-penutup">Edit Penutup</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-edit-penutup" name="form-edit-penutup" class="form-horizontal">
+                                        <input type="hidden" id="props_id_penutup" name="props_id_penutup" class="form-control">  
+                                        <div class="mb-2">
+                                            <label for="e_detil_kegiatan" class="form-label">Penutup</label>
+                                            <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" name="e_penutup" id="e_penutup"></textarea>
+                                        </div>  
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-penutup" value="create">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of modal edit nama kegiatan-->
 
                 </div>
             </div>
@@ -622,6 +876,477 @@
             },
         });
     });
+
+    $(document).on('click','.lihat-informasi', function(){
+        dataId = $(this).data('id');
+        val_idProp = $('#edit_id').val(dataId);
+        $.ajax({
+            url: "{{route('check-informasi-proposal')}}",
+            method: "GET",
+            data: {proposal_id: dataId},
+            success: function(response, data){
+                $('#show-informasi').modal('show');
+                $("#table_show_informasi").html(response.card)
+            }
+        })
+    });
+
+    // EDIT INFORMASI UTAMA
+    $('body').on('click','.edit-nama-kegiatan', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataNamaKegiatan = $(this).attr('data-nama-kegiatan');
+        $('#modal-judul-edit-nama-kegiatan').html("Edit Nama Kegiatan");
+        $('#editnamakegiatan-modal').modal('show');
+        $('#props_id_nama_kegiatan').val(idProps);
+        $('#e_nama_kegiatan').val(dataNamaKegiatan);
+    });
+    $(document).on('click','#btn-update-nama-kegiatan', function(){
+        var actionType = $('#btn-update-nama-kegiatan').val();
+        $('#btn-update-nama-kegiatan').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-nama-kegiatan').serialize(),
+            url: "{{ route('update-nama-kegiatan') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-nama-kegiatan').trigger("reset");
+                $('#editnamakegiatan-modal').modal('hide');
+                $('#btn-update-nama-kegiatan').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-nama-kegiatan').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-pendahuluan', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataPendahuluan = $(this).attr('data-pendahuluan');
+        $('#modal-judul-edit-pendahuluan').html("Edit Pendahuluan");
+        $('#editpendahuluan-modal').modal('show');
+        $('#props_id_pendahuluan').val(idProps);
+        $('#e_pendahuluan').val(dataPendahuluan);
+    });
+    $(document).on('click','#btn-update-pendahuluan', function(){
+        var actionType = $('#btn-update-pendahuluan').val();
+        $('#btn-update-pendahuluan').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-pendahuluan').serialize(),
+            url: "{{ route('update-pendahuluan') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-pendahuluan').trigger("reset");
+                $('#editpendahuluan-modal').modal('hide');
+                $('#btn-update-pendahuluan').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-pendahuluan').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-tujuan-manfaat', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataTujuanManfaat = $(this).attr('data-tujuan-manfaat');
+        $('#modal-judul-edit-tujuan-manfaat').html("Edit Tujuan dan Manfaat");
+        $('#edittujuanmanfaat-modal').modal('show');
+        $('#props_id_tujuan_manfaat').val(idProps);
+        $('#e_tujuan_manfaat').val(dataTujuanManfaat);
+    });
+    $(document).on('click','#btn-update-tujuan-manfaat', function(){
+        var actionType = $('#btn-update-tujuan-manfaat').val();
+        $('#btn-update-tujuan-manfaat').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-tujuan-manfaat').serialize(),
+            url: "{{ route('update-tujuan-manfaat') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-tujuan-manfaat').trigger("reset");
+                $('#edittujuanmanfaat-modal').modal('hide');
+                $('#btn-update-tujuan-manfaat').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-tujuan-manfaat').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-tglevent', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataTglEvent = $(this).attr('data-tglevent');
+        $('#modal-judul-edit-tglevent').html("Edit Tanggal Kegiatan");
+        $('#edittglevent-modal').modal('show');
+        $('#props_id_tglevent').val(idProps);
+        $('#e_tglevent').val(dataTglEvent);
+    });
+    $(document).on('click','#btn-update-tglevent', function(){
+        var actionType = $('#btn-update-tglevent').val();
+        $('#btn-update-tglevent').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-tglevent').serialize(),
+            url: "{{ route('update-tglevent') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-tglevent').trigger("reset");
+                $('#edittglevent-modal').modal('hide');
+                $('#btn-update-tglevent').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-tglevent').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-lokasitempat', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataLokasiTempat = $(this).attr('data-lokasitempat');
+        $('#modal-judul-edit-lokasitempat').html("Edit lokasi atau tempat");
+        $('#editlokasitempat-modal').modal('show');
+        $('#props_id_lokasitempat').val(idProps);
+        $('#e_lokasitempat').val(dataLokasiTempat);
+    });
+    $(document).on('click','#btn-update-lokasitempat', function(){
+        var actionType = $('#btn-update-lokasitempat').val();
+        $('#btn-update-lokasitempat').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-lokasitempat').serialize(),
+            url: "{{ route('update-lokasitempat') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-lokasitempat').trigger("reset");
+                $('#editlokasitempat-modal').modal('hide');
+                $('#btn-update-lokasitempat').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-lokasitempat').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-peserta', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataPeserta = $(this).attr('data-peserta');
+        $('#modal-judul-edit-peserta').html("Edit Peserta");
+        $('#editpeserta-modal').modal('show');
+        $('#props_id_peserta').val(idProps);
+        $('#e_peserta').val(dataPeserta);
+    });
+    $(document).on('click','#btn-update-peserta', function(){
+        var actionType = $('#btn-update-peserta').val();
+        $('#btn-update-peserta').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-peserta').serialize(),
+            url: "{{ route('update-peserta') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-peserta').trigger("reset");
+                $('#editpeserta-modal').modal('hide');
+                $('#btn-update-peserta').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-peserta').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-detilkegiatan', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataDetilKegiatan = $(this).attr('data-detilkegiatan');
+        $('#modal-judul-edit-detilkegiatan').html("Edit Detil Kegiatan");
+        $('#editdetilkegiatan-modal').modal('show');
+        $('#props_id_detilkegiatan').val(idProps);
+        $('#e_detilkegiatan').val(dataDetilKegiatan);
+    });
+    $(document).on('click','#btn-update-detilkegiatan', function(){
+        var actionType = $('#btn-update-detilkegiatan').val();
+        $('#btn-update-detilkegiatan').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-detilkegiatan').serialize(),
+            url: "{{ route('update-detilkegiatan') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-detilkegiatan').trigger("reset");
+                $('#editdetilkegiatan-modal').modal('hide');
+                $('#btn-update-detilkegiatan').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-detilkegiatan').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    $('body').on('click','.edit-penutup', function(){
+        var idProps = $(this).attr('data-id-proposal');
+        var dataPenutup = $(this).attr('data-penutup');
+        $('#modal-judul-edit-penutup').html("Edit Detil Kegiatan");
+        $('#editpenutup-modal').modal('show');
+        $('#props_id_penutup').val(idProps);
+        $('#e_penutup').val(dataPenutup);
+    });
+    $(document).on('click','#btn-update-penutup', function(){
+        var actionType = $('#btn-update-penutup').val();
+        $('#btn-update-penutup').html('Updating..');
+        $.ajax({
+            data: $('#form-edit-penutup').serialize(),
+            url: "{{ route('update-penutup') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function (data) {
+                $('#form-edit-penutup').trigger("reset");
+                $('#editpenutup-modal').modal('hide');
+                $('#btn-update-penutup').html('Update');
+                $('#table_proposal').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Data updated successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+            error: function(response) {
+                $('#btn-update-penutup').html('Update');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Data failed to update!',
+                    type: 'error',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            }
+        });
+    })
+
+    document.addEventListener('DOMContentLoaded', function() {
+          if (document.getElementById('e_pendahuluan')) {
+              var editor = new Quill('#editor-pendahuluan', {
+                  theme: 'snow'
+              });
+              var quillEditor = document.getElementById('e_pendahuluan');
+              editor.on('text-change', function() {
+                  quillEditor.value = editor.root.innerHTML;
+              });
+
+              quillEditor.addEventListener('input', function() {
+                  editor.root.innerHTML = quillEditor.value;
+              });
+          }
+
+          if (document.getElementById('e_tujuan_manfaat')) {
+              var editor1 = new Quill('#editor-tujuan-manfaat', {
+                  theme: 'snow'
+              });
+              var quillEditor1 = document.getElementById('e_tujuan_manfaat');
+              editor1.on('text-change', function() {
+                  quillEditor1.value = editor1.root.innerHTML;
+              });
+
+              quillEditor1.addEventListener('input', function() {
+                  editor1.root.innerHTML = quillEditor1.value;
+              });
+          }          
+
+          if (document.getElementById('e_detilkegiatan')) {
+              var editor2 = new Quill('#editor-detilkegiatan', {
+                  theme: 'snow'
+              });
+              var quillEditor2 = document.getElementById('e_detilkegiatan');
+              editor2.on('text-change', function() {
+                  quillEditor2.value = editor2.root.innerHTML;
+              });
+
+              quillEditor2.addEventListener('input', function() {
+                  editor2.root.innerHTML = quillEditor2.value;
+              });
+          }
+
+          if (document.getElementById('e_penutup')) {
+              var editor3 = new Quill('#editor-penutup', {
+                  theme: 'snow'
+              });
+              var quillEditor3 = document.getElementById('e_penutup');
+              editor3.on('text-change', function() {
+                  quillEditor3.value = editor3.root.innerHTML;
+              });
+
+              quillEditor3.addEventListener('input', function() {
+                  editor3.root.innerHTML = quillEditor3.value;
+              });
+          }
+
+          if (document.getElementById('e_peserta')) {
+              var editor4 = new Quill('#editor-peserta', {
+                  theme: 'snow'
+              });
+              var quillEditor4 = document.getElementById('e_peserta');
+              editor4.on('text-change', function() {
+                  quillEditor4.value = editor4.root.innerHTML;
+              });
+
+              quillEditor4.addEventListener('input', function() {
+                  editor4.root.innerHTML = quillEditor4.value;
+              });
+          }
+      });
 
 
 </script>

@@ -106,6 +106,16 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::get('check-anggaran','General\PengajuanProposalController@checkanggaran')->name('check-anggaran-proposal');
     Route::post('update-anggaran-item','General\PengajuanProposalController@updateAnggaranItem')->name('update-anggaran-item');
     Route::delete('delete-item-anggaran','General\PengajuanProposalController@hapusItemAnggaran')->name('delete-item-anggaran');
+
+    Route::get('check-informasi','General\PengajuanProposalController@checkinformasi')->name('check-informasi-proposal');
+    Route::post('update-nama-kegiatan','General\PengajuanProposalController@updateNamaKegiatan')->name('update-nama-kegiatan');
+    Route::post('update-pendahuluan','General\PengajuanProposalController@updatePendahuluan')->name('update-pendahuluan');
+    Route::post('update-tujuan-manfaat','General\PengajuanProposalController@updateTujuanManfaat')->name('update-tujuan-manfaat');
+    Route::post('update-tglevent','General\PengajuanProposalController@updateTanggalEvent')->name('update-tglevent');
+    Route::post('update-lokasitempat','General\PengajuanProposalController@updateLokasiTempat')->name('update-lokasitempat');
+    Route::post('update-peserta','General\PengajuanProposalController@updatePeserta')->name('update-peserta');
+    Route::post('update-detilkegiatan','General\PengajuanProposalController@updateDetilKegiatan')->name('update-detilkegiatan');
+    Route::post('update-penutup','General\PengajuanProposalController@updatePenutup')->name('update-penutup');
 });
 
 /* 

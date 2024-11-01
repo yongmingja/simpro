@@ -46,7 +46,9 @@ class PengajuanProposalController extends Controller
                             return '<div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                     <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
                                     <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
                                     <a class="dropdown-item delete" name="delete" id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-trash me-2 text-danger"></i>Hapus Proposal</a>
                                     </div>
                                 </div>';
@@ -54,6 +56,7 @@ class PengajuanProposalController extends Controller
                             return '<div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                     <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
                                     <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2"></i>Lihat Sarpras</a>
                                     </div>
                                 </div>';
@@ -68,6 +71,7 @@ class PengajuanProposalController extends Controller
                             return '<div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                     <div class="dropdown-menu">
+                                    <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
                                     <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2"></i>Lihat Anggaran</a>
                                     </div>
                                 </div>';
@@ -669,6 +673,95 @@ class PengajuanProposalController extends Controller
     public function hapusItemAnggaran(Request $request)
     {
         $post = DataRencanaAnggaran::where('id',$request->id)->delete(); 
+        return response()->json($post);
+    }
+
+    public function checkinformasi(Request $request)
+    {
+        $datas = Proposal::where('id',$request->proposal_id)->get();
+        $html = '<table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Deskripsi</th>
+                            <th>Isi Data</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                foreach($datas as $no => $item){
+                    $html .= '<tr><td>Nama Kegiatan</td><td>'.$item->nama_kegiatan.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-nama-kegiatan="'.$item->nama_kegiatan.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-nama-kegiatan"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Pendahuluan</td><td>'.$item->pendahuluan.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-pendahuluan="'.$item->pendahuluan.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-pendahuluan"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Tujuan dan Manfaat</td><td>'.$item->tujuan_manfaat.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-tujuan-manfaat="'.$item->tujuan_manfaat.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-tujuan-manfaat"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Tanggal Kegiatan</td><td>'.$item->tgl_event.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-tglevent="'.$item->tgl_event.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-tglevent"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Lokasi / Tempat</td><td>'.$item->lokasi_tempat.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-lokasitempat="'.$item->lokasi_tempat.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-lokasitempat"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Peserta</td><td>'.$item->peserta.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-peserta="'.$item->peserta.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-peserta"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Detil Kegiatan</td><td>'.$item->detil_kegiatan.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-detilkegiatan="'.$item->detil_kegiatan.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-detilkegiatan"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Penutup</td><td>'.$item->penutup.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-penutup="'.$item->penutup.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-penutup"><i class="bx bx-edit bx-xs"></i></a></td></tr>';
+                }
+        return response()->json(['card' => $html]);
+    }
+
+    public function updateNamaKegiatan(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_nama_kegiatan)->update([
+            'nama_kegiatan' => $request->e_nama_kegiatan
+        ]);
+        return response()->json($post);
+    }
+
+    public function updatePendahuluan(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_pendahuluan)->update([
+            'pendahuluan' => $request->e_pendahuluan
+        ]);
+        return response()->json($post);
+    }
+
+    public function updateTujuanManfaat(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_tujuan_manfaat)->update([
+            'tujuan_manfaat' => $request->e_tujuan_manfaat
+        ]);
+        return response()->json($post);
+    }
+
+    public function updateTanggalEvent(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_tglevent)->update([
+            'tgl_event' => $request->e_tglevent
+        ]);
+        return response()->json($post);
+    }
+
+    public function updateLokasiTempat(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_lokasitempat)->update([
+            'lokasi_tempat' => $request->e_lokasitempat
+        ]);
+        return response()->json($post);
+    }
+
+    public function updatePeserta(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_peserta)->update([
+            'peserta' => $request->e_peserta
+        ]);
+        return response()->json($post);
+    }
+
+    public function updateDetilKegiatan(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_detilkegiatan)->update([
+            'detil_kegiatan' => $request->e_detilkegiatan
+        ]);
+        return response()->json($post);
+    }
+
+    public function updatePenutup(Request $request)
+    {
+        $post = Proposal::where('id',$request->props_id_penutup)->update([
+            'penutup' => $request->e_penutup
+        ]);
         return response()->json($post);
     }
 }
