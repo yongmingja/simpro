@@ -299,7 +299,18 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="table_show_informasi" class="col-sm-12 table-responsive mb-3"></div>
-                                    <button type="button" class="btn btn-secondary float-end" data-bs-dismiss="modal">Close</button>
+                                    <input type="hidden" id="edit_id" name="edit_id">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <input type="checkbox" id="check_finish" class="form-check-input"><small>&nbsp;&nbsp;<i>Jika anda telah melakukan revisi, silakan centang lalu submit ulang proposal anda.</i></small>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="mt-2 float-end">
+                                                <button type="button" class="btn btn-primary" id="submit-ulang"><i class="bx bx-check-circle bx-tada-hover"></i> Submit ulang</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1346,12 +1357,61 @@
                   editor4.root.innerHTML = quillEditor4.value;
               });
           }
-      });
+    });
 
-      $('body').on('click','.info-ditolakdekan',function(){
-        var dataKet = $(this).attr('data-keteranganditolak');
-        alert(dataKet);
-      });
+    $('body').on('click','.info-ditolakdekan',function(){
+    var dataKet = $(this).attr('data-keteranganditolak');
+    alert(dataKet);
+    });
+
+    $('#submit-ulang').prop('disabled',true);
+    $('#check_finish').on('change', function() {
+        if($("#check_finish").prop('checked')){
+            $('#submit-ulang').prop('disabled',false);
+        }else{
+            $('#submit-ulang').prop('disabled',true);
+        }
+    });
+
+    $('#submit-ulang').click(function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Please check you have filled the whole documents. If you confirm to save permanently, you won't be able to change it anymore!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sure, confirm',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('re-submit-proposal')}}",
+                        type: 'POST',
+                        data: {
+                            id_proposal: $('#edit_id').val()
+                        },
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Saved!',
+                            text: 'Your data has been saved.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        location.reload();
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Something went wrong with ajax!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
+    });
 
 
 </script>

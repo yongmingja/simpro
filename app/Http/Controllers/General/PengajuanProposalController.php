@@ -764,4 +764,13 @@ class PengajuanProposalController extends Controller
         ]);
         return response()->json($post);
     }
+
+    public function submitUlangProposal(Request $request)
+    {
+        $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
+            'status_approval' => 1,
+            'keterangan_ditolak' => ''
+        ]);
+        return response()->json($post);
+    }
 }

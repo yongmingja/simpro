@@ -116,6 +116,7 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::post('update-peserta','General\PengajuanProposalController@updatePeserta')->name('update-peserta');
     Route::post('update-detilkegiatan','General\PengajuanProposalController@updateDetilKegiatan')->name('update-detilkegiatan');
     Route::post('update-penutup','General\PengajuanProposalController@updatePenutup')->name('update-penutup');
+    Route::post('resubmit-proposal','General\PengajuanProposalController@submitUlangProposal')->name('re-submit-proposal');
 });
 
 /* 
