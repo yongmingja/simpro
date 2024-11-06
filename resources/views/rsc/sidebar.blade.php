@@ -214,6 +214,24 @@
             <div data-i18n="Proposals">Proposals</div>
             </a>
         </li>
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fpku.index')}}">
+            <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
+            <div data-i18n="Undangan FPKU">Undangan FPKU</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{route('data-fpku.index')}}" class="menu-link {{set_active('data-fpku.index')}}">
+                    <div data-i18n="Buat Undangan">Buat Undangan</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                    <div data-i18n="Laporan FPKU">Laporan FPKU</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
         @endif
 
         @if($roleDefault == "SADM")
@@ -309,17 +327,42 @@
 
         @if($roleDefault == "DSN")
         <li class="menu-item">
-            <a href="{{route('submission-of-proposal.index')}}" class="menu-link {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}} OR {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
             <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-            <div data-i18n="Proposal Saya">Proposal Saya</div>
+            <div data-i18n="Proposals">Proposals</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{route('submission-of-proposal.index')}}" class="menu-link {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}}">
+                    <div data-i18n="Proposal Saya">Proposal Saya</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{route('my-report')}}" class="menu-link {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
+                    <div data-i18n="Laporan Saya">Laporan Saya</div>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="menu-item">
-            <a href="{{route('my-report')}}" class="menu-link {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
-            <i class="menu-icon tf-icons bx bx-archive bx-tada-hover"></i>
-            <div data-i18n="Laporan Saya">Laporan Saya</div>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
+            <div data-i18n="Undangan FPKU">Undangan FPKU</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                    <div data-i18n="Undangan">Undangan</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                    <div data-i18n="Laporan FPKU">Laporan FPKU</div>
+                    </a>
+                </li>
+            </ul>
         </li>
+        
         @endif
 
         @if($roleDefault == "DKN")

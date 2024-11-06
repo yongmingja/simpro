@@ -60,6 +60,8 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
 
     Route::resource('data-pegawai', 'AdminPage\DataUser\DataPegawaiController');
     Route::post('import-pegawai','AdminPage\DataUser\DataPegawaiController@importDataPegawai')->name('import-data-pegawai');
+
+    Route::resource('data-fpku','General\DataFpkuController');
 });
 
 /* 
