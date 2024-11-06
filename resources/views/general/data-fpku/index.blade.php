@@ -76,7 +76,7 @@
                                             </div> 
                                             <div class="mb-3">
                                                 <label for="no_surat_undangan" class="form-label">No Surat Undangan</label>
-                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" value="" autofocus />
+                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="contoh: No. 001/2024" value="" autofocus />
                                                 <span class="text-danger" id="noUndanganErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
@@ -107,7 +107,7 @@
                                             </div> 
                                             
                                             <div class="mb-3">
-                                                <label for="keperluan" class="form-label">Keperluan</label>
+                                                <label for="keperluan" class="form-label">Keperluan yang perlu dipersiapkan:</label>
                                                 <div class="col-sm-0">
                                                     <table class="table table-borderless" id="dynamicAdd">
                                                         <tr>

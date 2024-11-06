@@ -345,13 +345,13 @@
             </ul>
         </li>
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('undangan-fpku')}}">
             <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
             <div data-i18n="Undangan FPKU">Undangan FPKU</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="#" class="menu-link">
+                    <a href="{{route('undangan-fpku')}}" class="menu-link {{set_active('undangan-fpku')}}">
                     <div data-i18n="Undangan">Undangan</div>
                     </a>
                 </li>
@@ -376,16 +376,43 @@
 
         @if($roleDefault == "WRAK" || $roleDefault == "WRSDP")
         <li class="menu-item">
-            <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
             <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-            <div data-i18n="Proposal">Proposal</div>
+            <div data-i18n="Proposals">Proposals</div>
             </a>
-        </li>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
+                    <div data-i18n="Proposal">Proposal</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{route('index-hal-laporan')}}" class="menu-link {{set_active('index-hal-laporan')}}">
+                    <div data-i18n="Laporan Proposal">Laporan Proposal</div>
+                    </a>
+                </li>
+            </ul>
+        </li>        
+        @endif
+
+        @if($roleDefault == "WRSDP")
         <li class="menu-item">
-            <a href="{{route('index-hal-laporan')}}" class="menu-link {{set_active('index-hal-laporan')}}">
-            <i class="menu-icon tf-icons bx bx-archive bx-tada-hover"></i>
-            <div data-i18n="Laporan Proposal">Laporan Proposal</div>
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fpku.index')}}">
+            <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
+            <div data-i18n="Undangan FPKU">Undangan FPKU</div>
             </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{route('data-fpku.index')}}" class="menu-link {{set_active('data-fpku.index')}}">
+                    <div data-i18n="Undangan">Undangan</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                    <div data-i18n="Laporan FPKU">Laporan FPKU</div>
+                    </a>
+                </li>
+            </ul>
         </li>
         @endif
 

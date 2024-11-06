@@ -119,6 +119,9 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::post('update-detilkegiatan','General\PengajuanProposalController@updateDetilKegiatan')->name('update-detilkegiatan');
     Route::post('update-penutup','General\PengajuanProposalController@updatePenutup')->name('update-penutup');
     Route::post('resubmit-proposal','General\PengajuanProposalController@submitUlangProposal')->name('re-submit-proposal');
+
+    Route::get('undangan-fpku','General\UndanganFpkuController@index')->name('undangan-fpku');
+    Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan');
 });
 
 /* 

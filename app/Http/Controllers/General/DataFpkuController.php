@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\General\DataFpku;
 use App\Models\Master\Pegawai;
 use DB;
+use Auth;
 
 class DataFpkuController extends Controller
 {
@@ -68,6 +69,7 @@ class DataFpkuController extends Controller
             'nama_kegiatan'     => $request->nama_kegiatan,
             'tgl_kegiatan'      => $request->tgl_kegiatan,
             'peserta_kegiatan'  => $request->input('id_pegawais'),
+            'dibuat_oleh'       => Auth::user()->id,
             'catatan'           => $request->catatan
         ]);
 
