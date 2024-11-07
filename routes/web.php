@@ -123,6 +123,7 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
 
     Route::get('undangan-fpku','General\UndanganFpkuController@index')->name('undangan-fpku');
     Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan');
+    Route::get('/fpku/{slug}','General\UndanganFpkuController@qrundangan');
 });
 
 /* 
@@ -152,4 +153,6 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP'])->group(func
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');
     Route::get('index-hal-laporan','RektoratPage\DashboardController@indexlaporan')->name('index-hal-laporan');
     Route::post('laporan-selesai','RektoratPage\DashboardController@selesailaporan')->name('laporan-selesai');
+    Route::get('rundanganfpku','RektoratPage\DashboardController@indexUndanganFpku')->name('rundanganfpku');
+    Route::post('confirmundanganfpku','RektoratPage\DashboardController@confirmUndanganFpku')->name('confirmundanganfpku');
 });

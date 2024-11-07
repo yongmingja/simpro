@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\General\Proposal;
 use App\Models\General\DataRencanaAnggaran;
 use App\Models\General\LaporanProposal;
+use App\Models\General\DataFpku;
+use App\Models\Master\Pegawai;
 use Auth;
 use DB;
 use URL;
@@ -148,6 +150,44 @@ class DashboardController extends Controller
         $post = LaporanProposal::where('id_proposal',$request->proposal_id)->update([
             'status_laporan' => 1,
             'qrcode' => ''.URL::to('/').'/report/'.time().'.png'
+        ]);
+        return response()->json($post);
+    }
+
+    public function indexUndanganFpku(Request $request)
+    {
+        $datas = DataFpku::all();
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('action', function($data){
+                $checkState = DB::table('status_fpkus')->where('id_fpku',$data->id)->select('status_approval')->first();
+                if($checkState->status_approval == 1){
+                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Undangan" data-placement="bottom" data-original-title="Validasi Undangan" class="btn btn-warning btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a><div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
+                } else {
+                    return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
+                }
+            })->addColumn('nama_pegawai', function($data){
+                $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
+                foreach($dataPegawai as $result){
+                    $pegawai[] = $result->nama_pegawai;
+                    
+                }
+                return implode(", <br>", $pegawai);
+            })->addColumn('undangan', function($data){
+                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Undangan" data-original-title="Preview Undangan" class="preview-undangan">'.$data->undangan_dari.'</a>';
+            })
+            ->rawColumns(['action','nama_pegawai','undangan'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        return view('general.rektorat.index-undangan-fpku');
+    }
+
+    public function confirmUndanganFpku(Request $request)
+    {
+        $post = DB::table('status_fpkus')->where('id_fpku',$request->id)->update([
+            'status_approval' => 2,
+            'generate_qrcode' => ''.URL::to('/').'/fpku/'.time().'.png'
         ]);
         return response()->json($post);
     }

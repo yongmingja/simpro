@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\DataFpku;
 use App\Models\Master\Pegawai;
-use Auth; use DB;
+use Auth; use DB; use URL;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -34,7 +34,7 @@ class UndanganFpkuController extends Controller
         $ID = decrypt($id);
         $dataUndangan = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.dibuat_oleh')->where('data_fpkus.id',$ID)->select('data_fpkus.id AS id','data_fpkus.*','pegawais.nama_pegawai')->get();
         $dataKeperluan = DB::table('fpku_keperluans')->where('id_fpku',$ID)->get();
-        $verifiedQrCode = DB::table('status_fpkus')->where([['id_fpku',$ID],['status_approval',3]])->get();
+        $verifiedQrCode = DB::table('status_fpkus')->where([['id_fpku',$ID],['status_approval',2]])->get();
 
         $fileName = date(now()).'_undangan_FPKU'.'.pdf';
         $pdf = PDF::loadview('general.undangan-fpku.preview-undangan', compact('dataUndangan','dataKeperluan','verifiedQrCode'));
@@ -44,5 +44,16 @@ class UndanganFpkuController extends Controller
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         return $pdf->stream($fileName);
+    }
+
+    public function qrundangan($slug)
+    {
+        $initial = ''.URL::to('/').'/fpku/'.$slug;
+        $datas = DataFpku::leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
+            ->select('data_fpkus.id AS id','data_fpkus.*')
+            ->where('status_fpkus.generate_qrcode',$initial)
+            ->get();
+
+        return view('general.undangan-fpku.qrcode-undangan', compact('datas'));
     }
 }

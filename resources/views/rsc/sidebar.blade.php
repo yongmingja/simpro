@@ -397,13 +397,13 @@
 
         @if($roleDefault == "WRSDP")
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fpku.index')}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}}">
             <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
             <div data-i18n="Undangan FPKU">Undangan FPKU</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="{{route('data-fpku.index')}}" class="menu-link {{set_active('data-fpku.index')}}">
+                    <a href="{{route('rundanganfpku')}}" class="menu-link {{set_active('rundanganfpku')}}">
                     <div data-i18n="Undangan">Undangan</div>
                     </a>
                 </li>
