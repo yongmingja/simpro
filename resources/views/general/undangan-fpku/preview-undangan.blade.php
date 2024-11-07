@@ -56,13 +56,13 @@
     <div class="isi-undangan">
         <table>
             <tr>
-                <td>Dari</td>
-                <td class="td_titik">:</td>
+                <td style="vertical-align: top;">Dari</td>
+                <td style="vertical-align: top;" class="td_titik">:</td>
                 <td class="td_isi_undangan">@foreach($dataUndangan as $dari) {{$dari->undangan_dari}} @endforeach</td>
             </tr>
             <tr>
-                <td>Nama Kegiatan</td>
-                <td class="td_titik">:</td>
+                <td style="vertical-align: top;">Nama Kegiatan</td>
+                <td style="vertical-align: top;" class="td_titik">:</td>
                 <td class="td_isi_undangan">@foreach($dataUndangan as $namaKegiatan) {{$namaKegiatan->nama_kegiatan}} @endforeach</td>
             </tr>
             <tr>
