@@ -143,7 +143,7 @@ class DataFpkuController extends Controller
             'name' => 'Form Partisipasi Kegiatan Undangan',
             'body' => 'Anda memiliki undangan kegiatan, untuk info lebih detail, silakan login di akun SIMPRO anda. Pada menu Undangan FPKU - Undangan.',
         ];
-        Mail::to([$emails])->send(new UndanganFpku($isiData));
+        Mail::to(['benny.roesly@uvers.ac.id',$emails])->send(new UndanganFpku($isiData));
         $post = DB::table('status_fpkus')->update([
             'broadcast_email' => 1
         ]);
