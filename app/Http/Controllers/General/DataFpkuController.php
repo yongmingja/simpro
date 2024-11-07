@@ -19,7 +19,12 @@ class DataFpkuController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                return '<button type="button" name="delete" id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
+                $checkState = DB::table('status_fpkus')->where('id_fpku',$data->id)->select('status_approval')->first();
+                if($checkState->status_approval == 1){
+                    return '<button type="button" name="delete" id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
+                } else {
+                    return '<a href="javascript:void(0)" class="btn btn-danger btn-sm disabled"><i class="bx bx-xs bx-trash"></i></a>';
+                }
             })->addColumn('nama_pegawai', function($data){
                 $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
                 foreach($dataPegawai as $result){
