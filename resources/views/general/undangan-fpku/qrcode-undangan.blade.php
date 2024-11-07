@@ -5,12 +5,18 @@
 	<title>QR Code - Undangan</title>
     <link href="{{asset('assets/css/css-export/style-bootstrap.css')}}" rel="stylesheet">
 </head>
+<style>
+    .container {
+        margin-top: 150px;
+    }
+</style>
 <body>
 <div class="container">
     <div class="col-sm-12 mt-3">
         <div class="row">
             <div class="card p-3">
                 <div class="card-body">
+                    @if($datas->count() > 0)
                     <table class="table table-hover table-bordered">
                         <tr>
                             <td colspan="2" style="text-align: center;"><b>Verifikasi Undangan<br>Form Partisipasi Kegiatan Undangan<br>Universitas Universal</b></td>
@@ -45,6 +51,9 @@
                         </tr>
                     </table>
                     <p style="text-align: center;">&reg;adalah benar dan tercatat dalam sistem kami.</p>
+                    @else
+                    <p style="text-align: center;"><b>Invalid QR! Tidak tercatat dalam sistem.</b></p>
+                    @endif
                 </div>
             </div>
         </div>
