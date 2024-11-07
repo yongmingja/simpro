@@ -55,27 +55,28 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <hr>
                                     <form id="form-tambah-edit" name="form-tambah-edit" class="form-horizontal">
                                         <div class="row p-3">
                                             <input type="hidden" id="id" name="id">
-                                            <label for="cek_tanggal" class="form-label mb-2">Apakah perlu pengecekan tanggal kegiatan ?</label>
-                                            <div class="mb-2">
-                                                <label class="switch switch-warning">
-                                                    <span class="switch-label">Tidak</span>
-                                                    <input type="checkbox" class="switch-input" value="1" id="cek_tanggal" name="cek_tanggal" />
-                                                    <span class="switch-toggle-slider">
-                                                      <span class="switch-on">
-                                                        <i class="bx bx-check"></i>
-                                                      </span>
-                                                      <span class="switch-off">
-                                                        <i class="bx bx-x"></i>
-                                                      </span>
-                                                    </span>
-                                                    <span class="switch-label">Ya</span>
-                                                  </label>
+                                            <div style="text-align: center;">
+                                                <label for="cek_tanggal" class="form-label mb-2">Apakah perlu pengecekan tanggal kegiatan ?</label>
+                                                <div class="mb-2">
+                                                    <label class="switch switch-warning">
+                                                        <span class="switch-label">Tidak</span>
+                                                        <input type="checkbox" class="switch-input" value="1" id="cek_tanggal" name="cek_tanggal" />
+                                                        <span class="switch-toggle-slider">
+                                                        <span class="switch-on">
+                                                            <i class="bx bx-check"></i>
+                                                        </span>
+                                                        <span class="switch-off">
+                                                            <i class="bx bx-x"></i>
+                                                        </span>
+                                                        </span>
+                                                        <span class="switch-label">Ya</span>
+                                                    </label>
+                                                </div>
                                             </div> 
-                                            <div class="mb-3">
+                                            <div class="mb-3 mt-3">
                                                 <label for="no_surat_undangan" class="form-label">No Surat Undangan</label>
                                                 <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="contoh: No. 001/2024" value="" autofocus />
                                                 <span class="text-danger" id="noUndanganErrorMsg" style="font-size: 10px;"></span>
@@ -129,7 +130,7 @@
                                                 <hr class="mt-2">
                                                 <div class="float-sm-end">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-primary btn-block" id="tombol-simpan" value="create">Send <i class="bx bx-paper-plane bx-xs"></i></button>
+                                                    <button type="submit" class="btn btn-primary btn-block" id="tombol-simpan" value="create">Simpan</button>
                                                 </div>
                                             </div>
                                         </div>
