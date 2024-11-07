@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\DataFpku;
 use App\Models\Master\Pegawai;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UndanganFpku;
 use DB;
 use Auth;
 
@@ -25,8 +27,15 @@ class DataFpkuController extends Controller
                     
                 }
                 return implode(", <br>", $pegawai);
+            })->addColumn('broadcast', function($data){
+                $checkState = DB::table('status_fpkus')->where('id_fpku',$data->id)->select('broadcast_email')->first();
+                if($checkState->broadcast_email == 1){
+                    return '<a href="javascript:void(0)" class="edit btn btn-info btn-sm disabled">Broadcast <i class="bx bx-xs bx-paper-plane"></i></a>';
+                } else {
+                    return '<button type="button" name="broadcast_undangan" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Broadcast undangan" class="broadcast_undangan btn btn-info btn-sm">Broadcast <i class="bx bx-xs bx-paper-plane"></i></button>';
+                }
             })
-            ->rawColumns(['action','nama_pegawai'])
+            ->rawColumns(['action','nama_pegawai','broadcast'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -94,6 +103,7 @@ class DataFpkuController extends Controller
         $post = DB::table('status_fpkus')->insert([
             'id_fpku'           => $latest,
             'status_approval'   => 1,
+            'broadcast_email'   => 0,
             'created_at'        => now(),
             'updated_at'        => now()
         ]);
@@ -112,6 +122,32 @@ class DataFpkuController extends Controller
     public function destroy($id)
     {
         $post = DataFpku::where('id',$id)->delete();     
+        return response()->json($post);
+    }
+
+    public function broadcastUndangan(Request $request)
+    {
+        $datas = DataFpku::where('id',$request->id)->select('peserta_kegiatan')->get();
+        if($datas->count() > 0){
+            foreach($datas as $data){
+                $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('email')->get();
+                foreach($dataPegawai as $result){
+                    $pegawai[] = $result->email;                    
+                }
+            }
+        } else {
+            return 'Nothing data in the table';
+        }
+        $emails = implode(", ", $pegawai);
+        $isiData = [
+            'name' => 'Form Partisipasi Kegiatan Undangan',
+            'body' => 'Anda memiliki undangan kegiatan, untuk info lebih detail, silakan login di akun SIMPRO anda. Pada menu Undangan FPKU - Undangan.',
+        ];
+        Mail::to([$emails])->send(new UndanganFpku($isiData));
+        $post = DB::table('status_fpkus')->update([
+            'broadcast_email' => 1
+        ]);
+
         return response()->json($post);
     }
 }

@@ -62,6 +62,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
     Route::post('import-pegawai','AdminPage\DataUser\DataPegawaiController@importDataPegawai')->name('import-data-pegawai');
 
     Route::resource('data-fpku','General\DataFpkuController');
+    Route::post('broadcast-undangan','General\DataFpkuController@broadcastUndangan')->name('broadcast-undangan');
 });
 
 /* 

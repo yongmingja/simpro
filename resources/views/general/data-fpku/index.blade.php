@@ -38,6 +38,7 @@
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
                                   <th>Peserta Kegiatan</th>
+                                  <th>Broadcast Email</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>
@@ -175,6 +176,7 @@
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                 {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
+                {data: 'broadcast',name: 'broadcast'},
                 {data: 'action',name: 'action'},
             ]
         });
@@ -304,6 +306,45 @@
 
     $(document).on('click', '.remove-tr', function(){  
         $(this).parents('tr').remove();
+    });
+
+    $('body').on('click','.broadcast_undangan', function(){
+        var idFpku = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Klik broadcast undangan ke peserta kegiatan!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Broadcast!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('broadcast-undangan')}}",
+                        type: 'POST',
+                        data: {id:idFpku},
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Your data has been broadcasted.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        $('#table_fpku').DataTable().ajax.reload(null, true);
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Something went wrong with ajax!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
     });
 
 </script>

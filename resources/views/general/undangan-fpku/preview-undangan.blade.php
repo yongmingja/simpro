@@ -66,7 +66,7 @@
                 <td class="td_isi_undangan">@foreach($dataUndangan as $namaKegiatan) {{$namaKegiatan->nama_kegiatan}} @endforeach</td>
             </tr>
             <tr>
-                <td>Tanggal Kegiatan</td>
+                <td width="120px;">Tanggal Kegiatan</td>
                 <td class="td_titik">:</td>
                 <td class="td_isi_undangan">@foreach($dataUndangan as $tglKegiatan) {{tanggal_indonesia($tglKegiatan->tgl_kegiatan)}} @endforeach</td>
             </tr>
@@ -102,7 +102,7 @@
     <div class="catatan">
         <table>
             <tr>
-                <td>Catatan</td>
+                <td width="120px;">Catatan</td>
                 <td class="td_titik">:</td>
                 <td class="td_isi_undangan">@foreach($dataUndangan as $ctt) {{$ctt->catatan}} @endforeach</td>
             </tr>
