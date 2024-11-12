@@ -68,6 +68,36 @@ class LaporanFpkuController extends Controller
 
     public function insertLaporanFpku(Request $request)
     {
+        $request->validate([
+            'nama_kegiatan'                => 'required',
+            'tgl_kegiatan'                 => 'required',
+            'id_fakultas'                  => 'required',
+            'id_prodi'                     => 'required',
+            'lokasi_tempat'                => 'required',
+            'pendahuluan'                  => 'required',
+            'tujuan_manfaat'               => 'required',
+            'peserta'                      => 'required',
+            'detil_kegiatan'               => 'required',
+            'hasil_kegiatan'               => 'required',
+            'evaluasi_catatan_kegiatan'    => 'required',
+            'penutup'                      => 'required',
+            'berkas'                       => 'max:2048'
+        ],[
+            'nama_kegiatan.required'                => 'Anda belum menginput nama kegiatan', 
+            'tgl_kegiatan.required'                 => 'Anda belum menginput tgl kegiatan', 
+            'id_fakultas.required'                  => 'Anda belum memilih fakultas', 
+            'id_prodi.required'                     => 'Anda belum memilih prodi', 
+            'lokasi_tempat.required'                => 'Anda belum menginput lokasi kegiatan',
+            'pendahuluan.required'                  => 'Anda belum menginput pendahuluan', 
+            'tujuan_manfaat.required'               => 'Anda belum menginput tujuan manfaat', 
+            'peserta.required'                      => 'Anda belum menginput peserta', 
+            'detil_kegiatan.required'               => 'Anda belum menginput detil kegiatan', 
+            'hasil_kegiatan.required'               => 'Anda belum menginput hasil kegiatan', 
+            'evaluasi_catatan_kegiatan.required'    => 'Anda belum menginput evaluasi catatan kegiatan', 
+            'penutup.required'                      => 'Anda belum menginput penutup',
+            'berkas.max'                            => 'Ukuran berkas tidak boleh melebihi 2MB', 
+        ]);
+
         $checkStatus = LaporanFpku::where('id_fpku',$request->id_fpku)->count();
         if($checkStatus > 0){
             return redirect()->route('index-laporan-fpku');

@@ -309,6 +309,7 @@
                                         <label for="penutup" class="form-label">Penutup</label>
                                         <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
                                         <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
+                                        <span class="text-danger" id="penutupErrorMsg" style="font-size: 10px;"></span>
                                       </div>
                                       <div class="col-12 d-flex justify-content-between">
                                         <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
@@ -426,6 +427,16 @@
                                 window.location = '{{ route("index-laporan-fpku") }}';
                             },
                             error: function (response) {
+                                $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
+                                $('#fakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
+                                $('#prodiErrorMsg').text(response.responseJSON.errors.id_prodi);
+                                $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
+                                $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
+                                $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
+                                $('#lokasiErrorMsg').text(response.responseJSON.errors.lokasi_tempat);
+                                $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
+                                $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
+                                $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
                                 $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Save');
                                 Swal.fire({

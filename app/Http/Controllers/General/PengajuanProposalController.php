@@ -262,7 +262,7 @@ class PengajuanProposalController extends Controller
         if($request->berkas != ''){
             $fileNames = [];
             foreach($request->berkas as $file){
-                $fileName = time().'_'.Auth::user()->user_id.'_'.$file->getClientOriginalName();
+                $fileName = md5(time().'_'.Auth::user()->user_id).$file->getClientOriginalName();
                 $file->move(public_path('uploads-lampiran/lampiran-proposal'),$fileName);
                 $fileNames[] = 'uploads-lampiran/lampiran-proposal/'.$fileName;
             }
