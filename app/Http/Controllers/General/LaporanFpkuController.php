@@ -38,7 +38,7 @@ class LaporanFpkuController extends Controller
             ->addColumn('action', function($data){
                 $checkStatus = LaporanFpku::where('id_fpku',$data->id)->get();
                 if($checkStatus->count() > 0){
-                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-food-menu bx-sm text-primary"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><i class="bx bx-show bx-sm text-info"></i></a>';
+                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-food-menu bx-sm text-primary"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><i class="bx bx-show bx-sm text-info"></i></a>';
                     return $button;
                 } else {
                     return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>';
@@ -48,15 +48,15 @@ class LaporanFpkuController extends Controller
                 if($state->count() > 0){
                     foreach($state as $r){
                         if($r->status_laporan == 1){
-                            return '<i class="bx bx-check-circle text-primary"></i>';
+                            return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Submitted" data-original-title="Submitted"><i class="bx bx-check-circle text-primary"></i></a>';
                         } elseif($r->status_laporan == 2){
-                            return '<i class="bx bx-check-shield text-success"></i>';
+                            return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Verified" data-original-title="Verified"><i class="bx bx-check-shield text-success"></i></a>';
                         } else {
-                            return '<i class="bx bx-x-circle text-danger"></i>';
+                            return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
                         }
                     }
                 } else {
-                    return '<i class="bx bx-x-circle text-danger"></i>';
+                    return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
                 }
             })
             ->rawColumns(['action','status'])
