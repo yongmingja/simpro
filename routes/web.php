@@ -124,6 +124,11 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::get('undangan-fpku','General\UndanganFpkuController@index')->name('undangan-fpku');
     Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan');
     Route::get('/fpku/{slug}','General\UndanganFpkuController@qrundangan');
+
+    Route::get('index-laporan-fpku','General\LaporanFpkuController@indexFpku')->name('index-laporan-fpku');
+    Route::get('buat-laporan-fpku/{id}','General\LaporanFpkuController@buatLaporan')->name('buat-laporan-fpku');
+    Route::post('insert-laporan-fpku','General\LaporanFpkuController@insertLaporanFpku')->name('insert-laporan-fpku');
+    Route::get('view-lampiran-fpku','General\LaporanFpkuController@viewlampiran')->name('view-lampiran-fpku');
 });
 
 /* 

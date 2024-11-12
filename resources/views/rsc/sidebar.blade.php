@@ -345,7 +345,7 @@
             </ul>
         </li>
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('undangan-fpku')}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('undangan-fpku')}} OR {{set_active('index-laporan-fpku')}} OR {{set_active('buat-laporan-fpku')}}">
             <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
             <div data-i18n="Undangan FPKU">Undangan FPKU</div>
             </a>
@@ -356,7 +356,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="#" class="menu-link">
+                    <a href="{{route('index-laporan-fpku')}}" class="menu-link {{set_active('index-laporan-fpku')}} OR {{set_active('buat-laporan-fpku')}}">
                     <div data-i18n="Laporan FPKU">Laporan FPKU</div>
                     </a>
                 </li>
