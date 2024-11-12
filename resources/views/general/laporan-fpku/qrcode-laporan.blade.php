@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>QR Code - Undangan</title>
+	<title>QR Code - Laporan FPKU</title>
     <link href="{{asset('assets/css/css-export/style-bootstrap.css')}}" rel="stylesheet">
 </head>
 <style>
@@ -19,7 +19,7 @@
                     @if($datas->count() > 0)
                     <table class="table table-hover table-bordered">
                         <tr>
-                            <td colspan="2" style="text-align: center;"><b>Verifikasi Undangan<br>Form Partisipasi Kegiatan Undangan<br>Universitas Universal</b></td>
+                            <td colspan="2" style="text-align: center;"><b>Verifikasi Laporan<br>Form Partisipasi Kegiatan Undangan<br>Universitas Universal</b></td>
                         </tr>
                         @foreach($datas as $data)
                         <tr>
@@ -50,7 +50,7 @@
                         </tr>
                         <tr>
                             <td>Diverifikasi pada tanggal</td>
-                            <td style="vertical-align: middle;">{{$data->created_at}}</td>
+                            <td style="vertical-align: middle;">{{$data->tgl_verif}}</td>
                         </tr>
                         @endforeach    
                     </table>

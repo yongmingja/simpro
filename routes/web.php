@@ -129,6 +129,8 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::get('buat-laporan-fpku/{id}','General\LaporanFpkuController@buatLaporan')->name('buat-laporan-fpku');
     Route::post('insert-laporan-fpku','General\LaporanFpkuController@insertLaporanFpku')->name('insert-laporan-fpku');
     Route::get('view-lampiran-fpku','General\LaporanFpkuController@viewlampiran')->name('view-lampiran-fpku');
+    Route::get('preview-laporan-fpku/{id}','General\LaporanFpkuController@previewlaporanfpku')->name('preview-laporan-fpku');
+    Route::get('/fpku-rep/{slug}','General\LaporanFpkuController@qrlaporan');
 });
 
 /* 
@@ -160,4 +162,6 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP'])->group(func
     Route::post('laporan-selesai','RektoratPage\DashboardController@selesailaporan')->name('laporan-selesai');
     Route::get('rundanganfpku','RektoratPage\DashboardController@indexUndanganFpku')->name('rundanganfpku');
     Route::post('confirmundanganfpku','RektoratPage\DashboardController@confirmUndanganFpku')->name('confirmundanganfpku');
+    Route::get('rlaporanfpku','RektoratPage\DashboardController@indexLaporanFpku')->name('rlaporanfpku');
+    Route::post('confirmlaporanfpku','RektoratPage\DashboardController@confirmLaporanFpku')->name('confirmlaporanfpku');
 });

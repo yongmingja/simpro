@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\General\DataFpku;
 use App\Models\General\LaporanFpku;
 use App\Models\General\DataFakultas;
-use Auth; use DB;
+use App\Setting\Dekan;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Auth; use DB; use URL;
 
 class LaporanFpkuController extends Controller
 {
@@ -35,7 +38,7 @@ class LaporanFpkuController extends Controller
             ->addColumn('action', function($data){
                 $checkStatus = LaporanFpku::where('id_fpku',$data->id)->get();
                 if($checkStatus->count() > 0){
-                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-proposal"><i class="bx bx-food-menu bx-sm text-primary"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><i class="bx bx-show bx-sm text-info"></i></a>';
+                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-food-menu bx-sm text-primary"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><i class="bx bx-show bx-sm text-info"></i></a>';
                     return $button;
                 } else {
                     return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>';
@@ -174,5 +177,45 @@ class LaporanFpkuController extends Controller
         return response()->json(['card' => $html]);
     }
 
-   
+    public function previewlaporanfpku($id)
+    {
+        $ID = decrypt($id);
+        $datas = LaporanFpku::leftJoin('data_fakultas','data_fakultas.id','=','laporan_fpkus.id_fakultas')
+            ->leftJoin('pegawais','pegawais.id','=','laporan_fpkus.dibuat_oleh')
+            ->leftJoin('data_prodis','data_prodis.id','=','laporan_fpkus.id_prodi')
+            ->select('laporan_fpkus.id AS id','laporan_fpkus.*','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai','pegawais.user_id')
+            ->where('laporan_fpkus.id_fpku',$ID)
+            ->get();
+
+        $anggarans = DB::table('data_rencana_anggaran_fpkus')->where('id_fpku',$ID)->get();
+        $realisasianggarans = DB::table('data_realisasi_anggaran_fpkus')->where('id_fpku',$ID)->get();
+        $grandTotalAnggarans = DB::table('data_rencana_anggaran_fpkus')->select(DB::raw('sum(biaya_satuan * quantity * frequency) as grandTotal'))->where('id_fpku',$ID)->first();
+        $grandTotalRealisasiAnggarans = DB::table('data_realisasi_anggaran_fpkus')->select(DB::raw('sum(biaya_satuan * quantity * frequency) as grandTotalRealisasi'))->where('id_fpku',$ID)->first();
+        $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate('Unverified!'));
+
+        # Get Dekan
+        foreach($datas as $r){
+            $getDekan = Dekan::leftJoin('data_fakultas','data_fakultas.id','=','dekans.id_fakultas')->where('dekans.id_fakultas',$r->id_fakultas)->select('dekans.name','data_fakultas.nama_fakultas')->get();
+        }
+        
+        
+        $fileName = 'laporan_fpku_'.date(now()).'.pdf';
+        $pdf = PDF::loadview('general.laporan-fpku.preview-laporan-fpku', compact('datas','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','qrcode','getDekan'));
+        $pdf->setPaper('F4','P');
+        $pdf->output();
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        return $pdf->stream($fileName);
+    }
+
+    public function qrlaporan($slug)
+    {
+        $initial = ''.URL::to('/').'/fpku-rep/'.$slug;
+        $datas = DataFpku::leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
+            ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+            ->select('data_fpkus.id AS id','data_fpkus.*','laporan_fpkus.created_at AS tgl_verif')
+            ->where('laporan_fpkus.qrcode',$initial)
+            ->get();
+
+        return view('general.laporan-fpku.qrcode-laporan', compact('datas'));
+    }
 }

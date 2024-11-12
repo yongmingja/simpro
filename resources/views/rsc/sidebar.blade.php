@@ -215,22 +215,10 @@
             </a>
         </li>
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fpku.index')}}">
+            <a href="{{route('data-fpku.index')}}" class="menu-link {{set_active('data-fpku.index')}}">
             <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
-            <div data-i18n="Undangan FPKU">Undangan FPKU</div>
+            <div data-i18n="Data FPKU">Data FPKU</div>
             </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{route('data-fpku.index')}}" class="menu-link {{set_active('data-fpku.index')}}">
-                    <div data-i18n="Buat Undangan">Buat Undangan</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="#" class="menu-link">
-                    <div data-i18n="Laporan FPKU">Laporan FPKU</div>
-                    </a>
-                </li>
-            </ul>
         </li>
         @endif
 
@@ -397,7 +385,7 @@
 
         @if($roleDefault == "WRSDP")
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}} OR {{set_active('rlaporanfpku')}}">
             <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
             <div data-i18n="Undangan FPKU">Undangan FPKU</div>
             </a>
@@ -408,7 +396,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="#" class="menu-link">
+                    <a href="{{route('rlaporanfpku')}}" class="menu-link {{set_active('rlaporanfpku')}}">
                     <div data-i18n="Laporan FPKU">Laporan FPKU</div>
                     </a>
                 </li>

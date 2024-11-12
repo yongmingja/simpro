@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Preview Proposal</title>
+	<title>Preview Undangan FPKU</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <style>
@@ -114,7 +114,7 @@
             @if($verifiedQrCode->count() > 0)
                 @foreach($verifiedQrCode as $qr)
                 <tr>
-                    <td><br>Menyetujui,<br>Wakil Rektor Sumber Daya dan Pengembangan <br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}" style="margin-top: 1em;"><br>Benny Roesly, M.Pd</td>
+                    <td><br>Menyetujui,<br>Wakil Rektor Sumber Daya dan Pengembangan <br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}" style="margin-top: 1.5em;"><br>Benny Roesly, M.Pd</td>
                     <td>Batam, {{tanggal_indonesia(now())}} <br>Yang membuat <br>Staf Adminitrasi dan Umum <br><br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}"><br>@foreach($dataUndangan as $nmUser) {{$nmUser->nama_pegawai}} @endforeach</td>
                 </tr>
                 @endforeach

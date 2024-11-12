@@ -174,7 +174,7 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                {data: 'preview_undangan',name: 'preview_undangan'},
                 {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'broadcast',name: 'broadcast'},

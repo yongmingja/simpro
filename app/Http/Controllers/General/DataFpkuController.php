@@ -39,8 +39,10 @@ class DataFpkuController extends Controller
                 } else {
                     return '<button type="button" name="broadcast_undangan" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Broadcast undangan" class="broadcast_undangan btn btn-info btn-sm">Broadcast <i class="bx bx-xs bx-paper-plane"></i></button>';
                 }
+            })->addColumn('preview_undangan', function($data){
+                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Preview Undangan" data-original-title="Preview Undangan" class="preview-undangan">'.$data->nama_kegiatan.'</a>';
             })
-            ->rawColumns(['action','nama_pegawai','broadcast'])
+            ->rawColumns(['action','nama_pegawai','broadcast','preview_undangan'])
             ->addIndexColumn(true)
             ->make(true);
         }
