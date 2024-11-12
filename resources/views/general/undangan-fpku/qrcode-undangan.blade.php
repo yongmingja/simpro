@@ -42,11 +42,11 @@
                                 $pegawai[] = $result->nama_pegawai;
                                 
                             } @endphp
-                            <td>{{implode(", ",$pegawai)}}</td>
+                            <td>{!! implode(", <br>",$pegawai) !!}</td>
                         </tr>
                         @endforeach                       
                         <tr>
-                            <td>Wakil Rektor <br>Bidang Sumber Daya Pengembangan</td>
+                            <td>Diverifikasi oleh Wakil Rektor <br>Bidang Sumber Daya Pengembangan</td>
                             <td style="vertical-align: middle;">Benny Roesly, S.T., M.Pd.</td>
                         </tr>
                     </table>
