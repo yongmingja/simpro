@@ -122,7 +122,11 @@
                         return row.nama_user_dosen || row.nama_user_mahasiswa
                     }
                 },
-                {data: 'tgl_proposal',name: 'tgl_proposal',render: function ( data, type, row ) {return moment(row.tgl_proposal).format("LL")}},
+                {data: 'tgl_proposal',name: 'tgl_proposal',
+                    render: function ( data, type, row ){
+                        return moment(row.tgl_proposal).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });

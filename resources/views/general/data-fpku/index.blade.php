@@ -175,7 +175,11 @@
                     }
                 }, 
                 {data: 'preview_undangan',name: 'preview_undangan'},
-                {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
+                {data: 'tgl_kegiatan',name: 'tgl_kegiatan',
+                    render: function (data, type, row) {
+                        return moment(row.tgl_kegiatan).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'broadcast',name: 'broadcast'},
                 {data: 'action',name: 'action'},

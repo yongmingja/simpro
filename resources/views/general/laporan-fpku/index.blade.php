@@ -91,7 +91,11 @@
                 {data: 'action',name: 'action'},
                 {data: 'undangan_dari',name: 'undangan_dari'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
+                {data: 'tgl_kegiatan',name: 'tgl_kegiatan',
+                    render: function (data, type, row) {
+                        return moment(row.tgl_kegiatan).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'status',name: 'status'},
             ]
         });

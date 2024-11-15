@@ -122,7 +122,11 @@
                         return row.nama_pegawai || row.nama_user
                     }
                 },
-                {data: 'tgl_proposal',name: 'tgl_proposal',render: function ( data, type, row ) {return moment(row.tgl_proposal).format("LL")}},
+                {data: 'tgl_proposal',name: 'tgl_proposal',
+                    render: function ( data, type, row ){
+                        return moment(row.tgl_proposal).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });
