@@ -138,17 +138,12 @@
                     </a>
                 </li> --}}
                 <li>
-                    {{-- <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" target="_blank" id="logoutButton">
+                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" target="_blank" id="logoutButton">
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                         </form>
                     <i class="bx bx-power-off me-2"></i>
                     <span class="align-middle">Sign out</span>
-                    </a> --}}
-
-                    <a class="dropdown-item" href="{{ route('ui-modul') }}">
-                    <i class="bx bx-log-out me-2"></i>
-                    <span class="align-middle">Back to homepage</span>
                     </a>
                 </li>
                 </ul>

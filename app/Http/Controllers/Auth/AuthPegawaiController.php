@@ -20,9 +20,11 @@ class AuthPegawaiController extends Controller
         ]);
 
         if(Auth::guard('pegawai')->attempt(['user_id' => $request->user_id, 'password' => $request->password])){
-            return redirect()->route('ui-modul');
+            // return redirect()->route('ui-modul');
+            return redirect()->intended('home');
         } elseif(Auth::guard('mahasiswa')->attempt(['user_id' => $request->user_id, 'password' => $request->password])){
-            return redirect()->route('ui-modul');
+            // return redirect()->route('ui-modul');
+            return redirect()->intended('home');
         } else {
             return back()->withErrors([
                 'user_id' => 'ID Pengguna atau Password anda salah!',
