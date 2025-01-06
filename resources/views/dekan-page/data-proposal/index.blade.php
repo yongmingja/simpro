@@ -31,8 +31,8 @@
                                   <th>#</th>
                                   <th>Preview</th>
                                   <th>Nama Kegiatan</th>
-                                  <th>Nama Fakultas</th>
-                                  <th>Nama Prodi</th>
+                                  <th>Nama Fakultas / Biro</th>
+                                  <th>Nama Prodi / Biro</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>

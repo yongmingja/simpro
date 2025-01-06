@@ -56,13 +56,13 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="nama_fakultas" class="form-label">Nama Fakultas</label>
-                                                <input type="text" class="form-control" id="nama_fakultas" name="nama_fakultas" value="" placeholder="e.g Bisnis" autofocus />
+                                                <label for="nama_fakultas" class="form-label">Nama Fakultas / Biro</label>
+                                                <input type="text" class="form-control" id="nama_fakultas" name="nama_fakultas" value="" placeholder="e.g Fakultas Bisnis" autofocus />
                                                 <span class="text-danger" id="namaFakultasErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
-                                                <label for="kode_fakultas" class="form-label">Kode Fakultas</label>
-                                                <input type="text" class="form-control" id="kode_fakultas" name="kode_fakultas" value="" placeholder="e.g FEB" autofocus />
+                                                <label for="kode_fakultas" class="form-label">Kode Fakultas / Biro</label>
+                                                <input type="text" class="form-control" id="kode_fakultas" name="kode_fakultas" value="" placeholder="e.g FEB" />
                                                 <span class="text-danger" id="kodeFakultasErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             

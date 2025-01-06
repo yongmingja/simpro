@@ -57,12 +57,12 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="nama_prodi" class="form-label">Nama Prodi</label>
-                                                <input type="text" class="form-control" id="nama_prodi" name="nama_prodi" value="" placeholder="e.g Manajemen" autofocus />
+                                                <label for="nama_prodi" class="form-label">Nama Prodi / Biro</label>
+                                                <input type="text" class="form-control" id="nama_prodi" name="nama_prodi" value="" placeholder="e.g Program Studi Manajemen" autofocus />
                                                 <span class="text-danger" id="namaProdiErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="id_fakultas" class="form-label">Fakultas</label>
+                                                <label for="id_fakultas" class="form-label">Fakultas / Biro</label>
                                                 <select class="form-select" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_fakultas">- Pilih -</option>
                                                     @foreach($getDataFakultas as $fakultas)
@@ -72,8 +72,8 @@
                                                 <span class="text-danger" id="idFakultasErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                         
                                             <div class="mb-3">
-                                                <label for="kode_prodi" class="form-label">Kode Prodi</label>
-                                                <input type="text" class="form-control" id="kode_prodi" name="kode_prodi" value="" placeholder="e.g MN" autofocus />
+                                                <label for="kode_prodi" class="form-label">Kode Prodi / Biro</label>
+                                                <input type="text" class="form-control" id="kode_prodi" name="kode_prodi" value="" placeholder="e.g MN" />
                                                 <span class="text-danger" id="kodeProdiErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             
