@@ -13,12 +13,15 @@ class CreatePegawaisTable extends Migration
      */
     public function up()
     {
+        # update table on SQLYog
         Schema::create('pegawais', function (Blueprint $table) {
             $table->increments('id');
             $table->string('user_id');
             $table->string('nama_pegawai');
             $table->string('email');
             $table->string('password');
+            $table->string('tanggal_lahir');
+            $table->string('tanggal_masuk');
             $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
             $table->string('agama')->nullable();
             $table->integer('id_status_pegawai')->nullable();

@@ -17,7 +17,7 @@ class Dekan extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','id_fakultas', 'email', 'password',
+        'name','id_fakultas', 'email',
     ];
 
     /**
