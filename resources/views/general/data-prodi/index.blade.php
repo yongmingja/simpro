@@ -1,5 +1,5 @@
 @extends('layouts.backend')
-@section('title','Data Prodi')
+@section('title','Data Prodi & Biro')
 
 @section('breadcrumbs')
 <div class="container-xxl">
