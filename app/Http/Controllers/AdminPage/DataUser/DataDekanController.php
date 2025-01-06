@@ -14,7 +14,7 @@ class DataDekanController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = Dekan::leftJoin('data_fakultas','data_fakultas.id','=','dekans.id_fakultas')->select('dekans.id AS id','dekans.name','dekans.email','data_fakultas.nama_fakultas')->get();
+        $datas = Dekan::leftJoin('data_fakultas','data_fakultas.id','=','dekans.id_fakultas')->select('dekans.id AS id','dekans.name','data_fakultas.nama_fakultas')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -37,20 +37,14 @@ class DataDekanController extends Controller
     {
         $request->validate([
             'id_fakultas' => 'required',
-            'email' => 'required',
-            'password' => 'required',
         ],[
             'id_fakultas.required' => 'Anda belum memilih fakultas',
-            'email.required' => 'Anda belum menginputkan email',
-            'password.required' => 'Anda belum menginputkan password',
         ]);
 
         $post = Dekan::updateOrCreate(['id' => $request->id],
                 [
                     'name' => $request->name,
-                    'id_fakultas' => $request->id_fakultas,
-                    'email' => $request->email,
-                    'password'  => Hash::make($request['password']),
+                    'id_fakultas' => $request->id_fakultas
                 ]); 
 
         return response()->json($post);

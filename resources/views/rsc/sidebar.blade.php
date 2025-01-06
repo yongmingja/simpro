@@ -241,22 +241,12 @@
                     <a href="{{route('data-user-mahasiswa.index')}}" class="menu-link {{set_active('data-user-mahasiswa.index')}}">
                     <div data-i18n="Data Mahasiswa">Data Mahasiswa</div>
                     </a>
-                </li>        
-                {{-- <li class="menu-item">
-                    <a href="{{route('data-user-dosen.index')}}" class="menu-link {{set_active('data-user-dosen.index')}}">
-                    <div data-i18n="Data Dosen & Tendik">Data Dosen & Tendik</div>
-                    </a>
-                </li>        
+                </li>               
                 <li class="menu-item">
                     <a href="{{route('data-user-dekan.index')}}" class="menu-link {{set_active('data-user-dekan.index')}}">
                     <div data-i18n="Data Dekan & Kepala Biro">Data Dekan & Kepala Biro</div>
                     </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{route('data-user-rektorat.index')}}" class="menu-link {{set_active('data-user-rektorat.index')}}">
-                    <div data-i18n="Data Rektorat">Data Rektorat</div>
-                    </a>
-                </li> --}}
+                </li> 
             </ul>
         </li>
         <li class="menu-item">

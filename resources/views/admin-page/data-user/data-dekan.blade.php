@@ -36,7 +36,6 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Name</th>
-                                  <th>Email</th>
                                   <th>Dekan Fakultas / Ka. Biro</th>
                                   <th>Actions</th>
                                 </tr>
@@ -71,17 +70,7 @@
                                                     @endforeach
                                                 </select>
                                                 <span class="text-danger" id="idFakultasErrorMsg" style="font-size: 10px;"></span>
-                                            </div> 
-                                            <div class="mb-3">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email" value="" placeholder="type an active email" />
-                                                <span class="text-danger" id="emailErrorMsg" style="font-size: 10px;"></span>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="password" class="form-label">Password</label>
-                                                <input type="password" class="form-control" id="password" name="password" value="" />
-                                                <span class="text-danger" id="passwordErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                            
+                                            </div>                                          
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -132,7 +121,6 @@
                     }
                 }, 
                 {data: 'name',name: 'name'},
-                {data: 'email',name: 'email'},
                 {data: 'nama_fakultas',name: 'nama_fakultas'},
                 {data: 'action',name: 'action'},
             ]
@@ -179,8 +167,6 @@
                     error: function(response) {
                         $('#nameErrorMsg').text(response.responseJSON.errors.name);
                         $('#idFakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
-                        $('#emailErrorMsg').text(response.responseJSON.errors.email);
-                        $('#passwordErrorMsg').text(response.responseJSON.errors.password);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',
