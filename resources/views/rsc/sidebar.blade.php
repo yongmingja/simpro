@@ -263,12 +263,12 @@
             <ul class="menu-sub">
                 <li class="menu-item">
                     <a href="{{route('data-fakultas.index')}}" class="menu-link {{set_active('data-fakultas.index')}}">
-                    <div data-i18n="Fakultas">Fakultas</div>
+                    <div data-i18n="Fakultas & Biro">Fakultas & Biro</div>
                     </a>
                 </li>        
                 <li class="menu-item">
                     <a href="{{route('data-prodi.index')}}" class="menu-link {{set_active('data-prodi.index')}}">
-                    <div data-i18n="Prodi">Prodi</div>
+                    <div data-i18n="Prodi & Biro">Prodi & Biro</div>
                     </a>
                 </li> 
             </ul>

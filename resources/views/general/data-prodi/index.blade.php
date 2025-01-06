@@ -35,8 +35,8 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Nama Prodi</th>
-                                  <th>Nama Fakultas</th>
+                                  <th>Nama Prodi & Biro</th>
+                                  <th>Nama Fakultas & Biro</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>

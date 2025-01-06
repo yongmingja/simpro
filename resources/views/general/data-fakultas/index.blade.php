@@ -35,7 +35,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Nama Fakultas</th>
+                                  <th>Nama Fakultas & Biro</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
