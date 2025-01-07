@@ -28,9 +28,10 @@ class LaporanProposalController extends Controller
     public function insertLaporanProposal(Request $request)
     {
         $request->validate([
-            'berkas'     => 'max:2048'
+            'berkas'     => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
-            'berkas.max' => 'Ukuran berkas tidak boleh melebihi 2MB', 
+            'berkas.mimes'  => 'File harus berjenis (pdf atau docx)', 
+            'berkas.max'    => 'Ukuran berkas tidak boleh melebihi 2MB', 
         ]);
 
         $getId = $request->id_pro;

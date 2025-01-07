@@ -220,8 +220,8 @@
                                                 </div>
                                                 <div class="col-md-3 form-group mb-3">
                                                     <label for="berkas" class="form-label">Berkas</label>
-                                                    <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png">
-                                                    <div style="font-size: 11px;" class="mt-2"><i class="text-muted">*format lampiran: *.jpg, *.png atau *.pdf</i></div>
+                                                    <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .docx">
+                                                    <div style="font-size: 11px;" class="mt-2"><i class="text-muted">*format lampiran: *.pdf atau *.docx</i></div>
                                                     <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
                                                 </div>
                                                 <div class="col-md-3 form-group mb-3">

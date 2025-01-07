@@ -81,7 +81,7 @@ class LaporanFpkuController extends Controller
             'hasil_kegiatan'               => 'required',
             'evaluasi_catatan_kegiatan'    => 'required',
             'penutup'                      => 'required',
-            'berkas'                       => 'max:2048'
+            'berkas'                       => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
             'nama_kegiatan.required'                => 'Anda belum menginput nama kegiatan', 
             'tgl_kegiatan.required'                 => 'Anda belum menginput tgl kegiatan', 
@@ -95,6 +95,7 @@ class LaporanFpkuController extends Controller
             'hasil_kegiatan.required'               => 'Anda belum menginput hasil kegiatan', 
             'evaluasi_catatan_kegiatan.required'    => 'Anda belum menginput evaluasi catatan kegiatan', 
             'penutup.required'                      => 'Anda belum menginput penutup',
+            'berkas.mimes'                          => 'File harus berjenis (pdf atau docx)', 
             'berkas.max'                            => 'Ukuran berkas tidak boleh melebihi 2MB', 
         ]);
 
