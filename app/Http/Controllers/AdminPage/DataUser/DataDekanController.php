@@ -36,8 +36,10 @@ class DataDekanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'name' => 'required',
             'id_fakultas' => 'required',
         ],[
+            'name.required' => 'Anda belum memasukkan nama Dekan atau ka. Biro',
             'id_fakultas.required' => 'Anda belum memilih fakultas',
         ]);
 

@@ -234,7 +234,7 @@
                     },
                     error: function(response) {
                         $('#nipErrorMsg').text(response.responseJSON.errors.user_id);
-                        $('#namaPegawaiErrorMsg').text(response.responseJSON.errors.nama_pegawai);
+                        $('#nameErrorMsg').text(response.responseJSON.errors.nama_pegawai);
                         $('#emailErrorMsg').text(response.responseJSON.errors.email);
                         $('#passwordErrorMsg').text(response.responseJSON.errors.password);
                         $('#jenisKelaminErrorMsg').text(response.responseJSON.errors.jenis_kelamin);

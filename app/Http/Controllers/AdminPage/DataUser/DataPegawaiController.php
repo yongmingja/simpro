@@ -38,8 +38,8 @@ class DataPegawaiController extends Controller
             'email' => 'required',
             'password' => 'required',
         ],[
-            'user_id.required' => 'Anda belum menginputkan nama',
-            'nama_pegawai.required' => 'Anda belum menginputkan NIP',
+            'user_id.required' => 'Anda belum menginputkan NIP',
+            'nama_pegawai.required' => 'Anda belum menginputkan nama pegawai',
             'email.required' => 'Anda belum menginputkan email',
             'password.required' => 'Anda belum menginputkan password',
         ]);

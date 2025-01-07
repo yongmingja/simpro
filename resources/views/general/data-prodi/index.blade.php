@@ -170,8 +170,9 @@
                         })
                     },
                     error: function(response) {
-                        $('#namaFakultasErrorMsg').text(response.responseJSON.errors.nama_fakultas);
-                        $('#kodeFakultasErrorMsg').text(response.responseJSON.errors.kode_fakultas);
+                        $('#namaProdiErrorMsg').text(response.responseJSON.errors.nama_prodi);
+                        $('#idFakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
+                        $('#kodeProdiErrorMsg').text(response.responseJSON.errors.kode_prodi);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',

@@ -63,7 +63,7 @@
                                                 <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="user_id" class="form-label">NIM</label>
+                                                <label for="user_id" class="form-label">N I M</label>
                                                 <input type="text" class="form-control" id="user_id" name="user_id" value="" placeholder="" />
                                                 <span class="text-danger" id="userIDErrorMsg" style="font-size: 10px;"></span>
                                             </div>

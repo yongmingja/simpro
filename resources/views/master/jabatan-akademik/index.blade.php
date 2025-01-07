@@ -192,9 +192,9 @@
                         })
                     },
                     error: function(response) {
-                        $('#kodeJabatanErrorMsg').text(response.responseJSON.errors.kode_jabatan);
-                        $('#namaJabatanErrorMsg').text(response.responseJSON.errors.nama_jabatan);
-                        $('#golJabatanErrorMsg').text(response.responseJSON.errors.golongan_jabatan);
+                        $('#idPegawaiErrorMsg').text(response.responseJSON.errors.id_pegawai);
+                        $('#idJabatanErrorMsg').text(response.responseJSON.errors.id_jabatan);
+                        $('#fakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',

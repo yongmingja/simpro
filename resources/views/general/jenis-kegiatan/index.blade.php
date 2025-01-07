@@ -58,7 +58,7 @@
                                             <div class="mb-3">
                                                 <label for="nama_jenis_kegiatan" class="form-label">Jenis Proposal</label>
                                                 <input type="text" class="form-control" id="nama_jenis_kegiatan" name="nama_jenis_kegiatan" value="" placeholder="e.g RKAT" autofocus />
-                                                <span class="text-danger" id="nameErrorMsg" style="font-size: 10px;"></span>
+                                                <span class="text-danger" id="namaJenisKegiatanErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             
                                             <div class="col-sm-offset-2 col-sm-12">

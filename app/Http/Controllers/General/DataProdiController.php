@@ -39,9 +39,9 @@ class DataProdiController extends Controller
             'kode_prodi' => 'required',
             'id_fakultas' => 'required',
         ],[
-            'nama_prodi.required' => 'Anda belum menginputkan nama prodi',
-            'kode_prodi.required' => 'Anda belum menginputkan kode prodi',
-            'id_fakultas.required' => 'Anda belum memilih fakultas',
+            'nama_prodi.required' => 'Anda belum menginputkan nama prodi atau biro',
+            'kode_prodi.required' => 'Anda belum menginputkan kode prodi atau biro',
+            'id_fakultas.required' => 'Anda belum memilih fakultas atau biro',
         ]);
 
         $post = DataProdi::updateOrCreate(['id' => $request->id],

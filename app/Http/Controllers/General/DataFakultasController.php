@@ -34,8 +34,8 @@ class DataFakultasController extends Controller
             'nama_fakultas' => 'required',
             'kode_fakultas' => 'required',
         ],[
-            'nama_fakultas.required' => 'Anda belum menginputkan nama fakultas',
-            'kode_fakultas.required' => 'Anda belum menginputkan kode fakultas',
+            'nama_fakultas.required' => 'Anda belum menginputkan nama fakultas atau biro',
+            'kode_fakultas.required' => 'Anda belum menginputkan kode fakultas atau biro',
         ]);
 
         $post = DataFakultas::updateOrCreate(['id' => $request->id],
