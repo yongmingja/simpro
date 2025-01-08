@@ -15,7 +15,7 @@ class DataFpkuController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = DataFpku::all();
+        $datas = DataFpku::orderBy('id','DESC')->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){

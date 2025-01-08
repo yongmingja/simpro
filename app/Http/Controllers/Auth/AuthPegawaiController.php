@@ -27,7 +27,8 @@ class AuthPegawaiController extends Controller
             return redirect()->intended('home');
         } else {
             return back()->withErrors([
-                'user_id' => 'ID Pengguna atau Password anda salah!',
+                'user_id' => 'Maaf ID Pengguna atau Kata Sandi anda salah!',
+                'password' => 'Maaf ID Pengguna atau Kata Sandi anda salah!',
             ]);
         }
     }

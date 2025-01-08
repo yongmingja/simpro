@@ -80,16 +80,21 @@
     
             <form id="formAuthentication" class="mb-3" action="{{route('postLogin')}}" method="POST">
               @csrf
+              @error('user_id')
+                <span class="invalid-feedback mb-2" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
               <div class="mb-3">
                 <label for="user_id" class="form-label">ID Pengguna</label>
-                <input type="text" class="form-control" id="user_id" name="user_id" value="{{old('user_id')}}" placeholder="Enter your user ID" autofocus />
+                <input type="text" class="form-control @error('user_id') is-invalid @enderror" id="user_id" name="user_id" value="{{old('user_id')}}" placeholder="Enter your user ID" autofocus />
               </div>
               <div class="mb-3 form-password-toggle">
                 <div class="d-flex justify-content-between">
                   <label class="form-label" for="password">Kata Sandi</label>
                 </div>
                 <div class="input-group input-group-merge">
-                  <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                  <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                   <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                 </div>
               </div>

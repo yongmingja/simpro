@@ -157,7 +157,7 @@ class DashboardController extends Controller
 
     public function indexUndanganFpku(Request $request)
     {
-        $datas = DataFpku::all();
+        $datas = DataFpku::orderBy('id','DESC')->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
@@ -195,15 +195,21 @@ class DashboardController extends Controller
 
     public function indexLaporanFpku(Request $request)
     {
-        $datas = DataFpku::all();
+        $datas = DataFpku::orderBy('id','DESC')->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                $checkState = LaporanFpku::where('id_fpku',$data->id)->select('status_laporan')->first();
-                if($checkState->status_laporan == 2){
-                    return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
+                $checkState = LaporanFpku::where('id_fpku',$data->id)->select('status_laporan')->get();
+                if($checkState->count() > 0){
+                    foreach($checkState as $rs){
+                        if($rs->status_laporan == 2){
+                            return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
+                        } else {
+                            return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Laporan" data-placement="bottom" data-original-title="Validasi Laporan" class="btn btn-warning btn-sm tombol-yes-laporan"><i class="bx bx-xs bx-check-double"></i></a><div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';                    
+                        }
+                    }
                 } else {
-                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Laporan" data-placement="bottom" data-original-title="Validasi Laporan" class="btn btn-warning btn-sm tombol-yes-laporan"><i class="bx bx-xs bx-check-double"></i></a><div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';                    
+                    return "<span class='badge bg-label-secondary'>Belum submit</span>";
                 }
             })->addColumn('nama_pegawai', function($data){
                 $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
