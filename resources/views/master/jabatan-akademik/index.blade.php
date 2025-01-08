@@ -115,6 +115,25 @@
                         </div>
                     </div>
                     <!-- AKHIR MODAL -->
+
+                    <!-- Mulai modal lihat jabatan -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show_jabatan" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">User: Jabatan Akademik</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_show_jabatan" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal lihat jabatan-->
                     
                 </div>
             </div>
@@ -214,16 +233,15 @@
 
     // EDIT DATA
     $('body').on('click', '.edit-post', function () {
-        var data_id = $(this).data('id');
-        $.get('data-jabatan-akademik/' + data_id + '/edit', function (data) {
-            $('#modal-judul').html("Edit data");
-            $('#tombol-simpan').val("edit-post");
-            $('#tambah-edit-modal').modal('show');
-              
-            $('#id').val(data.id);
-            $('#nama_pegawai').val(data.nama_pegawai);
-            $('#user_id').val(data.user_id);
-            $('#nama_jabatan').val(data.nama_jabatan);
+        var dataId = $(this).data('id');
+        $.ajax({
+            url: "{{route('check-jabatan-akademik-user')}}",
+            method: "GET",
+            data: {user_id: dataId},
+            success: function(response, data){
+                $('#show_jabatan').modal('show');
+                $("#table_show_jabatan").html(response.card)
+            }
         })
     });
 
