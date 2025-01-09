@@ -23,8 +23,10 @@ class DataMahasiswaController extends Controller
                 $button .= '<button type="button" name="delete" id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
 
                 return $button;
+            })->addColumn('reset-pass', function($data){
+                return '<button type="button" id="'.$data->user_id.'" name="reset-pass" class="reset-pass btn btn-info btn-xs" data-toggle="tooltip" data-placement="bottom" title="Reset Password" data-original-title="Reset Password"><i class="bx bx-fingerprint bx-xs"></i> Reset</button>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','reset-pass'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -81,6 +83,14 @@ class DataMahasiswaController extends Controller
 		$nama_file = rand().$file->getClientOriginalName();
 		$file->move('file_mahasiswa',$nama_file);
 		$post = Excel::import(new MahasiswasImport, public_path('/file_mahasiswa/'.$nama_file));
+        return response()->json($post);
+    }
+
+    public function resetPassMhs(Request $request)
+    {
+        $post = Mahasiswa::where('user_id',$request->user_id)->update([
+            'password' => bcrypt($request->user_id)
+        ]);
         return response()->json($post);
     }
 }

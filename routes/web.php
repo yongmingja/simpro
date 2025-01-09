@@ -67,6 +67,9 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
     Route::post('broadcast-undangan','General\DataFpkuController@broadcastUndangan')->name('broadcast-undangan');
     Route::get('check-jabatan-akademik-user','Master\JabatanAkademikController@checkjabatanakademik')->name('check-jabatan-akademik-user');
     Route::get('check-jabatan-pegawai','Master\JabatanPegawaiController@checkjabatan')->name('check-jabatan-pegawai');
+
+    Route::post('reset-pass-pegawai','AdminPage\DataUser\DataPegawaiController@resetPass')->name('reset-pass-pegawai');
+    Route::post('reset-pass-mahasiswa','AdminPage\DataUser\DataMahasiswaController@resetPassMhs')->name('reset-pass-mahasiswa');
 });
 
 /* 

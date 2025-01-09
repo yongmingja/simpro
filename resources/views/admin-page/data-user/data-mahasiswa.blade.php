@@ -37,7 +37,9 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Name</th>
+                                  <th>NIM</th>
                                   <th>Email</th>
+                                  <th>Reset Password</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -160,7 +162,9 @@
                     }
                 }, 
                 {data: 'name',name: 'name'},
+                {data: 'user_id',name: 'user_id'},
                 {data: 'email',name: 'email'},
+                {data: 'reset-pass',name: 'reset-pass'},
                 {data: 'action',name: 'action'},
             ]
         });
@@ -335,6 +339,31 @@
             }
         })
     }
+
+    $('body').on('click','.reset-pass', function(){
+        var data_id = $(this).attr('id');
+        $.ajax({
+            url: "{{ route('reset-pass-mahasiswa')}}",
+            type: "POST",
+            data: {
+                user_id:data_id
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#table_mahasiswa').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Password reset successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+        })
+    })
 
 </script>
 

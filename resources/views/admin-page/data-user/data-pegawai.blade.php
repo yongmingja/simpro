@@ -39,6 +39,7 @@
                                   <th>Nama Pegawai</th>
                                   <th>N I P</th>
                                   <th>Email</th>
+                                  <th>Reset Password</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -191,6 +192,7 @@
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'user_id',name: 'user_id'},
                 {data: 'email',name: 'email'},
+                {data: 'reset-pass',name: 'reset-pass'},
                 {data: 'action',name: 'action'},
             ]
         });
@@ -368,6 +370,30 @@
             }
         })
     }
+    $('body').on('click','.reset-pass', function(){
+        var data_id = $(this).attr('id');
+        $.ajax({
+            url: "{{ route('reset-pass-pegawai')}}",
+            type: "POST",
+            data: {
+                user_id:data_id
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('#table_pegawai').DataTable().ajax.reload(null, true);
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Password reset successfully!',
+                    type: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false,
+                    timer: 2000
+                })
+            },
+        })
+    })
 
 </script>
 
