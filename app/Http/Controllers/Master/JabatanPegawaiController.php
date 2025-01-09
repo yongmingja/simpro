@@ -109,15 +109,16 @@ class JabatanPegawaiController extends Controller
                     <tbody>';
         if($datas->count() > 0){
             foreach($datas as $no => $item){
-                if($item->nama_jabatan == "Dosen"){
-                    $varName = $item->nama_jabatan.'&nbsp;<span class="badge bg-label-warning">'.str_replace("Program Studi","",$item->nama_prodi).'</span>';
-                } else {
-                    $varName = $item->nama_jabatan;
-                }
                 $html .= '<tr>
                         <td>'.++$no.'</td>
-                        <td>'.$varName.'</td>
-                        <td><button type="button" name="delete" id="'.$item->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button></td>';
+                        <td>'.$item->nama_jabatan.'</td>
+                        <td>';
+                        if($item->nama_jabatan == "Super Admin"){
+                            $html .= '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Unable to remove" class="btn btn-secondary btn-xs"><i class="bx bx-xs bx-trash" style="cursor:not-allowed;"></i></button></td>';
+                        } else {
+                            $html .= '<button type="button" name="delete" id="'.$item->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button></td>';
+                        }
+                        
             }
             $html .= '</tbody>
                 </table>';

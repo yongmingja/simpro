@@ -8,6 +8,9 @@ use App\Models\Master\Pegawai;
 use App\Imports\PegawaisImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Hash;
+use App\Setting\Mahasiswa;
+use App\Rules\MatchOldPassword;
+use Auth;
 
 class DataPegawaiController extends Controller
 {
@@ -94,5 +97,31 @@ class DataPegawaiController extends Controller
             'password' => Hash::make($request->user_id)
         ]);
         return response()->json($post);
+    }
+
+    public function profile()
+    {
+        if(Auth::guard('pegawai')->check()){
+            $datas = Pegawai::where('user_id',Auth::user()->user_id)->get();
+        } else if(Auth::guard('mahasiswa')->check()){
+            $datas = Mahasiswa::where('user_id',Auth::user()->user_id)->get();
+        }
+        return view('admin-page.data-user.profile', compact('datas'));
+    }
+
+    public function postPass(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', new MatchOldPassword],
+            'new_password' => ['required'],
+            'new_confirm_password' => ['same:new_password'],
+        ]);
+   
+        if(Auth::guard('pegawai')->check()){
+            Pegawai::where('user_id',Auth::user()->user_id)->update(['password'=> Hash::make($request->new_password)]);
+        }elseif(Auth::guard('mahasiswa')->check()){
+            Mahasiswa::where('user_id',Auth::user()->user_id)->update(['password'=> Hash::make($request->new_password)]);
+        }
+        return redirect()->route('profile')->with('success','Password has changed successfully!');
     }
 }

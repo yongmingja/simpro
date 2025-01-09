@@ -108,9 +108,7 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::delete('delete-my-report','General\LaporanProposalController@hapuslaporan')->name('delete-my-report');
 
     Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
-    // Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
     Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
-    // Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
     Route::get('view-lampiran','General\PengajuanProposalController@viewlampiran')->name('view-lampiran-proposal');
 
     Route::get('check-anggaran','General\PengajuanProposalController@checkanggaran')->name('check-anggaran-proposal');
@@ -130,14 +128,16 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
 
     Route::get('undangan-fpku','General\UndanganFpkuController@index')->name('undangan-fpku');
     Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan');
-    // Route::get('/fpku/{slug}','General\UndanganFpkuController@qrundangan');
 
     Route::get('index-laporan-fpku','General\LaporanFpkuController@indexFpku')->name('index-laporan-fpku');
     Route::get('buat-laporan-fpku/{id}','General\LaporanFpkuController@buatLaporan')->name('buat-laporan-fpku');
     Route::post('insert-laporan-fpku','General\LaporanFpkuController@insertLaporanFpku')->name('insert-laporan-fpku');
     Route::get('view-lampiran-fpku','General\LaporanFpkuController@viewlampiran')->name('view-lampiran-fpku');
     Route::get('preview-laporan-fpku/{id}','General\LaporanFpkuController@previewlaporanfpku')->name('preview-laporan-fpku');
-    // Route::get('/fpku-rep/{slug}','General\LaporanFpkuController@qrlaporan');
+
+    Route::get('user-profile','AdminPage\DataUser\DataPegawaiController@profile')->name('profile');
+    Route::get('change-password', 'AdminPage\DataUser\DataPegawaiController@getPass');
+    Route::post('change-password', 'AdminPage\DataUser\DataPegawaiController@postPass')->name('change-password');
 });
 
 /* 
