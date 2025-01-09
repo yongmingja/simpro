@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\Pegawai;
 use App\Models\Master\Jabatan;
+use Auth;
 
 class JabatanPegawaiController extends Controller
 {
@@ -113,7 +114,7 @@ class JabatanPegawaiController extends Controller
                         <td>'.++$no.'</td>
                         <td>'.$item->nama_jabatan.'</td>
                         <td>';
-                        if($item->nama_jabatan == "Super Admin"){
+                        if($item->id_pegawai == Auth::guard('pegawai')->user()->id AND $item->nama_jabatan == "Super Admin"){
                             $html .= '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Unable to remove" class="btn btn-secondary btn-xs"><i class="bx bx-xs bx-trash" style="cursor:not-allowed;"></i></button></td>';
                         } else {
                             $html .= '<button type="button" name="delete" id="'.$item->id.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button></td>';
