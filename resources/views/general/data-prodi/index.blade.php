@@ -125,7 +125,12 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
-                {data: 'nama_prodi',name: 'nama_prodi'},
+                {data: 'nama_prodi',name: 'nama_prodi',
+                    render: function(data, type, row, meta){
+                        let text = row.nama_prodi;
+                        return text.replace('Program Studi','');
+                    }
+                },
                 {data: 'nama_fakultas',name: 'nama_fakultas'},
                 {data: 'action',name: 'action'},
             ]

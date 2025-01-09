@@ -62,6 +62,7 @@
                                             <div class="mb-3">
                                                 <label for="user_id" class="form-label">N I P*</i></label>
                                                 <input type="text" class="form-control" id="user_id" name="user_id" value="" />
+                                                <div class="text-muted mt-1" style="font-size: 10px; font-style:italic;">Note: Ditulis lengkap dengan titik (contoh: 2011.6.900)</div>
                                                 <span class="text-danger" id="nipErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
@@ -264,7 +265,7 @@
             $('#tambah-edit-modal').modal('show');
               
             $('#id').val(data.id);
-            $('#nip').val(data.nip);
+            $('#user_id').val(data.user_id);
             $('#nama_pegawai').val(data.nama_pegawai);
             $('#email').val(data.email);
             $('#jenis_kelamin').val(data.jenis_kelamin);
