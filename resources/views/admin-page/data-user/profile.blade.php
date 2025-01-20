@@ -2,7 +2,7 @@
 @section('title','Profile')
 
 @section('breadcrumbs')
-<div class="container-xxl">
+<div class="container-fluid">
 <nav aria-label="breadcrumb mb-0">
     <ol class="breadcrumb breadcrumb-style2">
       <li class="breadcrumb-item">

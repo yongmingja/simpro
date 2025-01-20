@@ -169,8 +169,9 @@
 <!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">   
     <div class="app-brand demo mt-3">
-    <a href="#" class="app-brand-link">
-        <span class="app-brand-text demo menu-text fw-bold ms-2">SIMPRO</span>
+    <a href="{{route('home')}}" class="app-brand-link">
+        <span class="app-brand-logo demo"><img src="{{asset('assets/img/logo-uvers.png')}}" style="width:100px;" alt="logolpm"></span>
+        <span class="app-brand-text demo menu-text fw-bold ms-2">{{config('app.name')}}</span>
     </a>
 
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
