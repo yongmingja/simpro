@@ -160,7 +160,7 @@ class PengajuanProposalController extends Controller
             'detil_kegiatan'    => 'required',
             'penutup'           => 'required',
             'lokasi_tempat'     => 'required',
-            'berkas'            => 'file|mimes:pdf,doc,docx|max:2048'
+            'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
             'id_fakultas.required'          => 'Anda belum memilih fakultas', 
@@ -173,8 +173,8 @@ class PengajuanProposalController extends Controller
             'detil_kegiatan.required'       => 'Anda belum menginput detil kegiatan', 
             'penutup.required'              => 'Anda belum menginput penutup',
             'lokasi_tempat.required'        => 'Anda belum menginput lokasi kegiatan',
-            'berkas.max'                    => 'Ukuran berkas tidak boleh melebihi 2MB', 
-            'berkas.mimes'                  => 'File harus berjenis (pdf atau docx)',
+            'berkas.*.max'                  => 'Ukuran berkas tidak boleh melebihi 2MB', 
+            'berkas.*.mimes'                => 'File harus berjenis (pdf atau docx)',
         ]);
 
         $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
