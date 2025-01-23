@@ -69,10 +69,10 @@ class JabatanAkademikController extends Controller
 
         $post = JabatanAkademik::updateOrCreate(['id' => $request->id],
                 [
-                    'id_pegawai' => $request->id_pegawai,
-                    'id_jabatan' => $request->id_jabatan,
-                    'id_fakultas' => $request->id_fakultas,
-                    'id_prodi' => $request->id_prodi,
+                    'id_pegawai'    => $request->id_pegawai,
+                    'id_jabatan'    => $request->id_jabatan,
+                    'id_fakultas'   => $request->id_fakultas,
+                    'id_prodi'      => $request->id_prodi,
                 ]); 
 
         return response()->json($post);

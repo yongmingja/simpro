@@ -63,7 +63,7 @@
 
 @section('content')
 
-<div class="container-xxl flex-grow-1">
+<div class="container-fluid flex-grow-1">
     <section id="basic-datatable">
         <div class="row">
             <div class="col-12">

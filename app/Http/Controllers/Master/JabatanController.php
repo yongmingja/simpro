@@ -31,21 +31,21 @@ class JabatanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_jabatan' => 'required',
-            'nama_jabatan' => 'required',
-            'golongan_jabatan' => 'required',
+            'kode_jabatan'          => 'required',
+            'nama_jabatan'          => 'required',
+            'golongan_jabatan'      => 'required',
         ],[
-            'kode_jabatan.required' => 'Anda belum menginputkan kode jabatan',
-            'nama_jabatan.required' => 'Anda belum menginputkan nama jabatan',
+            'kode_jabatan.required'     => 'Anda belum menginputkan kode jabatan',
+            'nama_jabatan.required'     => 'Anda belum menginputkan nama jabatan',
             'golongan_jabatan.required' => 'Anda belum memilih golongan jabatan',
         ]);
 
         $post = Jabatan::updateOrCreate(['id' => $request->id],
                 [
-                    'kode_jabatan' => $request->kode_jabatan,
-                    'nama_jabatan' => $request->nama_jabatan,
-                    'nama_jabatan' => $request->nama_jabatan,
-                    'golongan_jabatan' => $request->golongan_jabatan,
+                    'kode_jabatan'      => $request->kode_jabatan,
+                    'nama_jabatan'      => $request->nama_jabatan,
+                    'nama_jabatan'      => $request->nama_jabatan,
+                    'golongan_jabatan'  => $request->golongan_jabatan,
                 ]); 
 
         return response()->json($post);

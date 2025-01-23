@@ -36,22 +36,22 @@ class DataMahasiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'user_id' => 'required',
-            'email' => 'required',
-            'password' => 'required',
+            'name'      => 'required',
+            'user_id'   => 'required',
+            'email'     => 'required',
+            'password'  => 'required',
         ],[
-            'name.required' => 'Anda belum menginputkan nama mahasiswa',
-            'user_id.required' => 'Anda belum menginputkan NIM',
-            'email.required' => 'Anda belum menginputkan email',
+            'name.required'     => 'Anda belum menginputkan nama mahasiswa',
+            'user_id.required'  => 'Anda belum menginputkan NIM',
+            'email.required'    => 'Anda belum menginputkan email',
             'password.required' => 'Anda belum menginputkan password',
         ]);
 
         $post = Mahasiswa::updateOrCreate(['id' => $request->id],
                 [
-                    'name' => $request->name,
-                    'user_id' => $request->user_id,
-                    'email' => $request->email,
+                    'name'      => $request->name,
+                    'user_id'   => $request->user_id,
+                    'email'     => $request->email,
                     'password'  => Hash::make($request['password']),
                 ]); 
 

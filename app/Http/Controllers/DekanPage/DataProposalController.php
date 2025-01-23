@@ -113,8 +113,8 @@ class DataProposalController extends Controller
     public function approvalDeanN(Request $request)
     {
         $post = DB::table('status_proposals')->where('id_proposal',$request->propsl_id)->update([
-            'status_approval' => 2,
-            'keterangan_ditolak' => $request->keterangan_ditolak
+            'status_approval'       => 2,
+            'keterangan_ditolak'    => $request->keterangan_ditolak
         ]);
         return response()->json($post);
     }

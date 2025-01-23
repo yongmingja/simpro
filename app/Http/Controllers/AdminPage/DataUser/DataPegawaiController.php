@@ -38,25 +38,25 @@ class DataPegawaiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required',
-            'nama_pegawai' => 'required',
-            'email' => 'required',
-            'password' => 'required',
+            'user_id'       => 'required',
+            'nama_pegawai'  => 'required',
+            'email'         => 'required',
+            'password'      => 'required',
         ],[
-            'user_id.required' => 'Anda belum menginputkan NIP',
+            'user_id.required'      => 'Anda belum menginputkan NIP',
             'nama_pegawai.required' => 'Anda belum menginputkan nama pegawai',
-            'email.required' => 'Anda belum menginputkan email',
-            'password.required' => 'Anda belum menginputkan password',
+            'email.required'        => 'Anda belum menginputkan email',
+            'password.required'     => 'Anda belum menginputkan password',
         ]);
 
         $post = Pegawai::updateOrCreate(['id' => $request->id],
                 [
-                    'user_id' => $request->user_id,
-                    'nama_pegawai' => $request->nama_pegawai,
-                    'email' => $request->email,
-                    'password'  => Hash::make($request['password']),
-                    'jenis_kelamin' => $request->jenis_kelamin,
-                    'agama' => $request->agama,
+                    'user_id'           => $request->user_id,
+                    'nama_pegawai'      => $request->nama_pegawai,
+                    'email'             => $request->email,
+                    'password'          => Hash::make($request['password']),
+                    'jenis_kelamin'     => $request->jenis_kelamin,
+                    'agama'             => $request->agama,
                     'id_status_pegawai' => 1,
                 ]); 
 
@@ -112,9 +112,9 @@ class DataPegawaiController extends Controller
     public function postPass(Request $request)
     {
         $request->validate([
-            'current_password' => ['required', new MatchOldPassword],
-            'new_password' => ['required'],
-            'new_confirm_password' => ['same:new_password'],
+            'current_password'      => ['required', new MatchOldPassword],
+            'new_password'          => ['required'],
+            'new_confirm_password'  => ['same:new_password'],
         ]);
    
         if(Auth::guard('pegawai')->check()){

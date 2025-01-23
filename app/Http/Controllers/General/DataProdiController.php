@@ -35,20 +35,20 @@ class DataProdiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_prodi' => 'required',
-            'kode_prodi' => 'required',
-            'id_fakultas' => 'required',
+            'nama_prodi'    => 'required',
+            'kode_prodi'    => 'required',
+            'id_fakultas'   => 'required',
         ],[
-            'nama_prodi.required' => 'Anda belum menginputkan nama prodi atau biro',
-            'kode_prodi.required' => 'Anda belum menginputkan kode prodi atau biro',
-            'id_fakultas.required' => 'Anda belum memilih fakultas atau biro',
+            'nama_prodi.required'   => 'Anda belum menginputkan nama prodi atau biro',
+            'kode_prodi.required'   => 'Anda belum menginputkan kode prodi atau biro',
+            'id_fakultas.required'  => 'Anda belum memilih fakultas atau biro',
         ]);
 
         $post = DataProdi::updateOrCreate(['id' => $request->id],
                 [
-                    'nama_prodi' => $request->nama_prodi,
-                    'kode_prodi' => $request->kode_prodi,
-                    'id_fakultas' => $request->id_fakultas,
+                    'nama_prodi'    => $request->nama_prodi,
+                    'kode_prodi'    => $request->kode_prodi,
+                    'id_fakultas'   => $request->id_fakultas,
                 ]); 
 
         return response()->json($post);
