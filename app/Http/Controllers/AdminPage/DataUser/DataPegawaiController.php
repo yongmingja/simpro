@@ -124,4 +124,14 @@ class DataPegawaiController extends Controller
         }
         return redirect()->route('profile')->with('success','Password has changed successfully!');
     }
+
+    public function updateEmail(Request $request)
+    {
+        $id_user = Auth::user()->id;
+        $post = Pegawai::where('id',$id_user)->update([
+            'email' => $request->update_email
+        ]);
+
+        return redirect()->route('profile')->with('success','Email updated successfully!');
+    }
 }

@@ -19,7 +19,7 @@
 
 @section('content')
 <hr class="mt-2">
-<div class="container flex-grow-1">
+<div class="container-fluid flex-grow-1">
     @if(Session::has('success'))
         <div class="alert alert-success alert-dismissible" role="alert" id="success-alert">
             {{Session::get('success')}}
@@ -67,7 +67,7 @@
                           </tr>
                           <tr>
                             <td width="13%;">Email</td>
-                            <td>:&nbsp;{{$data->email}}</td>
+                            <td>:&nbsp;{{$data->email}} &nbsp;<a href="javascript:void()" data-bs-toggle="tooltip" id="update-email" data-bs-placement="bottom" title="Update email" data-bs-original-title="Update email"><i class="bx bx-edit bx-xs"></i></a></td>
                           </tr>
                           <tr>
                             <td width="13%;">Tgl. Lahir</td>
@@ -158,6 +158,42 @@
                 </div>
             </div>
         </div>
+        {{-- Modal Update email --}}
+        <div class="modal fade" id="update-email-modal" aria-hidden="true">
+          <div class="modal-dialog ">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="modal-judul"></h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{{ route('update-email-address') }}" method="POST">
+                      @csrf
+                          <div class="row">
+                              <input type="hidden" id="id" name="id">
+                              <div class="mb-3">
+                                  <label for="update_email" class="form-label">Masukkan email baru</label>
+                                  <input type="email" class="form-control" id="update_email" name="update_email" value="" autofocus />
+                                  <span class="text-danger" id="emailErrorMsg" style="font-size: 10px;"></span>
+                              </div>                                         
+                              
+                              <div class="col-sm-offset-2 col-sm-12">
+                                  <hr class="mt-2">
+                                  <div class="float-sm-end">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                      <button type="submit" class="btn btn-primary btn-block" id="tombol-simpan" value="create">Save</button>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </form>
+                  </div>
+                  <div class="modal-footer">
+                  </div>
+              </div>
+          </div>
+        </div>
+        {{-- Eof Modal update email --}}
     </div>
 </div>
 
@@ -186,6 +222,12 @@
     $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
       $("#success-alert").slideUp(500);
     });
+
+    $('#update-email').on('click', function(){
+      $('#modal-judul').html("Update email");
+      $('#tombol-simpan').val("update-email");
+      $('#update-email-modal').modal('show');
+    })
 
 </script>
 

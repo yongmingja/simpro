@@ -138,6 +138,8 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
     Route::get('user-profile','AdminPage\DataUser\DataPegawaiController@profile')->name('profile');
     Route::get('change-password', 'AdminPage\DataUser\DataPegawaiController@getPass');
     Route::post('change-password', 'AdminPage\DataUser\DataPegawaiController@postPass')->name('change-password');
+
+    Route::post('update-email-address','AdminPage\DataUser\DataPegawaiController@updateEmail')->name('update-email-address');
 });
 
 /* 
