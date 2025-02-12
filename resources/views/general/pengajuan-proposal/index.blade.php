@@ -1413,6 +1413,47 @@
         });
     });
 
+    $('body').on('click','.arsip-proposal', function(){
+        var dataId = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This Proposal will be archived!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sure, confirm',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('arsip-proposal')}}",
+                        type: 'POST',
+                        data: {
+                            id_proposal: dataId
+                        },
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Archived!',
+                            text: 'Your data has been archived.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        location.reload();
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Something went wrong with ajax!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
+    })
+
 
 </script>
 

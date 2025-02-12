@@ -32,7 +32,7 @@ class PengajuanProposalController extends Controller
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
             ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
-            ->where('proposals.user_id',Auth::user()->user_id)
+            ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0]])
             ->orderBy('proposals.id','DESC')
             ->get();
 
@@ -58,6 +58,7 @@ class PengajuanProposalController extends Controller
                                     <div class="dropdown-menu">
                                     <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
                                     <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2" text-primary></i>Lihat Sarpras</a>
+                                    <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-warning"></i>Batalkan Proposal</a>
                                     </div>
                                 </div>';
                         } elseif($get->status_approval == 3) {
@@ -73,6 +74,7 @@ class PengajuanProposalController extends Controller
                                     <div class="dropdown-menu">
                                     <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
                                     <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                    <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-warning"></i>Batalkan Proposal</a>
                                     </div>
                                 </div>';
                         } else {
@@ -771,6 +773,14 @@ class PengajuanProposalController extends Controller
         $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
             'status_approval' => 1,
             'keterangan_ditolak' => ''
+        ]);
+        return response()->json($post);
+    }
+
+    public function arsipProposal(Request $request)
+    {
+        $post = Proposal::where('id',$request->id_proposal)->update([
+            'is_archived' => 1
         ]);
         return response()->json($post);
     }
