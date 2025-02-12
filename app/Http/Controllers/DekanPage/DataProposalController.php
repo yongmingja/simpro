@@ -121,17 +121,17 @@ class DataProposalController extends Controller
 
     protected function statusProposal($id)
     {
-        $query = DB::table('status_proposals')->select('status_approval')->where('id_proposal','=',$id)->get();
+        $query = DB::table('status_proposals')->select('status_approval','keterangan_ditolak')->where('id_proposal','=',$id)->get();
         if($query){
             foreach($query as $data){                
                 if($data->status_approval == 1){
                     return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                 } elseif($data->status_approval == 2){
-                    return '<span class="badge bg-label-danger">Ditolak</span>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 3) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
                 } elseif($data->status_approval == 4) {
-                    return '<span class="badge bg-label-danger">Pending WR</span>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending WR</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima WR</span>';
                 } else {

@@ -254,7 +254,12 @@
                 $("#table_lampiran").html(response.card)
             }
         })
-    })
+    });
+
+    $('body').on('click','.info-ditolakdekan',function(){
+    var dataKet = $(this).attr('data-keteranganditolak');
+    alert(dataKet);
+    });
 
 </script>
 
