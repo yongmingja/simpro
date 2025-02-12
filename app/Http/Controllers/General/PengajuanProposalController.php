@@ -57,7 +57,7 @@ class PengajuanProposalController extends Controller
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                     <div class="dropdown-menu">
                                     <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2"></i>Lihat Sarpras</a>
+                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2" text-primary></i>Lihat Sarpras</a>
                                     </div>
                                 </div>';
                         } elseif($get->status_approval == 3) {
@@ -72,7 +72,7 @@ class PengajuanProposalController extends Controller
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                     <div class="dropdown-menu">
                                     <a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2"></i>Lihat Anggaran</a>
+                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
                                     </div>
                                 </div>';
                         } else {
