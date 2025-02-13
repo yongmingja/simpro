@@ -228,9 +228,18 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="table_show_anggaran" class="col-sm-12 table-responsive mb-3"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                    <input type="hidden" id="edit_id2" name="edit_id2">
+                                    <div class="row mt-2">
+                                        <div class="col-sm-12">
+                                            <input type="checkbox" id="check_finish_anggaran" class="form-check-input"><small>&nbsp;&nbsp;<i>Jika anda telah melakukan revisi, silakan centang lalu submit ulang anggaran proposal anda.</i></small>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-primary" id="submit-ulang-anggaran"><i class="bx bx-check-circle bx-tada-hover"></i> Submit ulang</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -301,11 +310,11 @@
                                     <div id="table_show_informasi" class="col-sm-12 table-responsive mb-3"></div>
                                     <input type="hidden" id="edit_id" name="edit_id">
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-12">
                                             <input type="checkbox" id="check_finish" class="form-check-input"><small>&nbsp;&nbsp;<i>Jika anda telah melakukan revisi, silakan centang lalu submit ulang proposal anda.</i></small>
                                         </div>
-                                        <div class="col-sm-6">
-                                            <div class="mt-2 float-end">
+                                        <div class="col-sm-12">
+                                            <div class="mt-2">
                                                 <button type="button" class="btn btn-primary" id="submit-ulang"><i class="bx bx-check-circle bx-tada-hover"></i> Submit ulang</button>
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             </div>
@@ -773,6 +782,7 @@
 
     $(document).on('click','.lihat-anggaran', function(){
         dataId = $(this).data('id');
+        val_idProp = $('#edit_id2').val(dataId);
         $.ajax({
             url: "{{route('check-anggaran-proposal')}}",
             method: "GET",
@@ -1453,6 +1463,54 @@
             },
         });
     })
+
+    $('#submit-ulang-anggaran').prop('disabled',true);
+    $('#check_finish_anggaran').on('change', function() {
+        if($("#check_finish_anggaran").prop('checked')){
+            $('#submit-ulang-anggaran').prop('disabled',false);
+        }else{
+            $('#submit-ulang-anggaran').prop('disabled',true);
+        }
+    });
+    $('#submit-ulang-anggaran').click(function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Please check you have filled the whole documents!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sure, confirm',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('re-submit-anggaran')}}",
+                        type: 'POST',
+                        data: {
+                            id_proposal: $('#edit_id2').val()
+                        },
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Saved!',
+                            text: 'Your data has been saved.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        location.reload();
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Something went wrong with ajax!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
+    });
 
 
 </script>

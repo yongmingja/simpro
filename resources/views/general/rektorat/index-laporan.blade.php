@@ -124,7 +124,11 @@
                 },
                 {data: 'tgl_proposal',name: 'tgl_proposal',
                     render: function ( data, type, row ){
-                        return moment(row.tgl_proposal).format("DD MMM YYYY")
+                        if(row.tgl_proposal == null){
+                            return '&ndash;';
+                        } else {
+                            return moment(row.tgl_proposal).format("DD MMM YYYY")
+                        }
                     }
                 },
                 {data: 'action',name: 'action'},

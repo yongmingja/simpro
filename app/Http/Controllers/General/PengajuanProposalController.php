@@ -666,10 +666,6 @@ class PengajuanProposalController extends Controller
             'frequency'     => $request->e_anggaran_frequency,
             'sumber_dana'   => $request->e_anggaran_sumber_dana
         ]);
-        DB::table('status_proposals')->where('id_proposal',$request->props_id)->update([
-            'status_approval'       => 3,
-            'keterangan_ditolak'    => '',
-        ]);
         return response()->json($post);
     }
 
@@ -781,6 +777,15 @@ class PengajuanProposalController extends Controller
     {
         $post = Proposal::where('id',$request->id_proposal)->update([
             'is_archived' => 1
+        ]);
+        return response()->json($post);
+    }
+
+    public function submitUlangAnggaran(Request $request)
+    {
+        $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
+            'status_approval' => 1,
+            'keterangan_ditolak' => ''
         ]);
         return response()->json($post);
     }

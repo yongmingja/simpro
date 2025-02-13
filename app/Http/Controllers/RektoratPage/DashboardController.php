@@ -24,9 +24,11 @@ class DashboardController extends Controller
             ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
             ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
             ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
+            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
             ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user','mahasiswas.name AS nama_user')
+            ->where('proposals.is_archived',0)
             ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
-            ->orderBy('proposals.id','DESC')
+            ->orderBy('status_proposals.status_approval','ASC')
             ->get();
 
         if($request->ajax()){
@@ -113,7 +115,7 @@ class DashboardController extends Controller
             ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
             ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai','mahasiswas.name AS nama_user','laporan_proposals.created_at AS tgl_proposal')
             ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-            ->orderBy('proposals.id','DESC')
+            ->orderBy('laporan_proposals.status_laporan','ASC')
             ->get();
 
         if($request->ajax()){
