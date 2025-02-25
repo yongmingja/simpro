@@ -16,6 +16,8 @@
                                   <th>#</th>
                                   <th>Proposal</th>
                                   <th>Nama Kegiatan</th>
+                                  <th>Tgl Kegiatan</th>
+                                  <th>Proposal Dibuat</th>
                                   <th>Nama Fakultas</th>
                                   <th>Nama Prodi</th>
                                   <th>Lihat</th>
@@ -131,8 +133,18 @@
                 }, 
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'nama_fakultas',name: 'nama_fakultas'},
-                {data: 'nama_prodi',name: 'nama_prodi'},
+                {data: 'tgl_event',name: 'tgl_event',
+                    render: function ( data, type, row ){
+                        return moment(row.tgl_event).format("DD MMM YYYY")
+                    }
+                },
+                {data: 'created_at',name: 'created_at',
+                    render: function ( data, type, row ){
+                        return moment(row.created_at).format("DD MMM YYYY")
+                    }
+                },
+                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
+                {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
                 {data: 'action',name: 'action'},
                 {data: 'validasi',name: 'validasi'},
                 {data: 'vlampiran',name: 'vlampiran'},

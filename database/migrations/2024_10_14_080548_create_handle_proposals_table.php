@@ -15,7 +15,8 @@ class CreateHandleProposalsTable extends Migration
     {
         Schema::create('handle_proposals', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('user_id');
+            $table->unsignedInteger('id_jabatan');
+            $table->foreign('id_jabatan')->references('id')->on('jabatans')->onDelete('cascade');
             $table->string('id_jenis_kegiatan');
             $table->timestamps();
         });

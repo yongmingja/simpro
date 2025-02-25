@@ -17,7 +17,7 @@ class CreateJabatansTable extends Migration
             $table->increments('id');
             $table->string('kode_jabatan');
             $table->string('nama_jabatan');
-            $table->integer('golongan_jabatan');
+            $table->string('warna_label')->nullable();
             $table->timestamps();
         });
     }

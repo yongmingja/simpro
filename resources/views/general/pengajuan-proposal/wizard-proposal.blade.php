@@ -109,21 +109,21 @@
                                             <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_fakultas">Fakultas atau Unit</label>
-                                            <select class="select2 form-control border border-primary" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
+                                            <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
+                                            <select class="select2 form-control border border-primary" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
-                                              @foreach($getFakultas as $faculty)
-                                                  <option value="{{$faculty->id}}">{{$faculty->nama_fakultas}}</option>
+                                              @foreach($getFakultasBiro as $facultyBiro)
+                                                  <option value="{{$facultyBiro->id}}">{{$facultyBiro->nama_fakultas_biro}}</option>
                                               @endforeach
                                             </select>
-                                            <span class="text-danger" id="fakultasErrorMsg" style="font-size: 10px;"></span>
+                                            <span class="text-danger" id="fakultasBiroErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_prodi">Prodi atau Biro</label>
-                                            <select class="select2 form-control border border-primary" id="id_prodi" name="id_prodi" aria-label="Default select example" style="cursor:pointer;">
+                                            <label class="form-label" for="id_prodi_biro">Prodi atau Biro</label>
+                                            <select class="select2 form-control border border-primary" id="id_prodi_biro" name="id_prodi_biro" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" class="d-none">- Pilih prodi -</option>
                                             </select>
-                                            <span class="text-danger" id="prodiErrorMsg" style="font-size: 10px;"></span>
+                                            <span class="text-danger" id="prodiBiroErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
@@ -255,6 +255,10 @@
                                   <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
                                   <small>Upload Lampiran Proposal.</small>
                                 </div>
+                                <div class="col form-group p-0">
+                                        <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
+                                </div>
+                                <input type="checkbox" id="switch" name="switch" class="mb-3">
                                 <div class="row g-3">                                    
                                     <div>
                                         <div class="row firstRow">
@@ -262,11 +266,9 @@
                                                 <label for="nama_berkas" class="form-label">Nama Berkas</label>
                                                 <input type="text" name="nama_berkas[]" class="w-100 form-control">
                                             </div>
-                                            <div class="col-md-3 form-group mb-3">
-                                                <label for="berkas" class="form-label">Berkas </label>
-                                                <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .docx">
-                                                <div style="font-size: 11px;" class="mt-2"><i class="text-muted">*format lampiran: *.pdf atau *.docx</i></div>
-                                                <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
+                                            
+                                            <div class="col-md-3 form-group mb-3" id="form-container">
+                                                <!-- Form content will be dynamically generated here --> 
                                             </div>
                                             <div class="col-md-3 form-group mb-3">
                                                 <label for="keterangan" class="form-label">Keterangan</label>
@@ -395,8 +397,8 @@
                             error: function (response) {
                                 $('#kategoriErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
                                 $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
-                                $('#fakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
-                                $('#prodiErrorMsg').text(response.responseJSON.errors.id_prodi);
+                                $('#fakultasBiroErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);
+                                $('#prodiBiroErrorMsg').text(response.responseJSON.errors.id_prodi_biro);
                                 $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
                                 $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
                                 $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
@@ -425,8 +427,8 @@
       }
     }
 
-    $('select[name="id_fakultas"]').on('change', function() {
-        $('#id_prodi').empty();
+    $('select[name="id_fakultas_biro"]').on('change', function() {
+        $('#id_prodi_biro').empty();
         var facultyID = $(this).val();
         if(facultyID) {
             $.ajax({
@@ -434,15 +436,15 @@
                 type: "GET",
                 dataType: "json",
                 success:function(data) { 
-                    $('select[name="id_prodi"]').removeClass('d-none');
-                    $('select[name="id_prodi"]').append('<option value="">'+ '- Pilih prodi -' +'</option>');
+                    $('select[name="id_prodi_biro"]').removeClass('d-none');
+                    $('select[name="id_prodi_biro"]').append('<option value="">'+ '- Pilih prodi -' +'</option>');
                     $.each(data, function(key, value) {
-                    $('select[name="id_prodi"]').append('<option value="'+ key +'">'+ value +'</option>');
+                    $('select[name="id_prodi_biro"]').append('<option value="'+ key +'">'+ value +'</option>');
                     });
                 }
             });
         }else{
-            $('select[name="id_prodi"]').removeClass('d-none');
+            $('select[name="id_prodi_biro"]').removeClass('d-none');
         }
     });
 
@@ -576,8 +578,34 @@
                   editor4.root.innerHTML = quillEditor4.value;
               });
           }
-      });
+    });
 
+    $('.addField').addClass('d-none');
+    document.addEventListener('DOMContentLoaded', function() { 
+        const switchElement = document.getElementById('switch'); 
+        const formContainer = document.getElementById('form-container'); 
+        switchElement.addEventListener('change', function() { 
+            if (switchElement.checked) { 
+                $('.addField').removeClass('d-none');
+                formContainer.innerHTML = `<form id="form1"> 
+                        <label for="berkas" class="form-label">Berkas </label>
+                        <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .docx">
+                        <div style="font-size: 11px;" class="mt-2"><i class="text-muted">Format lampiran: *.pdf atau *.docx | max. 2MB</i></div>
+                        <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
+                </form> `; 
+            } else { $('.addField').addClass('d-none');
+            formContainer.innerHTML = `<form id="form2">
+                        <label for="link_gdrive" class="form-label">Link G-Drive </label>
+                        <input type="text" id="link_gdrive" name="link_gdrive[]"
+                            class="form-control"
+                            placeholder="https://drive.google.com/file/"
+                            autocomplete="off" />
+                </form> `; 
+
+            } 
+        }); // Initialize form on page load 
+        switchElement.dispatchEvent(new Event('change')); 
+    });
 </script>
 
 @endsection

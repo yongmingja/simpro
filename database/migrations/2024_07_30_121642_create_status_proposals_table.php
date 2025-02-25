@@ -19,6 +19,7 @@ class CreateStatusProposalsTable extends Migration
             $table->foreign('id_proposal')->references('id')->on('proposals')->onDelete('cascade');
             $table->integer('status_approval');
             $table->string('generate_qrcode')->nullable();
+            $table->string('keterangan_ditolak')->nullable();
             $table->timestamps();
         });
     }

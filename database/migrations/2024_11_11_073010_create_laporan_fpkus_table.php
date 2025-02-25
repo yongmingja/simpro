@@ -18,8 +18,8 @@ class CreateLaporanFpkusTable extends Migration
             $table->integer('id_fpku');
             $table->string('nama_kegiatan')->nullable();
             $table->date('tgl_kegiatan')->nullable();
-            $table->integer('id_fakultas')->nullable();
-            $table->integer('id_prodi')->nullable();
+            $table->integer('id_fakultas_biro')->nullable();
+            $table->integer('id_prodi_biro')->nullable();
             $table->string('lokasi_tempat')->nullable();
             $table->text('pendahuluan');
             $table->text('tujuan_manfaat');
@@ -30,6 +30,7 @@ class CreateLaporanFpkusTable extends Migration
             $table->text('penutup');
             $table->integer('status_laporan')->default(0);
             $table->integer('dibuat_oleh')->nullable();
+            $table->string('qrcode')->nullable();
             $table->timestamps();
         });
     }

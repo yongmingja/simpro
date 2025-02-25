@@ -32,22 +32,19 @@
                         </tr>
                         <tr>
                             <td>Penyusun Proposal</td>
-                            <td>{{$data->nama_dosen}}{{$data->nama_mahasiswa}}</td>
-                        </tr>
+                            <td>{{$getPengusul->nama_pegawai}}</td>
+                        </tr>                        
                         <tr>
                             <td colspan="2">Bahwa laporan pertanggung-jawaban kegiatan ini telah diketahui dan disetujui oleh:</td>
                         </tr>
-                        @endforeach                       
+                        @endforeach   
                         <tr>
-                            @foreach($datas as $rektorat)
-                            @if($rektorat->id_jenis_kegiatan == 1)
-                                <td>Wakil Rektor <br>Bidang Sumber Daya Pengembangan</td>
-                                <td style="vertical-align: middle;">Benny Roesly, S.T., M.Pd.</td>
-                            @else
-                                <td>Wakil Rektor <br>Bidang Akademik</td>
-                                <td style="vertical-align: middle;">Yodi, S.Kom., M.S.I</td>
-                            @endif
-                            @endforeach
+                            <td>Diketahui oleh @if($getDiketahui->ket_jabatan != '') {{$getDiketahui->ket_jabatan}} @else {{$getDiketahui->nama_jabatan}} @endif</td>
+                            <td>{{$getDiketahui->nama_pegawai}}</td>
+                        </tr>                    
+                        <tr>
+                            <td>{{$getDisetujui->nama_jabatan}}</td>
+                            <td style="vertical-align: middle;">{{$getDisetujui->nama_pegawai}}</td>
                         </tr>
                         @foreach($datas as $tgl)
                         <tr>

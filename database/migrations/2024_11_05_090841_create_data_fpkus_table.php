@@ -15,11 +15,13 @@ class CreateDataFpkusTable extends Migration
     {
         Schema::create('data_fpkus', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('cek_tanggal')->nullable();
             $table->string('no_surat_undangan');
             $table->string('undangan_dari');
             $table->string('nama_kegiatan');
             $table->date('tgl_kegiatan');
             $table->string('peserta_kegiatan');
+            $table->integer('dibuat_oleh');
             $table->string('catatan')->nullable();
             $table->timestamps();
         });

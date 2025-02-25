@@ -5,6 +5,11 @@
 	<title>QR Code - Approval State</title>
     <link href="{{asset('assets/css/css-export/style-bootstrap.css')}}" rel="stylesheet">
 </head>
+<style>
+    .container {
+        margin-top: 150px;
+    }
+</style>
 <body>
 <div class="container">
     <div class="col-sm-12 mt-3">
@@ -26,28 +31,19 @@
                         </tr>
                         <tr>
                             <td>Penyusun Proposal</td>
-                            <td>{{$data->nama_dosen}}{{$data->nama_mahasiswa}}</td>
+                            <td>{{$getPengusul->nama_pegawai}}</td>
                         </tr>
                         <tr>
                             <td colspan="2">Bahwa Proposal ini telah diketahui dan disetujui oleh:</td>
                         </tr>
                         @endforeach
-                        @foreach($getDekan as $dekan)
                         <tr>
-                            <td>Dekan</td>
-                            <td>{{$dekan->name}}</td>
-                        </tr>
-                        @endforeach
+                            <td>Diketahui oleh @if($getDiketahui->ket_jabatan != '') {{$getDiketahui->ket_jabatan}} @else {{$getDiketahui->nama_jabatan}} @endif</td>
+                            <td>{{$getDiketahui->nama_pegawai}}</td>
+                        </tr>                    
                         <tr>
-                            @foreach($datas as $rektorat)
-                            @if($rektorat->id_jenis_kegiatan == 1)
-                                <td>Wakil Rektor <br>Bidang Sumber Daya Pengembangan</td>
-                                <td style="vertical-align: middle;">Benny Roesly, S.T., M.Pd.</td>
-                            @else
-                                <td>Wakil Rektor <br>Bidang Akademik</td>
-                                <td style="vertical-align: middle;">Yodi, S.Kom., M.S.I</td>
-                            @endif
-                            @endforeach
+                            <td>{{$getDisetujui->nama_jabatan}}</td>
+                            <td style="vertical-align: middle;">{{$getDisetujui->nama_pegawai}}</td>
                         </tr>
                         @foreach($datas as $tgl)
                         <tr>

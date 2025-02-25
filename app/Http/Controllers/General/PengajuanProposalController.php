@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\Proposal;
 use App\Models\General\JenisKegiatan;
-use App\Models\General\DataFakultas;
+use App\Models\General\DataFakultasBiro;
 use App\Models\General\DataPengajuanSarpras;
 use App\Models\General\DataRencanaAnggaran;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -20,18 +20,43 @@ use DB; use URL;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\KirimEmail;
-use App\Models\Master\JabatanAkademik;
+use App\Models\Master\JabatanPegawai;
+use App\Models\Master\Jabatan;
+use App\Models\Master\HandleProposal;
+use App\Models\Master\ValidatorProposal;
+use Illuminate\Support\Facades\Session;
 
 class PengajuanProposalController extends Controller
 {
     public function index(Request $request)
     {
+        // $a = HandleProposal::select('handle_proposals.id_jabatan')
+        //         ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
+        //         ->whereJsonContains('handle_proposals.id_jenis_kegiatan','2')
+        //         ->get();
+
+        //         $b = DB::table('pegawais')->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+        //             ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //             ->whereIn('jabatan_pegawais.id_jabatan',$a)
+        //             ->select('jabatans.kode_jabatan','pegawais.nama_pegawai')
+        //             ->get();
+        // dd($b);
+
+        // $getDisetujui = HandleProposal::leftJoin('jabatans','jabatans.id','=','handle_proposals.id_jabatan')
+        //         ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','jabatans.id')
+        //         ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //         ->select('pegawais.nama_pegawai','jabatans.kode_jabatan')
+        //         ->whereJsonContains('handle_proposals.id_jenis_kegiatan','2')
+        //         ->get();
+
+        //         dd($getDisetujui);
+            
+        // dd(Session::get('selected_peran'));
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
-            ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
             ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0]])
             ->orderBy('proposals.id','DESC')
             ->get();
@@ -101,9 +126,9 @@ class PengajuanProposalController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        $checkLap = DB::table('laporan_proposals')->rightJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
+        $checkLap = DB::table('status_laporan_proposals')->rightJoin('proposals','proposals.id','=','status_laporan_proposals.id_laporan_proposal')
             ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id','laporan_proposals.status_laporan','status_proposals.status_approval')
+            ->select('proposals.id','status_laporan_proposals.status_approval AS slp','status_proposals.status_approval AS status_approval')
             ->where('proposals.user_id',Auth::user()->user_id)
             ->whereIn('status_proposals.status_approval',[1,3,5]) # Check status approval to activate new proposal button
             ->get();
@@ -122,7 +147,7 @@ class PengajuanProposalController extends Controller
                 } elseif($data->status_approval == 4) {
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending WR&nbsp;</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
-                    return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC WR</span>';
+                    return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> ACC WR</span>';
                 } else {
                     return '<span class="badge bg-label-secondary">Menunggu Validasi</span>';
                 }
@@ -135,15 +160,15 @@ class PengajuanProposalController extends Controller
     public function tampilkanWizard(Request $request)
     {
         $getJenisKegiatan = JenisKegiatan::all();
-        $getFakultas = DataFakultas::select('nama_fakultas','id')->get();
-        return view('general.pengajuan-proposal.wizard-proposal', compact('getJenisKegiatan','getFakultas'));
+        $getFakultasBiro = DataFakultasBiro::select('nama_fakultas_biro','id')->get();
+        return view('general.pengajuan-proposal.wizard-proposal', compact('getJenisKegiatan','getFakultasBiro'));
     }
 
     public function faculties($id)
     {
-        $datas = DataFakultas::leftJoin('data_prodis','data_prodis.id_fakultas','=','data_fakultas.id')
-            ->where('data_prodis.id_fakultas',$id)
-            ->pluck('data_prodis.nama_prodi','data_prodis.id');
+        $datas = DataFakultasBiro::leftJoin('data_prodi_biros','data_prodi_biros.id_fakultas_biro','=','data_fakultas_biros.id')
+            ->where('data_prodi_biros.id_fakultas_biro',$id)
+            ->pluck('data_prodi_biros.nama_prodi_biro','data_prodi_biros.id');
         return json_encode($datas);
     }
 
@@ -152,8 +177,8 @@ class PengajuanProposalController extends Controller
         $getPegawaiName = DB::table('pegawais')->select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
         $request->validate([
             'id_jenis_kegiatan' => 'required',
-            'id_fakultas'       => 'required',
-            'id_prodi'          => 'required',
+            'id_fakultas_biro'  => 'required',
+            'id_prodi_biro'     => 'required',
             'nama_kegiatan'     => 'required',
             'pendahuluan'       => 'required',
             'tujuan_manfaat'    => 'required',
@@ -165,8 +190,8 @@ class PengajuanProposalController extends Controller
             'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
-            'id_fakultas.required'          => 'Anda belum memilih fakultas', 
-            'id_prodi.required'             => 'Anda belum memilih prodi', 
+            'id_fakultas_biro.required'     => 'Anda belum memilih fakultas atau biro', 
+            'id_prodi_biro.required'        => 'Anda belum memilih prodi atau biro', 
             'nama_kegiatan.required'        => 'Anda belum menginput nama kegiatan', 
             'pendahuluan.required'          => 'Anda belum menginput pendahuluan', 
             'tujuan_manfaat.required'       => 'Anda belum menginput tujuan manfaat', 
@@ -179,27 +204,34 @@ class PengajuanProposalController extends Controller
             'berkas.*.mimes'                => 'File harus berjenis (pdf atau docx)',
         ]);
 
-        $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
-        $getEmailAddress = DB::table('pegawais')->select('email')->where('user_id',$catchUserID->user_id)->first();
+        # get email WR
+        // $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
+        // $getEmailAddress = DB::table('pegawais')->select('email')->where('user_id',$catchUserID->user_id)->first();
         # get Email Dekan
-        $checkJabatanAk = jabatanAkademik::rightJoin('jabatans','jabatans.id','=','jabatan_akademiks.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_akademiks.id_pegawai')
-            ->where([['jabatan_akademiks.id_jabatan',7],['jabatan_akademiks.id_fakultas',$request->id_fakultas]])
+        $emailDekan = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where([['jabatans.kode_jabatan','=','DKN'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas]])
             ->select('pegawais.email')
             ->first();
-        $listEmail = ['bennyalfian@uvers.ac.id',$getEmailAddress->email,$checkJabatanAk->email];
+        # get Email Admin Umum
+        // $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //     ->where('jabatans.kode_jabatan','=','ADU')
+        //     ->select('pegawais.email')
+        //     ->first();
+        // $listEmail = ['bejisokhi@outlook.com',$emailDekan->email];
 
-        $isiData = [
-            'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
-            'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
-        ];
+        // $isiData = [
+        //     'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+        //     'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
+        // ];
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
                     'id_jenis_kegiatan'     => $request->id_jenis_kegiatan,
                     'user_id'               => Auth::user()->user_id,
-                    'id_fakultas'           => $request->id_fakultas,
-                    'id_prodi'              => $request->id_prodi,
+                    'id_fakultas_biro'      => $request->id_fakultas_biro,
+                    'id_prodi_biro'         => $request->id_prodi_biro,
                     'nama_kegiatan'         => $request->nama_kegiatan,
                     'pendahuluan'           => $request->pendahuluan,
                     'tujuan_manfaat'        => $request->tujuan_manfaat,
@@ -210,7 +242,7 @@ class PengajuanProposalController extends Controller
                     'penutup'               => $request->penutup,
                     'validasi'              => 1,
                 ]);
-        Mail::to($listEmail)->send(new KirimEmail($isiData));
+        // Mail::to($listEmail)->send(new KirimEmail($isiData));
 
         $latest_id = Proposal::latest()->first();
 
@@ -276,6 +308,7 @@ class PengajuanProposalController extends Controller
                     'id_proposal'   => $latest,
                     'nama_berkas'   => $request->nama_berkas[$x],
                     'berkas'        => $fileNames[$x],
+                    'link_gdrive'   => '',
                     'keterangan'    => $request->keterangan[$x],
                     'created_at'    => now(),
                     'updated_at'    => now()
@@ -283,6 +316,19 @@ class PengajuanProposalController extends Controller
             }
             $post = DB::table('lampiran_proposals')->insert($insertData);
         } else {
+            $insertData = [];
+            for($x = 0; $x < count($request->nama_berkas);$x++){
+                $insertData[] = [
+                    'id_proposal'   => $latest,
+                    'nama_berkas'   => $request->nama_berkas[$x],
+                    'berkas'        => '',
+                    'link_gdrive'   => $request->link_gdrive[$x],
+                    'keterangan'    => $request->keterangan[$x],
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ];
+            }
+            $post = DB::table('lampiran_proposals')->insert($insertData);
             return redirect()->route('submission-of-proposal.index');
         }
         return response()->json($post);
@@ -298,153 +344,8 @@ class PengajuanProposalController extends Controller
     public function checkstatus(Request $request)
     {
         $datas = DataPengajuanSarpras::where('id_proposal',$request->proposal_id)->get();
-        foreach($datas as $data){
-            $html = '<div class="container-fluid py-5">
-                    <div class="row">
-                        <div class="col-lg-12">
-                        <div class="horizontal-timeline">
-                            <ul class="list-inline items">';
-
-                            if($data->status == '1'){
-                                $html .= '<li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Pengajuan Proposal</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-warning">Proses</div>
-                                    <h5 class="pt-2 text-warning">Verifikasi Sarpras</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-secondary">Menunggu</div>
-                                    <h5 class="pt-2 text-secondary">Verifikasi Dekan</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-secondary">Menunggu</div>
-                                    <h5 class="pt-2 text-secondary">Proposal diterima</h5>
-                                    </div>
-                                </li>';
-                            } else if($data->status == '2') {
-                                $html .= '<li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Pengajuan Proposal</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Verifikasi Sarpras</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-warning">Proses</div>
-                                    <h5 class="pt-2 text-warning">Verifikasi Dekan</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-secondary">Menunggu</div>
-                                    <h5 class="pt-2 text-secondary">Proposal diterima</h5>
-                                    </div>
-                                </li>';
-                            } else if($data->status == '3'){
-                                $html .= '<li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Pengajuan Proposal</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-warning">Pending</div>
-                                    <h5 class="pt-2 text-warning">Verifikasi Sarpras</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-secondary">Menunggu</div>
-                                    <h5 class="pt-2 text-secondary">Verifikasi Dekan</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-secondary">Menunggu</div>
-                                    <h5 class="pt-2 text-secondary">Proposal diterima</h5>
-                                    </div>
-                                </li>';
-                            } else if($data->status == '4') {
-                                $html .= '<li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Pengajuan Proposal</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Verifikasi Sarpras</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Verifikasi Dekan</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Proposal diterima</h5>
-                                    </div>
-                                </li>';
-                            } else {
-                                $html .= '<li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Pengajuan Proposal</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-success">Berhasil</div>
-                                    <h5 class="pt-2 text-success">Verifikasi Sarpras</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-danger">Ditolak</div>
-                                    <h5 class="pt-2 text-danger">Verifikasi Dekan</h5>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item items-list">
-                                    <div class="px-4">
-                                    <div class="event-date badge bg-secondary">Menunggu</div>
-                                    <h5 class="pt-2 text-secondary">Proposal diterima</h5>
-                                    </div>
-                                </li>';
-                            } 
-
-                            $html .= '
-                            </ul>
-
-                        </div>
-                        </div>
-                    </div>
-                </div>';
-        }
-        $html .= '<p>NB: <i>Untuk Verifikasi Sarpras silahkan perhatikan tabel di bawah!</i></p>';
-
-        # Do another looping
-        $html .= '<hr>';
-        $html .= '<table class="table table-bordered table-hover">
+        
+        $html = '<table class="table table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
@@ -507,10 +408,9 @@ class PengajuanProposalController extends Controller
         $ID = decrypt($id);
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
-            ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user_dosen','mahasiswas.name AS nama_user_mahasiswa')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
             ->where('proposals.id',$ID)
             ->orderBy('proposals.id','DESC')
             ->get();
@@ -524,9 +424,7 @@ class PengajuanProposalController extends Controller
             ->leftJoin('proposals','proposals.id','=','status_proposals.id_proposal')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
-            ->select('status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa')
+            ->select('status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen')
             ->where([['status_proposals.id_proposal',$ID],['status_proposals.status_approval',5]])
             ->get();
         $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate('Proposal belum disetujui!'));
@@ -534,13 +432,38 @@ class PengajuanProposalController extends Controller
         # get lampiran
         $data_lampiran = DB::table('lampiran_proposals')->where('id_proposal',$ID)->get();
 
-        # Get Dekan
+        # Get Pengusul according to proposal.user_id
+        $getPengusul = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diusulkan_oleh')
+            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->where('proposals.id','=',$ID)
+            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+            ->first();
+
         foreach($datas as $r){
-            $getDekan = Dekan::where('id_fakultas',$r->id_fakultas)->select('name')->get();
+            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
+                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
+                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                ->first();
+
+            $queryGetJenisKegiatan = HandleProposal::select('handle_proposals.id_jabatan')
+                ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
+                ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->get();
+
+            $getDisetujui = DB::table('pegawais')->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+                ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+                ->whereIn('jabatan_pegawais.id_jabatan',$queryGetJenisKegiatan)
+                ->select('jabatans.kode_jabatan','pegawais.nama_pegawai')
+                ->first();
+                
         }
-        
+    
         $fileName = 'proposal_'.date(now()).'.pdf';
-        $pdf = PDF::loadview('general.pengajuan-proposal.preview-proposal', compact('datas','sarpras','anggarans','grandTotal','getQR','qrcode','getDekan','data_lampiran'));
+        $pdf = PDF::loadview('general.pengajuan-proposal.preview-proposal', compact('datas','sarpras','anggarans','grandTotal','getQR','qrcode','data_lampiran','getPengusul','getDiketahui','getDisetujui'));
         $pdf->setPaper('F4','P');
         $pdf->getDomPDF()->set_option("isPhpEnabled", true);
         $pdf->getFontMetrics()->get_font("helvetica", "bold");
@@ -556,21 +479,46 @@ class PengajuanProposalController extends Controller
             ->leftJoin('proposals','proposals.id','=','status_proposals.id_proposal')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('dekans','dekans.id_fakultas','=','proposals.id_fakultas')
-            ->select('proposals.id AS id_proposal','proposals.id_jenis_kegiatan','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas','status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','mahasiswas.name AS nama_mahasiswa','status_proposals.updated_at','jenis_kegiatans.nama_jenis_kegiatan')
+            ->select('proposals.id AS id_proposal','proposals.id_jenis_kegiatan','proposals.nama_kegiatan','proposals.tgl_event','proposals.id_fakultas_biro','status_proposals.status_approval','status_proposals.generate_qrcode','pegawais.nama_pegawai AS nama_dosen','status_proposals.updated_at','jenis_kegiatans.nama_jenis_kegiatan')
             ->where('status_proposals.generate_qrcode',$initial)
             ->get();
 
+        # Get Pengusul according to proposal.user_id
         foreach($datas as $r){
-            $getDekan = Dekan::where('id_fakultas',$r->id_fakultas)->select('name')->get();
+            $getPengusul = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diusulkan_oleh')
+                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+                ->where('proposals.id','=',$r->id_proposal)
+                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+                ->first();
+
+            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
+                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
+                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                ->first();
+
+            $queryGetJenisKegiatan = HandleProposal::select('handle_proposals.id_jabatan')
+                ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
+                ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->get();
+
+            $getDisetujui = DB::table('pegawais')->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+                ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+                ->whereIn('jabatan_pegawais.id_jabatan',$queryGetJenisKegiatan)
+                ->select('jabatans.kode_jabatan','jabatans.nama_jabatan','pegawais.nama_pegawai')
+                ->first();
         }
-        return view('general.pengajuan-proposal.show_qrcode', compact('datas','getDekan'));
+
+        return view('general.pengajuan-proposal.show_qrcode', compact('datas','getPengusul','getDiketahui','getDisetujui'));
     }
 
     public function viewlampiran(Request $request)
     {
-        $datas = DB::table('lampiran_proposals')->where('id_proposal',$request->proposal_id)->select('id','nama_berkas','berkas','keterangan')->get();
+        $datas = DB::table('lampiran_proposals')->where('id_proposal',$request->proposal_id)->select('id','nama_berkas','berkas','link_gdrive','keterangan')->get();
         $html = '<table class="table table-bordered table-hover table-sm">
                     <thead class="bg-dark">
                         <tr>
@@ -587,7 +535,14 @@ class PengajuanProposalController extends Controller
                                 <td>'.++$no.'</td>
                                 <td>'.$data->nama_berkas.'</td>
                                 <td>'.$data->keterangan.'</td>
-                                <td><button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button></td>
+                                <td>';
+                                if($data->berkas != ''){
+                                    $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
+                                } else {
+                                    $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
+                                }
+                                
+                                $html .= '</td>
                             </tr>';
                     }
             $html .= '</tbody>
@@ -766,10 +721,35 @@ class PengajuanProposalController extends Controller
 
     public function submitUlangProposal(Request $request)
     {
+        # Get Data Proposals
+        $getDataProposal = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+            ->where('proposals.id',$request->id_proposal)
+            ->select('proposals.id_fakultas_biro','proposals.nama_kegiatan','pegawais.nama_pegawai')
+            ->first();
+        # get Email Dekan
+        $emailDekan = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where([['jabatans.kode_jabatan','=','DKN'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas]])
+            ->select('pegawais.email')
+            ->first();
+        # get Email Admin Umum
+        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where('jabatans.kode_jabatan','=','ADU')
+            ->select('pegawais.email')
+            ->first();
+        $listEmail = [$emailADU->email,$emailDekan->email];
+
+        $isiData = [
+            'name' => 'Revisi Proposal Kegiatan oleh '.$getDataProposal->nama_pegawai.'',
+            'body' => 'Revisi Proposal Kegiatan: '.$getDataProposal->nama_kegiatan.' telah selesai dilakukan.',
+        ];
+
         $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
             'status_approval' => 1,
             'keterangan_ditolak' => ''
         ]);
+        Mail::to($listEmail)->send(new KirimEmail($isiData));
         return response()->json($post);
     }
 
@@ -783,10 +763,35 @@ class PengajuanProposalController extends Controller
 
     public function submitUlangAnggaran(Request $request)
     {
+        # Get Data Proposals
+        $getDataProposal = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+            ->where('proposals.id',$request->id_proposal)
+            ->select('proposals.id_fakultas_biro','proposals.nama_kegiatan','pegawais.nama_pegawai')
+            ->first();
+        # get Email Dekan
+        $emailDekan = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where([['jabatans.kode_jabatan','=','DKN'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas]])
+            ->select('pegawais.email')
+            ->first();
+        # get Email Admin Umum
+        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where('jabatans.kode_jabatan','=','ADU')
+            ->select('pegawais.email')
+            ->first();
+        $listEmail = [$emailADU->email,$emailDekan->email];
+
+        $isiData = [
+            'name' => 'Revisi Anggaran Proposal Kegiatan oleh '.$getDataProposal->nama_pegawai.'',
+            'body' => 'Revisi Anggaran Proposal Kegiatan: '.$getDataProposal->nama_kegiatan.' telah selesai dilakukan.',
+        ];
+
         $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
             'status_approval' => 1,
             'keterangan_ditolak' => ''
         ]);
+        Mail::to($listEmail)->send(new KirimEmail($isiData));
         return response()->json($post);
     }
 }

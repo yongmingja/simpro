@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\General\Proposal;
 use App\Models\General\DataRencanaAnggaran;
 use App\Models\Master\JabatanPegawai;
-use App\Models\Master\JabatanAkademik;
 use Auth;
 use DB;
 
@@ -15,19 +14,18 @@ class DataProposalController extends Controller
 {
     public function index(Request $request)
     {
-        $checkJabatanAk = jabatanAkademik::leftJoin('jabatans','jabatans.id','=','jabatan_akademiks.id_jabatan')
-            ->where('jabatan_akademiks.id_pegawai',Auth::guard('pegawai')->user()->id)
-            ->select('jabatan_akademiks.id_fakultas')
+        $getJabatanIs = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=','DKN']])
+            ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
-            ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
             ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user','mahasiswas.name AS nama_user')
-            ->where('proposals.id_fakultas',$checkJabatanAk->id_fakultas)
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+            ->where('proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro)
             ->orderBy('status_proposals.status_approval','ASC')
             ->get();
 

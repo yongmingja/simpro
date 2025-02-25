@@ -18,6 +18,7 @@ class CreateStatusFpkusTable extends Migration
             $table->unsignedInteger('id_fpku');
             $table->foreign('id_fpku')->references('id')->on('data_fpkus')->onDelete('cascade');
             $table->integer('status_approval');
+            $table->integer('broadcast_email')->nullable();
             $table->string('generate_qrcode')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamps();

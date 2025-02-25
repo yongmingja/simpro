@@ -15,7 +15,6 @@ class JabatanPegawai extends Model
             'nama_pegawai'          => 'Data Tidak Ada',
             'email'                 => 'Data Tidak Ada',
             'jenis_kelamin'         => 'Data Tidak Ada',
-            'agama'                 => 'Data Tidak Ada',
             'id_status_pegawai'     => 'Data Tidak Ada',
         ]);
     }
@@ -26,7 +25,6 @@ class JabatanPegawai extends Model
             'id'                 => 'Data Tidak Ada',
             'kode_jabatan'       => 'Data Tidak Ada',
             'nama_jabatan'       => 'Data Tidak Ada',
-            'golongan_jabatan'   => 'Data Tidak Ada',
         ]);
     }
 }

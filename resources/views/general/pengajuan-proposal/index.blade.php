@@ -76,7 +76,7 @@
                         <!-- MULAI TOMBOL TAMBAH -->
                         @if($checkLap->count() > 0)
                             @foreach($checkLap as $p)  @endforeach
-                                @if($p->status_laporan == '')
+                                @if($p->slp == '')
                                     <div class="mb-3">
                                         <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di verifikasi oleh Rektorat! Mohon periksa kembali status proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
                                     </div>
@@ -99,6 +99,8 @@
                                 <th>Preview</th>
                                 <th>Proposal</th>
                                 <th>Nama Kegiatan</th>
+                                <th>Tgl Kegiatan</th>
+                                <th>Proposal Dibuat</th>
                                 <th>Nama Pengaju</th>
                                 <th width="12%;">Status</th>
                                 <th width="12%;">Aksi</th>
@@ -112,7 +114,7 @@
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title justify-content-center">Progres Timeline Proposal</h5>
+                                    <h5 class="modal-title justify-content-center">Pengajuan Sarana & Prasarana</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -592,11 +594,17 @@
                 {data: 'laporan',name: 'laporan'},
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'nama_user',name: 'nama_user',
-                    render: function(data,type,row){
-                        return row.nama_user_dosen || row.nama_user_mahasiswa
+                {data: 'tgl_event',name: 'tgl_event',
+                    render: function ( data, type, row ){
+                        return moment(row.tgl_event).format("DD MMM YYYY")
                     }
                 },
+                {data: 'created_at',name: 'created_at',
+                    render: function ( data, type, row ){
+                        return moment(row.created_at).format("DD MMM YYYY")
+                    }
+                },
+                {data: 'nama_user_dosen',name: 'nama_user_dosen'},
                 {data: 'status',name: 'status'},
                 {data: 'action',name: 'action'},
             ]
@@ -711,6 +719,7 @@
                             timer: 2000
                         })
                         $('#table_proposal').DataTable().ajax.reload(null, true);
+                        location.reload();
                     }).fail(function() {
                         Swal.fire({
                             title: 'Oops!',

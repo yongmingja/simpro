@@ -18,6 +18,7 @@ class CreateLampiranProposalsTable extends Migration
             $table->integer('id_proposal');
             $table->string('nama_berkas')->nullable();
             $table->string('berkas')->nullable();
+            $table->string('link_gdrive')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });

@@ -17,6 +17,8 @@ class CreateJabatanPegawaisTable extends Migration
             $table->increments('id');
             $table->integer('id_pegawai');
             $table->integer('id_jabatan');
+            $table->integer('id_fakultas_biro')->nullable();
+            $table->string('ket_jabatan')->nullable();
             $table->timestamps();
         });
     }

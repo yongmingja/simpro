@@ -22,7 +22,7 @@ Route::get('logout','Auth\AuthPegawaiController@logout')->name('logout');
 // Route::get('/homepage-ui','HomeController@uiModul')->name('ui-modul');
 
 // Route::view('/home', 'home')->middleware('auth');
-Route::get('/home', 'HomeController@index')->middleware('auth:pegawai,mahasiswa')->name('home');
+Route::get('/home', 'HomeController@index')->middleware('auth:pegawai')->name('home');
 Route::post('/ubah-peran', function(Request $request){
     $peran = $request->peran;
     if ($peran) {
@@ -42,22 +42,17 @@ Route::redirect('/simak-uvers-webpage', 'https://sia.uvers.ac.id/')->name('simak
 
 Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(function() {
     Route::get('data-dash-admin','AdminPage\DataUser\DataAdminController@dashAdmin')->name('data-dash-admin');
-    Route::resource('data-user-mahasiswa', 'AdminPage\DataUser\DataMahasiswaController');
-    Route::resource('data-user-dekan', 'AdminPage\DataUser\DataDekanController');
     Route::resource('data-jenis-kegiatan', 'General\JenisKegiatanController');
-    Route::resource('data-fakultas', 'General\DataFakultasController');
-    Route::resource('data-prodi', 'General\DataProdiController');
+    Route::resource('data-fakultas-biro', 'General\DataFakultasBiroController');
+    Route::resource('data-prodi-biro', 'General\DataProdiBiroController');
     Route::resource('data-proposal', 'AdminPage\DataProposalController');
     Route::get('validasi-proposal','AdminPage\DataProposalController@validasi')->name('validasi-proposal');
     Route::post('valid-y','AdminPage\DataProposalController@validY')->name('valid-y');
     Route::post('valid-n','AdminPage\DataProposalController@validN')->name('valid-n');
-    Route::post('import-mahasiswa','AdminPage\DataUser\DataMahasiswaController@importDataMahasiswa')->name('import-data-mahasiswa');
     Route::post('import-dosen','AdminPage\DataUser\DataDosenController@importDataDosen')->name('import-data-dosen');
     Route::post('/y-selected-id','AdminPage\DataProposalController@validYAll')->name('y-selected-id');
 
     Route::resource('data-jabatan', 'Master\JabatanController');
-    Route::resource('data-jabatan-akademik', 'Master\JabatanAkademikController');
-    Route::get('daftar-fakultas/{id}','Master\JabatanAkademikController@faculties')->name('daftar-fakultas');
     Route::resource('data-jabatan-pegawai', 'Master\JabatanPegawaiController');
 
     Route::resource('data-pegawai', 'AdminPage\DataUser\DataPegawaiController');
@@ -69,23 +64,8 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
     Route::get('check-jabatan-pegawai','Master\JabatanPegawaiController@checkjabatan')->name('check-jabatan-pegawai');
 
     Route::post('reset-pass-pegawai','AdminPage\DataUser\DataPegawaiController@resetPass')->name('reset-pass-pegawai');
-    Route::post('reset-pass-mahasiswa','AdminPage\DataUser\DataMahasiswaController@resetPassMhs')->name('reset-pass-mahasiswa');
-});
-
-/* 
-|---------------------------------------------
-| All routes for mahasiswa
-|---------------------------------------------
-*/
-
-/* 
-|---------------------------------------------
-| All routes for dosen
-|---------------------------------------------
-*/
-
-Route::middleware(['auth:pegawai','verified', 'cekrole:DSN'])->group(function() {
-    Route::view('/dosen', 'dashboard.dosen-dashboard')->name('dashboard-dosen');
+    Route::resource('validator-proposal','AdminPage\ValidatorProposalController');
+    Route::resource('handle-proposal','AdminPage\HandleProposalController');
 });
 
 /* 
@@ -93,8 +73,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:DSN'])->group(function() 
 | All routes for all general 
 |---------------------------------------------
 */
-Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
-    Route::view('/mahasiswa', 'dashboard.mahasiswa-dashboard')->name('dashboard-mahasiswa');
+Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::resource('submission-of-proposal', 'General\PengajuanProposalController');
     Route::get('/proposal-baru','General\PengajuanProposalController@tampilkanWizard')->name('tampilan-proposal-baru');
     Route::post('insert-proposal-baru','General\PengajuanProposalController@insertProposal')->name('insert-proposal');
@@ -151,13 +130,17 @@ Route::middleware(['auth:pegawai,mahasiswa','verified'])->group(function() {
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:DKN'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:DKN,KRO'])->group(function() {
     Route::view('/dekan', 'dashboard.dekan-dashboard')->name('dashboard-dekan');
+    Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');
     Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');
     Route::resource('page-data-proposal', 'DekanPage\DataProposalController');
     Route::get('rencana-anggaran-proposal','DekanPage\DataProposalController@rencana')->name('rencana-anggaran-proposal');
     Route::post('dean-approval-y','DekanPage\DataProposalController@approvalDeanY')->name('dean-approval-y');
     Route::post('dean-approval-n','DekanPage\DataProposalController@approvalDeanN')->name('dean-approval-n');
+    Route::resource('page-laporan-proposal','DekanPage\LaporanProposalController');
+    Route::post('dean-report-approval-y','DekanPage\LaporanProposalController@approvalDeanY')->name('dean-report-approval-y');
+    Route::post('dean-report-approval-n','DekanPage\LaporanProposalController@approvalDeanN')->name('dean-report-approval-n');
 });
 
 /* 
@@ -166,7 +149,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:DKN'])->group(function() 
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,Rektor'])->group(function() {
     Route::get('/rektorat', 'RektoratPage\DashboardController@index')->name('dashboard-rektorat');
     Route::post('approval-n','RektoratPage\DashboardController@approvalN')->name('approval-n');
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');
@@ -176,4 +159,5 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP'])->group(func
     Route::post('confirmundanganfpku','RektoratPage\DashboardController@confirmUndanganFpku')->name('confirmundanganfpku');
     Route::get('rlaporanfpku','RektoratPage\DashboardController@indexLaporanFpku')->name('rlaporanfpku');
     Route::post('confirmlaporanfpku','RektoratPage\DashboardController@confirmLaporanFpku')->name('confirmlaporanfpku');
+    Route::post('r-report-approval-n','RektoratPage\DashboardController@approvalRektorN')->name('r-report-approval-n');
 });

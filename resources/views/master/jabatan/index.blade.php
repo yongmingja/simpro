@@ -37,7 +37,6 @@
                                   <th>#</th>
                                   <th>Kode Jabatan</th>
                                   <th>Nama Jabatan</th>
-                                  <th>Gol Jabatan</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -66,16 +65,7 @@
                                                 <label for="nama_jabatan" class="form-label">Nama Jabatan</label>
                                                 <input type="text" class="form-control" id="nama_jabatan" name="nama_jabatan" value="" />
                                                 <span class="text-danger" id="namaJabatanErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                              
-                                            <div class="mb-3">
-                                                <label for="golongan_jabatan" class="form-label">Gol. Jabatan</label>
-                                                <select class="select2 form-select" id="golongan_jabatan" name="golongan_jabatan" aria-label="Default select example" style="cursor:pointer;">
-                                                    <option value="" id="pilih_fakultas">- Pilih -</option>
-                                                    <option value="1">Pendidik</option>
-                                                    <option value="2">Tenaga Kependidikan</option>
-                                                </select>
-                                                <span class="text-danger" id="golJabatanErrorMsg" style="font-size: 10px;"></span>
-                                            </div>   
+                                            </div>     
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -127,11 +117,6 @@
                 }, 
                 {data: 'kode_jabatan',name: 'kode_jabatan'},
                 {data: 'nama_jabatan',name: 'nama_jabatan'},
-                {data: 'golongan_jabatan',name: 'golongan_jabatan',
-                    render: function(data, type, row){
-                        return (row.golongan_jabatan == 1) ? 'Pendidik' : 'Tenaga Kependidikan'
-                    }
-                },
                 {data: 'action',name: 'action'},
             ]
         });
@@ -177,7 +162,6 @@
                     error: function(response) {
                         $('#kodeJabatanErrorMsg').text(response.responseJSON.errors.kode_jabatan);
                         $('#namaJabatanErrorMsg').text(response.responseJSON.errors.nama_jabatan);
-                        $('#golJabatanErrorMsg').text(response.responseJSON.errors.golongan_jabatan);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',
@@ -206,7 +190,6 @@
             $('#id').val(data.id);
             $('#kode_jabatan').val(data.kode_jabatan);
             $('#nama_jabatan').val(data.nama_jabatan);
-            $('#golongan_jabatan').val(data.golongan_jabatan);
         })
     });
 

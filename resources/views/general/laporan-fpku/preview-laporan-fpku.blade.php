@@ -103,8 +103,8 @@
         
         <div class="cover_instansi">
             @foreach($datas as $nama)
-            <p style="text-transform: uppercase;">{{$nama->nama_prodi}}</p>
-            <p style="text-transform: uppercase;">{{$nama->nama_fakultas}}</p>
+            <p style="text-transform: uppercase;">{{$nama->nama_prodi_biro}}</p>
+            <p style="text-transform: uppercase;">{{$nama->nama_fakultas_biro}}</p>
             @endforeach
             <p style="text-transform: uppercase;">Universitas Universal</p>
             @foreach($datas as $tahun)

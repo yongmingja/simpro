@@ -16,7 +16,7 @@ class DataPegawaiController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = Pegawai::all();
+        $datas = Pegawai::orderBy('nama_pegawai','ASC')->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){

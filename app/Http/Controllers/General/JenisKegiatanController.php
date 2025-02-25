@@ -33,7 +33,7 @@ class JenisKegiatanController extends Controller
         $request->validate([
             'nama_jenis_kegiatan' => 'required',
         ],[
-            'nama_jenis_kegiatan.required' => 'Anda belum menginputkan nama jenis kegiatan',
+            'nama_jenis_kegiatan.required' => 'Anda belum menginputkan nama kategori',
         ]);
 
         $post = JenisKegiatan::updateOrCreate(['id' => $request->id],

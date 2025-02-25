@@ -38,6 +38,7 @@
                                   <th>Pegawai</th>
                                   <th>NIP / User ID</th>
                                   <th>Jabatan</th>
+                                  <th>Ket Jabatan</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -71,7 +72,7 @@
 
                                             <div class="mb-3">
                                                 <label for="id_jabatan" class="form-label">Jabatan</label>
-                                                <select class="select2 form-select" id="id_jabatan" name="id_jabatan" aria-label="Default select example" style="cursor:pointer;">
+                                                <select class="select2 form-select" id="id_jabatan" name="id_jabatan" aria-label="Default select example" style="cursor:pointer;" onchange="display()">
                                                     <option value="" id="pilih_jabatan">- Pilih -</option>
                                                     @foreach($getJabatan as $jabatan)
                                                     <option value="{{$jabatan->id}}">{{$jabatan->nama_jabatan}}</option>
@@ -79,6 +80,8 @@
                                                 </select>
                                                 <span class="text-danger" id="idJabatanErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
+                                            <div id="showForm" name="showForm" class="mb-1"></div>
+                                            
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -150,6 +153,7 @@
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'user_id',name: 'user_id'},
                 {data: 'jabatan_nama',name: 'jabatan_nama'},
+                {data: 'ket_jabatan',name: 'ket_jabatan'},
                 {data: 'action',name: 'action'},
             ]
         });
@@ -195,6 +199,7 @@
                     error: function(response) {
                         $('#idPegawaiErrorMsg').text(response.responseJSON.errors.id_pegawai);
                         $('#idJabatanErrorMsg').text(response.responseJSON.errors.id_jabatan);
+                        $('#ketJabatanErrorMsg').text(response.responseJSON.errors.ket_jabatan);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
                             title: 'Error!',
@@ -266,26 +271,15 @@
         });
     });
 
-    $('select[name="id_fakultas"]').on('change', function() {
-        $('#id_prodi').empty();
-        var facultyID = $(this).val();
-        if(facultyID) {
-            $.ajax({
-                url: '{{route("daftar-fakultas", ":id")}}'.replace(":id", facultyID),
-                type: "GET",
-                dataType: "json",
-                success:function(data) { 
-                    $('select[name="id_prodi"]').removeClass('d-none');
-                    $('select[name="id_prodi"]').append('<option value="">'+ '- Pilih prodi -' +'</option>');
-                    $.each(data, function(key, value) {
-                    $('select[name="id_prodi"]').append('<option value="'+ key +'">'+ value +'</option>');
-                    });
-                }
-            });
-        }else{
-            $('select[name="id_prodi"]').removeClass('d-none');
+    /* using JavaScript */
+    function display(){
+        var jabatanSelected = $('#id_jabatan').val();
+        if(jabatanSelected == 6){ // Static id, Dekan atau KaBiro
+        document.getElementById("showForm").innerHTML='<div class="mb-3"><label for="id_fakultas_biro" class="form-label">Fakultas / Biro *(Jika Jabatan Dekan atau Ka.Biro)</label><select class="select2 form-select" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;"><option value="" id="pilih_fakultas">- Pilih -</option>@foreach($getFakultasBiro as $fakultas_biro)<option value="{{$fakultas_biro->id}}">{{$fakultas_biro->nama_fakultas_biro}}</option>@endforeach</select><span class="text-danger" id="idJabatanErrorMsg" style="font-size: 10px;"></span></div> <div class="mb-3"><label for="ket_jabatan" class="form-label">Keterangan Jabatan</label><input type="text" class="form-control" id="ket_jabatan" name="ket_jabatan" value="" /><span class="text-danger" id="ketJabatanErrorMsg" style="font-size: 10px;"></span></div>';
+        } else {
+        document.getElementById("showForm").innerHTML='<div class="mb-3"><label for="ket_jabatan" class="form-label">Keterangan Jabatan</label><input type="text" class="form-control" id="ket_jabatan" name="ket_jabatan" value="" /><span class="text-danger" id="ketJabatanErrorMsg" style="font-size: 10px;"></span></div>';
         }
-    });
+    }
 
 </script>
 

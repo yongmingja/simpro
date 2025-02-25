@@ -22,6 +22,8 @@ class CreateDataRencanaAnggaransTable extends Migration
             $table->integer('quantity')->nullable();
             $table->integer('frequency')->nullable();
             $table->integer('sumber_dana')->nullable();
+            $table->integer('status')->nullable();
+            $table->string('alasan')->nullable();
             $table->timestamps();
         });
     }

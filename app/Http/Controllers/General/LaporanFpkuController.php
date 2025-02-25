@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\DataFpku;
 use App\Models\General\LaporanFpku;
-use App\Models\General\DataFakultas;
+use App\Models\General\DataFakultasBiro;
 use App\Setting\Dekan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Models\Master\ValidatorProposal;
 use Auth; use DB; use URL;
 
 class LaporanFpkuController extends Controller
@@ -17,15 +18,15 @@ class LaporanFpkuController extends Controller
     public function buatLaporan(Request $request,$id)
     {
         $ID = decrypt($id);
-        $getFakultas = DataFakultas::select('nama_fakultas','id')->get();
-        return view('general.laporan-fpku.buat-laporan',['id' => $ID, 'getFakultas' => $getFakultas]);
+        $getFakultasBiro = DataFakultasBiro::select('nama_fakultas_biro','id')->get();
+        return view('general.laporan-fpku.buat-laporan',['id' => $ID, 'getFakultasBiro' => $getFakultasBiro]);
     }
 
     public function faculties($id)
     {
-        $datas = DataFakultas::leftJoin('data_prodis','data_prodis.id_fakultas','=','data_fakultas.id')
-            ->where('data_prodis.id_fakultas',$id)
-            ->pluck('data_prodis.nama_prodi','data_prodis.id');
+        $datas = DataFakultasBiro::leftJoin('data_prodi_biros','data_prodi_biros.id_fakultas_biro','=','data_fakultas_biros.id')
+            ->where('data_prodi_biros.id_fakultas_biro',$id)
+            ->pluck('data_prodi_biros.nama_prodi_biro','data_prodi_biros.id');
         return json_encode($datas);
     }
 
@@ -71,8 +72,8 @@ class LaporanFpkuController extends Controller
         $request->validate([
             'nama_kegiatan'                => 'required',
             'tgl_kegiatan'                 => 'required',
-            'id_fakultas'                  => 'required',
-            'id_prodi'                     => 'required',
+            'id_fakultas_biro'             => 'required',
+            'id_prodi_biro'                => 'required',
             'lokasi_tempat'                => 'required',
             'pendahuluan'                  => 'required',
             'tujuan_manfaat'               => 'required',
@@ -85,8 +86,8 @@ class LaporanFpkuController extends Controller
         ],[
             'nama_kegiatan.required'                => 'Anda belum menginput nama kegiatan', 
             'tgl_kegiatan.required'                 => 'Anda belum menginput tgl kegiatan', 
-            'id_fakultas.required'                  => 'Anda belum memilih fakultas', 
-            'id_prodi.required'                     => 'Anda belum memilih prodi', 
+            'id_fakultas_biro.required'             => 'Anda belum memilih fakultas atau biro', 
+            'id_prodi_biro.required'                => 'Anda belum memilih prodi atau biro', 
             'lokasi_tempat.required'                => 'Anda belum menginput lokasi kegiatan',
             'pendahuluan.required'                  => 'Anda belum menginput pendahuluan', 
             'tujuan_manfaat.required'               => 'Anda belum menginput tujuan manfaat', 
@@ -108,8 +109,8 @@ class LaporanFpkuController extends Controller
                     'id_fpku'                       => $request->id_fpku,
                     'nama_kegiatan'                 => $request->nama_kegiatan,
                     'tgl_kegiatan'                  => $request->tgl_kegiatan,
-                    'id_fakultas'                   => $request->id_fakultas,
-                    'id_prodi'                      => $request->id_prodi,
+                    'id_fakultas_biro'              => $request->id_fakultas_biro,
+                    'id_prodi_biro'                 => $request->id_prodi_biro,
                     'lokasi_tempat'                 => $request->lokasi_tempat,
                     'pendahuluan'                   => $request->pendahuluan,
                     'tujuan_manfaat'                => $request->tujuan_manfaat,
@@ -173,6 +174,19 @@ class LaporanFpkuController extends Controller
                 }
                 $post = DB::table('lampiran_laporan_fpkus')->insert($insertData);
             } else {
+                $insertData = [];
+                for($x = 0; $x < count($request->nama_berkas);$x++){
+                    $insertData[] = [
+                        'id_fpku'       => $request->id_fpku,
+                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'berkas'        => '',
+                        'link_gdrive'   => $request->link_gdrive[$x],
+                        'keterangan'    => $request->keterangan[$x],
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ];
+                }
+                $post = DB::table('lampiran_laporan_fpkus')->insert($insertData);
                 return redirect()->route('index-laporan-fpku');
             }
             
@@ -200,7 +214,14 @@ class LaporanFpkuController extends Controller
                                 <td>'.++$no.'</td>
                                 <td>'.$data->nama_berkas.'</td>
                                 <td>'.$data->keterangan.'</td>
-                                <td><button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button></td>
+                                <td>';
+                                if($data->berkas != ''){
+                                    $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
+                                } else {
+                                    $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
+                                }
+                                
+                                $html .= '</td>
                             </tr>';
                     }
             $html .= '</tbody>
@@ -211,10 +232,10 @@ class LaporanFpkuController extends Controller
     public function previewlaporanfpku($id)
     {
         $ID = decrypt($id);
-        $datas = LaporanFpku::leftJoin('data_fakultas','data_fakultas.id','=','laporan_fpkus.id_fakultas')
+        $datas = LaporanFpku::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','laporan_fpkus.id_fakultas_biro')
             ->leftJoin('pegawais','pegawais.id','=','laporan_fpkus.dibuat_oleh')
-            ->leftJoin('data_prodis','data_prodis.id','=','laporan_fpkus.id_prodi')
-            ->select('laporan_fpkus.id AS id','laporan_fpkus.*','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai','pegawais.user_id')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','laporan_fpkus.id_prodi_biro')
+            ->select('laporan_fpkus.id AS id','laporan_fpkus.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','pegawais.user_id')
             ->where('laporan_fpkus.id_fpku',$ID)
             ->get();
 
@@ -224,14 +245,36 @@ class LaporanFpkuController extends Controller
         $grandTotalRealisasiAnggarans = DB::table('data_realisasi_anggaran_fpkus')->select(DB::raw('sum(biaya_satuan * quantity * frequency) as grandTotalRealisasi'))->where('id_fpku',$ID)->first();
         $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate('Unverified!'));
 
-        # Get Dekan
+        # Get Pengusul according to proposal.user_id
+        $getPengusul = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diusulkan_oleh')
+            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->where('proposals.id','=',$ID)
+            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+            ->first();
+
         foreach($datas as $r){
-            $getDekan = Dekan::leftJoin('data_fakultas','data_fakultas.id','=','dekans.id_fakultas')->where('dekans.id_fakultas',$r->id_fakultas)->select('dekans.name','data_fakultas.nama_fakultas')->get();
+            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
+                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
+                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                ->first();
         }
+
+        $getDisetujui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.disetujui_oleh')
+            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->where('proposals.id','=',$ID)
+            ->select('jabatans.kode_jabatan','pegawais.nama_pegawai')
+            ->first();
         
         
         $fileName = 'laporan_fpku_'.date(now()).'.pdf';
-        $pdf = PDF::loadview('general.laporan-fpku.preview-laporan-fpku', compact('datas','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','qrcode','getDekan'));
+        $pdf = PDF::loadview('general.laporan-fpku.preview-laporan-fpku', compact('datas','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','qrcode','getPengusul','getDiketahui','getDisetujui'));
         $pdf->setPaper('F4','P');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();

@@ -211,6 +211,10 @@
                                       <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
                                       <small>Upload Lampiran Proposal.</small>
                                     </div>
+                                    <div class="col form-group p-0">
+                                        <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
+                                    </div>
+                                    <input type="checkbox" id="switch" name="switch" class="mb-3">
                                     <div class="row g-3">                                    
                                         <div>
                                             <div class="row firstRow">
@@ -218,11 +222,8 @@
                                                     <label for="nama_berkas" class="form-label">Nama Berkas</label>
                                                     <input type="text" name="nama_berkas[]" class="w-100 form-control">
                                                 </div>
-                                                <div class="col-md-3 form-group mb-3">
-                                                    <label for="berkas" class="form-label">Berkas</label>
-                                                    <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .docx">
-                                                    <div style="font-size: 11px;" class="mt-2"><i class="text-muted">*format lampiran: *.pdf atau *.docx</i></div>
-                                                    <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
+                                                <div class="col-md-3 form-group mb-3" id="form-container">
+                                                    <!-- Form content will be dynamically generated here --> 
                                                 </div>
                                                 <div class="col-md-3 form-group mb-3">
                                                     <label for="keterangan" class="form-label">Keterangan</label>
@@ -460,7 +461,34 @@
                   editor3.root.innerHTML = quillEditor3.value;
               });
           }
-      });
+    });
+
+    $('.addField').addClass('d-none');
+    document.addEventListener('DOMContentLoaded', function() { 
+        const switchElement = document.getElementById('switch'); 
+        const formContainer = document.getElementById('form-container'); 
+        switchElement.addEventListener('change', function() { 
+            if (switchElement.checked) { 
+                $('.addField').removeClass('d-none');
+                formContainer.innerHTML = `<form id="form1"> 
+                        <label for="berkas" class="form-label">Berkas </label>
+                        <input type="file" id="berkas" name="berkas[]" class="w-100 form-control" accept=".pdf, .docx">
+                        <div style="font-size: 11px;" class="mt-2"><i class="text-muted">Format lampiran: *.pdf atau *.docx | max. 2MB</i></div>
+                        <span class="text-danger" id="berkasErrorMsg" style="font-size: 10px;"></span>
+                </form> `; 
+            } else { $('.addField').addClass('d-none');
+            formContainer.innerHTML = `<form id="form2">
+                        <label for="link_gdrive" class="form-label">Link G-Drive </label>
+                        <input type="text" id="link_gdrive" name="link_gdrive[]"
+                            class="form-control"
+                            placeholder="https://drive.google.com/file/"
+                            autocomplete="off" />
+                </form> `; 
+
+            } 
+        }); // Initialize form on page load 
+        switchElement.dispatchEvent(new Event('change')); 
+    });
 
 </script>
 

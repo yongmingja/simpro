@@ -23,6 +23,7 @@ class CreateDataPengajuanSarprasTable extends Migration
             $table->integer('sumber_dana');
             $table->integer('status')->nullable();
             $table->text('keterangan')->nullable();
+            $table->text('alasan')->nullable();
             $table->timestamps();
         });
     }

@@ -83,6 +83,42 @@
                             </thead>
                         </table>
                     </div>
+
+                    <!-- Modal validasi proposal -->
+                    <div class="modal fade" id="add-keterangan-modal" aria-hidden="true">
+                        <div class="modal-dialog ">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="form-add-keterangan" name="form-add-keterangan" class="form-horizontal">
+                                        <div class="row">
+                                            <div class="mb-3">
+                                                <input type="hidden" class="form-control" id="propsl_id" name="propsl_id">
+                                                <label for="keterangan_ditolak" class="form-label">Keterangan ditolak</label>
+                                                <textarea class="form-control" id="keterangan_ditolak" name="keterangan_ditolak" rows="5"></textarea>
+                                                <span class="text-danger" id="alasanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>                                         
+                                            
+                                            <div class="col-sm-offset-2 col-sm-12">
+                                                <hr class="mt-2">
+                                                <div class="float-sm-end">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary btn-block" id="tombol-simpan" value="create">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of validasi proposal-->
                     
                 </div>
             </div>
@@ -186,9 +222,66 @@
                     });
                 });
             },
-        });
-        
+        });        
     });
+
+    $('body').on('click','.tombol-no', function(){
+        var data_id = $(this).attr('data-id');
+        $('#form-add-keterangan').trigger("reset");
+        $('#modal-judul').html("Tambah keterangan");
+        $('#add-keterangan-modal').modal('show');
+        $('#propsl_id').val(data_id);
+    });
+    if ($("#form-add-keterangan").length > 0) {
+        $("#form-add-keterangan").validate({
+            submitHandler: function (form) {
+                var actionType = $('#tombol-simpan').val();
+                $('#tombol-simpan').html('Saving..');
+
+                $.ajax({
+                    data: $('#form-add-keterangan').serialize(), 
+                    url: "{{route('r-report-approval-n')}}",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#form-add-keterangan').trigger("reset");
+                        $('#add-keterangan-modal').modal('hide');
+                        $('#tombol-simpan').html('Save');
+                        $('#table_proposal').DataTable().ajax.reload(null, true);
+                        Swal.fire({
+                            title: 'Good job!',
+                            text: 'Data saved successfully!',
+                            type: 'success',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    },
+                    error: function(response) {
+                        $('#tombol-simpan').html('Save');
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Data failed to save!',
+                            type: 'error',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    }
+                });
+            }
+        })
+    }
+
+    $('body').on('click','.info-ditolak',function(){
+    var dataKet = $(this).attr('data-keteranganditolak');
+    alert(dataKet);
+    });
+
 </script>
 
 @endsection

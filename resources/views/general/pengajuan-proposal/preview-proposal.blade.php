@@ -104,8 +104,8 @@
             
             <div class="cover_instansi">
                 @foreach($datas as $nama)
-                <p style="text-transform: uppercase;">{{$nama->nama_prodi}}</p>
-                <p style="text-transform: uppercase;">{{$nama->nama_fakultas}}</p>
+                <p style="text-transform: uppercase;">{{$nama->nama_prodi_biro}}</p>
+                <p style="text-transform: uppercase;">{{$nama->nama_fakultas_biro}}</p>
                 @endforeach
                 <p style="text-transform: uppercase;">Universitas Universal</p>
                 @foreach($datas as $tahun)
@@ -214,43 +214,55 @@
                 <p style="margin-top: 2em;">Batam, {{tanggal_indonesia($penutup->created_at)}}</p>
                 @endforeach
 
-               <div>
-                <table class="footer_auditor" width="100%">
-                    @if($getQR->count() > 0)
-                    @foreach($getQR as $qr) 
-                    <tr class="trfooterauditor">
-                            <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
-                            </td>
-                            <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} @endforeach</b><br><i>Dekan</i>
-                            </td>
-                            <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                <br><br> @foreach($datas as $jenpro) @if($jenpro->id_jenis_kegiatan == 1) <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i> @else <b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i> @endif @endforeach
-                            </td>
-                    </tr> 
-                    @endforeach
-                    @else
-                    <tr class="trfooterauditor">
-                        <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($datas as $nn) {{$nn->nama_user_dosen}}{{$nn->nama_user_mahasiswa}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
-                        </td>
-                        <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} @endforeach</b><br><i>Dekan</i>
-                        </td>
-                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                            <p style="margin-top: 2em;"></p>
-                            <br><br> @foreach($datas as $jenpro) @if($jenpro->id_jenis_kegiatan == 1) <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i> @else <b>Yodi, S.Kom., M.S.I</b><br><i>WRAK</i> @endif @endforeach
-                        </td>
-                    </tr>
-                    @endif
-                </table>
-               </div>
+                <div>
+                    <table class="footer_auditor" width="100%">
+                        @if($getQR->count() > 0)
+                            @foreach($getQR as $qr) 
+                                <tr class="trfooterauditor">
+                                        @if($getPengusul != null)
+                                            <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
+                                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>{{$getPengusul->nama_jabatan}}</i>
+                                            </td>
+                                        @endif
+                                        @if($getDiketahui != null)
+                                        <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
+                                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
+                                            <br><br><b>{{$getDiketahui->nama_pegawai}}</b><br><i>@if($getDiketahui->ket_jabatan != '') {{$getDiketahui->ket_jabatan}} @else {{$getDiketahui->nama_jabatan}} @endif</i>
+                                        </td>
+                                        @endif
+                                        @if($getDisetujui != null)
+                                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
+                                            <br><br><b>{{$getDisetujui->nama_pegawai}}</b><br><i>{{$getDisetujui->kode_jabatan}}</i>
+                                        </td>
+                                        @endif
+                                </tr> 
+                            @endforeach
+                        @else
+                            <tr class="trfooterauditor">
+                                @if($getPengusul != null)
+                                    <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                                        <p style="margin-top: 2em;"></p>
+                                        <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>{{$getPengusul->nama_jabatan}}</i>
+                                    </td>
+                                @endif
+                                @if($getDiketahui != null)
+                                <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
+                                    <p style="margin-top: 2em;"></p>
+                                    <br><br><b>{{$getDiketahui->nama_pegawai}}</b><br><i>@if($getDiketahui->ket_jabatan != '') {{$getDiketahui->ket_jabatan}} @else {{$getDiketahui->nama_jabatan}} @endif</i>
+                                </td>
+                                @endif 
+                                @if($getDisetujui != null)
+                                <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                                    <p style="margin-top: 2em;"></p>
+                                    <br><br><b>{{$getDisetujui->nama_pegawai}}</b><br><i>{{$getDisetujui->kode_jabatan}}</i>
+                                </td>
+                                @endif 
+                            </tr>
+                        @endif
+                    </table>
+                </div>
                 
             </div>        
         </div>

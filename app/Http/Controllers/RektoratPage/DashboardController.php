@@ -9,7 +9,11 @@ use App\Models\General\DataRencanaAnggaran;
 use App\Models\General\LaporanProposal;
 use App\Models\General\DataFpku;
 use App\Models\Master\Pegawai;
+use App\Models\Master\JabatanPegawai;
+use App\Models\Master\HandleProposal;
 use App\Models\General\LaporanFpku;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UndanganFpku;
 use Auth;
 use DB;
 use URL;
@@ -21,11 +25,10 @@ class DashboardController extends Controller
 
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
-            ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
             ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai AS nama_user','mahasiswas.name AS nama_user')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
             ->where('proposals.is_archived',0)
             ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
             ->orderBy('status_proposals.status_approval','ASC')
@@ -74,7 +77,20 @@ class DashboardController extends Controller
 
     protected function arrJenisKegiatan()
     {
-        $datas = DB::table('handle_proposals')->select('id_jenis_kegiatan')->where('user_id',Auth::user()->user_id)->get();
+        $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
+            ->select('jabatans.kode_jabatan','jabatans.id AS id_jabatan')
+            ->first();
+
+            if(session()->get('selected_peran') == null){
+                $recentPeranIs = $getPeran->kode_jabatan;
+                $recentPeranId = $getPeran->id_jabatan;
+            } else {
+                $recentPeranIs = session()->get('selected_peran');
+                $recentPeranId = $getPeran->id_jabatan;
+            }
+
+        $datas = HandleProposal::select('id_jenis_kegiatan')->where('id_jabatan',$recentPeranId)->get();
         if($datas){
             foreach($datas as $data){
                 $getID = $data->id_jenis_kegiatan;
@@ -82,8 +98,7 @@ class DashboardController extends Controller
         }else{
             $getID = '';
         }
-        $exp_arr = explode(",",$getID);
-        return $exp_arr;
+        return $getID;
     }
 
     public function approvalY(Request $request)
@@ -109,32 +124,34 @@ class DashboardController extends Controller
     {
         $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('mahasiswas','mahasiswas.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
-            ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
-            ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas.nama_fakultas','data_prodis.nama_prodi','pegawais.nama_pegawai','mahasiswas.name AS nama_user','laporan_proposals.created_at AS tgl_proposal')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+            ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
             ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-            ->orderBy('laporan_proposals.status_laporan','ASC')
             ->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('laporan', function($data){
-                $query = LaporanProposal::where('id_proposal',$data->id)->select('status_laporan')->get();
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> view report</a>';
                 } else {
                     return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
                 }
             })->addColumn('action', function($data){
-                $query = LaporanProposal::where('id_proposal',$data->id)->select('status_laporan')->get();
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     foreach($query as $q){
-                        if($q->status_laporan == 1){
-                            return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Sudah diverifikasi</span>';
+                        if($q->status_approval == 5){
+                            return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> verified</span>';
+                        } elseif($q->status_approval == 4){
+                            return '<a href="javascript:void(0)" class="info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                        } elseif($q->status_approval == 3) {
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="ACC Selesai" data-placement="bottom" data-original-title="ACC Selesai" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                         } else {
-                            return '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-outline-warning btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i> Click as done <div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div></a>';
+                            return '<span class="badge bg-label-secondary">Menunggu</span>';
                         }
                     }
                 } else {
@@ -150,9 +167,18 @@ class DashboardController extends Controller
 
     public function selesailaporan(Request $request)
     {
-        $post = LaporanProposal::where('id_proposal',$request->proposal_id)->update([
-            'status_laporan' => 1,
-            'qrcode' => ''.URL::to('/').'/report/'.time().'.png'
+        $post = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->proposal_id)->update([
+            'status_approval' => 5,
+            'generate_qrcode' => ''.URL::to('/').'/report/'.time().'.png'
+        ]);
+        return response()->json($post);
+    }
+
+    public function approvalRektorN(Request $request)
+    {
+        $post = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->propsl_id)->update([
+            'status_approval'       => 4,
+            'keterangan_ditolak'    => $request->keterangan_ditolak
         ]);
         return response()->json($post);
     }
@@ -192,6 +218,29 @@ class DashboardController extends Controller
             'status_approval' => 2,
             'generate_qrcode' => ''.URL::to('/').'/fpku/'.time().'.png'
         ]);
+
+        # setelah di confirm / validasi oleh WRSDP otomatis broadcast ke email peserta
+        $datas = DataFpku::where('id',$request->id)->select('peserta_kegiatan')->get();
+        if($datas->count() > 0){
+            foreach($datas as $data){
+                $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('email')->get();
+                foreach($dataPegawai as $result){
+                    $pegawai[] = $result->email;                    
+                }
+            }
+        } else {
+            return 'Nothing data in the table';
+        }
+        $emails = implode(", ", $pegawai);
+        $isiData = [
+            'name' => 'Form Partisipasi Kegiatan Undangan',
+            'body' => 'Anda memiliki undangan kegiatan, untuk info lebih detail, silakan login di akun SIMPRO anda. Pada menu Undangan FPKU - Undangan.',
+        ];
+        Mail::to([$emails])->send(new UndanganFpku($isiData));
+        $post = DB::table('status_fpkus')->update([
+            'broadcast_email' => 1
+        ]);
+
         return response()->json($post);
     }
 

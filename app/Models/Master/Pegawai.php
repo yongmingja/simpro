@@ -18,10 +18,6 @@ class Pegawai extends Authenticatable
         'password',
     ];
 
-    public function jabatanAkademik(){
-        return $this->hasMany('App\Models\Master\JabatanAkademik', 'id_pegawai','id');
-    }
-
     public function jabatanPegawai(){
         return $this->hasMany('App\Models\Master\JabatanPegawai', 'id_pegawai','id');
     }

@@ -13,10 +13,10 @@ class DataProposalController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = Proposal::leftJoin('data_fakultas','data_fakultas.id','=','proposals.id_fakultas')
-            ->leftJoin('data_prodis','data_prodis.id','=','proposals.id_prodi')
+        $datas = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->select('proposals.id AS id','proposals.*','data_fakultas.nama_fakultas','data_prodis.nama_prodi','jenis_kegiatans.nama_jenis_kegiatan')
+            ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan')
             ->orderBy('proposals.id','DESC')
             ->get();
 

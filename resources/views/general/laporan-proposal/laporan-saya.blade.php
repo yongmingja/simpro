@@ -189,6 +189,11 @@
         });
     });
 
+    $('body').on('click','.info-ditolakdekan',function(){
+    var dataKet = $(this).attr('data-keteranganditolak');
+    alert(dataKet);
+    });
+
 </script>
 
 @endsection

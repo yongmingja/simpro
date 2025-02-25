@@ -16,15 +16,19 @@ class CreateProposalsTable extends Migration
         Schema::create('proposals', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_jenis_kegiatan');
-            $table->integer('user_id');
-            $table->integer('id_fakultas');
-            $table->integer('id_prodi');
+            $table->string('user_id');
+            $table->integer('id_fakultas_biro');
+            $table->integer('id_prodi_biro');
+            $table->string('nama_kegiatan');
+            $table->string('tgl_event');
+            $table->string('lokasi_tempat')->nullable();
             $table->text('pendahuluan');
             $table->text('tujuan_manfaat');
             $table->text('peserta');
             $table->text('detil_kegiatan');
             $table->text('penutup');
             $table->integer('validasi')->default(0);
+            $table->integer('is_archived')->default(0);
             $table->timestamps();
         });
     }

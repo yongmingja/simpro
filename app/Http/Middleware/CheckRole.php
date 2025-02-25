@@ -21,22 +21,7 @@ class CheckRole
         $selectedPeran = $request->session()->get('selected_peran');
         if($user){
             if($user instanceof Pegawai){
-                $jabatanAkademik = $user->jabatanAkademik()->first();
                 $jabatanPegawai = $user->jabatanPegawai()->first();
-
-                if(!empty($jabatanAkademik)){
-                    $jabatan = $jabatanAkademik->jabatan()->first();
-                    $jab = '';
-                    if(!empty($selectedPeran)){
-                        $jab = $selectedPeran;
-                    } else {
-                        $jab = $jabatan->kode_jabatan;
-                    }
-
-                    if($jabatan && in_array($jab, $levels)){
-                        return $next($request);
-                    }
-                }
 
                 if(!empty($jabatanPegawai)){
                     $jabatan = $jabatanPegawai->jabatan()->first();

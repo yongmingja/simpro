@@ -12,7 +12,56 @@
                 {{ Auth::guard('mahasiswa')->user()->name }}
                 @endif</h5>
             <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal Kegiatan</h4>
-        </div>      
+        </div>
+        @if($recentRole == 'DSN' || $recentRole == 'BRO')
+        <div class="row">
+            <!-- Statistics Cards -->
+            <div class="col-3 col-md-3 col-lg-3 mb-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <div class="avatar mx-auto mb-2">
+                    <span class="avatar-initial rounded-circle bg-label-primary"><i class="bx bx-file fs-4"></i></span>
+                  </div>
+                  <span class="d-block text-nowrap">Total Proposals</span>
+                  <h2 class="mb-0">{{$countProposals}}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-3 col-md-3 col-lg-3 mb-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <div class="avatar mx-auto mb-2">
+                    <span class="avatar-initial rounded-circle bg-label-success"><i class="bx bx-check-double fs-4"></i></span>
+                  </div>
+                  <span class="d-block text-nowrap">Proposals Accepted</span>
+                  <h2 class="mb-0">{{$countProposalAcc}}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-3 col-md-3 col-lg-3 mb-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <div class="avatar mx-auto mb-2">
+                    <span class="avatar-initial rounded-circle bg-label-warning"><i class="bx bx-loader-circle bx-spin fs-4"></i></span>
+                  </div>
+                  <span class="d-block text-nowrap">Proposal Pending (Declined or Unarchived)*</span>
+                  <h2 class="mb-0">{{$countProposalOnGoing}}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-3 col-md-3 col-lg-3 mb-4">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <div class="avatar mx-auto mb-2">
+                    <span class="avatar-initial rounded-circle bg-label-danger"><i class="bx bx-x fs-4"></i></span>
+                  </div>
+                  <span class="d-block text-nowrap">Proposals Declined or Archived</span>
+                  <h2 class="mb-0">{{$countProposalDeclined}}</h2>
+                </div>
+              </div>
+            </div>
+        </div>  
+        @endif
     
     </div>
     <!-- / Content -->

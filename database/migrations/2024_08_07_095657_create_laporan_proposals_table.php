@@ -19,7 +19,6 @@ class CreateLaporanProposalsTable extends Migration
             $table->text('hasil_kegiatan');
             $table->text('evaluasi_catatan_kegiatan');
             $table->text('penutup');
-            $table->integer('status_laporan')->default(0);
             $table->timestamps();
         });
     }
