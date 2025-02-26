@@ -105,7 +105,8 @@
                         },
                         dataType: 'json',
                         success: function (data) {
-                            $('#table_rkat').DataTable().ajax.reload(null, true);
+                            // $('#table_rkat').DataTable().ajax.reload(null, true);
+                            location.reload();
                             Swal.fire({
                                 title: 'Agree!',
                                 text: 'Data accepted successfully!',
@@ -146,7 +147,8 @@
                         },
                         dataType: 'json',
                         success: function (data) {
-                            $('#table_rkat').DataTable().ajax.reload(null, true);
+                            // $('#table_rkat').DataTable().ajax.reload(null, true);
+                            location.reload();
                             Swal.fire({
                                 title: 'Agree!',
                                 text: 'Data ignored successfully!',
