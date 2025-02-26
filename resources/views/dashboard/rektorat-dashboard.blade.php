@@ -10,6 +10,16 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
+                        <div class="col-sm-2 mb-3">
+                            <fieldset class="form-group">
+                                <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
+                                    <option value="all">Semua Proposal</option>
+                                    <option value="pending" selected>Pending (default)</option>
+                                    <option value="accepted">Diterima</option>
+                                    <option value="denied">Ditolak</option>
+                                </select>
+                            </fieldset>
+                        </div>
                             <table class="table table-hover table-responsive" id="table_proposal">
                               <thead>
                                 <tr>
@@ -121,34 +131,55 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_proposal').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('dashboard-rektorat') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                }, 
-                {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'tgl_event',name: 'tgl_event',
-                    render: function ( data, type, row ){
-                        return moment(row.tgl_event).format("DD MMM YYYY")
+        fill_datatable();
+        function fill_datatable(status = '') {
+            var table = $('#table_proposal').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('dashboard-rektorat') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.status = $('#status').val();
                     }
                 },
-                {data: 'created_at',name: 'created_at',
-                    render: function ( data, type, row ){
-                        return moment(row.created_at).format("DD MMM YYYY")
-                    }
-                },
-                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
-                {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
-                {data: 'action',name: 'action'},
-                {data: 'validasi',name: 'validasi'},
-                {data: 'vlampiran',name: 'vlampiran'},
-            ]
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, 
+                    {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'tgl_event',name: 'tgl_event',
+                        render: function ( data, type, row ){
+                            return moment(row.tgl_event).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'created_at',name: 'created_at',
+                        render: function ( data, type, row ){
+                            return moment(row.created_at).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
+                    {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
+                    {data: 'action',name: 'action'},
+                    {data: 'validasi',name: 'validasi'},
+                    {data: 'vlampiran',name: 'vlampiran'},
+                ]
+            });
+        }
+        $('#status').on('change', function(e){
+            var status = this.value;
+
+            if(status != ''){
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable(status);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 

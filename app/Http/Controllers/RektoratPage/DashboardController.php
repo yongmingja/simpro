@@ -22,17 +22,55 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-
-        $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-            ->where('proposals.is_archived',0)
-            ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
-            ->orderBy('status_proposals.status_approval','ASC')
-            ->get();
+        if($request->status == '' || $request->status == 'all'){
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where('proposals.is_archived',0)
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        }
+        if($request->status == 'pending') {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where([['proposals.is_archived',0],['status_proposals.status_approval',1]])
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        }
+        if($request->status == 'accepted') {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where([['proposals.is_archived',0],['status_proposals.status_approval',5]])
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        }
+        if($request->status == 'denied') {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where([['proposals.is_archived',0],['status_proposals.status_approval',4]])
+                ->orWhere('status_proposals.status_approval',2)
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        }
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -162,7 +200,7 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('general.rektorat.index-laporan');
+        return view('rektorat-page.data-proposal.index-laporan');
     }
 
     public function selesailaporan(Request $request)
@@ -209,7 +247,7 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('general.rektorat.index-undangan-fpku');
+        return view('rektorat-page.data-proposal.index-undangan-fpku');
     }
 
     public function confirmUndanganFpku(Request $request)
@@ -276,7 +314,7 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('general.rektorat.index-laporan-fpku');
+        return view('rektorat-page.data-proposal.index-laporan-fpku');
     }
 
     public function confirmLaporanFpku(Request $request)
