@@ -62,6 +62,162 @@
             </div>
         </div>  
         @endif
+
+        @if($recentRole == 'SADM')
+        <div class="row">
+          <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="card-title mb-2">Total Proposals</h5>
+                <h1 class="display-6 fw-normal mb-0">{{$totalProposalsSadm}}</h1>
+              </div>
+              <div class="card-body">
+                <ul class="p-0 m-0">
+                  <li class="mb-3 d-flex justify-content-between">
+                    <div class="d-flex align-items-center lh-1 me-3">
+                      <span class="badge badge-dot bg-warning me-2"></span> Jumlah Proposal Pending
+                    </div>
+                    <div class="d-flex gap-3">
+                      <span class="fw-medium">{{$totalProposalPendingSadm}}</span>
+                    </div>
+                  </li>
+                  <li class="mb-3 d-flex justify-content-between">
+                    <div class="d-flex align-items-center lh-1 me-3">
+                      <span class="badge badge-dot bg-success me-2"></span> Jumlah Proposal Diterima
+                    </div>
+                    <div class="d-flex gap-3">
+                      <span class="fw-medium">{{$totalProposalDiterimaSadm}}</span>
+                    </div>
+                  </li>                    
+                  <li class="mb-3 d-flex justify-content-between">
+                    <div class="d-flex align-items-center lh-1 me-3">
+                      <span class="badge badge-dot bg-danger me-2"></span> Jumlah Proposal Ditolak
+                    </div>
+                    <div class="d-flex gap-3">
+                      <span class="fw-medium">{{$totalProposalDitolakSadm}}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- Colom ke 2 -->
+          <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5 class="card-title mb-2">Total Laporan Proposals</h5>
+                <h1 class="display-6 fw-normal mb-0">{{$totalLaporanProposalsSadm}}</h1>
+              </div>
+              <div class="card-body">
+                <ul class="p-0 m-0">
+                  <li class="mb-3 d-flex justify-content-between">
+                    <div class="d-flex align-items-center lh-1 me-3">
+                      <span class="badge badge-dot bg-warning me-2"></span> Jumlah Proposal Pending
+                    </div>
+                    <div class="d-flex gap-3">
+                      <span class="fw-medium">{{$totalLaporanProposalPendingSadm}}</span>
+                    </div>
+                  </li>
+                  <li class="mb-3 d-flex justify-content-between">
+                    <div class="d-flex align-items-center lh-1 me-3">
+                      <span class="badge badge-dot bg-success me-2"></span> Jumlah Proposal Diterima
+                    </div>
+                    <div class="d-flex gap-3">
+                      <span class="fw-medium">{{$totalLaporanProposalDiterimaSadm}}</span>
+                    </div>
+                  </li>                    
+                  <li class="mb-3 d-flex justify-content-between">
+                    <div class="d-flex align-items-center lh-1 me-3">
+                      <span class="badge badge-dot bg-danger me-2"></span> Jumlah Proposal Ditolak
+                    </div>
+                    <div class="d-flex gap-3">
+                      <span class="fw-medium">{{$totalLaporanProposalDitolakSadm}}</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        @endif
+
+        @if($recentRole == 'WRSDP' || $recentRole == 'WRAK')
+          <div class="row">
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5 class="card-title mb-2">Total Proposals</h5>
+                  <h1 class="display-6 fw-normal mb-0">{{$totalProposals}}</h1>
+                </div>
+                <div class="card-body">
+                  <ul class="p-0 m-0">
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-warning me-2"></span> Jumlah Proposal Pending
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$totalProposalPending}}</span>
+                      </div>
+                    </li>
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-success me-2"></span> Jumlah Proposal Diterima
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$totalProposalDiterima}}</span>
+                      </div>
+                    </li>                    
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-danger me-2"></span> Jumlah Proposal Ditolak
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$totalProposalDitolak}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- Colom ke 2 -->
+            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5 class="card-title mb-2">Total Laporan Proposals</h5>
+                  <h1 class="display-6 fw-normal mb-0">{{$totalLaporanProposals}}</h1>
+                </div>
+                <div class="card-body">
+                  <ul class="p-0 m-0">
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-warning me-2"></span> Jumlah Proposal Pending
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$totalLaporanProposalPending}}</span>
+                      </div>
+                    </li>
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-success me-2"></span> Jumlah Proposal Diterima
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$totalLaporanProposalDiterima}}</span>
+                      </div>
+                    </li>                    
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-danger me-2"></span> Jumlah Proposal Ditolak
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$totalLaporanProposalDitolak}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        @endif
     
     </div>
     <!-- / Content -->

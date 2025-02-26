@@ -409,7 +409,7 @@
                 <a href="{{route('index-form-rkat')}}" class="menu-link {{set_active('index-form-rkat')}}">
                 <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
                 <div data-i18n="Form RKAT">Form RKAT</div>
-                <div class="badge bg-danger rounded-pills ms-auto">{{$totalData}}</div>
+                <div class="badge bg-danger rounded-pills ms-auto" style="border-radius: 15px;">{{$totalData}}</div>
                 </a>
                 
             </li> 
