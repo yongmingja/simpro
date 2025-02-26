@@ -42,7 +42,7 @@ class JabatanController extends Controller
                 [
                     'kode_jabatan'      => $request->kode_jabatan,
                     'nama_jabatan'      => $request->nama_jabatan,
-                    'nama_jabatan'      => $request->nama_jabatan,
+                    'warna_label'       => $request->warna_label,
                 ]); 
 
         return response()->json($post);

@@ -65,6 +65,19 @@
                                                 <label for="nama_jabatan" class="form-label">Nama Jabatan</label>
                                                 <input type="text" class="form-control" id="nama_jabatan" name="nama_jabatan" value="" />
                                                 <span class="text-danger" id="namaJabatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div> 
+                                            <div class="mb-3">
+                                                <label for="warna_label" class="form-label">Warna Label</label>
+                                                <select class="form-select" id="warna_label" name="warna_label" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_warna">- Pilih -</option>
+                                                    <option value="bg-label-primary">Biru</option>
+                                                    <option value="bg-label-danger">Merah</option>
+                                                    <option value="bg-label-warning">Kuning</option>
+                                                    <option value="bg-label-success">Hijau</option>
+                                                    <option value="bg-label-secondary">Abu-abu</option>
+                                                    <option value="bg-label-info">Biru Langit</option>
+                                                </select>
+                                                <span class="text-danger" id="warnaLabelErrorMsg" style="font-size: 10px;"></span>
                                             </div>     
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
