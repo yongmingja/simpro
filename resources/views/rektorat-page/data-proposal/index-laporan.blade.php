@@ -69,6 +69,16 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
+                        <div class="col-sm-2 mb-3">
+                            <fieldset class="form-group">
+                                <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
+                                    <option value="all">Semua Proposal</option>
+                                    <option value="pending" selected>Pending (default)</option>
+                                    <option value="accepted">Diterima</option>
+                                    <option value="denied">Ditolak</option>
+                                </select>
+                            </fieldset>
+                        </div>
                         <table class="table table-hover table-responsive" id="table_proposal">
                             <thead>
                             <tr>
@@ -140,35 +150,56 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_proposal').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('index-hal-laporan') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                }, 
-                {data: 'laporan',name: 'laporan'},
-                {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'nama_user',name: 'nama_user',
-                render: function(data,type,row){
-                        return row.nama_pegawai || row.nama_user
+        fill_datatable();
+        function fill_datatable(status = ''){
+            var table = $('#table_proposal').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('index-hal-laporan') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.status = $('#status').val();
                     }
                 },
-                {data: 'tgl_proposal',name: 'tgl_proposal',
-                    render: function ( data, type, row ){
-                        if(row.tgl_proposal == null){
-                            return '&ndash;';
-                        } else {
-                            return moment(row.tgl_proposal).format("DD MMM YYYY")
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
                         }
-                    }
-                },
-                {data: 'action',name: 'action'},
-            ]
+                    }, 
+                    {data: 'laporan',name: 'laporan'},
+                    {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'nama_user',name: 'nama_user',
+                    render: function(data,type,row){
+                            return row.nama_pegawai || row.nama_user
+                        }
+                    },
+                    {data: 'tgl_proposal',name: 'tgl_proposal',
+                        render: function ( data, type, row ){
+                            if(row.tgl_proposal == null){
+                                return '&ndash;';
+                            } else {
+                                return moment(row.tgl_proposal).format("DD MMM YYYY")
+                            }
+                        }
+                    },
+                    {data: 'action',name: 'action'},
+                ]
+            });
+        }
+        $('#status').on('change', function(e){
+            var status = this.value;
+
+            if(status != ''){
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable(status);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 

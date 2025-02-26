@@ -160,14 +160,50 @@ class DashboardController extends Controller
 
     public function indexlaporan(Request $request)
     {
-        $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-            ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-            ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-            ->get();
+        if($request->status == '' || $request->status == 'all'){
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->get();
+        }
+        if($request->status == 'pending'){
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+                ->where('status_laporan_proposals.status_approval',1)
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->get();
+        }
+        if($request->status == 'accepted'){
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+                ->where('status_laporan_proposals.status_approval',5)
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->get();
+        }
+        if($request->status == 'denied'){
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+                ->where('status_laporan_proposals.status_approval',4)
+                ->orWhere('status_laporan_proposals.status_approval',2)
+                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->get();
+        }
 
         if($request->ajax()){
             return datatables()->of($datas)
