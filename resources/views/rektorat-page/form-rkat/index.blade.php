@@ -25,12 +25,6 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
-                        <!-- MULAI TOMBOL TAMBAH -->
-                        <div class="mb-3">
-                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="tombol-tambah"><button type="button" class="btn btn-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> New data</button></a>
-                        </div>
-                        
-                        <!-- AKHIR TOMBOL -->
                             <table class="table table-hover table-responsive" id="table_rkat">
                               <thead>
                                 <tr>
