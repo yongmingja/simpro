@@ -20,7 +20,7 @@ class CreateFormRkatsTable extends Migration
             $table->text('program_kerja');
             $table->string('kode_renstra');
             $table->text('nama_kegiatan');
-            $table->integer('penanggung_jawab');
+            $table->integer('penanggung_jawab')->nullable();
             $table->string('kode_pagu');
             $table->bigInteger('total')->nullable()->default(0);
             $table->integer('status_validasi')->default(0);

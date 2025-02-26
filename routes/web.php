@@ -122,6 +122,8 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
 
     Route::post('arsip-proposal','General\PengajuanProposalController@arsipProposal')->name('arsip-proposal');
     Route::post('resubmit-anggaran','General\PengajuanProposalController@submitUlangAnggaran')->name('re-submit-anggaran');
+
+    Route::resource('form-rkat', 'Master\FormRkatController');
 });
 
 /* 
@@ -160,4 +162,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,Rektor'])->gro
     Route::get('rlaporanfpku','RektoratPage\DashboardController@indexLaporanFpku')->name('rlaporanfpku');
     Route::post('confirmlaporanfpku','RektoratPage\DashboardController@confirmLaporanFpku')->name('confirmlaporanfpku');
     Route::post('r-report-approval-n','RektoratPage\DashboardController@approvalRektorN')->name('r-report-approval-n');
+    Route::get('rform-rkat','RektoratPage\FormRkatController@index')->name('index-form-rkat');
+    Route::post('rkat-approval-y','RektoratPage\FormRkatController@approvalY')->name('rkat-approval-y');
+    Route::post('rkat-approval-n','RektoratPage\FormRkatController@approvalN')->name('rkat-approval-n');
 });

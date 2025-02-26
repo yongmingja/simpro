@@ -399,7 +399,27 @@
                     </li>
                 </ul>
             </li>
-        @endif     
+            <li class="menu-header small fw-medium">
+                <div data-i18n="DATABASE RKAT">DATABASE RKAT</div>
+            </li> 
+            <li class="menu-item">
+                <a href="{{route('index-form-rkat')}}" class="menu-link {{set_active('index-form-rkat')}}">
+                <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
+                <div data-i18n="Form RKAT">Form RKAT</div>
+                </a>
+            </li> 
+        @endif 
+        @if($roleDefault != "WRSDP")
+        <li class="menu-header small fw-medium">
+            <div data-i18n="DATABASE RKAT">DATABASE RKAT</div>
+        </li> 
+        <li class="menu-item">
+            <a href="{{route('form-rkat.index')}}" class="menu-link {{set_active('form-rkat.index')}}">
+            <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
+            <div data-i18n="Form RKAT">Form RKAT</div>
+            </a>
+        </li> 
+        @endif  
     @endif
     
     </ul>
