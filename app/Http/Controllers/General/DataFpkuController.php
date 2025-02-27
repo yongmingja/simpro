@@ -50,11 +50,14 @@ class DataFpkuController extends Controller
             'undangan_dari'     => 'required',
             'nama_kegiatan'     => 'required',
             'tgl_kegiatan'      => 'required',
+            'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048',
         ],[
             'no_surat_undangan.required'    => 'Anda belum menginputkan no surat undangan',
             'undangan_dari.required'        => 'Anda belum menginputkan undangan dari',
             'nama_kegiatan.required'        => 'Anda belum menginputkan nama kegiatan',
             'tgl_kegiatan.required'         => 'Anda belum menginputkan tanggal kegiatan',
+            'berkas.*.max'                  => 'Ukuran berkas tidak boleh melebihi 2MB', 
+            'berkas.*.mimes'                => 'File harus berjenis (pdf atau docx)',
         ]);
 
         $checkDate = $request->input('cek_tanggal');
@@ -100,6 +103,30 @@ class DataFpkuController extends Controller
         }                
         $post = DB::table('fpku_keperluans')->insert($dataSet);
 
+        # Insert data into lampiran_fpkus
+        if($request->berkas != ''){
+            $fileNames = [];
+            foreach($request->berkas as $file){
+                $fileName = md5(time().'_'.Auth::user()->user_id).$file->getClientOriginalName();
+                $file->move(public_path('uploads-lampiran/lampiran-fpku'),$fileName);
+                $fileNames[] = 'uploads-lampiran/lampiran-fpku/'.$fileName;
+            }
+
+            $insertData = [];
+            for($x = 0; $x < count($request->nama_berkas);$x++){
+                $insertData[] = [
+                    'id_fpku'       => $latest,
+                    'nama_berkas'   => $request->nama_berkas[$x],
+                    'berkas'        => $fileNames[$x],
+                    'link_gdrive'   => '',
+                    'keterangan'    => '-',
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ];
+            }
+            $post = DB::table('lampiran_fpkus')->insert($insertData);
+        }
+
         $post = DB::table('status_fpkus')->insert([
             'id_fpku'           => $latest,
             'status_approval'   => 1,
@@ -123,6 +150,38 @@ class DataFpkuController extends Controller
     {
         $post = DataFpku::where('id',$id)->delete();     
         return response()->json($post);
+    }
+
+    public function viewlampiranfpku(Request $request)
+    {
+        $datas = DB::table('lampiran_fpkus')->where('id_fpku',$request->fpku_id)->select('id','nama_berkas','berkas','keterangan')->get();
+        $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Berkas</th>
+                            <th>Lihat</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach($datas as $no => $data){
+                        $html .= 
+                            '<tr>
+                                <td>'.++$no.'</td>
+                                <td>'.$data->nama_berkas.'</td>
+                                <td>';
+                                if($data->berkas != ''){
+                                    $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
+                                } else {
+                                    $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
+                                }
+                                
+                                $html .= '</td>
+                            </tr>';
+                    }
+            $html .= '</tbody>
+                </table>';
+        return response()->json(['card' => $html]);
     }
 
 }

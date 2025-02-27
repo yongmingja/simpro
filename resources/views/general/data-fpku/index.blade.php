@@ -123,7 +123,19 @@
                                                 <label for="catatan" class="form-label">Catatan</label>
                                                 <textarea type="text" class="form-control" id="catatan" name="catatan" placeholder="(Opsional atau boleh dikosongkan)" rows="3"/></textarea>
                                                 <span class="text-danger" id="catatanErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                          
+                                            </div> 
+                                            <div class="mb-3">
+                                                <label for="lampiran" class="form-label">Lampiran FPKU <i>(Opsional)</i></label>
+                                                <div class="col-sm-0 firstRow">
+                                                    <table class="table table-borderless">
+                                                        <tr>
+                                                            <td><button type="button" class="btn btn-warning btn-block addField mt-2"><i class="bx bx-plus-circle bx-xs"></i></button></td>
+                                                            <td><input type="text" name="nama_berkas[]" class="w-100 form-control" placeholder="input nama berkas"></td>
+                                                            <td><input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png"></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -199,10 +211,13 @@
         $("#form-tambah-edit").validate({
             submitHandler: function (form) {
                 var actionType = $('#tombol-simpan').val();
+                var formData = new FormData($("#form-tambah-edit")[0]);
                 $('#tombol-simpan').html('Saving..');
 
                 $.ajax({
-                    data: $('#form-tambah-edit').serialize(), 
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     url: "{{ route('data-fpku.store') }}",
                     type: "POST",
                     dataType: 'json',
@@ -309,6 +324,26 @@
 
     $(document).on('click', '.remove-tr', function(){  
         $(this).parents('tr').remove();
+    });
+
+    $('.addField').click(function(){
+        $('.firstRow').parent().append(`
+            <div class="col-sm-0">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><button type=""button" class="btn btn-danger mb-3 deleteRow"><i class="bx bx-trash bx-xs"></i></button></td>
+                        <td><input type="text" name="nama_berkas[]" class="w-100 form-control" placeholder="input nama berkas"></td>
+                        <td><input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png"></td>
+                    </tr>
+
+                </table>
+
+            </div>
+        `);
+    });
+
+    $(document).on('click','.deleteRow', function(){
+        $(this).parent().parent().remove();
     });
 
 </script>

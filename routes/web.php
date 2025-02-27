@@ -113,6 +113,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::post('insert-laporan-fpku','General\LaporanFpkuController@insertLaporanFpku')->name('insert-laporan-fpku');
     Route::get('view-lampiran-fpku','General\LaporanFpkuController@viewlampiran')->name('view-lampiran-fpku');
     Route::get('preview-laporan-fpku/{id}','General\LaporanFpkuController@previewlaporanfpku')->name('preview-laporan-fpku');
+    Route::get('view-lampiran-data-fpku','General\DataFpkuController@viewlampiranfpku')->name('view-lampiran-data-fpku');
 
     Route::get('user-profile','AdminPage\DataUser\DataPegawaiController@profile')->name('profile');
     Route::get('change-password', 'AdminPage\DataUser\DataPegawaiController@getPass');

@@ -265,7 +265,7 @@ class DashboardController extends Controller
             ->addColumn('action', function($data){
                 $checkState = DB::table('status_fpkus')->where('id_fpku',$data->id)->select('status_approval')->first();
                 if($checkState->status_approval == 1){
-                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Undangan" data-placement="bottom" data-original-title="Validasi Undangan" class="btn btn-warning btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a><div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
+                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Undangan" data-placement="bottom" data-original-title="Validasi Undangan" class="btn btn-warning btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
                 } else {
                     return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
                 }
@@ -278,8 +278,15 @@ class DashboardController extends Controller
                 return implode(", <br>", $pegawai);
             })->addColumn('undangan', function($data){
                 return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Undangan" data-original-title="Preview Undangan" class="preview-undangan">'.$data->undangan_dari.'</a>';
+            })->addColumn('lampirans', function($data){
+                $isExist = DB::table('lampiran_fpkus')->where('id_fpku',$data->id)->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran" style="font-size: 10px;">lihat lampiran</a>';
+                } else {
+                    return '<p style="font-size: 10px;">No attachment</p>';
+                }
             })
-            ->rawColumns(['action','nama_pegawai','undangan'])
+            ->rawColumns(['action','nama_pegawai','undangan','lampirans'])
             ->addIndexColumn(true)
             ->make(true);
         }
