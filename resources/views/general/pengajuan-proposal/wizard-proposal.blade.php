@@ -30,7 +30,7 @@
                             <a href="{{route('submission-of-proposal.index')}}"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-chevron-left"></i>Back</button></a> 
                         </div>                        
                         <!-- AKHIR TOMBOL -->
-                        <div class="bs-stepper wizard-vertical vertical">
+                        <div class="bs-stepper wizard-vertical horizontal">
                             <div class="bs-stepper-header mt-3">
                                 <div class="step" data-target="#page-1">
                                     <button type="button" class="step-trigger">
