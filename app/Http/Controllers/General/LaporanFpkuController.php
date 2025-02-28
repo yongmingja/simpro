@@ -246,35 +246,14 @@ class LaporanFpkuController extends Controller
         $qrcode = base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate('Unverified!'));
 
         # Get Pengusul according to proposal.user_id
-        $getPengusul = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diusulkan_oleh')
-            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-            ->where('proposals.id','=',$ID)
-            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
-            ->first();
-
-        foreach($datas as $r){
-            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
-                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-                ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
-                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
-                ->first();
-        }
-
-        $getDisetujui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.disetujui_oleh')
-            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-            ->where('proposals.id','=',$ID)
-            ->select('jabatans.kode_jabatan','pegawais.nama_pegawai')
+        $getPengusul = DB::table('laporan_fpkus')->leftJoin('pegawais','pegawais.id','=','laporan_fpkus.dibuat_oleh')
+            ->where('laporan_fpkus.id_fpku',$ID)
+            ->select('pegawais.nama_pegawai')
             ->first();
         
         
         $fileName = 'laporan_fpku_'.date(now()).'.pdf';
-        $pdf = PDF::loadview('general.laporan-fpku.preview-laporan-fpku', compact('datas','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','qrcode','getPengusul','getDiketahui','getDisetujui'));
+        $pdf = PDF::loadview('general.laporan-fpku.preview-laporan-fpku', compact('datas','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','qrcode','getPengusul'));
         $pdf->setPaper('F4','P');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();

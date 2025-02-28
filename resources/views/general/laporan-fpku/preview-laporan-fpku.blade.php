@@ -180,7 +180,7 @@
                     @endforeach
                     <tr>
                         <td colspan="5" style="text-align: right; font-style:bold;" class="table_td">Total Biaya</td>
-                        <td style="text-align: right; font-style:bold;" class="table_td"></td>
+                        <td style="text-align: right; font-style:bold;" class="table_td">{{currency_IDR($grandTotalAnggarans->grandTotal)}}</td>
                         <td></td>
                     </tr>
                 </tbody>
@@ -215,7 +215,7 @@
                     @endforeach
                     <tr>
                         <td colspan="5" style="text-align: right; font-style:bold;" class="table_td">Total Biaya</td>
-                        <td style="text-align: right; font-style:bold;" class="table_td"></td>
+                        <td style="text-align: right; font-style:bold;" class="table_td">{{currency_IDR($grandTotalRealisasiAnggarans->grandTotalRealisasi)}}</td>
                         <td></td>
                     </tr>
                 </tbody>
@@ -230,36 +230,35 @@
             @endforeach
 
             <table class="footer_auditor" width="100%">
-                @foreach($datas as $qr) @endforeach  
-                <tr class="trfooterauditor">
-                    @if($qr->status_laporan == 2)
-                        <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                            <br><br><b>@foreach($datas as $nn) {{$nn->nama_pegawai}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
-                        </td>
-                        <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
-                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                            <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} </b><br><i>Dekan {{$dekan->nama_fakultas}}</i>@endforeach
-                        </td>
-                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                            <br><br><b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
-                        </td>
-                    @else
-                        <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($datas as $nn) {{$nn->nama_pegawai}} @endforeach</b><br><i>@foreach($datas as $nama_fk) {{$nama_fk->nama_prodi}} @endforeach</i>
-                        </td>
-                        <td class="tdfooterauditor" colspan="10">Diketahui oleh,<br><br> 
-                            <p style="margin-top: 2em;"></p>
-                            <br><br><b>@foreach($getDekan as $dekan) {{$dekan->name}} </b><br><i>Dekan {{$dekan->nama_fakultas}}</i>@endforeach
-                        </td>
-                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                            <p style="margin-top: 2em;"></p>
-                            <br><br> <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
-                        </td>
-                    @endif  
-                </tr>                                       
+                @if($datas->count() > 0 )
+                    @foreach($datas as $qr) 
+                    <tr class="trfooterauditor">
+                        @if($qr->status_laporan == 2)
+                            @if($getPengusul != null)
+                            <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
+                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br>
+                            </td>
+                            @endif
+                            <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
+                                <br><br><b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
+                            </td>
+                        @else
+                            @if($getPengusul != null)
+                            <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                                <p style="margin-top: 2em;"></p>
+                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br>
+                            </td>
+                            @endif
+                            <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                                <p style="margin-top: 2em;"></p>
+                                <br><br> <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
+                            </td>
+                        @endif  
+                    </tr>                                       
+                    @endforeach  
+                @endif
             </table>
             
         </div>

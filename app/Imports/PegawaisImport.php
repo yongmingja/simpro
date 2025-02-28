@@ -21,25 +21,23 @@ class PegawaisImport implements ToCollection, WithHeadingRow
     {
         foreach($rows as $row){
             // Check nip already exists
-           $count = Pegawai::where('nip',$row['nip'])->count();
+           $count = Pegawai::where('user_id',$row['user_id'])->count();
            if($count > 0){
-              Pegawai::where('nip',$row['nip'])->update([
+              Pegawai::where('user_id',$row['user_id'])->update([
                 'nama_pegawai'          => $row['nama_pegawai'],
-                'nip'                   => $row['nip'],
+                'user_id'               => $row['user_id'],
                 'email'                 => $row['alamat_email'], 
                 'password'              => Hash::make(date('Ymd',strtotime($row['tanggal_lahir']))),
                 'jenis_kelamin'         => $row['jenis_kelamin'],
-                'agama'                 => $row['agama'],
                 'id_status_pegawai'     => $row['status']
               ]);
            } else {
                Pegawai::create([
                    'nama_pegawai'          => $row['nama_pegawai'],
-                   'nip'                   => $row['nip'],
+                   'user_id'               => $row['user_id'],
                    'email'                 => $row['alamat_email'], 
                    'password'              => Hash::make(date('Ymd',strtotime($row['tanggal_lahir']))),
                    'jenis_kelamin'         => $row['jenis_kelamin'],
-                   'agama'                 => $row['agama'],
                    'id_status_pegawai'     => $row['status'],
                ]);
            }

@@ -328,6 +328,10 @@ class DashboardController extends Controller
     public function indexLaporanFpku(Request $request)
     {
         $datas = DataFpku::orderBy('id','DESC')->get();
+        // $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+        //     ->select('data_fpkus.id AS id','data_fpkus.*','laporan_fpkus.*')
+        //     ->orderBy('laporan_fpkus.status_laporan','ASC')
+        //     ->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
@@ -337,7 +341,7 @@ class DashboardController extends Controller
                         if($rs->status_laporan == 2){
                             return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
                         } else {
-                            return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Laporan" data-placement="bottom" data-original-title="Validasi Laporan" class="btn btn-warning btn-sm tombol-yes-laporan"><i class="bx bx-xs bx-check-double"></i></a><div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';                    
+                            return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Laporan" data-placement="bottom" data-original-title="Validasi Laporan" class="btn btn-warning btn-sm tombol-yes-laporan"><i class="bx bx-xs bx-check-double"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';                    
                         }
                     }
                 } else {

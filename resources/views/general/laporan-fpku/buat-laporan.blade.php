@@ -30,7 +30,7 @@
                             <a href="{{route('index-laporan-fpku')}}"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-chevron-left"></i>Back</button></a> 
                         </div>                        
                         <!-- AKHIR TOMBOL -->
-                        <div class="bs-stepper wizard-vertical vertical">
+                        <div class="bs-stepper wizard-vertical horizontal">
                             <div class="bs-stepper-header mt-3">
                                 <div class="step" data-target="#page-1">
                                     <button type="button" class="step-trigger">
@@ -100,13 +100,13 @@
                                             <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
-                                            <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
+                                            <label for="tgl_kegiatan" class="form-label">Tanggal Kegiatan</label>
+                                            <input type="date" class="form-control" id="tgl_kegiatan" name="tgl_kegiatan" value="" placeholder="mm/dd/yyyy" />
                                             <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_fakultas">Fakultas atau Unit</label>
-                                            <select class="select2 form-control border border-primary" id="id_fakultas" name="id_fakultas" aria-label="Default select example" style="cursor:pointer;">
+                                            <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
+                                            <select class="select2 form-control border border-primary" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
                                               @foreach($getFakultasBiro as $fakultasbiro)
                                                   <option value="{{$fakultasbiro->id}}">{{str_replace('Fakultas','',$fakultasbiro->nama_fakultas_biro)}}</option>
@@ -115,8 +115,8 @@
                                             <span class="text-danger" id="fakultasErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label" for="id_prodi">Prodi atau Biro</label>
-                                            <select class="select2 form-control border border-primary" id="id_prodi" name="id_prodi" aria-label="Default select example" style="cursor:pointer;">
+                                            <label class="form-label" for="id_prodi_biro">Prodi atau Biro</label>
+                                            <select class="select2 form-control border border-primary" id="id_prodi_biro" name="id_prodi_biro" aria-label="Default select example" style="cursor:pointer;">
                                               <option value="" class="d-none">- Pilih prodi -</option>
                                             </select>
                                             <span class="text-danger" id="prodiErrorMsg" style="font-size: 10px;"></span>
@@ -349,8 +349,8 @@
         });
     });
 
-    $('select[name="id_fakultas"]').on('change', function() {
-        $('#id_prodi').empty();
+    $('select[name="id_fakultas_biro"]').on('change', function() {
+        $('#id_prodi_biro').empty();
         var facultyID = $(this).val();
         if(facultyID) {
             $.ajax({
@@ -358,16 +358,16 @@
                 type: "GET",
                 dataType: "json",
                 success:function(data) { 
-                    $('select[name="id_prodi"]').removeClass('d-none');
-                    $('select[name="id_prodi"]').append('<option value="">'+ '- Pilih prodi -' +'</option>');
+                    $('select[name="id_prodi_biro"]').removeClass('d-none');
+                    $('select[name="id_prodi_biro"]').append('<option value="">'+ '- Pilih prodi -' +'</option>');
                     $.each(data, function(key, value) {
                         let text = value;
-                    $('select[name="id_prodi"]').append('<option value="'+ key +'">'+ text.replace('Program Studi','') +'</option>');
+                    $('select[name="id_prodi_biro"]').append('<option value="'+ key +'">'+ text.replace('Program Studi','') +'</option>');
                     });
                 }
             });
         }else{
-            $('select[name="id_prodi"]').removeClass('d-none');
+            $('select[name="id_prodi_biro"]').removeClass('d-none');
         }
     });
 
@@ -428,9 +428,9 @@
                                 window.location = '{{ route("index-laporan-fpku") }}';
                             },
                             error: function (response) {
-                                $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
-                                $('#fakultasErrorMsg').text(response.responseJSON.errors.id_fakultas);
-                                $('#prodiErrorMsg').text(response.responseJSON.errors.id_prodi);
+                                $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_kegiatan);
+                                $('#fakultasErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);
+                                $('#prodiErrorMsg').text(response.responseJSON.errors.id_prodi_biro);
                                 $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
                                 $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
                                 $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
