@@ -157,6 +157,11 @@
         });
     });
 
+    $('body').on('click','.info-ditolak',function(){
+    var dataKet = $(this).attr('data-keteranganditolak');
+    alert(dataKet);
+    });
+
 </script>
 
 @endsection

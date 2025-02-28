@@ -47,19 +47,21 @@ class LaporanFpkuController extends Controller
             })->addColumn('status', function($data){
                 $state = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
                     ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                    ->where('laporan_fpkus.id_fpku',$data->id)->select('status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')->get();
+                    ->where('laporan_fpkus.id_fpku',$data->id)->select('status_laporan_fpkus.status_approval','status_laporan_fpkus.keterangan_ditolak','laporan_fpkus.id AS id_laporan')->get();
                 if($state->count() > 0){
                     foreach($state as $r){
                         if($r->status_approval == 1){
                             return '<a href="javascript:void(0)" name="delete" id="'.$r->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i></a>';
-                        } elseif($r->status_approval == 3){
-                            return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Verified" data-original-title="Verified"><i class="bx bx-check-shield text-success"></i></a>';
+                        } elseif($r->status_approval == 2){
+                            return '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$r->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                        }elseif($r->status_approval == 3){
+                            return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> verified</a>';
                         } else {
-                            return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
                         }
                     }
                 } else {
-                    return '<a href="javascript:void(0)" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
                 }
             })
             ->rawColumns(['action','status'])

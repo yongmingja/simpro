@@ -339,8 +339,10 @@ class DashboardController extends Controller
             ->addColumn('action', function($data){
                 if($data->status_approval == 3){
                     return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-xs bx-check-shield"></i> validated</a>';
+                } elseif($data->status_approval == 2){
+                    return '<a href="javascript:void(0)" class="text-danger"><i class="bx bx-xs bx-shield-x"></i> denied</a>';
                 } else {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
                 }
             })->addColumn('undangan', function($data){
                 return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku">'.$data->undangan_dari.'</a>';
@@ -364,6 +366,14 @@ class DashboardController extends Controller
         $post = DB::table('status_laporan_fpkus')->leftJoin('laporan_fpkus','laporan_fpkus.id','=','status_laporan_fpkus.id_laporan_fpku')->where('laporan_fpkus.id_fpku',$request->id)->update([
             'status_approval' => 3,
             'generate_qrcode' => ''.URL::to('/').'/fpku-rep/'.time().'.png'
+        ]);
+        return response()->json($post);
+    }
+    public function ignoreLaporanFpku(Request $request)
+    {
+        $post = DB::table('status_laporan_fpkus')->where('id_laporan_fpku',$request->id_laporan)->update([
+            'status_approval' => 2,
+            'keterangan_ditolak' => $request->keterangan_ditolak
         ]);
         return response()->json($post);
     }

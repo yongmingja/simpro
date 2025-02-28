@@ -164,6 +164,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,Rektor'])->gro
     Route::post('confirmundanganfpku','RektoratPage\DashboardController@confirmUndanganFpku')->name('confirmundanganfpku');
     Route::get('rlaporanfpku','RektoratPage\DashboardController@indexLaporanFpku')->name('rlaporanfpku');
     Route::post('confirmlaporanfpku','RektoratPage\DashboardController@confirmLaporanFpku')->name('confirmlaporanfpku');
+    Route::post('ignorelaporanfpku','RektoratPage\DashboardController@ignoreLaporanFpku')->name('ignorelaporanfpku');
     Route::post('r-report-approval-n','RektoratPage\DashboardController@approvalRektorN')->name('r-report-approval-n');
     Route::get('rform-rkat','RektoratPage\FormRkatController@index')->name('index-form-rkat');
     Route::post('rkat-approval-y','RektoratPage\FormRkatController@approvalY')->name('rkat-approval-y');
