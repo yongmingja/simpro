@@ -125,6 +125,8 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::post('resubmit-anggaran','General\PengajuanProposalController@submitUlangAnggaran')->name('re-submit-anggaran');
 
     Route::resource('form-rkat', 'Master\FormRkatController');
+    Route::get('view-lampiran-laporan-fpku','RektoratPage\DashboardController@viewlampiranLaporanFpku')->name('view-lampiran-laporan-fpku');
+    Route::delete('delete-laporan-fpku','General\LaporanFpkuController@hapusLaporanFpku')->name('delete-laporan-fpku');
 });
 
 /* 

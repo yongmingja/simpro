@@ -15,7 +15,8 @@ class CreateDataRealisasiAnggaranFpkusTable extends Migration
     {
         Schema::create('data_realisasi_anggaran_fpkus', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_fpku');
+            $table->unsignedInteger('id_laporan_fpku');
+            $table->foreign('id_laporan_fpku')->references('id')->on('laporan_fpkus')->onDelete('cascade');
             $table->string('item')->nullable();
             $table->bigInteger('biaya_satuan')->nullable();
             $table->integer('quantity')->nullable();

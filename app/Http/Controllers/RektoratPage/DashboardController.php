@@ -327,37 +327,32 @@ class DashboardController extends Controller
 
     public function indexLaporanFpku(Request $request)
     {
-        $datas = DataFpku::orderBy('id','DESC')->get();
-        // $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-        //     ->select('data_fpkus.id AS id','data_fpkus.*','laporan_fpkus.*')
-        //     ->orderBy('laporan_fpkus.status_laporan','ASC')
-        //     ->get();
+        // $datas = DataFpku::orderBy('id','DESC')->get();
+        $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+            ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+            ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+            ->orderBy('status_laporan_fpkus.status_approval','ASC')
+            ->get();
+
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                $checkState = LaporanFpku::where('id_fpku',$data->id)->select('status_laporan')->get();
-                if($checkState->count() > 0){
-                    foreach($checkState as $rs){
-                        if($rs->status_laporan == 2){
-                            return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
-                        } else {
-                            return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Laporan" data-placement="bottom" data-original-title="Validasi Laporan" class="btn btn-warning btn-sm tombol-yes-laporan"><i class="bx bx-xs bx-check-double"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';                    
-                        }
-                    }
+                if($data->status_approval == 3){
+                    return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-xs bx-check-shield"></i> validated</a>';
                 } else {
-                    return "<span class='badge bg-label-secondary'>Belum submit</span>";
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
                 }
-            })->addColumn('nama_pegawai', function($data){
-                $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
-                foreach($dataPegawai as $result){
-                    $pegawai[] = $result->nama_pegawai;
-                    
-                }
-                return implode(", <br>", $pegawai);
             })->addColumn('undangan', function($data){
                 return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku">'.$data->undangan_dari.'</a>';
+            })->addColumn('lampirans', function($data){
+                $isExist = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran-laporan-fpku" style="font-size: 10px;">lihat lampiran</a>';
+                } else {
+                    return '<p style="font-size: 10px;">No attachment</p>';
+                }
             })
-            ->rawColumns(['action','nama_pegawai','undangan'])
+            ->rawColumns(['action','undangan','lampirans'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -366,10 +361,49 @@ class DashboardController extends Controller
 
     public function confirmLaporanFpku(Request $request)
     {
-        $post = LaporanFpku::where('id_fpku',$request->id)->update([
-            'status_laporan' => 2,
-            'qrcode' => ''.URL::to('/').'/fpku-rep/'.time().'.png'
+        $post = DB::table('status_laporan_fpkus')->leftJoin('laporan_fpkus','laporan_fpkus.id','=','status_laporan_fpkus.id_laporan_fpku')->where('laporan_fpkus.id_fpku',$request->id)->update([
+            'status_approval' => 3,
+            'generate_qrcode' => ''.URL::to('/').'/fpku-rep/'.time().'.png'
         ]);
         return response()->json($post);
+    }
+
+    public function viewlampiranLaporanFpku(Request $request)
+    {
+        $datas = DB::table('lampiran_laporan_fpkus')->leftJoin('laporan_fpkus','laporan_fpkus.id','=','lampiran_laporan_fpkus.id_laporan_fpku')->where('laporan_fpkus.id_fpku',$request->fpku_id)->select('lampiran_laporan_fpkus.id','lampiran_laporan_fpkus.nama_berkas','lampiran_laporan_fpkus.berkas','lampiran_laporan_fpkus.keterangan','lampiran_laporan_fpkus.link_gdrive')->get();
+        $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Berkas</th>
+                            <th>Lihat</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    if($datas->count() > 0){
+                        foreach($datas as $no => $data){
+                            $html .= 
+                                '<tr>
+                                    <td>'.++$no.'</td>
+                                    <td>'.$data->nama_berkas.'</td>
+                                    <td>';
+                                    if($data->berkas != ''){
+                                        $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
+                                    } else {
+                                        $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
+                                    }
+                                    
+                                    $html .= '</td>
+                                </tr>';
+                        }
+                    } else {
+                        $html .= 
+                        '<tr>
+                            <td colspan="3"> No data available in table </td>
+                        </tr>';
+                    }
+            $html .= '</tbody>
+                </table>';
+        return response()->json(['card' => $html]);
     }
 }

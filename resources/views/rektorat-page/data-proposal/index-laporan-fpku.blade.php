@@ -33,12 +33,30 @@
                                 <th>Undangan</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
-                                <th>Peserta</th>
+                                <th>Lampiran</th>
                             </tr>
                             </thead>
                         </table>
                     </div>                    
                 </div>
+                <!-- Mulai modal lihat lampiran -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true" data-bs-backdrop="static">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title justify-content-center">Lampiran Laporan FPKU</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="table_lampiran" class="col-sm-12 table-responsive mb-3"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of modal lihat lampiran-->
             </div>
         </div>
     </section>
@@ -72,7 +90,7 @@
                 {data: 'undangan',name: 'undangan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                 {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
-                {data: 'nama_pegawai',name: 'nama_pegawai'},
+                {data: 'lampirans',name: 'lampirans'},
             ]
         });
     });
@@ -153,6 +171,22 @@
                 });
             },
         });
+    });
+
+    $('body').on('click','.lihat-lampiran-laporan-fpku', function(){
+        var data_id = $(this).data('id');
+        $.ajax({
+            url: "{{route('view-lampiran-laporan-fpku')}}",
+            method: "GET",
+            data: {
+                fpku_id: data_id,  
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response, data){
+                $('#show-lampiran').modal('show');
+                $("#table_lampiran").html(response.card)
+            }
+        })
     });
 
 </script>

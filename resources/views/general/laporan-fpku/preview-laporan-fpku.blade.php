@@ -230,37 +230,36 @@
             @endforeach
 
             <table class="footer_auditor" width="100%">
-                @if($datas->count() > 0 )
-                    @foreach($datas as $qr) 
+                @if($getQR->count() > 0)
+                    @foreach($getQR as $qr) 
                     <tr class="trfooterauditor">
-                        @if($qr->status_laporan == 2)
-                            @if($getPengusul != null)
-                            <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br>
-                            </td>
-                            @endif
-                            <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->qrcode)) !!}">
-                                <br><br><b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
-                            </td>
-                        @else
-                            @if($getPengusul != null)
-                            <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
-                                <p style="margin-top: 2em;"></p>
-                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br>
-                            </td>
-                            @endif
-                            <td class="tdfooterauditor">Disetujui oleh,<br><br> 
-                                <p style="margin-top: 2em;"></p>
-                                <br><br> <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
-                            </td>
-                        @endif  
-                    </tr>                                       
-                    @endforeach  
-                @endif
-            </table>
-            
+                        @if($getPengusul != null)
+                        <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
+                            <br><br><b>{{$getPengusul->nama_pegawai}}</b><br>
+                        </td>
+                        @endif
+                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
+                            <br><br><b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
+                        </td>
+                    </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        @if($getPengusul != null)
+                        <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
+                            <p style="margin-top: 2em;"></p>
+                            <br><br><b>{{$getPengusul->nama_pegawai}}</b><br>
+                        </td>
+                        @endif
+                        <td class="tdfooterauditor">Disetujui oleh,<br><br> 
+                            <p style="margin-top: 2em;"></p>
+                            <br><br> <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
+                        </td>
+                    </tr>
+                @endif  
+            </table>            
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
