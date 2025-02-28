@@ -226,21 +226,26 @@ class LaporanFpkuController extends Controller
                         </tr>
                     </thead>
                     <tbody>';
-                    foreach($datas as $no => $data){
-                        $html .= 
-                            '<tr>
-                                <td>'.++$no.'</td>
-                                <td>'.$data->nama_berkas.'</td>
-                                <td>'.$data->keterangan.'</td>
-                                <td>';
-                                if($data->berkas != ''){
-                                    $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
-                                } else {
-                                    $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
-                                }
-                                
+                    if($datas->count() > 0){
+                        foreach($datas as $no => $data){
+                        $html .= '<tr>
+                                    <td>'.++$no.'</td>
+                                    <td>'.$data->nama_berkas.'</td>
+                                    <td>'.$data->keterangan.'</td>
+                                    <td>';
+                                    if($data->berkas != ''){
+                                        $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
+                                    } else {
+                                        $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
+                                    }
+                                    
                                 $html .= '</td>
                             </tr>';
+                        }
+                    } else {
+                        $html .= '<tr>
+                            <td colspan="3"> No data available in table </td>
+                        </tr>';
                     }
             $html .= '</tbody>
                 </table>';
