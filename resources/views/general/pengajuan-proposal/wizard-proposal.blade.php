@@ -369,7 +369,8 @@
                     submitHandler: function (form) {
                         var actionType = $('#tombol-simpan').val();
                         var formData = new FormData($("#form-proposal")[0]);
-                        $('#tombol-simpan').html('Sumbitting..');
+                        $('#tombol-simpan').html('');
+                        $('#tombol-simpan').prop("disabled", true);
 
                         $.ajax({
                             data: formData,
@@ -378,6 +379,11 @@
                             url: "{{ route('insert-proposal') }}",
                             type: "POST",
                             dataType: 'json',
+                            beforeSend: function(){
+                                $("#tombol-simpan").append(
+                                    '<i class="bx bx-loader-circle bx-spin text-warning"></i>'+
+                                    ' Mohon tunggu ...');
+                            },
                             success: function (data) {
                                 $('#form-proposal').trigger("reset");
                                 $('#tombol-simpan').html('Submit');
@@ -408,6 +414,7 @@
                                 $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
                                 $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
                                 $('#tombol-simpan').html('Submit');
+                                $('#tombol-simpan').prop("disabled", false);
                                 Swal.fire({
                                     title: 'Error!',
                                     text: ' Proposal failed to submit!',
