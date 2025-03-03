@@ -25,6 +25,16 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
+                        <div class="col-sm-2 mb-3">
+                            <fieldset class="form-group">
+                                <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
+                                    <option value="all">Semua data</option>
+                                    <option value="pending" selected>Pending (default)</option>
+                                    <option value="accepted">Telah divalidasi</option>
+                                    <option value="denied">Ditolak</option>
+                                </select>
+                            </fieldset>
+                        </div>
                         <table class="table table-hover table-responsive" id="table_fpku">
                             <thead>
                             <tr>
@@ -113,22 +123,43 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_fpku').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('rlaporanfpku') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
+        fill_datatable();
+        function fill_datatable(status = ''){
+            var table = $('#table_fpku').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('rlaporanfpku') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.status = $('#status').val();
                     }
-                }, 
-                {data: 'action',name: 'action'},
-                {data: 'undangan',name: 'undangan'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
-                {data: 'lampirans',name: 'lampirans'},
-            ]
+                },
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, 
+                    {data: 'action',name: 'action'},
+                    {data: 'undangan',name: 'undangan'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
+                    {data: 'lampirans',name: 'lampirans'},
+                ]
+            });
+        }
+        $('#status').on('change', function(e){
+            var status = this.value;
+
+            if(status != ''){
+                $('#table_fpku').DataTable().destroy();
+                fill_datatable(status);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_fpku').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 

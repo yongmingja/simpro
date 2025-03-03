@@ -259,7 +259,18 @@ class DashboardController extends Controller
 
     public function indexUndanganFpku(Request $request)
     {
-        $datas = DataFpku::orderBy('id','DESC')->get();
+        if($request->status == '' || $request->status == 'all'){
+            $datas = DataFpku::orderBy('id','DESC')->get();
+        }elseif($request->status == 'pending'){
+            $datas = DataFpku::leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
+                ->where('status_fpkus.status_approval',1)->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')->get();
+        }elseif($request->status == 'accepted'){
+            $datas = DataFpku::leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
+                ->where('status_fpkus.status_approval',2)->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')->get();
+        }else{
+            $datas = DataFpku::orderBy('id','DESC')->get();
+        }
+
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
@@ -327,12 +338,40 @@ class DashboardController extends Controller
 
     public function indexLaporanFpku(Request $request)
     {
-        // $datas = DataFpku::orderBy('id','DESC')->get();
-        $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
-            ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-            ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-            ->orderBy('status_laporan_fpkus.status_approval','ASC')
-            ->get();
+        if($request->status == '' || $request->status == 'all'){
+            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->orderBy('status_laporan_fpkus.status_approval','ASC')
+                ->get();
+        }elseif($request->status == 'pending'){
+            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->where('status_laporan_fpkus.status_approval',1)
+                ->orderBy('status_laporan_fpkus.status_approval','ASC')
+                ->get();
+        }elseif($request->status == 'accepted'){
+            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->where('status_laporan_fpkus.status_approval',3)
+                ->orderBy('status_laporan_fpkus.status_approval','ASC')
+                ->get();
+        }elseif($request->status == 'denied'){
+            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->where('status_laporan_fpkus.status_approval',2)
+                ->orderBy('status_laporan_fpkus.status_approval','ASC')
+                ->get();
+        }else{
+            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->orderBy('status_laporan_fpkus.status_approval','ASC')
+                ->get();
+        }
 
         if($request->ajax()){
             return datatables()->of($datas)
