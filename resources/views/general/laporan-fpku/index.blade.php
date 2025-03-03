@@ -33,6 +33,7 @@
                                 <th>Undangan</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
+                                <th>Lampiran</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -96,6 +97,7 @@
                         return moment(row.tgl_kegiatan).format("DD MMM YYYY")
                     }
                 },
+                {data: 'lampirans',name: 'lampirans'},
                 {data: 'status',name: 'status'},
             ]
         });

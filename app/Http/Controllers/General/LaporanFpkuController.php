@@ -33,38 +33,41 @@ class LaporanFpkuController extends Controller
     public function indexFpku(Request $request)
     {
         $userID = Auth::user()->id;
-        $datas = DataFpku::whereRaw("JSON_CONTAINS(peserta_kegiatan,'\"$userID\"')")->get();
+        // $datas = DataFpku::whereRaw("JSON_CONTAINS(peserta_kegiatan,'\"$userID\"')")->get();
+        $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+            ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+            ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+            ->whereRaw("JSON_CONTAINS(data_fpkus.peserta_kegiatan,'\"$userID\"')")
+            ->orderBy('status_laporan_fpkus.status_approval','ASC')
+            ->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
                 $checkStatus = LaporanFpku::where('id_fpku',$data->id)->get();
-                if($checkStatus->count() > 0){
-                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-food-menu bx-sm text-primary"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><i class="bx bx-show bx-sm text-info"></i></a>';
-                    return $button;
+                if($checkStatus->count() > 0){                    
+                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-food-menu bx-sm text-primary"></i></a>';                    
                 } else {
                     return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>';
                 }
             })->addColumn('status', function($data){
-                $state = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
-                    ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                    ->where('laporan_fpkus.id_fpku',$data->id)->select('status_laporan_fpkus.status_approval','status_laporan_fpkus.keterangan_ditolak','laporan_fpkus.id AS id_laporan')->get();
-                if($state->count() > 0){
-                    foreach($state as $r){
-                        if($r->status_approval == 1){
-                            return '<a href="javascript:void(0)" name="delete" id="'.$r->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i></a>';
-                        } elseif($r->status_approval == 2){
-                            return '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$r->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
-                        }elseif($r->status_approval == 3){
-                            return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> verified</a>';
-                        } else {
-                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
-                        }
-                    }
+                if($data->status_approval == 1){
+                    return '<a href="javascript:void(0)" name="delete" id="'.$data->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i></a>';
+                } elseif($data->status_approval == 2){
+                    return '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                }elseif($data->status_approval == 3){
+                    return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> verified</a>';
                 } else {
                     return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
                 }
+            })->addColumn('lampirans', function($data){
+                $checkLampiran = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();
+                if($checkLampiran->count() > 0){                   
+                    return '<a href="javascript:void(0)" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="v-lampiran" style="font-size: 10px;">lihat lampiran</a>';
+                } else {
+                    return '<p style="font-size: 10px;">No attachment</p>';
+                }
             })
-            ->rawColumns(['action','status'])
+            ->rawColumns(['action','status','lampirans'])
             ->addIndexColumn(true)
             ->make(true);
         }
