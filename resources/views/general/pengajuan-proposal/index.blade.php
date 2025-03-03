@@ -73,25 +73,38 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
-                        <!-- MULAI TOMBOL TAMBAH -->
-                        @if($checkLap->count() > 0)
-                            @foreach($checkLap as $p)  @endforeach
-                                @if($p->slp == '')
-                                    <div class="mb-3">
-                                        <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di verifikasi oleh Rektorat! Mohon periksa kembali status proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                                    </div>
-                                @else
-                                    <div class="mb-3">
-                                        <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                                    </div>
-                                @endif
-                           
-                        @else
-                            <div class="mb-3">
-                                <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                        <div class="row">
+
+                            <!-- MULAI TOMBOL TAMBAH -->
+                            @if($checkLap->count() > 0)
+                                @foreach($checkLap as $p)  @endforeach
+                                    @if($p->slp == '')
+                                        <div class="mb-3">
+                                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di verifikasi oleh Rektorat! Mohon periksa kembali status proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                                        </div>
+                                    @else
+                                        <div class="mb-3">
+                                            <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                                        </div>
+                                    @endif
+                               
+                            @else
+                                <div class="mb-3">
+                                    <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                                </div>
+                            @endif
+                            <!-- AKHIR TOMBOL -->
+                            <div class="col-sm-2 mb-3">
+                                <fieldset class="form-group">
+                                    <select style="cursor:pointer;" class="select2 form-control border" id="status" name="status" required>
+                                        <option value="all" selected>Semua data (default)</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="accepted">Diterima</option>
+                                        <option value="denied">Ditolak</option>
+                                    </select>
+                                </fieldset>
                             </div>
-                        @endif
-                        <!-- AKHIR TOMBOL -->
+                        </div>
                         <table class="table table-hover table-responsive" id="table_proposal">
                             <thead>
                             <tr>
@@ -581,33 +594,54 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_proposal').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('submission-of-proposal.index') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                }, 
-                {data: 'laporan',name: 'laporan'},
-                {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'tgl_event',name: 'tgl_event',
-                    render: function ( data, type, row ){
-                        return moment(row.tgl_event).format("DD MMM YYYY")
+        fill_datatable();
+        function fill_datatable(status = ''){
+            var table = $('#table_proposal').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('submission-of-proposal.index') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.status = $('#status').val();
                     }
                 },
-                {data: 'created_at',name: 'created_at',
-                    render: function ( data, type, row ){
-                        return moment(row.created_at).format("DD MMM YYYY")
-                    }
-                },
-                {data: 'nama_user_dosen',name: 'nama_user_dosen'},
-                {data: 'status',name: 'status'},
-                {data: 'action',name: 'action'},
-            ]
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, 
+                    {data: 'laporan',name: 'laporan'},
+                    {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'tgl_event',name: 'tgl_event',
+                        render: function ( data, type, row ){
+                            return moment(row.tgl_event).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'created_at',name: 'created_at',
+                        render: function ( data, type, row ){
+                            return moment(row.created_at).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'nama_user_dosen',name: 'nama_user_dosen'},
+                    {data: 'status',name: 'status'},
+                    {data: 'action',name: 'action'},
+                ]
+            });
+        }
+        $('#status').on('change', function(e){
+            var status = this.value;
+
+            if(status != ''){
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable(status);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 
