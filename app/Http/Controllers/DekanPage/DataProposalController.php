@@ -19,15 +19,60 @@ class DataProposalController extends Controller
             ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
-        $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-            ->where('proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro)
-            ->orderBy('status_proposals.status_approval','ASC')
-            ->get();
+        if($request->status == '' || $request->status == 'all'){
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where('proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro)
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        } elseif($request->status == 'pending') {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',1]])
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+
+        } elseif($request->status == 'accepted') {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',3]])
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+
+        } elseif($request->status == 'denied') {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',2]])
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+
+        } else {
+            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
+                ->where('proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro)
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        }
 
         if($request->ajax()){
             return datatables()->of($datas)

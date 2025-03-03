@@ -25,22 +25,32 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
-                            <table class="table table-hover table-responsive" id="table_proposal">
-                              <thead>
-                                <tr>
-                                  <th>#</th>
-                                  <th>Preview</th>
-                                  <th>Nama Kegiatan</th>
-                                  <th>Tgl Kegiatan</th>
-                                  <th>Proposal Dibuat</th>
-                                  <th>Nama Fakultas / Biro</th>
-                                  <th>Nama Prodi / Biro</th>
-                                  <th>Aksi</th>
-                                </tr>
-                              </thead>
-                            </table>
+                        <div class="col-sm-2 mb-3">
+                            <fieldset class="form-group">
+                                <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
+                                    <option value="all">Semua data</option>
+                                    <option value="pending" selected>Pending (default)</option>
+                                    <option value="accepted">Telah divalidasi</option>
+                                    <option value="denied">Ditolak</option>
+                                </select>
+                            </fieldset>
                         </div>
+                        <table class="table table-hover table-responsive" id="table_proposal">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Preview</th>
+                                <th>Nama Kegiatan</th>
+                                <th>Tgl Kegiatan</th>
+                                <th>Proposal Dibuat</th>
+                                <th>Nama Fakultas / Biro</th>
+                                <th>Nama Prodi / Biro</th>
+                                <th>Aksi</th>
+                            </tr>
+                            </thead>
+                        </table>
                     </div>
+                </div>
 
                     <!-- Modal validasi proposal -->
                     <div class="modal fade" id="add-keterangan-modal" aria-hidden="true">
@@ -117,32 +127,53 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_proposal').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('page-data-proposal.index') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                }, 
-                {data: 'preview',name: 'preview'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'tgl_event',name: 'tgl_event',
-                    render: function ( data, type, row ){
-                        return moment(row.tgl_event).format("DD MMM YYYY")
+        fill_datatable();
+        function fill_datatable(status = ''){
+            var table = $('#table_proposal').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('page-data-proposal.index') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.status = $('#status').val();
                     }
                 },
-                {data: 'created_at',name: 'created_at',
-                    render: function ( data, type, row ){
-                        return moment(row.created_at).format("DD MMM YYYY")
-                    }
-                },
-                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
-                {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
-                {data: 'action',name: 'action'},
-            ]
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, 
+                    {data: 'preview',name: 'preview'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'tgl_event',name: 'tgl_event',
+                        render: function ( data, type, row ){
+                            return moment(row.tgl_event).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'created_at',name: 'created_at',
+                        render: function ( data, type, row ){
+                            return moment(row.created_at).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
+                    {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
+                    {data: 'action',name: 'action'},
+                ]
+            });
+        }
+        $('#status').on('change', function(e){
+            var status = this.value;
+
+            if(status != ''){
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable(status);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 
