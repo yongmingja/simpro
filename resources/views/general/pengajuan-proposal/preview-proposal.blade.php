@@ -141,6 +141,7 @@
                         <p>{!!$detil->detil_kegiatan!!}</p>
                     @endforeach
                 </div>
+                @if($sarpras->count() > 0 )
 
                 <h3>Keperluan Sarana Prasarana</h3>
                 
@@ -168,7 +169,9 @@
                         </tbody>
                     </table>
                 </div>
-                
+                @endif
+
+                @if($anggarans->count() > 0)
                 <h3>Rencana Anggaran</h3>
                 
                 <div>
@@ -205,6 +208,7 @@
                         </tbody>
                     </table>
                 </div>
+                @endif
 
                 <h3>Penutup</h3>
                 @foreach($datas as $penutup)

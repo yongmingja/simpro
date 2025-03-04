@@ -30,28 +30,6 @@ class PengajuanProposalController extends Controller
 {
     public function index(Request $request)
     {
-        // $a = HandleProposal::select('handle_proposals.id_jabatan')
-        //         ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
-        //         ->whereJsonContains('handle_proposals.id_jenis_kegiatan','2')
-        //         ->get();
-
-        //         $b = DB::table('pegawais')->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
-        //             ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-        //             ->whereIn('jabatan_pegawais.id_jabatan',$a)
-        //             ->select('jabatans.kode_jabatan','pegawais.nama_pegawai')
-        //             ->get();
-        // dd($b);
-
-        // $getDisetujui = HandleProposal::leftJoin('jabatans','jabatans.id','=','handle_proposals.id_jabatan')
-        //         ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','jabatans.id')
-        //         ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-        //         ->select('pegawais.nama_pegawai','jabatans.kode_jabatan')
-        //         ->whereJsonContains('handle_proposals.id_jenis_kegiatan','2')
-        //         ->get();
-
-        //         dd($getDisetujui);
-            
-        // dd(Session::get('selected_peran'));
         if($request->status == '' || $request->status == 'all'){
             $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
                 ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
@@ -61,7 +39,8 @@ class PengajuanProposalController extends Controller
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0]])
                 ->orderBy('proposals.id','DESC')
                 ->get();
-        } elseif($request->status == 'pending'){
+        }
+        if($request->status == 'pending'){
             $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
                 ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
@@ -71,7 +50,8 @@ class PengajuanProposalController extends Controller
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',1]])
                 ->orderBy('proposals.id','DESC')
                 ->get();
-        } elseif($request->status == 'accepted'){
+        }
+        if($request->status == 'accepted'){
             $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
                 ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
@@ -82,7 +62,8 @@ class PengajuanProposalController extends Controller
                 ->orWhere('status_proposals.status_approval',3)
                 ->orderBy('proposals.id','DESC')
                 ->get();
-        } elseif($request->status == 'denied'){
+        }
+        if($request->status == 'denied'){
             $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
                 ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
@@ -91,15 +72,6 @@ class PengajuanProposalController extends Controller
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',4]])
                 ->orWhere('status_proposals.status_approval',2)
-                ->orderBy('proposals.id','DESC')
-                ->get();
-        } else {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
-                ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0]])
                 ->orderBy('proposals.id','DESC')
                 ->get();
         }
@@ -298,35 +270,46 @@ class PengajuanProposalController extends Controller
         
 
         # Insert data into data_pengajuan_sarpras
+        $dataSet = [];
         foreach($request->kolom as $key => $sarpras){
-            $dataSet[] = [
-                'id_proposal'       => $latest,
-                'tgl_kegiatan'      => $sarpras['tgl_kegiatan'],
-                'sarpras_item'      => $sarpras['sarpras_item'],
-                'jumlah'            => $sarpras['jumlah'],
-                'sumber_dana'       => $sarpras['sumber'],
-                'status'            => 1,
-                'created_at'        => now(),
-                'updated_at'        => now()
-            ];
+            if(!empty($sarpras['tgl_kegiatan']) && !empty($sarpras['sarpras_item']) && !empty($sarpras['jumlah']) && !empty($sarpras['sumber'])) {
+                $dataSet[] = [
+                    'id_proposal'       => $latest,
+                    'tgl_kegiatan'      => $sarpras['tgl_kegiatan'],
+                    'sarpras_item'      => $sarpras['sarpras_item'],
+                    'jumlah'            => $sarpras['jumlah'],
+                    'sumber_dana'       => $sarpras['sumber'],
+                    'status'            => 1,
+                    'created_at'        => now(),
+                    'updated_at'        => now()
+                ];
+            }
         }                
-        $post = DataPengajuanSarpras::insert($dataSet);
+        // Cek apakah $dataSet tidak kosong sebelum insert
+        if (!empty($dataSet)) {
+            $post = DataPengajuanSarpras::insert($dataSet);
+        }
 
         # Insert data into data_rencana_anggaran
+        $dataRenang = [];
         foreach($request->rows as $k => $renang){
-            $dataRenang[] = [
-                'id_proposal'   => $latest,
-                'item'          => $renang['item'],
-                'biaya_satuan'  => $renang['biaya_satuan'],
-                'quantity'      => $renang['quantity'],
-                'frequency'     => $renang['frequency'],
-                'sumber_dana'   => $renang['sumber'],
-                'status'        => 1,
-                'created_at'    => now(),
-                'updated_at'    => now()
-            ];
+            if(!empty($renang['item']) && !empty($renang['biaya_satuan']) && !empty($renang['quantity']) && !empty($renang['frequency']) && !empty($renang['sumber'])) {
+                $dataRenang[] = [
+                    'id_proposal'   => $latest,
+                    'item'          => $renang['item'],
+                    'biaya_satuan'  => $renang['biaya_satuan'],
+                    'quantity'      => $renang['quantity'],
+                    'frequency'     => $renang['frequency'],
+                    'sumber_dana'   => $renang['sumber'],
+                    'status'        => 1,
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ];
+            }
         }
-        $post = DataRencanaAnggaran::insert($dataRenang);
+        if (!empty($dataRenang)) {
+            $post = DataRencanaAnggaran::insert($dataRenang);
+        }
 
         $post = DB::table('status_proposals')->insert(
             [
@@ -347,29 +330,33 @@ class PengajuanProposalController extends Controller
 
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                $insertData[] = [
-                    'id_proposal'   => $latest,
-                    'nama_berkas'   => $request->nama_berkas[$x],
-                    'berkas'        => $fileNames[$x],
-                    'link_gdrive'   => '',
-                    'keterangan'    => $request->keterangan[$x],
-                    'created_at'    => now(),
-                    'updated_at'    => now()
-                ];
+                if(!empty($request->nama_berkas[$x]) && !empty($fileNames[$x]) && !empty($request->keterangan[$x])) {
+                    $insertData[] = [
+                        'id_proposal'   => $latest,
+                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'berkas'        => $fileNames[$x],
+                        'link_gdrive'   => '',
+                        'keterangan'    => $request->keterangan[$x],
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ];
+                }
             }
             $post = DB::table('lampiran_proposals')->insert($insertData);
         } else {
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                $insertData[] = [
-                    'id_proposal'   => $latest,
-                    'nama_berkas'   => $request->nama_berkas[$x],
-                    'berkas'        => '',
-                    'link_gdrive'   => $request->link_gdrive[$x],
-                    'keterangan'    => $request->keterangan[$x],
-                    'created_at'    => now(),
-                    'updated_at'    => now()
-                ];
+                if(!empty($request->nama_berkas[$x]) && !empty($link_gdrive[$x]) && !empty($request->keterangan[$x])) {
+                    $insertData[] = [
+                        'id_proposal'   => $latest,
+                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'berkas'        => '',
+                        'link_gdrive'   => $request->link_gdrive[$x],
+                        'keterangan'    => $request->keterangan[$x],
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ];
+                }
             }
             $post = DB::table('lampiran_proposals')->insert($insertData);
             return redirect()->route('submission-of-proposal.index');
@@ -388,43 +375,63 @@ class PengajuanProposalController extends Controller
     {
         $datas = DataPengajuanSarpras::where('id_proposal',$request->proposal_id)->get();
         
-        $html = '<table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Tgl Kegiatan</th>
-                            <th>Sarpras Item</th>
-                            <th>Jumlah</th>
-                            <th>Status</th>
-                            <th>Ket</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                foreach($datas as $no => $item){
-                $html .= '<tr>
-                            <td>'.++$no.'</td>
-                            <td>'.tanggal_indonesia($item->tgl_kegiatan).'</td>
-                            <td>'.$item->sarpras_item.'</td>
-                            <td>'.$item->jumlah.'</td>';
-                                if($item->status == '1'){
-                                    $x = '<span class="badge bg-label-warning">Pending</span>';
-                                }else if($item->status == '2'){
-                                    $x = '<span class="badge bg-label-success">Disetujui</span>';
-                                }elseif($item->status == '3'){
-                                    $x = '<span class="badge bg-label-danger">Ditolak</span>';
-                                }else{
-                                    $x = '<span class="badge bg-label-success">Disetujui</span>';
-                                }
-                $html .=    '<td>'.$x.'</td>';
-                        if($item->status == '3'){
-                            $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-alasan="'.$item->alasan.'" data-placement="bottom" title="Detil keterangan ditolak" data-original-title="Detil keterangan ditolak" class="alasan"><i class="bx bx-show-alt bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-tgl="'.$data->tgl_kegiatan.'" data-item="'.$item->sarpras_item.'" data-jumlah="'.$item->jumlah.'" data-sumber="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data sarpras" data-original-title="Edit data sarpras" class="edit-post"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-post"><i class="bx bx-trash bx-xs"></i></a></td>';
-                        } else {
-                            $html .= '<td></td></tr>';
-                        }
-                }
-
-                $html .= '</tbody>
-                    </table>';
+        if($datas->count() > 0) {
+            $html = '<table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Tgl Kegiatan</th>
+                                <th>Sarpras Item</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th>Ket</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+                    foreach($datas as $no => $item){
+                    $html .= '<tr>
+                                <td>'.++$no.'</td>
+                                <td>'.tanggal_indonesia($item->tgl_kegiatan).'</td>
+                                <td>'.$item->sarpras_item.'</td>
+                                <td>'.$item->jumlah.'</td>';
+                                    if($item->status == '1'){
+                                        $x = '<span class="badge bg-label-warning">Pending</span>';
+                                    }else if($item->status == '2'){
+                                        $x = '<span class="badge bg-label-success">Disetujui</span>';
+                                    }elseif($item->status == '3'){
+                                        $x = '<span class="badge bg-label-danger">Ditolak</span>';
+                                    }else{
+                                        $x = '<span class="badge bg-label-success">Disetujui</span>';
+                                    }
+                    $html .=    '<td>'.$x.'</td>';
+                            if($item->status == '3'){
+                                $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-alasan="'.$item->alasan.'" data-placement="bottom" title="Detil keterangan ditolak" data-original-title="Detil keterangan ditolak" class="alasan"><i class="bx bx-show-alt bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-tgl="'.$data->tgl_kegiatan.'" data-item="'.$item->sarpras_item.'" data-jumlah="'.$item->jumlah.'" data-sumber="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data sarpras" data-original-title="Edit data sarpras" class="edit-post"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-post"><i class="bx bx-trash bx-xs"></i></a></td>';
+                            } else {
+                                $html .= '<td></td></tr>';
+                            }
+                    }
+    
+                    $html .= '</tbody>
+                        </table>';
+        } else {
+            $html = '<table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Tgl Kegiatan</th>
+                                <th>Sarpras Item</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th>Ket</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" style="text-align: center;">No data available in table</td>
+                            </tr>
+                        </tbody>
+                        </table>';
+        }
         return response()->json(['card' => $html]);
     }
 
@@ -609,6 +616,8 @@ class PengajuanProposalController extends Controller
         } else {
             $html .= '';
         }
+
+        if($datas->count() > 0){
         $html .= '<table class="table table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
@@ -620,7 +629,7 @@ class PengajuanProposalController extends Controller
                         </tr>
                     </thead>
                     <tbody>';
-        if($datas->count() > 0){
+        
             foreach($datas as $no => $item){
                 $html .= '<tr>
                         <td>'.++$no.'</td>
@@ -636,7 +645,7 @@ class PengajuanProposalController extends Controller
             $html .= '</tbody>
                 </table>';
         } else {
-            $html .= '<table class="table table-bordered table-hover">
+            $html = '<table class="table table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
                             <th>#</th>
@@ -649,7 +658,7 @@ class PengajuanProposalController extends Controller
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="6">No data available in table</td>
+                            <td colspan="6" style="text-align: center;">No data available in table</td>
                         </tr>
                     </tbody>';
         }
