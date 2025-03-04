@@ -338,11 +338,13 @@ class PengajuanProposalController extends Controller
                     ];
                 }
             }
-            $post = DB::table('lampiran_proposals')->insert($insertData);
+            if (!empty($insertData)) {
+                $post = DB::table('lampiran_proposals')->insert($insertData);
+            }
         } else {
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                if(!empty($request->nama_berkas[$x]) && !empty($link_gdrive[$x]) && !empty($request->keterangan[$x])) {
+                if(!empty($request->nama_berkas[$x]) && !empty($request->link_gdrive[$x]) && !empty($request->keterangan[$x])) {
                     $insertData[] = [
                         'id_proposal'   => $latest,
                         'nama_berkas'   => $request->nama_berkas[$x],
@@ -354,7 +356,9 @@ class PengajuanProposalController extends Controller
                     ];
                 }
             }
-            $post = DB::table('lampiran_proposals')->insert($insertData);
+            if (!empty($insertData)) {
+                $post = DB::table('lampiran_proposals')->insert($insertData);
+            }
             return redirect()->route('submission-of-proposal.index');
         }
         return response()->json($post);

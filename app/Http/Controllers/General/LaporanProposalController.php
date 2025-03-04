@@ -53,19 +53,24 @@ class LaporanProposalController extends Controller
                 'updated_at'          => now()
             ]);
 
+        $dataRenang = [];
         foreach($request->rows as $k => $renang){
-            $dataRenang[] = [
-                'id_proposal'   => $getId,
-                'item'          => $renang['item'],
-                'biaya_satuan'  => $renang['biaya_satuan'],
-                'quantity'      => $renang['quantity'],
-                'frequency'     => $renang['frequency'],
-                'sumber_dana'   => $renang['sumber'],
-                'created_at'    => now(),
-                'updated_at'    => now()
-            ];
+            if(!empty($renang['item']) && !empty($renang['biaya_satuan']) && !empty($renang['quantity']) && !empty($renang['frequency']) && !empty($renang['sumber'])){
+                $dataRenang[] = [
+                    'id_proposal'   => $getId,
+                    'item'          => $renang['item'],
+                    'biaya_satuan'  => $renang['biaya_satuan'],
+                    'quantity'      => $renang['quantity'],
+                    'frequency'     => $renang['frequency'],
+                    'sumber_dana'   => $renang['sumber'],
+                    'created_at'    => now(),
+                    'updated_at'    => now()
+                ];
+            }
         }
-        $post = DataRealisasiAnggaran::insert($dataRenang);
+        if (!empty($dataRenang)) {
+            $post = DataRealisasiAnggaran::insert($dataRenang);
+        }
 
         # Insert data into lampiran_laporan_proposals
         if($request->berkas != ''){
@@ -78,30 +83,38 @@ class LaporanProposalController extends Controller
 
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                $insertData[] = [
-                    'id_proposal'   => $getId,
-                    'nama_berkas'   => $request->nama_berkas[$x],
-                    'berkas'        => $fileNames[$x],
-                    'keterangan'    => $request->keterangan[$x],
-                    'created_at'    => now(),
-                    'updated_at'    => now()
-                ];
+                if(!empty($request->nama_berkas[$x]) && !empty($fileNames[$x]) && !empty($request->keterangan[$x])) {
+                    $insertData[] = [
+                        'id_proposal'   => $getId,
+                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'berkas'        => $fileNames[$x],
+                        'keterangan'    => $request->keterangan[$x],
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ];
+                }
             }
-            $post = DB::table('lampiran_laporan_proposals')->insert($insertData);
+            if (!empty($insertData)) {
+                $post = DB::table('lampiran_laporan_proposals')->insert($insertData);
+            }
         } else {
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                $insertData[] = [
-                    'id_proposal'   => $getId,
-                    'nama_berkas'   => $request->nama_berkas[$x],
-                    'berkas'        => '',
-                    'link_gdrive'   => $request->link_gdrive[$x],
-                    'keterangan'    => $request->keterangan[$x],
-                    'created_at'    => now(),
-                    'updated_at'    => now()
-                ];
+                if(!empty($request->nama_berkas[$x]) && !empty($request->link_gdrive[$x]) && !empty($request->keterangan[$x])) {
+                    $insertData[] = [
+                        'id_proposal'   => $getId,
+                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'berkas'        => '',
+                        'link_gdrive'   => $request->link_gdrive[$x],
+                        'keterangan'    => $request->keterangan[$x],
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ];
+                }
             }
-            $post = DB::table('lampiran_laporan_proposals')->insert($insertData);
+            if (!empty($insertData)) {
+                $post = DB::table('lampiran_laporan_proposals')->insert($insertData);
+            }
             return redirect()->route('my-report');
         }
 
