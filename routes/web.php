@@ -154,7 +154,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:DKN,KRO'])->group(functio
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,Rektor'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,RKT'])->group(function() {
     Route::get('/rektorat', 'RektoratPage\DashboardController@index')->name('dashboard-rektorat');
     Route::post('approval-n','RektoratPage\DashboardController@approvalN')->name('approval-n');
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');

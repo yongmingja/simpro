@@ -224,80 +224,83 @@
         @endif
 
         @if($roleDefault == "SADM")
-        <li class="menu-header small fw-medium">
-            <div data-i18n="DATABASE MASTER">DATABASE MASTER</div>
-        </li>
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-user-admin.index')}} OR {{set_active('data-user-mahasiswa.index')}} OR {{set_active('data-user-dosen.index')}} OR {{set_active('data-user-dekan.index')}} OR {{set_active('data-user-rektorat.index')}} OR {{set_active('data-pegawai.index')}}">
-            <i class="menu-icon tf-icons bx bx-group bx-tada-hover"></i>
-            <div data-i18n="Data User">Data User</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{route('data-pegawai.index')}}" class="menu-link {{set_active('data-pegawai.index')}}">
-                    <div data-i18n="Data Pegawai">Data Pegawai</div>
-                    </a>
-                </li> 
-            </ul>
-        </li>
-               
-        
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-jabatan.index')}} OR {{set_active('data-jabatan-akademik.index')}} OR {{set_active('data-jabatan-pegawai.index')}}">
-            <i class="menu-icon tf-icons bx bx-sitemap bx-tada-hover"></i>
-            <div data-i18n="Data Jabatan">Data Jabatan</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{route('data-jabatan.index')}}" class="menu-link {{set_active('data-jabatan.index')}}">
-                    <div data-i18n="Jabatan">Jabatan</div>
-                    </a>
-                </li>  
-                <li class="menu-item">
-                    <a href="{{route('data-jabatan-pegawai.index')}}" class="menu-link {{set_active('data-jabatan-pegawai.index')}}">
-                    <div data-i18n="Jabatan Pegawai">Jabatan Pegawai</div>
-                    </a>
-                </li> 
-            </ul>
-        </li>
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fakultas-biro.index')}} OR {{set_active('data-prodi-biro.index')}} OR {{set_active('validator-proposal.index')}} OR {{set_active('handle-proposal.index')}} OR {{set_active('data-jenis-kegiatan.index')}}">
-            <i class="menu-icon tf-icons bx bx-data bx-tada-hover"></i>
-            <div data-i18n="Data Lainnya">Data Lainnya</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="{{route('data-fakultas-biro.index')}}" class="menu-link {{set_active('data-fakultas-biro.index')}}">
-                    <div data-i18n="Fakultas & Biro">Fakultas & Biro</div>
-                    </a>
-                </li>        
-                <li class="menu-item">
-                    <a href="{{route('data-prodi-biro.index')}}" class="menu-link {{set_active('data-prodi-biro.index')}}">
-                    <div data-i18n="Prodi & Biro">Prodi & Biro</div>
-                    </a>
-                </li> 
-                <li class="menu-item">
-                    <a href="{{route('validator-proposal.index')}}" class="menu-link {{set_active('validator-proposal.index')}}">
-                    <div data-i18n="Validator Proposal">Validator Proposal</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{route('handle-proposal.index')}}" class="menu-link {{set_active('handle-proposal.index')}}">
-                    <div data-i18n="Handle Proposal">Handle Proposal</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{route('data-jenis-kegiatan.index')}}" class="menu-link {{set_active('data-jenis-kegiatan.index')}}">
-                    <div data-i18n="Kategori Proposal">Kategori Proposal</div>
-                    </a>
-                </li> 
-            </ul>
-        </li>
+            <li class="menu-header small fw-medium">
+                <div data-i18n="DATABASE MASTER">DATABASE MASTER</div>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-user-admin.index')}} OR {{set_active('data-user-mahasiswa.index')}} OR {{set_active('data-user-dosen.index')}} OR {{set_active('data-user-dekan.index')}} OR {{set_active('data-user-rektorat.index')}} OR {{set_active('data-pegawai.index')}}">
+                <i class="menu-icon tf-icons bx bx-group bx-tada-hover"></i>
+                <div data-i18n="Data User">Data User</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('data-pegawai.index')}}" class="menu-link {{set_active('data-pegawai.index')}}">
+                        <div data-i18n="Data Pegawai">Data Pegawai</div>
+                        </a>
+                    </li> 
+                </ul>
+            </li>
+                
+            
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-jabatan.index')}} OR {{set_active('data-jabatan-akademik.index')}} OR {{set_active('data-jabatan-pegawai.index')}}">
+                <i class="menu-icon tf-icons bx bx-sitemap bx-tada-hover"></i>
+                <div data-i18n="Data Jabatan">Data Jabatan</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('data-jabatan.index')}}" class="menu-link {{set_active('data-jabatan.index')}}">
+                        <div data-i18n="Jabatan">Jabatan</div>
+                        </a>
+                    </li>  
+                    <li class="menu-item">
+                        <a href="{{route('data-jabatan-pegawai.index')}}" class="menu-link {{set_active('data-jabatan-pegawai.index')}}">
+                        <div data-i18n="Jabatan Pegawai">Jabatan Pegawai</div>
+                        </a>
+                    </li> 
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fakultas-biro.index')}} OR {{set_active('data-prodi-biro.index')}} OR {{set_active('validator-proposal.index')}} OR {{set_active('handle-proposal.index')}} OR {{set_active('data-jenis-kegiatan.index')}}">
+                <i class="menu-icon tf-icons bx bx-data bx-tada-hover"></i>
+                <div data-i18n="Data Lainnya">Data Lainnya</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('data-fakultas-biro.index')}}" class="menu-link {{set_active('data-fakultas-biro.index')}}">
+                        <div data-i18n="Fakultas & Biro">Fakultas & Biro</div>
+                        </a>
+                    </li>        
+                    <li class="menu-item">
+                        <a href="{{route('data-prodi-biro.index')}}" class="menu-link {{set_active('data-prodi-biro.index')}}">
+                        <div data-i18n="Prodi & Biro">Prodi & Biro</div>
+                        </a>
+                    </li> 
+                    <li class="menu-item">
+                        <a href="{{route('validator-proposal.index')}}" class="menu-link {{set_active('validator-proposal.index')}}">
+                        <div data-i18n="Validator Proposal">Validator Proposal</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{route('handle-proposal.index')}}" class="menu-link {{set_active('handle-proposal.index')}}">
+                        <div data-i18n="Handle Proposal">Handle Proposal</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{route('data-jenis-kegiatan.index')}}" class="menu-link {{set_active('data-jenis-kegiatan.index')}}">
+                        <div data-i18n="Kategori Proposal">Kategori Proposal</div>
+                        </a>
+                    </li> 
+                </ul>
+            </li>
         @endif
 
         @if($checkIDValidatorPengusul->count() > 0)
             @foreach($checkIDValidatorPengusul as $idvalidator)
                 @if($idvalidator->kode_jabatan == $recentPeranIs)
+                <li class="menu-header small fw-medium">
+                    <div data-i18n="PENGUSUL">PENGUSUL</div>
+                </li> 
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}} OR {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
                     <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
@@ -341,6 +344,9 @@
         @if($checkIDValidatorDiketahui->count() > 0)
             @foreach($checkIDValidatorDiketahui as $idvalidator)
                 @if($idvalidator->kode_jabatan == $recentPeranIs)
+                <li class="menu-header small fw-medium">
+                    <div data-i18n="VALIDASI DEKAN/KA.BIRO">VALIDASI DEKAN/KA.BIRO</div>
+                </li> 
                     <li class="menu-item">
                         <a href="{{route('page-data-proposal.index')}}" class="menu-link {{set_active('page-data-proposal.index')}}">
                         <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
@@ -361,6 +367,9 @@
         @if($checkIDValidatorDisetujui->count() > 0)
             @foreach($checkIDValidatorDisetujui as $idvalidator)
                 @if($idvalidator->kode_jabatan == $recentPeranIs) 
+                <li class="menu-header small fw-medium">
+                    <div data-i18n="VALIDASI REKTORAT">VALIDASI REKTORAT</div>
+                </li> 
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
                         <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>

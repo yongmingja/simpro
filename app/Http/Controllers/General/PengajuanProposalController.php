@@ -192,8 +192,6 @@ class PengajuanProposalController extends Controller
         $getPegawaiName = DB::table('pegawais')->select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
         $request->validate([
             'id_jenis_kegiatan' => 'required',
-            'id_fakultas_biro'  => 'required',
-            'id_prodi_biro'     => 'required',
             'nama_kegiatan'     => 'required',
             'pendahuluan'       => 'required',
             'tujuan_manfaat'    => 'required',
@@ -205,8 +203,6 @@ class PengajuanProposalController extends Controller
             'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
-            'id_fakultas_biro.required'     => 'Anda belum memilih fakultas atau biro', 
-            'id_prodi_biro.required'        => 'Anda belum memilih prodi atau biro', 
             'nama_kegiatan.required'        => 'Anda belum menginput nama kegiatan', 
             'pendahuluan.required'          => 'Anda belum menginput pendahuluan', 
             'tujuan_manfaat.required'       => 'Anda belum menginput tujuan manfaat', 
@@ -491,13 +487,17 @@ class PengajuanProposalController extends Controller
             ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
             ->first();
 
-        foreach($datas as $r){
-            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
-                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
-                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
-                ->first();
+        foreach($datas as $r){ 
+            if($r->id_fakultas_biro != ''){
+                $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
+                    ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                    ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                    ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
+                    ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                    ->first();
+            } else {
+                $getDiketahui = '';
+            }
 
             $queryGetJenisKegiatan = HandleProposal::select('handle_proposals.id_jabatan')
                 ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
