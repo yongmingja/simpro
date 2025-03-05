@@ -12,8 +12,10 @@ use App\Models\Master\Pegawai;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\HandleProposal;
 use App\Models\General\LaporanFpku;
+use App\Models\General\DelegasiFpku;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UndanganFpku;
+use App\Mail\EmailDelegasiFpku;
 use Auth;
 use DB;
 use URL;
@@ -296,7 +298,7 @@ class DashboardController extends Controller
             ->addColumn('action', function($data){
                 $checkState = DB::table('status_fpkus')->where('id_fpku',$data->id)->select('status_approval')->first();
                 if($checkState->status_approval == 1){
-                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Undangan" data-placement="bottom" data-original-title="Validasi Undangan" class="btn btn-warning btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
+                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi Undangan" data-placement="bottom" data-original-title="Validasi Undangan" class="text-warning tombol-yes"><i class="bx bx-sm bx-check-shield"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
                 } else {
                     return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
                 }
@@ -321,37 +323,66 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('rektorat-page.data-proposal.index-undangan-fpku');
+        $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
+        return view('rektorat-page.data-proposal.index-undangan-fpku', compact('getDataPegawai'));
     }
 
     public function confirmUndanganFpku(Request $request)
     {
-        $post = DB::table('status_fpkus')->where('id_fpku',$request->id)->update([
-            'status_approval' => 2,
-            'generate_qrcode' => ''.URL::to('/').'/fpku/'.time().'.png'
-        ]);
-
         # setelah di confirm / validasi oleh WRSDP otomatis broadcast ke email peserta
-        $datas = DataFpku::where('id',$request->id)->select('peserta_kegiatan')->get();
+        $datas = DataFpku::where('id',$request->fpku_id)->select('peserta_kegiatan')->get();
         if($datas->count() > 0){
             foreach($datas as $data){
                 $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('email')->get();
                 foreach($dataPegawai as $result){
-                    $pegawai[] = $result->email;                    
+                    // Validasi alamat email
+                    if (filter_var($result->email, FILTER_VALIDATE_EMAIL)) {
+                        $pegawai[] = strtolower($result->email);
+                    }                
                 }
             }
         } else {
             return 'Nothing data in the table';
         }
-        $emails = implode(", ", $pegawai);
-        $isiData = [
-            'name' => 'Form Partisipasi Kegiatan Undangan',
-            'body' => 'Anda memiliki undangan kegiatan, untuk info lebih detail, silakan login di akun SIMPRO anda. Pada menu Undangan FPKU - Undangan.',
-        ];
-        Mail::to([$emails])->send(new UndanganFpku($isiData));
-        $post = DB::table('status_fpkus')->update([
-            'broadcast_email' => 1
+        if (isset($pegawai) && count($pegawai) > 0) {
+            $isiData = [
+                'name' => 'Form Partisipasi Kegiatan Undangan',
+                'body' => 'Anda memiliki undangan kegiatan, untuk info lebih detail, silakan login di akun SIMPRO anda. Pada menu Undangan FPKU - Undangan.',
+            ];
+            Mail::to($pegawai)->send(new UndanganFpku($isiData));
+        } else {
+            return 'No valid email addresses found';
+        }
+
+        $post = DB::table('status_fpkus')->where('id_fpku',$request->fpku_id)->update([
+            'status_approval' => 2,
+            'broadcast_email' => 1,
+            'generate_qrcode' => ''.URL::to('/').'/fpku/'.time().'.png'
+        ]);        
+
+        $post = DelegasiFpku::updateOrCreate([
+            'id_fpku'           => $request->fpku_id,
+            'catatan_delegator' => $request->catatan_delegator,
+            'delegasi'          => $request->input('delegasis')
         ]);
+
+        # From delegator modal
+        # Get delegation's email
+        $getDelEmails = Pegawai::whereIn('id',$request->input('delegasis'))->select('email')->get();
+        foreach($getDelEmails as $delmail){
+            if (filter_var($delmail->email, FILTER_VALIDATE_EMAIL)){
+                $delemails[] = strtolower($delmail->email);
+            }
+        }
+        if (isset($delemails) && count($delemails) > 0){
+            $content = [
+                'name' => 'Delegasi dari WRSDP',
+                'body' => $request->catatan_delegator,
+            ];
+            Mail::to($delemails)->send(new EmailDelegasiFpku($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
 
         return response()->json($post);
     }
