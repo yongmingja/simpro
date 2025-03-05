@@ -97,6 +97,16 @@
                                                 <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
+                                                <label for="ketua" class="form-label">Ketua</label>
+                                                <select class="form-select select2" id="ketua" name="ketua" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_ketua">- Pilih -</option>
+                                                    @foreach($getDataPegawai as $pegawai)
+                                                    <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="ketuaErrorMsg" style="font-size: 10px;"></span>
+                                            </div> 
+                                            <div class="mb-3">
                                                 <label for="id_pegawai" class="form-label">Peserta Kegiatan</label>
                                                 <select class="form-select select2" multiple id="id_pegawai" name="id_pegawais[]" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_pegawai">- Pilih -</option>
@@ -131,7 +141,7 @@
                                                         <tr>
                                                             <td><button type="button" class="btn btn-warning btn-block addField mt-2"><i class="bx bx-plus-circle bx-xs"></i></button></td>
                                                             <td><input type="text" name="nama_berkas[]" class="w-100 form-control" placeholder="input nama berkas"></td>
-                                                            <td><input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .jpeg, .png"></td>
+                                                            <td><input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .docs, .docx"></td>
                                                         </tr>
                                                     </table>
                                                 </div>

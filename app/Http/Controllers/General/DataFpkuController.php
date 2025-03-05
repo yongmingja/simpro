@@ -80,6 +80,7 @@ class DataFpkuController extends Controller
             'undangan_dari'     => $request->undangan_dari,
             'nama_kegiatan'     => $request->nama_kegiatan,
             'tgl_kegiatan'      => $request->tgl_kegiatan,
+            'ketua'             => $request->ketua,
             'peserta_kegiatan'  => $request->input('id_pegawais'),
             'dibuat_oleh'       => Auth::user()->id,
             'catatan'           => $request->catatan
@@ -93,15 +94,20 @@ class DataFpkuController extends Controller
             $latest = $latest_id->id;
         }
 
+        $dataSet = [];
         foreach($request->kolom as $key => $keperluan){
-            $dataSet[] = [
-                'id_fpku'           => $latest,
-                'isi_keperluan'     => $keperluan['isi_keperluan'],
-                'created_at'        => now(),
-                'updated_at'        => now()
-            ];
-        }                
-        $post = DB::table('fpku_keperluans')->insert($dataSet);
+            if(!empty($keperluan['isi_keperluan'])) {
+                $dataSet[] = [
+                    'id_fpku'           => $latest,
+                    'isi_keperluan'     => $keperluan['isi_keperluan'],
+                    'created_at'        => now(),
+                    'updated_at'        => now()
+                ];
+            }
+        }  
+        if (!empty($dataSet)){
+            $post = DB::table('fpku_keperluans')->insert($dataSet);
+        }            
 
         # Insert data into lampiran_fpkus
         if($request->berkas != ''){
@@ -114,17 +120,21 @@ class DataFpkuController extends Controller
 
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                $insertData[] = [
-                    'id_fpku'       => $latest,
-                    'nama_berkas'   => $request->nama_berkas[$x],
-                    'berkas'        => $fileNames[$x],
-                    'link_gdrive'   => '',
-                    'keterangan'    => '-',
-                    'created_at'    => now(),
-                    'updated_at'    => now()
-                ];
+                if(!empty($request->nama_berkas[$x]) && !empty($fileNames[$x])){
+                    $insertData[] = [
+                        'id_fpku'       => $latest,
+                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'berkas'        => $fileNames[$x],
+                        'link_gdrive'   => '',
+                        'keterangan'    => '-',
+                        'created_at'    => now(),
+                        'updated_at'    => now()
+                    ];
+                }
             }
-            $post = DB::table('lampiran_fpkus')->insert($insertData);
+            if (!empty($insertData)){
+                $post = DB::table('lampiran_fpkus')->insert($insertData);
+            }
         }
 
         $post = DB::table('status_fpkus')->insert([
