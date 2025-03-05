@@ -200,7 +200,7 @@
                                         </tr>
                                       </table>
                                     </div>
-                                    
+                                    <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada sarana prasarana yang dibutuhkan.</i></p>
                                     <div class="col-12 d-flex justify-content-between">
                                       <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                         <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -240,6 +240,7 @@
                                           <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
                                       </tr>
                                     </table>
+                                    <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak memiliki rencana anggaran pada proposal kegiatan.</i></p>
                                     <div class="col-12 d-flex justify-content-between">
                                       <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                         <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -279,7 +280,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p style="font-size: 12px;" class="text-warning"><i>*Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                    <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
                                     <div class="col-12 d-flex justify-content-between">
                                         <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                           <span class="align-middle d-sm-inline-block d-none">Previous</span>
