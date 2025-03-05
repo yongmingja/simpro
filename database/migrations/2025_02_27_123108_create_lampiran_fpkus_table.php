@@ -15,7 +15,8 @@ class CreateLampiranFpkusTable extends Migration
     {
         Schema::create('lampiran_fpkus', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_fpku');
+            $table->unsignedInteger('id_fpku');
+            $table->foreign('id_fpku')->references('id')->on('data_fpkus')->onDelete('cascade');
             $table->string('nama_berkas')->nullable();
             $table->string('berkas')->nullable();
             $table->string('link_gdrive')->nullable();

@@ -20,6 +20,7 @@ class CreateDataFpkusTable extends Migration
             $table->string('undangan_dari');
             $table->string('nama_kegiatan');
             $table->date('tgl_kegiatan');
+            $table->integer('ketua')->nullable();
             $table->string('peserta_kegiatan');
             $table->integer('dibuat_oleh');
             $table->string('catatan')->nullable();

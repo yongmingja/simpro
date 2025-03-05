@@ -34,9 +34,9 @@ class LaporanFpkuController extends Controller
     {
         $userID = Auth::user()->id;
         // $datas = DataFpku::whereRaw("JSON_CONTAINS(peserta_kegiatan,'\"$userID\"')")->get();
-        $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+        $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
             ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-            ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+            ->select('data_fpkus.id AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
             ->whereRaw("JSON_CONTAINS(data_fpkus.peserta_kegiatan,'\"$userID\"')")
             ->orderBy('status_laporan_fpkus.status_approval','ASC')
             ->get();

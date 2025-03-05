@@ -77,24 +77,46 @@ class DashboardController extends Controller
                 $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-primary btn-sm"><i class="bx bx-file bx-xs"></i></a>';               
                 return $button;
             })->addColumn('validasi', function($data){
-                $checkState = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
-                if($checkState->count() > 0){
-                    foreach($checkState as $state){
-                        if($state->status_approval == 3){                            
-                            $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
-                            $button .= '&nbsp;';
-                            $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
-                            return $button;
-                        } elseif($state->status_approval == 4){
-                            return '<span class="badge bg-label-danger">Ditolak</span>';
-                        } elseif($state->status_approval == 5) {
-                            return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
-                        } else {
-                            return '<span class="badge bg-label-secondary">Pending</span>';
+                if($data->id_jenis_kegiatan != 3){
+                    $checkState = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
+                    if($checkState->count() > 0){
+                        foreach($checkState as $state){
+                            if($state->status_approval == 3){                            
+                                $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                                $button .= '&nbsp;';
+                                $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
+                                return $button;
+                            } elseif($state->status_approval == 4){
+                                return '<span class="badge bg-label-danger">Ditolak</span>';
+                            } elseif($state->status_approval == 5) {
+                                return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
+                            } else {
+                                return '<span class="badge bg-label-secondary">Pending</span>';
+                            }
                         }
+                    } else {
+                        return '';
                     }
                 } else {
-                    return '';
+                    $checkState = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
+                    if($checkState->count() > 0){
+                        foreach($checkState as $state){
+                            if($state->status_approval == 1){                            
+                                $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                                $button .= '&nbsp;';
+                                $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
+                                return $button;
+                            } elseif($state->status_approval == 2){
+                                return '<span class="badge bg-label-danger">Ditolak</span>';
+                            } elseif($state->status_approval == 3) {
+                                return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
+                            } else {
+                                return '<span class="badge bg-label-secondary">Pending</span>';
+                            }
+                        }
+                    } else {
+                        return '';
+                    }                    
                 }
             })->addColumn('vlampiran', function($data){
                 # check any attachment

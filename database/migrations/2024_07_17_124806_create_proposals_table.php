@@ -17,8 +17,8 @@ class CreateProposalsTable extends Migration
             $table->increments('id');
             $table->integer('id_jenis_kegiatan');
             $table->string('user_id');
-            $table->integer('id_fakultas_biro');
-            $table->integer('id_prodi_biro');
+            $table->integer('id_fakultas_biro')->nullable();
+            $table->integer('id_prodi_biro')->nullable();
             $table->string('nama_kegiatan');
             $table->string('tgl_event');
             $table->string('lokasi_tempat')->nullable();

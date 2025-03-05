@@ -31,7 +31,7 @@
         color: whitesmoke;
     }
     .footer_auditor, .trfooterauditor, .tdfooterauditor {
-        border: 0;
+        border: 0 solid white;
         font-size: 12px;
         text-align: center;
     }
@@ -151,8 +151,8 @@
                 @endforeach
             </div>
 
+            @if($anggarans->count() > 0)
             <h3>Rencana Anggaran</h3>
-            
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
@@ -185,9 +185,10 @@
                     </tr>
                 </tbody>
             </table>
+            @endif
 
+            @if($realisasianggarans->count() > 0)
             <h3>Realisasi Anggaran</h3>
-            
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
@@ -220,6 +221,7 @@
                     </tr>
                 </tbody>
             </table>
+            @endif
 
             <h3>Penutup</h3>
             @foreach($datas as $penutups)
