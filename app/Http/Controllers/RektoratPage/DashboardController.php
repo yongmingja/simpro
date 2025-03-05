@@ -378,6 +378,7 @@ class DashboardController extends Controller
             $content = [
                 'name' => 'Delegasi dari WRSDP',
                 'body' => $request->catatan_delegator,
+                'link' => ''.URL::to('preview-undangan-fpku').'/'.encrypt($request->fpku_id).'',
             ];
             Mail::to($delemails)->send(new EmailDelegasiFpku($content));        
         } else {

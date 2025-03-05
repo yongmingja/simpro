@@ -35,6 +35,7 @@ Route::get('/fpku/{slug}','General\UndanganFpkuController@qrundangan');
 Route::get('/fpku-rep/{slug}','General\LaporanFpkuController@qrlaporan');
 Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
 Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
+Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan'); # Public
 
 # Another Apps
 Route::redirect('/simak-uvers-webpage', 'https://sia.uvers.ac.id/')->name('simak-uvers');
@@ -106,7 +107,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::post('resubmit-proposal','General\PengajuanProposalController@submitUlangProposal')->name('re-submit-proposal');
 
     Route::get('undangan-fpku','General\UndanganFpkuController@index')->name('undangan-fpku');
-    Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan');
+    
 
     Route::get('index-laporan-fpku','General\LaporanFpkuController@indexFpku')->name('index-laporan-fpku');
     Route::get('buat-laporan-fpku/{id}','General\LaporanFpkuController@buatLaporan')->name('buat-laporan-fpku');

@@ -16,7 +16,9 @@
 </nav>
 </div>
 @endsection
-
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/typography.css')}}" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/editor.css')}}" />
 @section('content')
 
 <div class="container-fluid flex-grow-1">
@@ -83,7 +85,8 @@
                                         <div class="mb-3">
                                             <input type="hidden" class="form-control" id="fpku_id" name="fpku_id">
                                             <label for="catatan_delegator" class="form-label">Catatan untuk delegasi</label>
-                                            <textarea class="form-control" id="catatan_delegator" name="catatan_delegator" rows="5" placeholder="Silahkan tulis secara rinci dan jelas"></textarea>
+                                            <div id="editor-delegasi" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" id="catatan_delegator" name="catatan_delegator" placeholder="Silahkan tulis secara rinci dan jelas"></textarea>
                                             <span class="text-danger" id="catatanDelegatorErrorMsg" style="font-size: 10px;"></span>
                                         </div>  
                                         <div class="mb-3">
@@ -121,6 +124,11 @@
 
 @endsection
 @section('script')
+<script>
+    const quill = new Quill('#editor', {
+        theme: 'snow'
+    });
+</script>
 
 <script>
     $(document).ready(function () {
@@ -189,7 +197,8 @@
         $("#form-add-delegasi").validate({
             submitHandler: function (form) {
                 var actionType = $('#tombol-simpan').val();
-                $('#tombol-simpan').html('Mengirim..');
+                $('#tombol-simpan').html('');
+                $('#tombol-simpan').prop("disabled", true);
 
                 $.ajax({
                     data: $('#form-add-delegasi').serialize(), 
@@ -220,6 +229,7 @@
                     },
                     error: function(response) {
                         $('#tombol-simpan').html('Kirim');
+                        $('#tombol-simpan').prop("disabled", false);
                         Swal.fire({
                             title: 'Error!',
                             text: 'Data failed to send!',
@@ -250,6 +260,22 @@
                 $("#table_lampiran").html(response.card)
             }
         })
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+          if (document.getElementById('catatan_delegator')) {
+              var editor = new Quill('#editor-delegasi', {
+                  theme: 'snow'
+              });
+              var quillEditor = document.getElementById('catatan_delegator');
+              editor.on('text-change', function() {
+                  quillEditor.value = editor.root.innerHTML;
+              });
+
+              quillEditor.addEventListener('input', function() {
+                  editor.root.innerHTML = quillEditor.value;
+              });
+          }
     });
 
 </script>

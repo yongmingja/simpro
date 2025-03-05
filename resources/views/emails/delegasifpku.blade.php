@@ -5,7 +5,8 @@
 </head>
 <body>
     <h3>{{ $data['name'] }}</h3>
-    <h4>{{ $data['body'] }}</h4>
+    <h4>{!! $data['body'] !!}</h4>
+    <h4>Anda bisa detail peserta kegiatan, sarana prasarana pada link ini {{ $data['link'] }}.</h4>
 
     <br>
     <br>
