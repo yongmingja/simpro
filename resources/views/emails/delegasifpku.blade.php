@@ -6,7 +6,7 @@
 <body>
     <h3>{{ $data['name'] }}</h3>
     <h4>{!! $data['body'] !!}</h4>
-    <h4>Anda bisa detail peserta kegiatan, sarana prasarana pada link ini {{ $data['link'] }}.</h4>
+    <h4>Anda bisa lihat detail peserta kegiatan, keperluan yang perlu dipersiapkan sesuai Form Partisipasi Kegiatan Undangan (FPKU) pada link berikut {{ $data['link'] }}.</h4>
 
     <br>
     <br>
