@@ -58,25 +58,24 @@ class HomeController extends Controller
             # Dashboard WRSDP adn WRAK Proposals
             $totalProposals = Proposal::where('id_jenis_kegiatan',$this->arrJenisKegiatan())->count();
             $totalProposalPending = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_proposals.status_approval','=',1],['proposals.is_archived',0]])->count();
+                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_proposals.status_approval','=',3],['proposals.is_archived',0]])->count();
             $totalProposalDiterima = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_proposals.status_approval','=',5],['proposals.is_archived',0]])->count();
             $totalProposalDitolak = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_proposals.status_approval','=',2],['proposals.is_archived',0]])->orWhere('status_proposals.status_approval','=',4)->count();
+                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_proposals.status_approval','=',4],['proposals.is_archived',0]])->count();
 
             # Dashboard WRSDP adn WRAK Laporan Proposals
             $totalLaporanProposals = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
                 ->where('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())->count();
             $totalLaporanProposalPending = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_laporan_proposals.status_approval','=',1]])->count();
+                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_laporan_proposals.status_approval','=',3]])->count();
             $totalLaporanProposalDiterima = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_laporan_proposals.status_approval','=',5]])->count();
             $totalLaporanProposalDitolak = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_laporan_proposals.status_approval','=',2]])
-                ->orWhere('status_laporan_proposals.status_approval','=',4)->count();
+                ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_laporan_proposals.status_approval','=',4]])->count();
 
             # Dashboard Admin Umum Proposals
             $totalProposalsSadm = Proposal::count();
