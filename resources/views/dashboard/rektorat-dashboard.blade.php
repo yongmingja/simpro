@@ -1,6 +1,23 @@
 @extends('layouts.backend')
 @section('title','Dashboard')
-
+@section('breadcrumbs')
+<div class="container-fluid">
+<nav aria-label="breadcrumb mb-0">
+    <ol class="breadcrumb breadcrumb-style2">
+      <li class="breadcrumb-item">
+        <a href="{{route('home')}}">Home</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="{{route('dashboard-rektorat')}}">@yield('title')</a>
+      </li>
+      <li class="breadcrumb-item active">Data</li>
+    </ol>
+</nav>
+</div>
+@endsection
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/typography.css')}}" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/editor.css')}}" />
 @section('content')
     <!-- Content -->
     <div class="container-fluid flex-grow-1 container-p-y">
@@ -111,6 +128,53 @@
                     </div>
                     <!-- End of modal detail-->
 
+                    <!-- Modal validasi proposal -->
+                <div class="modal fade" id="add-delegasi-modal" aria-hidden="true">
+                    <div class="modal-dialog ">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modal-judul-delegasi"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form-add-delegasi" name="form-add-delegasi" class="form-horizontal">
+                                    <div class="row">
+                                        <div class="mb-3">
+                                            <input type="hidden" class="form-control" id="proposal_id" name="proposal_id">
+                                            <label for="catatan_delegator" class="form-label">Catatan untuk delegasi</label>
+                                            <div id="editor-delegasi" class="mb-3" style="height: 300px;"></div>
+                                            <textarea rows="3" class="mb-3 d-none" id="catatan_delegator" name="catatan_delegator" placeholder="Silahkan tulis secara rinci dan jelas"></textarea>
+                                            <span class="text-danger" id="catatanDelegatorErrorMsg" style="font-size: 10px;"></span>
+                                        </div>  
+                                        <div class="mb-3">
+                                            <label for="delegasi" class="form-label">Delegasi (biro terkait)</label>
+                                            <select class="form-select select2" multiple id="delegasi" name="delegasis[]" aria-label="Default select example" style="cursor:pointer;">
+                                                <option value="" id="pilih_pegawai">- Pilih -</option>
+                                                @foreach($getDataPegawai as $pegawai)
+                                                <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger" id="delegasiErrorMsg" style="font-size: 10px;"></span>
+                                        </div>                                        
+                                        
+                                        <div class="col-sm-offset-2 col-sm-12">
+                                            <hr class="mt-2">
+                                            <div class="float-sm-end">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary btn-block" id="tombol-kirim" value="create"><i class="bx bx-paper-plane"></i> Kirim</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of validasi proposal-->
+
                 </div>
             </div>
         </div>
@@ -120,6 +184,11 @@
 
 @endsection
 @section('script')
+<script>
+    const quill = new Quill('#editor', {
+        theme: 'snow'
+    });
+</script>
 <script>
     $(document).ready(function () {
         $.ajaxSetup({
@@ -184,30 +253,38 @@
     });
 
     $('body').on('click','.tombol-yes', function(){
-        var data_id = $(this).attr('data-id');            
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Please click yes to accept the proposal!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, accept it!',
-            showLoaderOnConfirm: true,
-            preConfirm: function() {
-                return new Promise(function(resolve) {
-                    $.ajax({
+        var data_id = $(this).attr('data-id');  
+        $('#form-add-delegasi').trigger("reset");
+        $('#modal-judul-delegasi').html("Tambah Delegasi");
+        $('#add-delegasi-modal').modal('show');
+        $('#proposal_id').val(data_id);
+    });
+    if ($("#form-add-delegasi").length > 0) {
+        $("#form-add-delegasi").validate({
+            submitHandler: function (form) {
+                var actionType = $('#tombol-kirim').val();
+                $('#tombol-kirim').html('');
+                $('#tombol-kirim').prop("disabled", true);
+
+                $.ajax({
+                    data: $('#form-add-delegasi').serialize(), 
                     url: "{{route('approval-y')}}",
                     type: "POST",
-                    data: {
-                        proposal_id: data_id,
-                        _token: '{{csrf_token()}}'
-                    },
                     dataType: 'json',
+                    beforeSend: function(){
+                                $("#tombol-kirim").append(
+                                    '<i class="bx bx-loader-circle bx-spin text-warning"></i>'+
+                                    ' Mohon tunggu ...');
+                            },
                     success: function (data) {
+                        $('#form-add-delegasi').trigger("reset");
+                        $('#add-delegasi-modal').modal('hide');
+                        $('#tombol-kirim').html('Kirim');
+                        $('#tombol-kirim').prop("disabled", true);
+                        $('#table_proposal').DataTable().ajax.reload(null, true);
                         Swal.fire({
-                            title: 'Agree!',
-                            text: 'Data saved successfully!',
+                            title: 'Good job!',
+                            text: 'Data sent successfully!',
                             type: 'success',
                             customClass: {
                             confirmButton: 'btn btn-primary'
@@ -215,13 +292,25 @@
                             buttonsStyling: false,
                             timer: 2000
                         })
-                        $('#table_proposal').DataTable().ajax.reload(null, true);
+                    },
+                    error: function(response) {
+                        $('#tombol-kirim').html('Kirim');
+                        $('#tombol-kirim').prop("disabled", false);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Data failed to send!',
+                            type: 'error',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
                     }
                 });
-                });
-            },
-        });
-    });
+            }
+        })
+    }
 
     $('body').on('click','.tombol-no', function(){
         var data_id = $(this).attr('data-id');
@@ -286,6 +375,22 @@
                 $("#table_l").html(response.card)
             }
         })
-    })
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+          if (document.getElementById('catatan_delegator')) {
+              var editor = new Quill('#editor-delegasi', {
+                  theme: 'snow'
+              });
+              var quillEditor = document.getElementById('catatan_delegator');
+              editor.on('text-change', function() {
+                  quillEditor.value = editor.root.innerHTML;
+              });
+
+              quillEditor.addEventListener('input', function() {
+                  editor.root.innerHTML = quillEditor.value;
+              });
+          }
+    });
 </script>
 @endsection

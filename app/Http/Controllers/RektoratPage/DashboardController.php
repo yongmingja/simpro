@@ -13,9 +13,11 @@ use App\Models\Master\JabatanPegawai;
 use App\Models\Master\HandleProposal;
 use App\Models\General\LaporanFpku;
 use App\Models\General\DelegasiFpku;
+use App\Models\General\DelegasiProposal;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UndanganFpku;
 use App\Mail\EmailDelegasiFpku;
+use App\Mail\EmailDelegasiProposal;
 use Auth;
 use DB;
 use URL;
@@ -133,7 +135,8 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('dashboard.rektorat-dashboard');
+        $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
+        return view('dashboard.rektorat-dashboard', compact('getDataPegawai'));
     }
 
     protected function arrJenisKegiatan()
@@ -169,6 +172,32 @@ class DashboardController extends Controller
             'keterangan_ditolak' => '',
             'generate_qrcode' => ''.URL::to('/').'/in/'.time().'.png'
         ]);
+
+        $post = DelegasiProposal::updateOrCreate([
+            'id_proposal'       => $request->proposal_id,
+            'catatan_delegator' => $request->catatan_delegator,
+            'delegasi'          => $request->input('delegasis')
+        ]);
+
+        # From delegator modal
+        # Get delegation's email
+        $getDelEmails = Pegawai::whereIn('id',$request->input('delegasis'))->select('email')->get();
+        foreach($getDelEmails as $delmail){
+            if (filter_var($delmail->email, FILTER_VALIDATE_EMAIL)){
+                $delemails[] = strtolower($delmail->email);
+            }
+        }
+        if (isset($delemails) && count($delemails) > 0){
+            $content = [
+                'name' => 'Delegasi dari WRSDP / WRAK*',
+                'body' => $request->catatan_delegator,
+                'link' => ''.URL::to('preview-proposal').'/'.encrypt($request->proposal_id).'',
+            ];
+            Mail::to($delemails)->send(new EmailDelegasiProposal($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
         return response()->json($post);
     }
 

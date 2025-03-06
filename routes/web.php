@@ -36,6 +36,7 @@ Route::get('/fpku-rep/{slug}','General\LaporanFpkuController@qrlaporan');
 Route::get('/in/{slug}', array('as' => 'page.show', 'uses' => 'General\PengajuanProposalController@showQR'));
 Route::get('/report/{slug}','General\LaporanProposalController@qrlaporan');
 Route::get('preview-undangan-fpku/{id}','General\UndanganFpkuController@previewUndangan')->name('preview-undangan'); # Public
+Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal'); # Public
 
 # Another Apps
 Route::redirect('/simak-uvers-webpage', 'https://sia.uvers.ac.id/')->name('simak-uvers');
@@ -87,7 +88,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::get('my-report','General\LaporanProposalController@laporansaya')->name('my-report');
     Route::delete('delete-my-report','General\LaporanProposalController@hapuslaporan')->name('delete-my-report');
 
-    Route::get('preview-proposal/{id}','General\PengajuanProposalController@previewproposal')->name('preview-proposal');
+    
     Route::get('preview-laporan-proposal/{id}','General\LaporanProposalController@previewlaporan')->name('preview-laporan-proposal');
     Route::get('view-lampiran','General\PengajuanProposalController@viewlampiran')->name('view-lampiran-proposal');
 
