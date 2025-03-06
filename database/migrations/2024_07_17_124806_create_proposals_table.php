@@ -16,6 +16,7 @@ class CreateProposalsTable extends Migration
         Schema::create('proposals', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_jenis_kegiatan');
+            $table->integer('id_form_rkat')->nullable();
             $table->string('user_id');
             $table->integer('id_fakultas_biro')->nullable();
             $table->integer('id_prodi_biro')->nullable();

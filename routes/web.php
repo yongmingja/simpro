@@ -128,6 +128,8 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::resource('form-rkat', 'Master\FormRkatController');
     Route::get('view-lampiran-laporan-fpku','RektoratPage\DashboardController@viewlampiranLaporanFpku')->name('view-lampiran-laporan-fpku');
     Route::delete('delete-laporan-fpku','General\LaporanFpkuController@hapusLaporanFpku')->name('delete-laporan-fpku');
+
+    Route::get('data-form-rkat','Master\FormRkatController@dataForm')->name('data-form-rkat');
 });
 
 /* 

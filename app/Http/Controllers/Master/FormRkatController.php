@@ -115,4 +115,11 @@ class FormRkatController extends Controller
         $post = FormRkat::where('id',$id)->delete();     
         return response()->json($post);
     }
+
+    public function dataForm(Request $request)
+    {
+        $datas = FormRkat::all();
+        return response()->json($datas);
+
+    }
 }

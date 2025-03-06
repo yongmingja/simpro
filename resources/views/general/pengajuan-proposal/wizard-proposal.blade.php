@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="line"></div>
                                 <div class="step" data-target="#page-4">
-                                    <button type="button" class="step-trigger">
+                                    <button type="button" class="step-trigger" id="tombol-page-4">
                                     <span class="bs-stepper-circle">4</span>
                                     <span class="bs-stepper-label mt-1">
                                         <span class="bs-stepper-title">Lampiran</span>
@@ -73,7 +73,7 @@
                                 </div>
                                 <div class="line"></div>
                                 <div class="step" data-target="#page-5">
-                                    <button type="button" class="step-trigger">
+                                    <button type="button" class="step-trigger" id="tombol-page-5">
                                     <span class="bs-stepper-circle">5</span>
                                     <span class="bs-stepper-label mt-1">
                                         <span class="bs-stepper-title">Penutup</span>
@@ -87,231 +87,264 @@
                               <form onSubmit="return false" id="form-proposal">
 
                                 <!-- Informasi Utama -->
-                                <div id="page-1" class="content mt-3">
-                                    <div class="content-header mb-3">
-                                        <h6 class="mb-0">Informasi Utama</h6>
-                                        <small>Lengkapi Informasi Utama.</small>
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label" for="id_jenis_kegiatan">Kategori Proposal</label>
-                                            <select class="select2 form-control" id="id_jenis_kegiatan" name="id_jenis_kegiatan" aria-label="Default select example" style="cursor:pointer;">
-                                              <option value="" id="choose_jenis_kegiatan" readonly>- Pilih -</option>
-                                              @forEach($getJenisKegiatan as $data)
-                                              <option value="{{$data->id}}">{{$data->nama_jenis_kegiatan}}</option>
-                                              @endforeach
-                                            </select>
-                                            <span class="text-danger" id="kategoriErrorMsg" style="font-size: 10px;"></span>
+                                <div class="container">
+                                    <div id="page-1" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                            <h6 class="mb-0">Informasi Utama</h6>
+                                            <small>Lengkapi Informasi Utama.</small>
                                         </div>
-                                        <div class="col-sm-6">
-                                            <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
-                                            <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
-                                            <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
-                                            <select class="select2 form-control border border-primary" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
-                                              <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
-                                              @foreach($getFakultasBiro as $facultyBiro)
-                                                  <option value="{{$facultyBiro->id}}">{{$facultyBiro->nama_fakultas_biro}}</option>
-                                              @endforeach
-                                            </select>
-                                            <span class="text-danger" id="fakultasBiroErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label" for="id_prodi_biro">Prodi atau Biro</label>
-                                            <select class="select2 form-control border border-primary" id="id_prodi_biro" name="id_prodi_biro" aria-label="Default select example" style="cursor:pointer;">
-                                              <option value="" class="d-none">- Pilih prodi -</option>
-                                            </select>
-                                            <span class="text-danger" id="prodiBiroErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                            <input type="text" id="nama_kegiatan" name="nama_kegiatan" class="form-control">
-                                            <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="lokasi_tempat" class="form-label">Tempat atau Lokasi Kegiatan</label>
-                                            <input type="text" id="lokasi_tempat" name="lokasi_tempat" class="form-control">
-                                            <span class="text-danger" id="lokasiErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                          <label for="pendahuluan" class="form-label">Pendahuluan</label>
-                                          <div id="editor-pendahuluan" class="mb-3" style="height: 300px;"></div>
-                                          <textarea rows="3" class="mb-3 d-none" name="pendahuluan" id="pendahuluan"></textarea>
-                                          <span class="text-danger" id="pendahuluanErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                          <label for="tujuan_manfaat" class="form-label">Tujuan dan Manfaat</label>
-                                          <div id="editor-tujuan-manfaat" class="mb-3" style="height: 300px;"></div>
-                                          <textarea id="tujuan_manfaat" class="mb-3 d-none" name="tujuan_manfaat" rows="3"></textarea>
-                                          <span class="text-danger" id="tujuanManfaatErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        
-                                        <div class="col-md-6">
-                                          <label for="peserta" class="form-label">Peserta</label>
-                                          <div id="editor-peserta" class="mb-3" style="height: 300px;"></div>
-                                          <textarea class="mb-3 d-none" id="peserta" name="peserta" rows="5"></textarea>
-                                          <span class="text-danger" id="pesertaErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-md-6">
-                                          <label for="detil_kegiatan" class="form-label">Detil Kegiatan</label>
-                                          <div id="editor-detil-kegiatan" class="mb-3" style="height: 300px;"></div>
-                                          <textarea class="mb-3 d-none" id="detil_kegiatan" name="detil_kegiatan" rows="5"></textarea>
-                                          <span class="text-danger" id="detilKegiatanErrorMsg" style="font-size: 10px;"></span>
-                                        </div>
-                                        <div class="col-12 d-flex justify-content-between">
-                                            <button class="btn btn-label-secondary btn-prev" disabled> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                                <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                            </button>
-                                            <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+                                                        <label class="form-label" for="id_jenis_kegiatan">Kategori Proposal</label>
+                                                        <select class="select2 form-control" id="id_jenis_kegiatan" name="id_jenis_kegiatan" aria-label="Default select example" style="cursor:pointer;" onchange="getFormRkat()">
+                                                            <option value="" id="choose_jenis_kegiatan" readonly>- Pilih -</option>
+                                                            @forEach($getJenisKegiatan as $data)
+                                                            <option value="{{$data->id}}">{{$data->nama_jenis_kegiatan}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <span class="text-danger" id="kategoriErrorMsg" style="font-size: 10px;"></span>
+                                                    </div>
+                                                    <div id="showForm" name="showForm" class="col-sm-8 d-none"></div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
+                                                <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
+                                                <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
+                                                <select class="select2 form-control border border-primary" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
+                                                  <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
+                                                  @foreach($getFakultasBiro as $facultyBiro)
+                                                      <option value="{{$facultyBiro->id}}">{{$facultyBiro->nama_fakultas_biro}}</option>
+                                                  @endforeach
+                                                </select>
+                                                <span class="text-danger" id="fakultasBiroErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label" for="id_prodi_biro">Prodi atau Biro</label>
+                                                <select class="select2 form-control border border-primary" id="id_prodi_biro" name="id_prodi_biro" aria-label="Default select example" style="cursor:pointer;">
+                                                  <option value="" class="d-none">- Pilih prodi -</option>
+                                                </select>
+                                                <span class="text-danger" id="prodiBiroErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
+                                                <input type="text" id="nama_kegiatan" name="nama_kegiatan" class="form-control">
+                                                <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="lokasi_tempat" class="form-label">Tempat atau Lokasi Kegiatan</label>
+                                                <input type="text" id="lokasi_tempat" name="lokasi_tempat" class="form-control">
+                                                <span class="text-danger" id="lokasiErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <label for="pendahuluan" class="form-label">Pendahuluan</label>
+                                              <div id="editor-pendahuluan" class="mb-3" style="height: 300px;"></div>
+                                              <textarea rows="3" class="mb-3 d-none" name="pendahuluan" id="pendahuluan"></textarea>
+                                              <span class="text-danger" id="pendahuluanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <label for="tujuan_manfaat" class="form-label">Tujuan dan Manfaat</label>
+                                              <div id="editor-tujuan-manfaat" class="mb-3" style="height: 300px;"></div>
+                                              <textarea id="tujuan_manfaat" class="mb-3 d-none" name="tujuan_manfaat" rows="3"></textarea>
+                                              <span class="text-danger" id="tujuanManfaatErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                              <label for="peserta" class="form-label">Peserta</label>
+                                              <div id="editor-peserta" class="mb-3" style="height: 300px;"></div>
+                                              <textarea class="mb-3 d-none" id="peserta" name="peserta" rows="5"></textarea>
+                                              <span class="text-danger" id="pesertaErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <label for="detil_kegiatan" class="form-label">Detil Kegiatan</label>
+                                              <div id="editor-detil-kegiatan" class="mb-3" style="height: 300px;"></div>
+                                              <textarea class="mb-3 d-none" id="detil_kegiatan" name="detil_kegiatan" rows="5"></textarea>
+                                              <span class="text-danger" id="detilKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-12 d-flex justify-content-between">
+                                                <button class="btn btn-label-secondary btn-prev" disabled> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                </button>
+                                                <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Sarana Prasarana -->
-                                <div id="page-2" class="content mt-3">
-                                  <div class="content-header mb-3">
-                                    <h6 class="mb-0">Sarana Prasarana</h6>
-                                    <small>Input Sarana Prasarana.</small>
-                                  </div>
-                                  <div class="row g-3">
-                                    <div class="col-md-12">
-                                      <table class="table table-borderless" id="dynamicAddRemove">
-                                        <tr>
-                                            <th>Tgl. Kegiatan</th>
-                                            <th>Sarpras</th>
-                                            <th width="12%;">Jumlah</th>
-                                            <th>Sumber Dana</th>
-                                            <th>Ket.</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="date" class="form-control" id="tgl_kegiatan" name="kolom[0][tgl_kegiatan]" value="" placeholder="mm/dd/yyyy" /></td>
-                                            <td><textarea class="form-control" id="sarpras_item" name="kolom[0][sarpras_item]" rows="3"></textarea></td>
-                                            <td><input type="number" class="form-control" id="jumlah" name="kolom[0][jumlah]" value="" min="0" /></td>
-                                            <td><select class="select2 form-select" id="sumber" name="kolom[0][sumber]" style="cursor:pointer;">
-                                                <option value="1">Kampus</option>
-                                                <option value="2">Mandiri</option>
-                                                <option value="3">Hibah</option>
-                                            </select></td>
-                                            <td><textarea class="form-control" id="ket" name="kolom[0][ket]" rows="3"></textarea></td>
-                                            <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-sarpras"><i class="bx bx-plus-circle"></i></button></td>
-                                        </tr>
-                                      </table>
-                                    </div>
-                                    <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada sarana prasarana yang dibutuhkan.</i></p>
-                                    <div class="col-12 d-flex justify-content-between">
-                                      <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                      </button>
-                                      <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
-                                    </div>
-                                  </div>
+                                <div class="container">
+                                    <div id="page-2" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                          <h6 class="mb-0">Sarana Prasarana</h6>
+                                          <small>Input Sarana Prasarana.</small>
+                                        </div>
+                                        <div class="row g-3">
+                                          <div class="col-md-12">
+                                            <table class="table table-borderless" id="dynamicAddRemove">
+                                              <tr>
+                                                  <th>Tgl. Kegiatan</th>
+                                                  <th>Sarpras</th>
+                                                  <th width="12%;">Jumlah</th>
+                                                  <th>Sumber Dana</th>
+                                                  <th>Ket.</th>
+                                                  <th>Aksi</th>
+                                              </tr>
+                                              <tr>
+                                                  <td><input type="date" class="form-control" id="tgl_kegiatan" name="kolom[0][tgl_kegiatan]" value="" placeholder="mm/dd/yyyy" /></td>
+                                                  <td><textarea class="form-control" id="sarpras_item" name="kolom[0][sarpras_item]" rows="3"></textarea></td>
+                                                  <td><input type="number" class="form-control" id="jumlah" name="kolom[0][jumlah]" value="" min="0" /></td>
+                                                  <td><select class="select2 form-select" id="sumber" name="kolom[0][sumber]" style="cursor:pointer;">
+                                                      <option value="1">Kampus</option>
+                                                      <option value="2">Mandiri</option>
+                                                      <option value="3">Hibah</option>
+                                                  </select></td>
+                                                  <td><textarea class="form-control" id="ket" name="kolom[0][ket]" rows="3"></textarea></td>
+                                                  <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-sarpras"><i class="bx bx-plus-circle"></i></button></td>
+                                              </tr>
+                                            </table>
+                                          </div>
+                                          <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada sarana prasarana yang dibutuhkan.</i></p>
+                                          <div class="col-12 d-flex justify-content-between">
+                                            <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                              <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                            </button>
+                                            <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                          </div>
+                                        </div>
+                                      </div>
                                 </div>
+
                                 <!-- Rencana Anggaran -->
-                                <div id="page-3" class="content mt-3">
-                                  <div class="content-header mb-3">
-                                    <h6 class="mb-0">Rencana Anggaran</h6>
-                                    <small>Cantumkan Rencana Anggaran.</small>
-                                  </div>
-                                  <div class="row g-3">
-                                    <table class="table table-borderless" id="dynamicAddRemoveAnggaran">
-                                      <tr>
-                                          <th>Item</th>
-                                          <th>Biaya Satuan</th>
-                                          <th width="12%;">Qty</th>
-                                          <th width="12%;">Freq.</th>
-                                          <th>Total Biaya</th>
-                                          <th>Sumber</th>
-                                          <th>Aksi</th>
-                                      </tr>
-                                      <tr>
-                                          <td><input type="text" class="form-control" id="item" name="rows[0][item]" value="" placeholder="Input item" /></td>
-                                          <td><input type="number" class="form-control" id="biaya_satuan" name="rows[0][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
-                                          <td><input type="number" class="form-control" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
-                                          <td><input type="number" class="form-control" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
-                                          <td><input type="text" class="form-control" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
-                                          <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
-                                            <option value="1">Kampus</option>
-                                            <option value="2">Mandiri</option>
-                                            <option value="3">Hibah</option>
-                                          </select></td>
-                                          <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
-                                      </tr>
-                                    </table>
-                                    <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak memiliki rencana anggaran pada proposal kegiatan.</i></p>
-                                    <div class="col-12 d-flex justify-content-between">
-                                      <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                      </button>
-                                      <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
-                                    </div>
-                                  </div>
+                                <div class="container">
+                                    <div id="page-3" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                          <h6 class="mb-0">Rencana Anggaran</h6>
+                                          <small>Cantumkan Rencana Anggaran.</small>
+                                          <div class="mt-2 g-3">
+                                            <h4 id="tampilkan-total" style="color: aqua;"></h4>
+                                          </div>
+                                        </div>
+                                        <div class="row g-3">
+                                          <table class="table table-borderless" id="dynamicAddRemoveAnggaran">
+                                            
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Biaya Satuan</th>
+                                                    <th width="12%;">Qty</th>
+                                                    <th width="12%;">Freq.</th>
+                                                    <th>Total Biaya</th>
+                                                    <th>Sumber</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody id="table-body">
+                                                <tr>
+                                                    <td><input type="text" class="form-control" id="item" name="rows[0][item]" value="" placeholder="Input item" /></td>
+                                                    <td><input type="number" class="form-control biaya_satuan" id="biaya_satuan" name="rows[0][biaya_satuan]" value="" min="0" onkeyup="OnChange(this)" /></td>
+                                                    <td><input type="number" class="form-control quantity" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this)" /></td>
+                                                    <td><input type="number" class="form-control frequency" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this)" /></td>
+                                                    <td><input type="text" class="form-control total_biaya" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
+                                                    <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
+                                                        <option value="1">Kampus</option>
+                                                        <option value="2">Mandiri</option>
+                                                        <option value="3">Hibah</option>
+                                                    </select></td>
+                                                    <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="4" style="font-weight: bold; text-align:right;">Grand Total</td>
+                                                    <td colspan="3" style="font-weight: bold; text-align: left;" id="grand-total"></td>
+                                                </tr>
+                                            </tfoot>                                        
+                                        </table>
+                                        
+                                          <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak memiliki rencana anggaran pada proposal kegiatan.</i></p>
+                                          <div class="col-12 d-flex justify-content-between">
+                                            <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                              <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                            </button>
+                                            <button class="btn btn-primary btn-next" id="next-anggaran"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                          </div>
+                                        </div>
+                                      </div>
                                 </div>
 
                                 <!-- Lampiran Proposal -->
-                              <div id="page-4" class="content mt-3">
-                                <div class="content-header mb-3">
-                                  <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
-                                  <small>Upload Lampiran Proposal.</small>
-                                </div>
-                                <div class="col form-group p-0">
-                                        <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
-                                </div>
-                                <input type="checkbox" id="switch" name="switch" class="mb-3">
-                                <div class="row g-3">                                    
-                                    <div>
-                                        <div class="row firstRow">
-                                            <div class="col-md-3 form-group mb-3">
-                                                <label for="nama_berkas" class="form-label">Nama Berkas</label>
-                                                <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                                <div class="container">
+                                    <div id="page-4" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                        <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
+                                        <small>Upload Lampiran Proposal.</small>
+                                        </div>
+                                        <div class="col form-group p-0">
+                                                <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
+                                        </div>
+                                        <input type="checkbox" id="switch" name="switch" class="mb-3">
+                                        <div class="row g-3">                                    
+                                            <div>
+                                                <div class="row firstRow">
+                                                    <div class="col-md-3 form-group mb-3">
+                                                        <label for="nama_berkas" class="form-label">Nama Berkas</label>
+                                                        <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                                                    </div>
+                                                    
+                                                    <div class="col-md-3 form-group mb-3" id="form-container">
+                                                        <!-- Form content will be dynamically generated here --> 
+                                                    </div>
+                                                    <div class="col-md-3 form-group mb-3">
+                                                        <label for="keterangan" class="form-label">Keterangan</label>
+                                                        <input type="text" name="keterangan[]" class="w-100 form-control">
+                                                    </div>
+                                                    <div class="col-md-3 form-group mb-3">
+                                                        <button class="btn btn-warning addField mt-4" id="tombol"><i class="bx bx-plus-circle bx-xs"></i></button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            
-                                            <div class="col-md-3 form-group mb-3" id="form-container">
-                                                <!-- Form content will be dynamically generated here --> 
-                                            </div>
-                                            <div class="col-md-3 form-group mb-3">
-                                                <label for="keterangan" class="form-label">Keterangan</label>
-                                                <input type="text" name="keterangan[]" class="w-100 form-control">
-                                            </div>
-                                            <div class="col-md-3 form-group mb-3">
-                                                <button class="btn btn-warning addField mt-4" id="tombol"><i class="bx bx-plus-circle bx-xs"></i></button>
+                                            <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                            <div class="col-12 d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                                <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                </button>
+                                                <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
                                             </div>
                                         </div>
                                     </div>
-                                    <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
-                                    <div class="col-12 d-flex justify-content-between">
-                                        <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                        </button>
-                                        <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
-                                      </div>
-                                  </div>
                                 </div>
 
                                 <!-- Penutup -->
-                                <div id="page-5" class="content mt-3">
-                                  <div class="content-header mb-3">
-                                      <h6 class="mb-0">Penutup</h6>
-                                      <small>Lengkapi Penutup Proposal</small>
-                                  </div>
-                                  <div class="row g-3">
-                                      <div class="col-md-6">
-                                        <label for="penutup" class="form-label">Penutup</label>
-                                        <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
-                                        <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
-                                        <span class="text-danger" id="penutupErrorMsg" style="font-size: 10px;"></span>
-                                      </div>
-                                      <div class="col-12 d-flex justify-content-between">
-                                        <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                        </button>
-                                        <button class="btn btn-success btn-submit" id="tombol-simpan">Submit</button>
-                                    </div>
-                                      
-                                  </div>
-                              </div>                              
+                                <div class="container">
+                                    <div id="page-5" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                            <h6 class="mb-0">Penutup</h6>
+                                            <small>Lengkapi Penutup Proposal</small>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="penutup" class="form-label">Penutup</label>
+                                                <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
+                                                <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
+                                                <span class="text-danger" id="penutupErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                            <div class="col-12 d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                                <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                </button>
+                                                <button class="btn btn-success btn-submit" id="tombol-simpan">Submit</button>
+                                            </div>
+                                            
+                                        </div>
+                                    </div> 
+                                </div>                             
 
                               </form>
                             </div>
@@ -435,6 +468,50 @@
       }
     }
 
+    function getFormRkat() {
+        var categorySelected = $('#id_jenis_kegiatan').val();
+        if (categorySelected == 1) {
+            $.ajax({
+                url: "{{route('data-form-rkat')}}", 
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#showForm').removeClass('d-none');
+                    var options = `<div><label for="pilihan_rkat" class="form-label">Pilihan RKAT</label>
+                                    <select class="select2 form-control" id="pilihan_rkat" name="pilihan_rkat" aria-label="Default select example" style="cursor:pointer;">
+                                        <option value="" id="choose_pilihan_rkat" readonly>- Pilih -</option>`;
+                    data.forEach(function(item) {
+                        options += `<option value="${item.id}" data-nama-kegiatan="${item.nama_kegiatan}" data-total-rkat="${item.total}">${item.nama_kegiatan}</option>`;
+                       
+                    });
+                    options += `</select></div>`;
+                    document.getElementById("showForm").innerHTML = options;
+
+                    function formatRupiah(angka) {
+                        return 'Rp' + angka.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).replace('Rp','');
+                    }
+
+                    // Tambahkan event listener untuk perubahan pada pilihan_rkat
+                    $('#pilihan_rkat').on('change', function() {
+                        var selectedOption = $(this).find('option:selected');
+                        var selectedName = selectedOption.data('nama-kegiatan');
+                        var selectedTotal = selectedOption.data('total-rkat');
+                        $('#nama_kegiatan').val(selectedName); // Update nilai input dengan nama kegiatan yang dipilih  
+                        var formattedTotal = formatRupiah(Number(selectedTotal));
+                        $('#tampilkan-total').text('Total Anggaran: '+formattedTotal);   
+                        $('#tampilkan-total').data('rkat_total', Number(selectedTotal));            
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error: ' + error);
+                }
+            });
+        } else {
+            $('#showForm').addClass('d-none');
+        }
+    }
+    $('#choose_pilihan_rkat').attr('disabled','disabled');
+
     $('select[name="id_fakultas_biro"]').on('change', function() {
         $('#id_prodi_biro').empty();
         var facultyID = $(this).val();
@@ -460,7 +537,20 @@
     $("#tombol-add-sarpras").click(function(){
         ++i;
 
-        $("#dynamicAddRemove").append('<tr><td><input type="date" class="form-control" id="tgl_kegiatan" name="kolom['+i+'][tgl_kegiatan]" value="" placeholder="mm/dd/yyyy" /></td><td><textarea class="form-control" id="sarpras_item" name="kolom['+i+'][sarpras_item]" rows="3"></textarea></td><td><input type="number" class="form-control" id="jumlah" name="kolom['+i+'][jumlah]" value="" min="0" /></td><td><select class="select2 form-select" id="sumber" name="kolom['+i+'][sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option><option value="3">Hibah</option></select></td><td><textarea class="form-control" id="ket" name="kolom['+i+'][ket]" rows="3"></textarea></td><td><button type="button" class="btn btn-danger remove-tr"><i class="bx bx-trash"></i></button></td></tr>');
+        $("#dynamicAddRemove").append(`<tr>
+            <td><input type="date" class="form-control" id="tgl_kegiatan" name="kolom['+i+'][tgl_kegiatan]" value="" placeholder="mm/dd/yyyy" /></td>
+            <td><textarea class="form-control" id="sarpras_item" name="kolom['+i+'][sarpras_item]" rows="3"></textarea></td>
+            <td><input type="number" class="form-control" id="jumlah" name="kolom['+i+'][jumlah]" value="" min="0" /></td>
+            <td>
+                <select class="select2 form-select" id="sumber" name="kolom['+i+'][sumber]" style="cursor:pointer;">
+                    <option value="1">Kampus</option>
+                    <option value="2">Mandiri</option>
+                    <option value="3">Hibah</option>
+                </select>
+            </td>
+            <td><textarea class="form-control" id="ket" name="kolom['+i+'][ket]" rows="3"></textarea></td>
+            <td><button type="button" class="btn btn-danger remove-tr"><i class="bx bx-trash"></i></button></td>
+        </tr>`);
     });
 
     $(document).on('click', '.remove-tr', function(){  
@@ -468,26 +558,81 @@
     });
 
     var j = 0;
-    $("#tombol-add-anggaran").click(function(){
-      ++j;
+    $("#tombol-add-anggaran").click(function() {
+        ++j;
 
-      $("#dynamicAddRemoveAnggaran").append('<tr><td><input type="text" class="form-control" id="item" name="rows['+j+'][item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="biaya_satuan" name="rows['+j+'][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="quantity" name="rows['+j+'][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="frequency" name="rows['+j+'][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="text" class="form-control" id="total_biaya" name="rows['+j+'][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="sumber" name="rows['+j+'][sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option><option value="3">Hibah</option></select></td><td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
+        $("#table-body").append(`<tr>
+            <td><input type="text" class="form-control" name="rows['+j+'][item]" placeholder="Input item" /></td>
+            <td><input type="number" class="form-control biaya_satuan" name="rows['+j+'][biaya_satuan]" min="0" onkeyup="OnChange(this)" /></td>
+            <td><input type="number" class="form-control quantity" name="rows['+j+'][quantity]" min="0" onkeyup="OnChange(this)" /></td>
+            <td><input type="number" class="form-control frequency" name="rows['+j+'][frequency]" min="0" onkeyup="OnChange(this)" /></td>
+            <td><input type="text" class="form-control total_biaya" name="rows['+j+'][total_biaya]" readonly style="cursor: no-drop;" /></td>
+            <td><select class="select2 form-select" name="rows['+j+'][sumber]" style="cursor:pointer;">
+                <option value="1">Kampus</option>
+                <option value="2">Mandiri</option>
+                <option value="3">Hibah</option>
+            </select></td>
+            <td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td>
+        </tr>`);
 
-      OnChange();
+        calculateGrandTotal();
 
     });
 
     $(document).on('click', '.remove-tr-anggaran', function(){  
         $(this).parents('tr').remove();
+        calculateGrandTotal();
     });
 
-    function OnChange(value) {
-        var biaya_satuan = document.querySelector('input[name="rows['+j+'][biaya_satuan]"]').value;
-        var quantity = document.querySelector('input[name="rows['+j+'][quantity]"]').value;
-        var frequency = document.querySelector('input[name="rows['+j+'][frequency]"]').value;
-        var result = parseInt(biaya_satuan) * parseInt(quantity) * parseInt(frequency);
+    function calculateGrandTotal() {
+        var total = 0;
+        $('#table-body tr').each(function() {
+            var rowTotal = parseInt($(this).find('.total_biaya').val()) || 0;
+            total += rowTotal;
+        });
+
+        // Format total sebagai Rupiah dan update elemen grand-total
+        var formattedTotal = formatRupiah(total);
+        $('#grand-total').text(formattedTotal);
+
+        // Retrieve the tampilkan total value
+        var tampilkanTotal = $('#tampilkan-total').data('rkat_total') || 0;
+
+        // Compare grand total with tampilkan total
+        if (tampilkanTotal > 0 && total > tampilkanTotal) {
+            alert('Maaf total biaya melebihi total anggaran RKAT!');
+            $('#next-anggaran').prop("disabled", true);
+            $('#tombol-page-4').prop("disabled", true);
+            $('#tombol-page-5').prop("disabled", true);
+        } else {
+            $('#next-anggaran').prop("disabled", false);
+            $('#tombol-page-4').prop("disabled", false);
+            $('#tombol-page-5').prop("disabled", false);
+        }
+    }
+
+    function formatRupiah(angka) {
+        return 'Rp' + angka.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).replace('Rp', '');
+    }
+
+    addEventListeners();
+
+    function addEventListeners() {
+        $('.biaya_satuan, .quantity, .frequency').off('keyup').on('keyup', function() {
+            var rowIndex = $(this).closest('tr').index();
+            OnChange(rowIndex);
+        });
+    }
+
+    function OnChange(element) {
+        var row = $(element).closest('tr');
+        var biaya_satuan = parseInt(row.find('.biaya_satuan').val()) || 0;
+        var quantity = parseInt(row.find('.quantity').val()) || 0;
+        var frequency = parseInt(row.find('.frequency').val()) || 0;
+        var result = biaya_satuan * quantity * frequency;
         if (!isNaN(result)) {
-            document.querySelector('input[name="rows['+j+'][total_biaya]"]').value = result;
+            row.find('.total_biaya').val(result);
+            calculateGrandTotal();
         }
     }
 

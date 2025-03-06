@@ -23,6 +23,7 @@ use App\Mail\KirimEmail;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\Jabatan;
 use App\Models\Master\HandleProposal;
+use App\Models\Master\FormRkat;
 use App\Models\Master\ValidatorProposal;
 use Illuminate\Support\Facades\Session;
 
@@ -147,7 +148,8 @@ class PengajuanProposalController extends Controller
             ->where('proposals.user_id',Auth::user()->user_id)
             ->whereIn('status_proposals.status_approval',[1,3,5]) # Check status approval to activate new proposal button
             ->get();
-        return view('general.pengajuan-proposal.index', compact('datas','checkLap'));
+        $dataFormRkat = FormRkat::all();
+        return view('general.pengajuan-proposal.index', compact('datas','checkLap','dataFormRkat'));
     }
 
     protected function statusProposal($id)
@@ -221,7 +223,7 @@ class PengajuanProposalController extends Controller
         # get Email Dekan
         $emailDekan = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
             ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','DKN'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas]])
+            ->where([['jabatans.kode_jabatan','=','DKN'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas]]) # Remember, not only Dekan but also BIRO
             ->select('pegawais.email')
             ->first();
         # get Email Admin Umum
@@ -240,6 +242,7 @@ class PengajuanProposalController extends Controller
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
                     'id_jenis_kegiatan'     => $request->id_jenis_kegiatan,
+                    'id_form_rkat'          => $request->pilihan_rkat,
                     'user_id'               => Auth::user()->user_id,
                     'id_fakultas_biro'      => $request->id_fakultas_biro,
                     'id_prodi_biro'         => $request->id_prodi_biro,
