@@ -151,8 +151,8 @@
                 @endforeach
             </div>
 
-            <h3>Rencana Anggaran</h3>
-            
+            @if($anggarans->count() > 0)
+            <h3>Rencana Anggaran</h3>            
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
@@ -185,9 +185,10 @@
                     </tr>
                 </tbody>
             </table>
+            @endif
 
-            <h3>Realisasi Anggaran</h3>
-            
+            @if($realisasianggarans->count() > 0)
+            <h3>Realisasi Anggaran</h3>            
             <table class="table table-bordered">
                 <thead class="table_thead">
                     <tr>
@@ -220,6 +221,7 @@
                     </tr>
                 </tbody>
             </table>
+            @endif
 
             <h3>Penutup</h3>
             @foreach($datas as $penutup)

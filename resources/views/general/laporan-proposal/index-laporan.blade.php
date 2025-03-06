@@ -30,7 +30,7 @@
                             <a href="{{route('my-report')}}"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-chevron-left"></i>Back</button></a> 
                         </div>                        
                         <!-- AKHIR TOMBOL -->
-                        <div class="bs-stepper wizard-vertical vertical">
+                        <div class="bs-stepper wizard-vertical horizontal">
                             <div class="bs-stepper-header mt-3">
                                 <div class="step" data-target="#page-1">
                                     <button type="button" class="step-trigger">
@@ -84,189 +84,208 @@
                             </div>
 
                             <div class="bs-stepper-content">
-                              <form onSubmit="return false" id="form-laporan-proposal">
+                            <form onSubmit="return false" id="form-laporan-proposal">
                                 <input type="hidden" name="id_pro" id="id_pro" value="{{$id['id']}}">
 
                                 <!-- Hasil Kegiatan -->
-                                <div id="page-1" class="content mt-3">
-                                    <div class="content-header mb-3">
-                                        <h6 class="mb-0">Hasil Kegiatan</h6>
-                                        <small>Lengkapi Hasil Kegiatan</small>
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-12">
-                                          <label for="hasil_kegiatan" class="form-label">Hasil Kegiatan</label>
-                                          <div id="editor-hasil-kegiatan" class="mb-3" style="height: 300px;"></div>
-                                          <textarea rows="3" class="mb-3 d-none" name="hasil_kegiatan" id="hasil_kegiatan"></textarea>
+                                <div class="container">
+                                    <div id="page-1" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                            <h6 class="mb-0">Hasil Kegiatan</h6>
+                                            <small>Lengkapi Hasil Kegiatan</small>
                                         </div>
-                                        
-                                        <div class="col-12 d-flex justify-content-between">
-                                            <button class="btn btn-label-secondary btn-prev mt-3" disabled> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                                <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                            </button>
-                                            <button class="btn btn-primary btn-next mt-3"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                              <label for="hasil_kegiatan" class="form-label">Hasil Kegiatan</label>
+                                              <div id="editor-hasil-kegiatan" class="mb-3" style="height: 300px;"></div>
+                                              <textarea rows="3" class="mb-3 d-none" name="hasil_kegiatan" id="hasil_kegiatan"></textarea>
+                                            </div>
+                                            
+                                            <div class="col-12 d-flex justify-content-between">
+                                                <button class="btn btn-label-secondary btn-prev mt-3" disabled> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                </button>
+                                                <button class="btn btn-primary btn-next mt-3"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Evaluasi Kegiatan -->
-                                <div id="page-2" class="content mt-3">
-                                  <div class="content-header mb-3">
-                                    <h6 class="mb-0">Evaluasi Kegiatan</h6>
-                                    <small>Input Evaluasi dan Catatan Kegiatan</small>
-                                  </div>
-                                  <div class="row g-3">
-                                    <div class="col-md-12">
-                                        <label for="evaluasi_catatan_kegiatan" class="form-label">Evaluasi dan Catatan Kegiatan</label>
-                                        <div id="editor-evaluasi" class="mb-3" style="height: 300px;"></div>
-                                        <textarea rows="3" class="mb-3 d-none" name="evaluasi_catatan_kegiatan" id="evaluasi_catatan_kegiatan"></textarea>
-                                    </div>
-                                    
-                                    <div class="col-12 d-flex justify-content-between">
-                                      <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                      </button>
-                                      <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- Rencana Anggaran -->
-                                <div id="page-3" class="content mt-3">
-                                  <div class="content-header mb-3">
-                                    <h6 class="mb-0">Rencana Anggaran</h6>
-                                    <small>Data Rencana Anggaran</small>
-                                  </div>
-                                  <div class="row g-3">
-                                    <table class="table table-bordered table-hover">
-                                      <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Item</th>
-                                            <th>Biaya Satuan</th>
-                                            <th width="12%;">Qty</th>
-                                            <th width="12%;">Freq.</th>
-                                            <th>Total Biaya</th>
-                                            <th>Sumber Dana</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        @foreach($anggarans as $no => $data)
-                                        <tr>
-                                            <td>{{++$no}}</td>
-                                            <td>{{$data->item}}</td>
-                                            <td>{{currency_IDR($data->biaya_satuan)}}</td>
-                                            <td>{{$data->quantity}}</td>
-                                            <td>{{$data->frequency}}</td>
-                                            @php $total = 0; $total = $data->biaya_satuan * $data->quantity * $data->frequency; @endphp
-                                            <td>{{currency_IDR($total)}}</td>
-                                            <td>@if($data->sumber_dana == '1') Kampus @elseif($data->sumber_dana == '2') Mandiri @else Hibah @endif</td>
-                                        </tr>
-                                        @endforeach
-                                        <tr>
-                                            <td colspan="5" style="text-align: right;"><b>Grand Total</b></td>
-                                            <td><b>{{currency_IDR($grandTotal['grandTotal'])}}</b></td>
-                                            <td></td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                    <hr>
-                                    <div class="divider">
-                                        <div class="divider-text">Masukkan Data Realisasi Anggaran</div>
-                                    </div>
-                                    <table class="table table-borderless" id="dynamicAddRemoveAnggaran">
-                                        <tr>
-                                            <th>Item</th>
-                                            <th>Biaya Satuan</th>
-                                            <th width="12%;">Qty</th>
-                                            <th width="12%;">Freq.</th>
-                                            <th>Total Biaya</th>
-                                            <th>Sumber</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="item" name="rows[0][item]" value="" placeholder="Input item" /></td>
-                                            <td><input type="number" class="form-control" id="biaya_satuan" name="rows[0][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
-                                            <td><input type="number" class="form-control" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
-                                            <td><input type="number" class="form-control" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
-                                            <td><input type="text" class="form-control" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
-                                            <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
-                                              <option value="1">Kampus</option>
-                                              <option value="2">Mandiri</option>
-                                              <option value="3">Hibah</option>
-                                            </select></td>
-                                            <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
-                                        </tr>
-                                    </table>
-                                    <div class="col-12 d-flex justify-content-between">
-                                      <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                      </button>
-                                      <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div id="page-4" class="content mt-3">
-                                    <div class="content-header mb-3">
-                                      <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
-                                      <small>Upload Lampiran Proposal.</small>
-                                    </div>
-                                    <div class="col form-group p-0">
-                                        <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
-                                    </div>
-                                    <input type="checkbox" id="switch" name="switch" class="mb-3">
-                                    <div class="row g-3">                                    
-                                        <div>
-                                            <div class="row firstRow">
-                                                <div class="col-md-3 form-group mb-3">
-                                                    <label for="nama_berkas" class="form-label">Nama Berkas</label>
-                                                    <input type="text" name="nama_berkas[]" class="w-100 form-control">
-                                                </div>
-                                                <div class="col-md-3 form-group mb-3" id="form-container">
-                                                    <!-- Form content will be dynamically generated here --> 
-                                                </div>
-                                                <div class="col-md-3 form-group mb-3">
-                                                    <label for="keterangan" class="form-label">Keterangan</label>
-                                                    <input type="text" name="keterangan[]" class="w-100 form-control">
-                                                </div>
-                                                <div class="col-md-3 form-group mb-3">
-                                                    <button class="btn btn-warning addField mt-4" id="tombol"><i class="bx bx-plus-circle bx-xs"></i></button>
-                                                </div>
-                                            </div>
+                                <div class="container">
+                                    <div id="page-2" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                          <h6 class="mb-0">Evaluasi Kegiatan</h6>
+                                          <small>Input Evaluasi dan Catatan Kegiatan</small>
                                         </div>
-                                        <p style="font-size: 12px;" class="text-warning"><i>*Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
-                                        <div class="col-12 d-flex justify-content-between">
+                                        <div class="row g-3">
+                                          <div class="col-md-6">
+                                              <label for="evaluasi_catatan_kegiatan" class="form-label">Evaluasi dan Catatan Kegiatan</label>
+                                              <div id="editor-evaluasi" class="mb-3" style="height: 300px;"></div>
+                                              <textarea rows="3" class="mb-3 d-none" name="evaluasi_catatan_kegiatan" id="evaluasi_catatan_kegiatan"></textarea>
+                                          </div>
+                                          
+                                          <div class="col-12 d-flex justify-content-between">
                                             <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                               <span class="align-middle d-sm-inline-block d-none">Previous</span>
                                             </button>
                                             <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
                                           </div>
+                                        </div>
                                       </div>
+                                </div>
+
+                                <!-- Rencana Anggaran -->
+                                <div class="container">
+                                    <div id="page-3" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                          <h6 class="mb-0">Rencana Anggaran</h6>
+                                          <small>Data Rencana Anggaran</small>
+                                        </div>
+                                        <div class="row g-3">
+                                          <table class="table table-bordered table-hover">
+                                            <thead>
+                                              <tr>
+                                                  <th>#</th>
+                                                  <th>Item</th>
+                                                  <th>Biaya Satuan</th>
+                                                  <th width="12%;">Qty</th>
+                                                  <th width="12%;">Freq.</th>
+                                                  <th>Total Biaya</th>
+                                                  <th>Sumber Dana</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                            @if($anggarans->count() > 0)
+                                                @foreach($anggarans as $no => $data)
+                                                <tr>
+                                                    <td>{{++$no}}</td>
+                                                    <td>{{$data->item}}</td>
+                                                    <td>{{currency_IDR($data->biaya_satuan)}}</td>
+                                                    <td>{{$data->quantity}}</td>
+                                                    <td>{{$data->frequency}}</td>
+                                                    @php $total = 0; $total = $data->biaya_satuan * $data->quantity * $data->frequency; @endphp
+                                                    <td>{{currency_IDR($total)}}</td>
+                                                    <td>@if($data->sumber_dana == '1') Kampus @elseif($data->sumber_dana == '2') Mandiri @else Hibah @endif</td>
+                                                </tr>
+                                                @endforeach
+                                                <tr>
+                                                    <td colspan="5" style="text-align: right;"><b>Grand Total</b></td>
+                                                    <td><b>{{currency_IDR($grandTotal['grandTotal'])}}</b></td>
+                                                    <td></td>
+                                                </tr>
+                                            @else
+                                                <tr>
+                                                    <td colspan="7" style="text-align: center;">Tidak ada data rencana anggaran</td>
+                                                </tr>
+                                            @endif
+                                            </tbody>
+                                          </table>
+                                          <hr>
+                                          <div class="divider">
+                                              <div class="divider-text">Masukkan Data Realisasi Anggaran</div>
+                                          </div>
+                                          <table class="table table-borderless" id="dynamicAddRemoveAnggaran">
+                                              <tr>
+                                                  <th>Item</th>
+                                                  <th>Biaya Satuan</th>
+                                                  <th width="12%;">Qty</th>
+                                                  <th width="12%;">Freq.</th>
+                                                  <th>Total Biaya</th>
+                                                  <th>Sumber</th>
+                                                  <th>Aksi</th>
+                                              </tr>
+                                              <tr>
+                                                  <td><input type="text" class="form-control" id="item" name="rows[0][item]" value="" placeholder="Input item" /></td>
+                                                  <td><input type="number" class="form-control" id="biaya_satuan" name="rows[0][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
+                                                  <td><input type="number" class="form-control" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
+                                                  <td><input type="number" class="form-control" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td>
+                                                  <td><input type="text" class="form-control" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
+                                                  <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
+                                                    <option value="1">Kampus</option>
+                                                    <option value="2">Mandiri</option>
+                                                    <option value="3">Hibah</option>
+                                                  </select></td>
+                                                  <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
+                                              </tr>
+                                          </table>
+                                          <div class="col-12 d-flex justify-content-between">
+                                            <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                              <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                            </button>
+                                            <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+
+                                <!-- Lampiran -->
+                                <div class="container">
+                                    <div id="page-4" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                          <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
+                                          <small>Upload Lampiran Proposal.</small>
+                                        </div>
+                                        <div class="col form-group p-0">
+                                            <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
+                                        </div>
+                                        <input type="checkbox" id="switch" name="switch" class="mb-3">
+                                        <div class="row g-3">                                    
+                                            <div>
+                                                <div class="row firstRow">
+                                                    <div class="col-md-3 form-group mb-3">
+                                                        <label for="nama_berkas" class="form-label">Nama Berkas</label>
+                                                        <input type="text" name="nama_berkas[]" class="w-100 form-control">
+                                                    </div>
+                                                    <div class="col-md-3 form-group mb-3" id="form-container">
+                                                        <!-- Form content will be dynamically generated here --> 
+                                                    </div>
+                                                    <div class="col-md-3 form-group mb-3">
+                                                        <label for="keterangan" class="form-label">Keterangan</label>
+                                                        <input type="text" name="keterangan[]" class="w-100 form-control">
+                                                    </div>
+                                                    <div class="col-md-3 form-group mb-3">
+                                                        <button class="btn btn-warning addField mt-4" id="tombol"><i class="bx bx-plus-circle bx-xs"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p style="font-size: 12px;" class="text-warning"><i>*Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                            <div class="col-12 d-flex justify-content-between">
+                                                <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                                  <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                                </button>
+                                                <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span> <i class="bx bx-chevron-right bx-sm me-sm-n2"></i></button>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
 
                                 <!-- Penutup -->
-                                <div id="page-5" class="content mt-3">
-                                  <div class="content-header mb-3">
-                                      <h6 class="mb-0">Penutup</h6>
-                                      <small>Lengkapi Penutup Laporan Proposal</small>
-                                  </div>
-                                  <div class="row g-3">
-                                      <div class="col-md-12">
-                                        <label for="penutup" class="form-label">Penutup</label>
-                                        <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
-                                        <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
-                                      </div>
-                                      <div class="col-12 d-flex justify-content-between">
-                                        <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                        </button>
-                                        <button class="btn btn-success btn-submit" id="tombol-simpan">Submit</button>
-                                      </div>
-                                  </div>
-                              </div>
-                              </form>
-                            </div>
+                                <div class="container">
+                                    <div id="page-5" class="content mt-3">
+                                        <div class="content-header mb-3">
+                                          <h6 class="mb-0">Penutup</h6>
+                                          <small>Lengkapi Penutup Laporan Proposal</small>
+                                        </div>
+                                        <div class="row g-3">
+                                          <div class="col-md-6">
+                                            <label for="penutup" class="form-label">Penutup</label>
+                                            <div id="editor-penutup" class="mb-3" style="height: 300px;"></div>
+                                            <textarea class="mb-3 d-none" id="penutup" name="penutup" rows="5"></textarea>
+                                          </div>
+                                          <div class="col-12 d-flex justify-content-between">
+                                            <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                              <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                            </button>
+                                            <button class="btn btn-success btn-submit" id="tombol-simpan">Submit</button>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
                         </div>
+                    </div>
                     
                 </div>
             </div>

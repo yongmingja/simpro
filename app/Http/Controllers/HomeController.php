@@ -56,7 +56,9 @@ class HomeController extends Controller
             }
 
             # Dashboard WRSDP adn WRAK Proposals
-            $totalProposals = Proposal::where('id_jenis_kegiatan',$this->arrJenisKegiatan())->count();
+            $totalProposals = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+            ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['proposals.is_archived',0]])
+            ->whereIn('status_proposals.status_approval',[3,4,5])->count();
             $totalProposalPending = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_proposals.status_approval','=',3],['proposals.is_archived',0]])->count();
             $totalProposalDiterima = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
@@ -66,7 +68,9 @@ class HomeController extends Controller
 
             # Dashboard WRSDP adn WRAK Laporan Proposals
             $totalLaporanProposals = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
-                ->where('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())->count();
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->where('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->whereIn('status_laporan_proposals.status_approval',[3,4,5])->count();
             $totalLaporanProposalPending = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->where([['id_jenis_kegiatan',$this->arrJenisKegiatan()],['status_laporan_proposals.status_approval','=',3]])->count();
@@ -97,7 +101,34 @@ class HomeController extends Controller
                 ->where([['status_laporan_proposals.status_approval','=',2]])
                 ->orWhere('status_laporan_proposals.status_approval','=',4)->count();
 
-            return view('dashboard.admin-dashboard', compact('countProposals','countProposalAcc','countProposalOnGoing','countProposalDeclined','recentRole','totalProposals','totalProposalPending','totalProposalDiterima','totalProposalDitolak','totalLaporanProposals','totalLaporanProposalPending','totalLaporanProposalDiterima','totalLaporanProposalDitolak','totalProposalsSadm','totalProposalPendingSadm','totalProposalDiterimaSadm','totalProposalDitolakSadm','totalLaporanProposalsSadm','totalLaporanProposalPendingSadm','totalLaporanProposalDiterimaSadm','totalLaporanProposalDitolakSadm'));
+            # Dashboard DKN BRO Proposals
+            $totalProposalsDekanBiro = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+            ->where([['proposals.is_archived',0]])->count();
+            $totalProposalPendingDekanBiro = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->where([['status_proposals.status_approval','=',1],['proposals.is_archived',0]])->count();
+            $totalProposalDiterimaDekanBiro = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->where([['status_proposals.status_approval','=',3],['proposals.is_archived',0]])
+                ->orWhere('status_proposals.status_approval','=',5)->count();
+            $totalProposalDitolakDekanBiro = Proposal::leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->where([['status_proposals.status_approval','=',2],['proposals.is_archived',0]])
+                ->orWhere('status_proposals.status_approval','=',4)->count();
+
+            # Dashboard DKN BRO Laporan Proposals
+            $totalLaporanProposalsDekanBiro = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')->count();
+            $totalLaporanProposalPendingDekanBiro = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->where([['status_laporan_proposals.status_approval','=',1]])->count();
+            $totalLaporanProposalDiterimaDekanBiro = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->where([['status_laporan_proposals.status_approval','=',3]])
+                ->orWhere('status_laporan_proposals.status_approval',5)->count();
+            $totalLaporanProposalDitolakDekanBiro = LaporanProposal::leftJoin('proposals','proposals.id','=','laporan_proposals.id_proposal')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->where([['status_laporan_proposals.status_approval','=',2]])
+                ->orWhere('status_laporan_proposals.status_approval',4)->count();
+
+            return view('dashboard.admin-dashboard', compact('countProposals','countProposalAcc','countProposalOnGoing','countProposalDeclined','recentRole','totalProposals','totalProposalPending','totalProposalDiterima','totalProposalDitolak','totalLaporanProposals','totalLaporanProposalPending','totalLaporanProposalDiterima','totalLaporanProposalDitolak','totalProposalsSadm','totalProposalPendingSadm','totalProposalDiterimaSadm','totalProposalDitolakSadm','totalLaporanProposalsSadm','totalLaporanProposalPendingSadm','totalLaporanProposalDiterimaSadm','totalLaporanProposalDitolakSadm','totalProposalsDekanBiro','totalProposalPendingDekanBiro','totalProposalDiterimaDekanBiro','totalProposalDitolakDekanBiro','totalLaporanProposalsDekanBiro','totalLaporanProposalPendingDekanBiro','totalLaporanProposalDiterimaDekanBiro','totalLaporanProposalDitolakDekanBiro'));
         } else {
             return redirect()->intended('/');
         }

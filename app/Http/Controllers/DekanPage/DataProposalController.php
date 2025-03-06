@@ -26,7 +26,7 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval','<=',3]])
+                ->where('proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro)
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
         }
@@ -50,6 +50,7 @@ class DataProposalController extends Controller
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
                 ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',3]])
+                ->orWhere('status_proposals.status_approval',5)
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 
@@ -62,6 +63,7 @@ class DataProposalController extends Controller
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
                 ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',2]])
+                ->orWhere('status_proposals.status_approval',4)
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 
