@@ -304,6 +304,6 @@ class LaporanProposalController extends Controller
                 ->first();
         }
 
-        return view('general.rektorat.show_qrcode', compact('datas','getPengusul','getDiketahui','getDisetujui'));
+        return view('rektorat-page.data-proposal.show_qrcode', compact('datas','getPengusul','getDiketahui','getDisetujui'));
     }
 }
