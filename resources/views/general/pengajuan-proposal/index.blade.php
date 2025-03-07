@@ -109,12 +109,12 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Preview</th>
                                 <th>Proposal</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
                                 <th>Proposal Dibuat</th>
                                 <th>Nama Pengaju</th>
+                                <th>Lampiran</th>
                                 <th width="12%;">Status</th>
                                 <th width="12%;">Aksi</th>
                             </tr>
@@ -612,9 +612,9 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     }, 
-                    {data: 'laporan',name: 'laporan'},
+                    
                     {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
-                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'preview_with_name',name: 'preview_with_name'},
                     {data: 'tgl_event',name: 'tgl_event',
                         render: function ( data, type, row ){
                             return moment(row.tgl_event).format("DD MMM YYYY")
@@ -625,7 +625,8 @@
                             return moment(row.created_at).format("DD MMM YYYY")
                         }
                     },
-                    {data: 'nama_user_dosen',name: 'nama_user_dosen'},
+                    {data: 'nama_pengaju',name: 'nama_pengaju'},
+                    {data: 'lampiran',name: 'lampiran'},
                     {data: 'status',name: 'status'},
                     {data: 'action',name: 'action'},
                 ]

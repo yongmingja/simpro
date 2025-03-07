@@ -47,9 +47,9 @@
                                   <th>Proposal Dibuat</th>
                                   <th>Nama Fakultas</th>
                                   <th>Nama Prodi</th>
-                                  <th>Lihat</th>
                                   <th width="12%;">Status</th>
                                   <th>Lampiran</th>
+                                  <th>History Delegasi</th>
                                 </tr>
                               </thead>
                             </table>
@@ -175,6 +175,25 @@
                 </div>
                 <!-- End of validasi proposal-->
 
+                <!-- Mulai modal show history delegasi  -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="show-history" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title justify-content-center">History Delegasi Data ini</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="table_show_history" class="col-sm-12 table-responsive mb-3"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of modal show history delegasi -->
+
                 </div>
             </div>
         </div>
@@ -219,7 +238,7 @@
                         }
                     }, 
                     {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
-                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'action',name: 'action'},
                     {data: 'tgl_event',name: 'tgl_event',
                         render: function ( data, type, row ){
                             return moment(row.tgl_event).format("DD MMM YYYY")
@@ -232,9 +251,9 @@
                     },
                     {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
                     {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
-                    {data: 'action',name: 'action'},
                     {data: 'validasi',name: 'validasi'},
                     {data: 'vlampiran',name: 'vlampiran'},
+                    {data: 'lihatDelegasi',name: 'lihatDelegasi'},
                 ]
             });
         }
@@ -391,6 +410,19 @@
                   editor.root.innerHTML = quillEditor.value;
               });
           }
+    });
+
+    $('body').on('click','.lihat-delegasi', function(){
+        var id_proposal = $(this).data('id');
+        $.ajax({
+            url: "{{route('lihat-history-delegasi-proposal')}}",
+            method: "GET",
+            data: {proposal_id: id_proposal},
+            success: function(response, data){
+                $('#show-history').modal('show');
+                $("#table_show_history").html(response.card)
+            }
+        })
     });
 </script>
 @endsection

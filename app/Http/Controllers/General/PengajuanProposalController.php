@@ -36,7 +36,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_pengaju')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0]])
                 ->orderBy('proposals.id','DESC')
                 ->get();
@@ -47,7 +47,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_pengaju')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',1]])
                 ->orderBy('proposals.id','DESC')
                 ->get();
@@ -58,7 +58,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_pengaju')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',5]])
                 ->orWhere('status_proposals.status_approval',3)
                 ->orderBy('proposals.id','DESC')
@@ -70,7 +70,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
+                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_pengaju')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',4]])
                 ->orWhere('status_proposals.status_approval',2)
                 ->orderBy('proposals.id','DESC')
@@ -129,16 +129,17 @@ class PengajuanProposalController extends Controller
             })->addColumn('status', function($data){
                 $btn = $this->statusProposal($data->id);                
                 return $btn;
-            })->addColumn('laporan', function($data){
-                # check any attachment
-                $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
-                if($q > 0){
-                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
+            })->addColumn('preview_with_name', function($data){                
+                return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal">'.$data->nama_kegiatan.'</a>';
+            })->addColumn('lampiran', function($data){
+                $ifExist = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($ifExist > 0){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
                 } else {
-                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
+                    return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
             })
-            ->rawColumns(['action','laporan','status'])
+            ->rawColumns(['action','preview_with_name','status','lampiran'])
             ->addIndexColumn(true)
             ->make(true);
         }

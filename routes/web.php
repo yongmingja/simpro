@@ -175,4 +175,5 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,RKT'])->group(
     Route::post('rkat-approval-n','RektoratPage\FormRkatController@approvalN')->name('rkat-approval-n');
 
     Route::get('lihat-history-delegasi','RektoratPage\DashboardController@lihatHistoryDelegasi')->name('lihat-history-delegasi');
+    Route::get('lihat-history-delegasi-proposal','RektoratPage\DashboardController@lihatHistoryDelegasiProposal')->name('lihat-history-delegasi-proposal');
 });

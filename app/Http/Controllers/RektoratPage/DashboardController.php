@@ -78,7 +78,7 @@ class DashboardController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-primary btn-sm"><i class="bx bx-file bx-xs"></i></a>';               
+                $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal">'.$data->nama_kegiatan.'</a>';               
                 return $button;
             })->addColumn('validasi', function($data){
                 if($data->id_jenis_kegiatan != 3){
@@ -130,8 +130,15 @@ class DashboardController extends Controller
                 }else{
                     return '<p style="font-size: 10px;">No attachment</p>';
                 }
+            })->addColumn('lihatDelegasi', function($data){
+                $isExist = DelegasiProposal::where('id_proposal',$data->id)->select('catatan_delegator','delegasi')->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><i class="bx bx-paperclip"></i> lihat</a>';
+                } else {
+                    return '';
+                }
             })
-            ->rawColumns(['action','validasi','vlampiran'])
+            ->rawColumns(['action','validasi','vlampiran','lihatDelegasi'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -554,9 +561,57 @@ class DashboardController extends Controller
                         </tr>
                     </thead>
                     <tbody>';
-                    foreach($datas as $no => $item){
+                    foreach($datas as $item){
                         $html .= '<tr>
-                            <td>'.++$no.'</td>
+                            <td><li></li></td>
+                            <td>'.$item->catatan_delegator.'</td>';
+                            $getPegawai = Pegawai::whereIn('id',$item->delegasi)->select('nama_pegawai')->get();
+                            foreach($getPegawai as $result){
+                                $pegawai[] = $result->nama_pegawai;
+                                
+                            }
+                        $html .= '<td>'.implode(", <br>", $pegawai).'</td>
+                        </tr>';
+                    }   
+                    $html .= '</tbody>
+                    </table>';                 
+        } else {
+            $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>#</th>
+                            <th>Catatan Delegator</th>
+                            <th>Delegasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">No data available in table</td>
+                        </tr>
+                    </tbody>
+                </table>';
+        }
+
+        return response()->json(['card' => $html]);
+
+    }
+
+    public function lihatHistoryDelegasiProposal(Request $request)
+    {
+        $datas = DelegasiProposal::where('id_proposal',$request->proposal_id)->get();
+        if($datas->count() > 0){
+            $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Catatan Delegator</th>
+                            <th>Delegasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach($datas as $item){
+                        $html .= '<tr>
+                            <td><li></li></td>
                             <td>'.$item->catatan_delegator.'</td>';
                             $getPegawai = Pegawai::whereIn('id',$item->delegasi)->select('nama_pegawai')->get();
                             foreach($getPegawai as $result){
