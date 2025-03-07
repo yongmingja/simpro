@@ -28,6 +28,15 @@
         </div>
     @endif
     <div class="row">
+        @if($datas->count() > 0)
+          @foreach($datas as $em)
+            @if($em->email == null)
+              <div class="col-sm-12">
+                <h4 class="text-warning"><i class="bx bx-error text-warning bx-tada bx-sm"></i> Silahkan lengkapi data alamat email Anda <div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div></h4>
+              </div>
+            @endif
+          @endforeach
+        @endif        
         <div class="col-sm-3">
             <div class="card text-center">
                 <img src="{{asset('assets/img/avatars/22.png')}}" class="card-img-top rounded-circle mx-auto d-block mt-4 img-fluid img-thumbnail" alt="user-image" style="width: 10rem;">
@@ -172,7 +181,7 @@
                           <div class="row">
                               <input type="hidden" id="id" name="id">
                               <div class="mb-3">
-                                  <label for="update_email" class="form-label">Masukkan email baru</label>
+                                  <label for="update_email" class="form-label">Masukkan email aktif</label>
                                   <input type="email" class="form-control" id="update_email" name="update_email" value="" autofocus />
                                   <span class="text-danger" id="emailErrorMsg" style="font-size: 10px;"></span>
                               </div>                                         

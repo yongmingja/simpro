@@ -103,8 +103,6 @@ class DataPegawaiController extends Controller
     {
         if(Auth::guard('pegawai')->check()){
             $datas = Pegawai::where('user_id',Auth::user()->user_id)->get();
-        } else if(Auth::guard('mahasiswa')->check()){
-            $datas = Mahasiswa::where('user_id',Auth::user()->user_id)->get();
         }
         return view('admin-page.data-user.profile', compact('datas'));
     }
@@ -119,8 +117,6 @@ class DataPegawaiController extends Controller
    
         if(Auth::guard('pegawai')->check()){
             Pegawai::where('user_id',Auth::user()->user_id)->update(['password'=> Hash::make($request->new_password)]);
-        }elseif(Auth::guard('mahasiswa')->check()){
-            Mahasiswa::where('user_id',Auth::user()->user_id)->update(['password'=> Hash::make($request->new_password)]);
         }
         return redirect()->route('profile')->with('success','Password has changed successfully!');
     }

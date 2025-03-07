@@ -107,13 +107,14 @@
                                                 <span class="text-danger" id="ketuaErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="id_pegawai" class="form-label">Peserta Kegiatan</label>
+                                                <label for="id_pegawai" class="form-label">Peserta Kegiatan (Include Ketua)</label>
                                                 <select class="form-select select2" multiple id="id_pegawai" name="id_pegawais[]" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_pegawai">- Pilih -</option>
                                                     @foreach($getDataPegawai as $pegawai)
                                                     <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
                                                     @endforeach
                                                 </select>
+                                                <div class="mt-2 text-info" style="font-size: 11px;">**Anda bisa memilih lebih dari satu peserta</div>
                                                 <span class="text-danger" id="idPegawaiErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             
@@ -354,6 +355,38 @@
 
     $(document).on('click','.deleteRow', function(){
         $(this).parent().parent().remove();
+    });
+
+    function cekTanggal() {
+        let inputDate = new Date(document.getElementById('tgl_kegiatan').value);
+        let currentDate = new Date();
+        let diffInDays = Math.floor((inputDate - currentDate) / (1000 * 60 * 60 * 24));
+        let tombolSimpan = document.getElementById('tombol-simpan');
+        let tglKegiatanErrorMsg = document.getElementById('tglKegiatanErrorMsg');
+
+        if (diffInDays <= 12) {
+            alert('Tanggal kegiatan kurang dari 14 hari, tidak dapat dilanjutkan.');
+            tombolSimpan.disabled = true;
+            tglKegiatanErrorMsg.textContent = 'Tanggal kegiatan kurang dari 14 hari.';
+        } else {
+            tombolSimpan.disabled = false;
+            tglKegiatanErrorMsg.textContent = '';
+        }
+        }
+
+        document.getElementById('cek_tanggal').addEventListener('change', function() {
+        if (this.checked) {
+            cekTanggal();
+        } else {
+            document.getElementById('tombol-simpan').disabled = false;
+            document.getElementById('tglKegiatanErrorMsg').textContent = '';
+        }
+        });
+
+        document.getElementById('tgl_kegiatan').addEventListener('change', function() {
+        if (document.getElementById('cek_tanggal').checked) {
+            cekTanggal();
+        }
     });
 
 </script>

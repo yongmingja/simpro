@@ -22,7 +22,9 @@ Route::get('logout','Auth\AuthPegawaiController@logout')->name('logout');
 // Route::get('/homepage-ui','HomeController@uiModul')->name('ui-modul');
 
 // Route::view('/home', 'home')->middleware('auth');
-Route::get('/home', 'HomeController@index')->middleware('auth:pegawai')->name('home');
+Route::group(['middleware' => ['auth:pegawai', 'check.email']], function (){
+    Route::get('/home', 'HomeController@index')->name('home');
+});
 Route::post('/ubah-peran', function(Request $request){
     $peran = $request->peran;
     if ($peran) {
