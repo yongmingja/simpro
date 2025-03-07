@@ -600,10 +600,10 @@
 
         // Compare grand total with tampilkan total
         if (tampilkanTotal > 0 && total > tampilkanTotal) {
-            alert('Maaf total biaya melebihi total anggaran RKAT!');
             $('#next-anggaran').prop("disabled", true);
             $('#tombol-page-4').prop("disabled", true);
             $('#tombol-page-5').prop("disabled", true);
+            alert('Mohon maaf anda tidak bisa melanjutkan proposal karena total biaya melebihi total anggaran RKAT yang anda pilih yaitu sebesar '+ formatRupiah(tampilkanTotal) +'');
         } else {
             $('#next-anggaran').prop("disabled", false);
             $('#tombol-page-4').prop("disabled", false);
