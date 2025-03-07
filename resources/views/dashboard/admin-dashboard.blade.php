@@ -9,57 +9,80 @@
             <h5>Hallo, {{ Auth::user()->nama_pegawai }}</h5>
             <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal Kegiatan</h4>
         </div>
-        @if($recentRole == 'DSN' || $recentRole == 'DKN-BRO')
+        @if($recentRole == 'DSN')
         <div class="row">
-            <!-- Statistics Cards -->
-            <div class="col-3 col-md-3 col-lg-3 mb-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <div class="avatar mx-auto mb-2">
-                    <span class="avatar-initial rounded-circle bg-label-primary"><i class="bx bx-file fs-4"></i></span>
+          <div class="col-sm-6 col-lg-3 mb-4">
+            <div class="card card-border-shadow-primary h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                    <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-file bx-tada"></i></span>
                   </div>
-                  <span class="d-block text-nowrap">Total Proposals</span>
-                  <h2 class="mb-0">{{$countProposals}}</h2>
+                  <h4 class="ms-1 mb-0">{{$countProposals}}</h4>
                 </div>
+                <p class="mb-1">Total Proposals</p>
+                <p class="mb-0">
+                  <span class="fw-medium me-1">{{$countProposals}}</span>
+                  <small class="text-muted">Pengajuan Proposal</small>
+                </p>
               </div>
             </div>
-            <div class="col-3 col-md-3 col-lg-3 mb-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <div class="avatar mx-auto mb-2">
-                    <span class="avatar-initial rounded-circle bg-label-success"><i class="bx bx-check-double fs-4"></i></span>
+          </div>
+          <div class="col-sm-6 col-lg-3 mb-4">
+            <div class="card card-border-shadow-warning h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                    <span class="avatar-initial rounded bg-label-warning"><i class='bx bx-loader-circle bx-spin fs-4'></i></span>
                   </div>
-                  <span class="d-block text-nowrap">Proposals Accepted</span>
-                  <h2 class="mb-0">{{$countProposalAcc}}</h2>
+                  <h4 class="ms-1 mb-0">{{$countProposalOnGoing}}</h4>
                 </div>
+                <p class="mb-1">Proposal Pending</p>
+                <p class="mb-0">
+                  <span class="fw-medium me-1">{{$countProposalOnGoing}}</span>
+                  <small class="text-muted">Proposal Pending</small>
+                </p>
               </div>
             </div>
-            <div class="col-3 col-md-3 col-lg-3 mb-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <div class="avatar mx-auto mb-2">
-                    <span class="avatar-initial rounded-circle bg-label-warning"><i class="bx bx-loader-circle bx-spin fs-4"></i></span>
+          </div>
+          <div class="col-sm-6 col-lg-3 mb-4">
+            <div class="card card-border-shadow-danger h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                    <span class="avatar-initial rounded bg-label-danger"><i class='bx bx-error bx-tada'></i></span>
                   </div>
-                  <span class="d-block text-nowrap">Proposal Pending (Declined or Unarchived)*</span>
-                  <h2 class="mb-0">{{$countProposalOnGoing}}</h2>
+                  <h4 class="ms-1 mb-0">{{$countProposalDeclined}}</h4>
                 </div>
+                <p class="mb-1">Proposal Ditolak</p>
+                <p class="mb-0">
+                  <span class="fw-medium me-1">{{$countProposalDeclined}}</span>
+                  <small class="text-muted">Proposal Ditolak</small>
+                </p>
               </div>
             </div>
-            <div class="col-3 col-md-3 col-lg-3 mb-4">
-              <div class="card h-100">
-                <div class="card-body text-center">
-                  <div class="avatar mx-auto mb-2">
-                    <span class="avatar-initial rounded-circle bg-label-danger"><i class="bx bx-x fs-4"></i></span>
+          </div>
+          <div class="col-sm-6 col-lg-3 mb-4">
+            <div class="card card-border-shadow-info h-100">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-2 pb-1">
+                  <div class="avatar me-2">
+                    <span class="avatar-initial rounded bg-label-success"><i class='bx bx-check-double bx-tada'></i></span>
                   </div>
-                  <span class="d-block text-nowrap">Proposals Declined or Archived</span>
-                  <h2 class="mb-0">{{$countProposalDeclined}}</h2>
+                  <h4 class="ms-1 mb-0">{{$countProposalAcc}}</h4>
                 </div>
+                <p class="mb-1">Proposal Diterima</p>
+                <p class="mb-0">
+                  <span class="fw-medium me-1">{{$countProposalAcc}}</span>
+                  <small class="text-muted">Proposal Diterima</small>
+                </p>
               </div>
             </div>
-        </div>  
+          </div>
+        </div> 
         @endif
 
-        @if($recentRole == 'SADM')
+        @if($recentRole == 'SADM' || $recentRole == 'ADU')
         <div class="row">
           <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
             <div class="card h-100">
@@ -215,7 +238,7 @@
           </div>
         @endif
 
-        @if($recentRole == 'DKN' || $recentRole == 'BRO')
+        @if($recentRole == 'DKN-BRO')
           <div class="row">
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
               <div class="card h-100">

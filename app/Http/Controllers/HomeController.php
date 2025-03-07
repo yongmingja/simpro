@@ -128,7 +128,37 @@ class HomeController extends Controller
                 ->where([['status_laporan_proposals.status_approval','=',2]])
                 ->orWhere('status_laporan_proposals.status_approval',4)->count();
 
-            return view('dashboard.admin-dashboard', compact('countProposals','countProposalAcc','countProposalOnGoing','countProposalDeclined','recentRole','totalProposals','totalProposalPending','totalProposalDiterima','totalProposalDitolak','totalLaporanProposals','totalLaporanProposalPending','totalLaporanProposalDiterima','totalLaporanProposalDitolak','totalProposalsSadm','totalProposalPendingSadm','totalProposalDiterimaSadm','totalProposalDitolakSadm','totalLaporanProposalsSadm','totalLaporanProposalPendingSadm','totalLaporanProposalDiterimaSadm','totalLaporanProposalDitolakSadm','totalProposalsDekanBiro','totalProposalPendingDekanBiro','totalProposalDiterimaDekanBiro','totalProposalDitolakDekanBiro','totalLaporanProposalsDekanBiro','totalLaporanProposalPendingDekanBiro','totalLaporanProposalDiterimaDekanBiro','totalLaporanProposalDitolakDekanBiro'));
+            return view('dashboard.admin-dashboard', compact([
+                'countProposals',
+                'countProposalAcc',
+                'countProposalOnGoing',
+                'countProposalDeclined',
+                'recentRole',
+                'totalProposals',
+                'totalProposalPending',
+                'totalProposalDiterima',
+                'totalProposalDitolak',
+                'totalLaporanProposals',
+                'totalLaporanProposalPending',
+                'totalLaporanProposalDiterima',
+                'totalLaporanProposalDitolak',
+                'totalProposalsSadm',
+                'totalProposalPendingSadm',
+                'totalProposalDiterimaSadm',
+                'totalProposalDitolakSadm',
+                'totalLaporanProposalsSadm',
+                'totalLaporanProposalPendingSadm',
+                'totalLaporanProposalDiterimaSadm',
+                'totalLaporanProposalDitolakSadm',
+                'totalProposalsDekanBiro',
+                'totalProposalPendingDekanBiro',
+                'totalProposalDiterimaDekanBiro',
+                'totalProposalDitolakDekanBiro',
+                'totalLaporanProposalsDekanBiro',
+                'totalLaporanProposalPendingDekanBiro',
+                'totalLaporanProposalDiterimaDekanBiro',
+                'totalLaporanProposalDitolakDekanBiro'
+            ]));
         } else {
             return redirect()->intended('/');
         }
