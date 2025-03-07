@@ -6,14 +6,10 @@
     <div class="container-fluid flex-grow-1 container-p-y">
 
         <div class="row">
-            <h5>Hallo, @if (Str::length(Auth::guard('pegawai')->user()) > 0 )
-                {{ Auth::guard('pegawai')->user()->nama_pegawai }}
-                @elseif(Str::length(Auth::guard('mahasiswa')->user()) > 0)
-                {{ Auth::guard('mahasiswa')->user()->name }}
-                @endif</h5>
+            <h5>Hallo, {{ Auth::user()->nama_pegawai }}</h5>
             <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal Kegiatan</h4>
         </div>
-        @if($recentRole == 'DSN' || $recentRole == 'BRO')
+        @if($recentRole == 'DSN' || $recentRole == 'DKN-BRO')
         <div class="row">
             <!-- Statistics Cards -->
             <div class="col-3 col-md-3 col-lg-3 mb-4">

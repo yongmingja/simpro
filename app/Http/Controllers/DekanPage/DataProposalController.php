@@ -15,7 +15,7 @@ class DataProposalController extends Controller
     public function index(Request $request)
     {
         $getJabatanIs = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=','DKN']]) # Remember this is not only for DKN but for BRO as well, so this is not the best query
+            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=','DKN-BRO']]) # Remember this is not only for DKN but for BRO as well, so this is not the best query
             ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
