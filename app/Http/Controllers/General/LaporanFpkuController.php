@@ -72,7 +72,7 @@ class LaporanFpkuController extends Controller
                 if($checkLampiran->count() > 0){                   
                     return '<a href="javascript:void(0)" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="v-lampiran" style="font-size: 10px;">lihat lampiran</a>';
                 } else {
-                    return '<p style="font-size: 10px;">No attachment</p>';
+                    return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
             })
             ->rawColumns(['action','status','lampirans'])

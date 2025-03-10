@@ -26,7 +26,7 @@ class UndanganFpkuController extends Controller
                 if($isExist->count() > 0){
                     return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran" style="font-size: 10px;">lihat lampiran</a>';
                 } else {
-                    return '<p style="font-size: 10px;">No attachment</p>';
+                    return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
             })
             ->rawColumns(['action','lampirans'])
