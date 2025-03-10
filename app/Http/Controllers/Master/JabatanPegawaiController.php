@@ -100,7 +100,7 @@ class JabatanPegawaiController extends Controller
     {
         $datas = JabatanPegawai::leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
             ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->select('jabatan_pegawais.id AS id','pegawais.id AS id_pegawai','pegawais.nama_pegawai','pegawais.user_id','jabatans.kode_jabatan','jabatans.nama_jabatan')
+            ->select('jabatan_pegawais.id AS id','jabatan_pegawais.ket_jabatan','pegawais.id AS id_pegawai','pegawais.nama_pegawai','pegawais.user_id','jabatans.kode_jabatan','jabatans.nama_jabatan')
             ->where('jabatan_pegawais.id_pegawai',$request->user_id)
             ->get();
 
@@ -130,7 +130,7 @@ class JabatanPegawaiController extends Controller
             foreach($datas as $no => $item){
                 $html .= '<tr>
                         <td>'.++$no.'</td>
-                        <td>'.$item->nama_jabatan.'</td>
+                        <td>'.$item->ket_jabatan.'</td>
                         <td>';
                         if($item->id_pegawai == Auth::guard('pegawai')->user()->id AND $item->kode_jabatan == "SADM"){
                             $html .= '<button type="button" data-toggle="tooltip" data-placement="bottom" title="Unable to remove" class="btn btn-secondary btn-xs"><i class="bx bx-xs bx-trash" style="cursor:not-allowed;"></i></button></td>';

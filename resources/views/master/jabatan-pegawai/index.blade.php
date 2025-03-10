@@ -37,8 +37,7 @@
                                   <th>#</th>
                                   <th>Pegawai</th>
                                   <th>NIP / User ID</th>
-                                  <th>Jabatan</th>
-                                  <th>Ket Jabatan</th>
+                                  <th>Nama Jabatan</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -152,7 +151,6 @@
                 }, 
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'user_id',name: 'user_id'},
-                {data: 'jabatan_nama',name: 'jabatan_nama'},
                 {data: 'ket_jabatan',name: 'ket_jabatan'},
                 {data: 'action',name: 'action'},
             ]

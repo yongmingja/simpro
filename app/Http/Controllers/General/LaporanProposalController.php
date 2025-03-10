@@ -200,7 +200,7 @@ class LaporanProposalController extends Controller
             ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
             ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
             ->where('proposals.id','=',$ID)
-            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
             ->first();
 
         foreach($datas as $r){
@@ -281,7 +281,7 @@ class LaporanProposalController extends Controller
                 ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
                 ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
                 ->where('proposals.id','=',$r->id_proposal)
-                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
 
             $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')

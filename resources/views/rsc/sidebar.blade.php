@@ -28,11 +28,12 @@
         
         $getPeran = $getModelJabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
             ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-            ->select('jabatans.kode_jabatan')
+            ->select('jabatans.kode_jabatan','jabatan_pegawais.ket_jabatan')
             ->first();
 
             if(session()->get('selected_peran') == null){
                 $recentPeranIs = $getPeran->kode_jabatan;
+                $recentPeranKet = $getPeran->ket_jabatan;
             } else {
                 $recentPeranIs = session()->get('selected_peran');
             }
@@ -73,13 +74,17 @@
             <!-- Switching role -->
             @if (Auth::guard('pegawai')->user() && $countRole == 1)
                 <li class="mt-1 nav-item me-2 me-xl-0">
+                    @if($recentPeranKet != null)
+                    <button class="btn btn-outline-warning" style="cursor:no-drop;" id="roleDefault">current-role as <b>{{ $recentPeranKet }}</b></button>
+                    @else
                     <button class="btn btn-outline-warning" style="cursor:no-drop;" id="roleDefault">current-role as <b>{{ $recentPeranIs }}</b></button>
+                    @endif
                 </li>
             @elseif(Auth::guard('pegawai')->user() && $countRole > 1)
                 @php 
                     $checkJabatanPeg = \App\Models\Master\JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                         ->where('jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id)
-                        ->select('jabatan_pegawais.id_jabatan','jabatans.kode_jabatan','jabatans.nama_jabatan')
+                        ->select('jabatan_pegawais.id_jabatan','jabatan_pegawais.ket_jabatan','jabatans.kode_jabatan','jabatans.nama_jabatan')
                         ->orderBy('jabatans.nama_jabatan','ASC')
                         ->get();
                 @endphp
@@ -87,7 +92,11 @@
                 <li class="nav-item">
                     <select class="select2 form-control" id="selectPeran">
                         @foreach($checkJabatanPeg as $japeg)
+                        @if($japeg->ket_jabatan != null)
+                        <option {{$japeg->kode_jabatan == $recentPeranIs ? 'selected' : ''}} value="{{$japeg->kode_jabatan}}">{{$japeg->ket_jabatan}}</option>
+                        @else
                         <option {{$japeg->kode_jabatan == $recentPeranIs ? 'selected' : ''}} value="{{$japeg->kode_jabatan}}">{{$japeg->nama_jabatan}}</option>
+                        @endif
                         @endforeach
                     </select>
                 </li> 

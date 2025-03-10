@@ -9,7 +9,7 @@
             <h5>Hallo, {{ Auth::user()->nama_pegawai }}</h5>
             <h4>Selamat datang di Dashboard Sistem Pengajuan Proposal Kegiatan</h4>
         </div>
-        @if($recentRole == 'DSN')
+        @if($recentRole == 'PEGS')
         <div class="row">
           <div class="col-sm-6 col-lg-3 mb-4">
             <div class="card card-border-shadow-primary h-100">
@@ -238,7 +238,7 @@
           </div>
         @endif
 
-        @if($recentRole == 'DKN-BRO')
+        @if($recentRole == 'PEG')
           <div class="row">
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
               <div class="card h-100">

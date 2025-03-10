@@ -226,7 +226,7 @@
                                         @if($getPengusul != null)
                                             <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                                                 <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>{{$getPengusul->nama_jabatan}}</i>
+                                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>@if($getPengusul->ket_jabatan != '') {{$getPengusul->ket_jabatan}} @else {{$getPengusul->nama_jabatan}} @endif</i>
                                             </td>
                                         @endif
                                         @if($getDiketahui != null)
@@ -248,7 +248,7 @@
                                 @if($getPengusul != null)
                                     <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                                         <p style="margin-top: 2em;"></p>
-                                        <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>{{$getPengusul->nama_jabatan}}</i>
+                                        <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>@if($getPengusul->ket_jabatan != '') {{$getPengusul->ket_jabatan}} @else {{$getPengusul->nama_jabatan}} @endif</i>
                                     </td>
                                 @endif
                                 @if($getDiketahui != null)

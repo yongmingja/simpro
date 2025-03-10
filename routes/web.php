@@ -141,7 +141,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:DKN-BRO'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:PEG,UCC'])->group(function() {
     Route::view('/dekan', 'dashboard.dekan-dashboard')->name('dashboard-dekan');
     Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');
     Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');

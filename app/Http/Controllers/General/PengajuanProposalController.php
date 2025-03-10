@@ -222,23 +222,23 @@ class PengajuanProposalController extends Controller
         // $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
         // $getEmailAddress = DB::table('pegawais')->select('email')->where('user_id',$catchUserID->user_id)->first();
         # get Email Dekan
-        $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','DKN-BRO'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]]) # Remember, not only Dekan but also BIRO
-            ->select('pegawais.email')
-            ->first();
+        // $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //     ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]]) # Remember, not only Dekan but also BIRO
+        //     ->select('pegawais.email')
+        //     ->first();
         # get Email Admin Umum
-        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where('jabatans.kode_jabatan','=','ADU')
-            ->select('pegawais.email')
-            ->first();
-        $listEmail = ['bejisokhi@outlook.com',$emailDekanBiro->email];
+        // $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //     ->where('jabatans.kode_jabatan','=','ADU')
+        //     ->select('pegawais.email')
+        //     ->first();
+        // $listEmail = ['bejisokhi@outlook.com',$emailDekanBiro->email];
 
-        $isiData = [
-            'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
-            'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
-        ];
+        // $isiData = [
+        //     'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+        //     'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
+        // ];
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
@@ -492,7 +492,7 @@ class PengajuanProposalController extends Controller
             ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
             ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
             ->where('proposals.id','=',$ID)
-            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+            ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
             ->first();
 
         foreach($datas as $r){ 
@@ -548,7 +548,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
                 ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
                 ->where('proposals.id','=',$r->id_proposal)
-                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai')
+                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
 
             $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
@@ -789,7 +789,7 @@ class PengajuanProposalController extends Controller
         # get Email Dekan
         $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
             ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','DKN-BRO'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
+            ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
             ->select('pegawais.email')
             ->first();
         # get Email Admin Umum
@@ -831,7 +831,7 @@ class PengajuanProposalController extends Controller
         # get Email Dekan
         $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
             ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','DKN-BRO'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
+            ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
             ->select('pegawais.email')
             ->first();
         # get Email Admin Umum
