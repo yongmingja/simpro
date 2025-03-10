@@ -172,7 +172,8 @@ class LaporanProposalController extends Controller
             ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
             ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
             ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','laporan_proposals.id AS id_laporan','laporan_proposals.*','laporan_proposals.penutup AS lap_penutup','laporan_proposals.created_at AS tgl_laporan','pegawais.nama_pegawai AS nama_user_dosen')
+            ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','laporan_proposals.id AS id_laporan','laporan_proposals.*','laporan_proposals.penutup AS lap_penutup','laporan_proposals.created_at AS tgl_laporan','pegawais.nama_pegawai AS nama_user_dosen','form_rkats.kode_renstra')
             ->where('proposals.id',$ID)
             ->orderBy('proposals.id','DESC')
             ->get();

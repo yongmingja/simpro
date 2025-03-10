@@ -60,7 +60,6 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_pengaju')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',5]])
-                ->orWhere('status_proposals.status_approval',3)
                 ->orderBy('proposals.id','DESC')
                 ->get();
         }
@@ -72,7 +71,6 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_pengaju')
                 ->where([['proposals.user_id',Auth::user()->user_id],['proposals.is_archived',0],['status_proposals.status_approval',4]])
-                ->orWhere('status_proposals.status_approval',2)
                 ->orderBy('proposals.id','DESC')
                 ->get();
         }
@@ -464,7 +462,8 @@ class PengajuanProposalController extends Controller
             ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
             ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
             ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen')
+            ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user_dosen','form_rkats.kode_renstra')
             ->where('proposals.id',$ID)
             ->orderBy('proposals.id','DESC')
             ->get();

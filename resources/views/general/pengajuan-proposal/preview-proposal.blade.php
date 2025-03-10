@@ -114,7 +114,7 @@
             </div>
 
             <div class="tag-kode">
-                <p>KODE RENSTRA:<br>Kode AKUN:</p>
+                <p>KODE RENSTRA: @foreach($datas as $kr) <b>{{$kr->kode_renstra}}</b> @endforeach<br>Kode AKUN:</p>
             </div>
         </div>
 

@@ -49,8 +49,7 @@ class LaporanProposalController extends Controller
                 ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','laporan_proposals.created_at AS tgl_proposal')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',3]])
-                ->orWhere('status_laporan_proposals.status_approval',5)
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',5]])
                 ->get();
         }
         if($request->status == 'denied'){
@@ -61,8 +60,7 @@ class LaporanProposalController extends Controller
                 ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','laporan_proposals.created_at AS tgl_proposal')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',2]])
-                ->orWhere('status_laporan_proposals.status_approval',4)
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',4]])
                 ->get();
         }
 

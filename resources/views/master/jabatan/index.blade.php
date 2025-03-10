@@ -36,7 +36,7 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Kode Jabatan</th>
-                                  <th>Nama Jabatan</th>
+                                  <th>Level (Nama Jabatan)</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>

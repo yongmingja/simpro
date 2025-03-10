@@ -14,8 +14,19 @@ class DataProposalController extends Controller
 {
     public function index(Request $request)
     {
+        // $recentRole = Session::get('selected_peran');
+        if(session()->get('selected_peran') == ''){
+            $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+                ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
+                ->select('jabatans.kode_jabatan','jabatan_pegawais.id_fakultas_biro')
+                ->first();
+            $recentRole = $getPeran->kode_jabatan;
+        } else {
+            $recentRole = session()->get('selected_peran');
+        }
+
         $getJabatanIs = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=','PEG']]) # Remember this is not only for DKN but for BRO as well, so this is not the best query
+            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=',$recentRole]]) # Remember this is not only for DKN but for BRO as well, so this is not the best query
             ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
@@ -26,7 +37,7 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where('proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro)
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval','>',0]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
         }
@@ -49,8 +60,7 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',3]])
-                ->orWhere('status_proposals.status_approval',5)
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',5]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 
@@ -62,8 +72,7 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',2]])
-                ->orWhere('status_proposals.status_approval',4)
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',4]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 
