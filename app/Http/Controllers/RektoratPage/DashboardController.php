@@ -436,14 +436,14 @@ class DashboardController extends Controller
         if($request->status == '' || $request->status == 'all'){
             $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
         }
         if($request->status == 'pending'){
             $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->where('status_laporan_fpkus.status_approval',1)
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
@@ -451,7 +451,7 @@ class DashboardController extends Controller
         if($request->status == 'accepted'){
             $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->where('status_laporan_fpkus.status_approval',3)
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
@@ -459,7 +459,7 @@ class DashboardController extends Controller
         if($request->status == 'denied'){
             $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->where('status_laporan_fpkus.status_approval',2)
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
@@ -484,8 +484,11 @@ class DashboardController extends Controller
                 } else {
                     return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
+            })->addColumn('ketua_pelaksana', function($data){
+                $name = Pegawai::where('id','=',$data->ketua)->select('nama_pegawai')->first();
+                return $name->nama_pegawai;
             })
-            ->rawColumns(['action','undangan','lampirans'])
+            ->rawColumns(['action','undangan','lampirans','ketua_pelaksana'])
             ->addIndexColumn(true)
             ->make(true);
         }

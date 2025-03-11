@@ -221,7 +221,7 @@
                                               </tr>
                                             </table>
                                           </div>
-                                          <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada sarana prasarana yang dibutuhkan.</i></p>
+                                          <p style="font-size: 14px;" class="text-info">**Silakan klik next jika tidak ada sarana prasarana yang dibutuhkan</p>
                                           <div class="col-12 d-flex justify-content-between">
                                             <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                               <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -259,7 +259,7 @@
                                             
                                             <tbody id="table-body">
                                                 <tr>
-                                                    <td><input type="text" class="form-control" id="item" name="rows[0][item]" value="" placeholder="Input item" /></td>
+                                                    <td><input type="text" class="form-control" id="item" name="rows[0][item]" value="" placeholder="Input nama item" /></td>
                                                     <td><input type="number" class="form-control biaya_satuan" id="biaya_satuan" name="rows[0][biaya_satuan]" value="" min="0" onkeyup="OnChange(this)" /></td>
                                                     <td><input type="number" class="form-control quantity" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this)" /></td>
                                                     <td><input type="number" class="form-control frequency" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this)" /></td>
@@ -280,7 +280,7 @@
                                             </tfoot>                                        
                                         </table>
                                         
-                                          <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak memiliki rencana anggaran pada proposal kegiatan.</i></p>
+                                          <p style="font-size: 14px;" class="text-info">**Silakan klik next jika tidak memiliki rencana anggaran pada proposal kegiatan</p>
                                           <div class="col-12 d-flex justify-content-between">
                                             <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                               <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -299,9 +299,9 @@
                                         <small>Upload Lampiran Proposal.</small>
                                         </div>
                                         <div class="col form-group p-0">
-                                                <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
+                                                <p style="font-size: 12px; line-height:14px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
                                         </div>
-                                        <input type="checkbox" id="switch" name="switch" class="mb-3">
+                                        <input type="checkbox" id="switch" name="switch" class="mb-3"> Upload Berkas
                                         <div class="row g-3">                                    
                                             <div>
                                                 <div class="row firstRow">
@@ -322,7 +322,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p style="font-size: 14px;" class="text-warning"><i>*Silakan klik next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                            <p style="font-size: 14px;" class="text-info">**Silakan klik next jika tidak ada data atau berkas yang ingin dilampirkan</p>
                                             <div class="col-12 d-flex justify-content-between">
                                                 <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                                 <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -595,7 +595,7 @@
         ++j;
 
         $("#table-body").append(`<tr>
-            <td><input type="text" class="form-control" name="rows['+j+'][item]" placeholder="Input item" /></td>
+            <td><input type="text" class="form-control" name="rows['+j+'][item]" placeholder="Input nama item" /></td>
             <td><input type="number" class="form-control biaya_satuan" name="rows['+j+'][biaya_satuan]" min="0" onkeyup="OnChange(this)" /></td>
             <td><input type="number" class="form-control quantity" name="rows['+j+'][quantity]" min="0" onkeyup="OnChange(this)" /></td>
             <td><input type="number" class="form-control frequency" name="rows['+j+'][frequency]" min="0" onkeyup="OnChange(this)" /></td>

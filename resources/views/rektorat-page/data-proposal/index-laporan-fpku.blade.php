@@ -42,6 +42,7 @@
                                 <th>Validasi</th>
                                 <th>Undangan</th>
                                 <th>Nama Kegiatan</th>
+                                <th>Ketua Pelaksana</th>
                                 <th>Tgl Kegiatan</th>
                                 <th>Lampiran</th>
                             </tr>
@@ -144,6 +145,7 @@
                     {data: 'action',name: 'action'},
                     {data: 'undangan',name: 'undangan'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'ketua_pelaksana',name: 'ketua_pelaksana'},
                     {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
                     {data: 'lampirans',name: 'lampirans'},
                 ]

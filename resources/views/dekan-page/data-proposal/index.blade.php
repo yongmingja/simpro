@@ -42,6 +42,7 @@
                                 <th>Preview</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
+                                <th>Total Anggaran</th>
                                 <th>Proposal Dibuat</th>
                                 <th>Nama Fakultas / Biro</th>
                                 <th>Nama Prodi / Biro</th>
@@ -152,6 +153,7 @@
                             return moment(row.tgl_event).format("DD MMM YYYY")
                         }
                     },
+                    {data: 'total',  render: $.fn.dataTable.render.number( ',', '.', 0, 'Rp' )},
                     {data: 'created_at',name: 'created_at',
                         render: function ( data, type, row ){
                             return moment(row.created_at).format("DD MMM YYYY")
