@@ -10,7 +10,7 @@
 
     <br>
     <br>
-    <h5>Regards,</h5>
-    <h5><i>Staf UPT SI</i></h5>
+    <h5>Regards,</h5><br>
+    <h5><i>Wakil Rektor</i></h5>
 </body>
 </html>

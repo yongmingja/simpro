@@ -72,8 +72,8 @@
                         <div class="col-sm-2 mb-3">
                             <fieldset class="form-group">
                                 <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
-                                    <option value="all">Semua Proposal</option>
-                                    <option value="pending" selected>Pending (default)</option>
+                                    <option value="all" selected>Semua Proposal (default)</option>
+                                    <option value="pending">Pending</option>
                                     <option value="accepted">Diterima</option>
                                     <option value="denied">Ditolak</option>
                                 </select>

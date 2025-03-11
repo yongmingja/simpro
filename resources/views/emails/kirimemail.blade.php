@@ -11,6 +11,6 @@
     <br>
     <br>
     <h5>Regards,</h5>
-    <h5><i>Staf UPT SI</i></h5>
+    <h5><i>Layanan SIMPRO</i></h5>
 </body>
 </html>

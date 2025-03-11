@@ -62,7 +62,7 @@
                                                 <span class="text-danger" id="kodeJabatanErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
-                                                <label for="nama_jabatan" class="form-label">Nama Jabatan</label>
+                                                <label for="nama_jabatan" class="form-label">Level (Nama Jabatan)</label>
                                                 <input type="text" class="form-control" id="nama_jabatan" name="nama_jabatan" value="" />
                                                 <span class="text-danger" id="namaJabatanErrorMsg" style="font-size: 10px;"></span>
                                             </div> 

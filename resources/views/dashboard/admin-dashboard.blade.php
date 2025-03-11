@@ -162,7 +162,7 @@
 
         @if($recentRole == 'WRSDP' || $recentRole == 'WRAK')
           <div class="row">
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+            <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
                   <h5 class="card-title mb-2">Total Proposals</h5>
@@ -199,7 +199,7 @@
               </div>
             </div>
             <!-- Colom ke 2 -->
-            <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
+            <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
                   <h5 class="card-title mb-2">Total Laporan Proposals</h5>
@@ -235,7 +235,45 @@
                 </div>
               </div>
             </div>
+            <!-- Colom ke 3 -->
+            <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5 class="card-title mb-2">Total Proposals Saya</h5>
+                  <h1 class="display-6 fw-normal mb-0">{{$countProposals}}</h1>
+                </div>
+                <div class="card-body">
+                  <ul class="p-0 m-0">
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-warning me-2"></span> Jumlah Proposal Pending
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$countProposalOnGoing}}</span>
+                      </div>
+                    </li>
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-success me-2"></span> Jumlah Proposal Diterima
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$countProposalAcc}}</span>
+                      </div>
+                    </li>                    
+                    <li class="mb-3 d-flex justify-content-between">
+                      <div class="d-flex align-items-center lh-1 me-3">
+                        <span class="badge badge-dot bg-danger me-2"></span> Jumlah Proposal Ditolak
+                      </div>
+                      <div class="d-flex gap-3">
+                        <span class="fw-medium">{{$countProposalDeclined}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
+          
         @endif
 
         @if($recentRole == 'PEG')

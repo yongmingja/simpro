@@ -30,8 +30,8 @@
                         <div class="col-sm-2 mb-3">
                             <fieldset class="form-group">
                                 <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
-                                    <option value="all" selected>Semua data</option>
-                                    <option value="pending" >Pending (default)</option>
+                                    <option value="all" selected>Semua data (default)</option>
+                                    <option value="pending">Pending</option>
                                     <option value="accepted">Telah divalidasi</option>
                                 </select>
                             </fieldset>

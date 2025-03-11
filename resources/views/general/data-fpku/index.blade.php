@@ -97,7 +97,7 @@
                                                 <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="ketua" class="form-label">Ketua</label>
+                                                <label for="ketua" class="form-label">PIC Pembuat Laporan</label>
                                                 <select class="form-select select2" id="ketua" name="ketua" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_ketua">- Pilih -</option>
                                                     @foreach($getDataPegawai as $pegawai)
@@ -107,7 +107,7 @@
                                                 <span class="text-danger" id="ketuaErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="id_pegawai" class="form-label">Peserta Kegiatan (Include Ketua)</label>
+                                                <label for="id_pegawai" class="form-label">Peserta Kegiatan (Include PIC Pembuat Laporan)</label>
                                                 <select class="form-select select2" multiple id="id_pegawai" name="id_pegawais[]" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_pegawai">- Pilih -</option>
                                                     @foreach($getDataPegawai as $pegawai)

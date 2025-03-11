@@ -35,8 +35,8 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Pengusul</th>
-                                  <th>Diketahui oleh</th>
+                                  <th>Level Jabatan Pengusul</th>
+                                  <th>level Jabatan Diketahui oleh</th>
                                   <th>Actions</th>
                                 </tr>
                               </thead>
@@ -57,7 +57,7 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="diusulkan_oleh" class="form-label">Pengusul</label>
+                                                <label for="diusulkan_oleh" class="form-label">level Jabatan Pengusul</label>
                                                 <select class="form-select" id="diusulkan_oleh" name="diusulkan_oleh" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_pengusul">- Pilih -</option>
                                                     @foreach($getJabatan as $pengusul)
@@ -67,7 +67,7 @@
                                                 <span class="text-danger" id="pengusulErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
-                                                <label for="diketahui_oleh" class="form-label">Diketahui Oleh</label>
+                                                <label for="diketahui_oleh" class="form-label">level Jabatan Diketahui Oleh</label>
                                                 <select class="form-select" id="diketahui_oleh" name="diketahui_oleh" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_diketahui">- Pilih -</option>
                                                     @foreach($getJabatan as $diketahui)

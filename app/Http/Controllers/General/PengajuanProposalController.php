@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\KirimEmail;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\Jabatan;
+use App\Models\Master\Pegawai;
 use App\Models\Master\HandleProposal;
 use App\Models\Master\FormRkat;
 use App\Models\Master\ValidatorProposal;
@@ -190,7 +191,7 @@ class PengajuanProposalController extends Controller
 
     public function insertProposal(Request $request)
     {
-        $getPegawaiName = DB::table('pegawais')->select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
+        
         $request->validate([
             'id_jenis_kegiatan' => 'required',
             'nama_kegiatan'     => 'required',
@@ -214,29 +215,7 @@ class PengajuanProposalController extends Controller
             'lokasi_tempat.required'        => 'Anda belum menginput lokasi kegiatan',
             'berkas.*.max'                  => 'Ukuran berkas tidak boleh melebihi 2MB', 
             'berkas.*.mimes'                => 'File harus berjenis (pdf atau docx)',
-        ]);
-
-        # get email WR
-        // $catchUserID = DB::table('handle_proposals')->select('user_id')->whereIn('id_jenis_kegiatan',[$request->id_jenis_kegiatan])->first();
-        // $getEmailAddress = DB::table('pegawais')->select('email')->where('user_id',$catchUserID->user_id)->first();
-        # get Email Dekan
-        // $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-        //     ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]]) # Remember, not only Dekan but also BIRO
-        //     ->select('pegawais.email')
-        //     ->first();
-        # get Email Admin Umum
-        // $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-        //     ->where('jabatans.kode_jabatan','=','ADU')
-        //     ->select('pegawais.email')
-        //     ->first();
-        // $listEmail = ['bejisokhi@outlook.com',$emailDekanBiro->email];
-
-        // $isiData = [
-        //     'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
-        //     'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
-        // ];
+        ]);      
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
@@ -254,8 +233,7 @@ class PengajuanProposalController extends Controller
                     'detil_kegiatan'        => $request->detil_kegiatan,
                     'penutup'               => $request->penutup,
                     'validasi'              => 1,
-                ]);
-        // Mail::to($listEmail)->send(new KirimEmail($isiData));
+                ]);        
 
         $latest_id = Proposal::latest()->first();
 
@@ -363,6 +341,32 @@ class PengajuanProposalController extends Controller
             }
             return redirect()->route('submission-of-proposal.index');
         }
+
+        # get Email Dekan
+        $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]])
+            ->select('pegawais.email')
+            ->first();
+        # get Email Admin Umum
+        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+            ->where('jabatans.kode_jabatan','=','ADU')
+            ->select('pegawais.email')
+            ->first();
+        $listEmail = strtolower([$emailADU->email,$emailDekanBiro->email]);
+        $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
+
+        if (isset($listEmail) && count($listEmail) > 0){
+            $isiData = [
+                'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+                'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
+            ];
+            Mail::to($listEmail)->send(new KirimEmail($isiData));
+        } else {
+            return 'No valid email addresses found';
+        }  
+        
         return response()->json($post);
     }
 
