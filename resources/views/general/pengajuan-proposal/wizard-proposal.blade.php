@@ -397,6 +397,10 @@
                 if (optionId !== 'Rektorat') {
                     option.disabled = true;
                 }
+            } else {
+                if(optionId === 'Rektorat') {
+                    option.disabled = true;
+                }
             }
         }
     });

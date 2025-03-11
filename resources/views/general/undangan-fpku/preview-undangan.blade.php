@@ -90,13 +90,23 @@
                     <th style="vertical-align: middle; text-align: center;" class="th_keperluan">No</th>
                     <th style="vertical-align: middle; text-align: center;" class="th_keperluan"><b>Keperluan</b><br>(nama barang, jenis pelayanan, waktu, jumlah, detil lain)</th>
                 </tr>
+            </thead>
+            <tbody>
+
+                @if($dataKeperluan->count() > 0)
                 @foreach($dataKeperluan as $no => $keperluan)
                 <tr>
                     <td style="text-align: center;" class="td_keperluan">{{++$no}}.</td>
                     <td class="td_keperluan" style="padding-left: 10px;">{{$keperluan->isi_keperluan}}</td>
                 </tr>
                 @endforeach
-            </thead>
+                @else
+                <tr>
+                    <td colspan="2" style="text-align: center;" class="td_keperluan">Tidak ada data keperluan</td>
+                </tr>
+                @endif
+            </tbody>
+            
         </table>
     </div>
     <div class="catatan">
@@ -115,13 +125,13 @@
                 @foreach($verifiedQrCode as $qr)
                 <tr>
                     <td><br>Menyetujui,<br>Wakil Rektor Sumber Daya dan Pengembangan <br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}" style="margin-top: 1.5em;"><br>Benny Roesly, M.Pd</td>
-                    <td>Batam, {{tanggal_indonesia(now())}} <br>Yang membuat <br>Staf Adminitrasi dan Umum <br><br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}"><br>@foreach($dataUndangan as $nmUser) {{$nmUser->nama_pegawai}} @endforeach</td>
+                    <td>Batam, @foreach($dataUndangan as $tanggal) {{tanggal_indonesia($tanggal->created_at)}} @endforeach <br>Yang membuat <br>Staf Adminitrasi dan Umum <br><br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}"><br>@foreach($dataUndangan as $nmUser) {{$nmUser->nama_pegawai}} @endforeach</td>
                 </tr>
                 @endforeach
             @else
             <tr>
                 <td><br>Menyetujui,<br>Wakil Rektor Sumber Daya dan Pengembangan <br><p style="margin-top: 5em;"></p>Benny Roesly, M.Pd</td>
-                <td>Batam, {{tanggal_indonesia(now())}} <br>Yang membuat <br>Staf Adminitrasi dan Umum <br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate('Not verified by WRSDP!')) !!}" style="margin-top: 1em;"><br>@foreach($dataUndangan as $nmUser) {{$nmUser->nama_pegawai}} @endforeach</td>
+                <td>Batam, @foreach($dataUndangan as $tanggal) {{tanggal_indonesia($tanggal->created_at)}} @endforeach <br>Yang membuat <br>Staf Adminitrasi dan Umum <br><img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(80)->errorCorrection('H')->generate('Not verified by WRSDP!')) !!}" style="margin-top: 1em;"><br>@foreach($dataUndangan as $nmUser) {{$nmUser->nama_pegawai}} @endforeach</td>
             </tr>
             @endif
         </table>

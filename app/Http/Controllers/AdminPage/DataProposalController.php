@@ -72,26 +72,32 @@ class DataProposalController extends Controller
                 </tr>
                 </thead>
                 <tbody>';
-        foreach($datas as $no => $data){
-            $html .= '<tr>
-                <td><input type="checkbox" name="detail_checkbox" data-id="'.$data->id.'"><label></label></td>
-                <td>'.++$no.'</td>
-                <td>'.tanggal_indonesia($data->tgl_kegiatan).'</td>
-                <td>'.$data->sarpras_item.'</td>
-                <td>'.$data->jumlah.'</td>
-                <td style="text-align: center;">';
-                if($data->status == '1'){
-                    $html .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
-                } else if($data->status == '2'){
-                    $html .= '<span class="badge bg-label-success">Diterima</span>';
-                } else if($data->status == '3'){
-                    $html .= '<span class="badge bg-label-danger">Ditolak</span>';
+                if($datas->count() > 0){
+                    foreach($datas as $no => $data){
+                        $html .= '<tr>
+                            <td><input type="checkbox" name="detail_checkbox" data-id="'.$data->id.'"><label></label></td>
+                            <td>'.++$no.'</td>
+                            <td>'.tanggal_indonesia($data->tgl_kegiatan).'</td>
+                            <td>'.$data->sarpras_item.'</td>
+                            <td>'.$data->jumlah.'</td>
+                            <td style="text-align: center;">';
+                            if($data->status == '1'){
+                                $html .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                            } else if($data->status == '2'){
+                                $html .= '<span class="badge bg-label-success">Diterima</span>';
+                            } else if($data->status == '3'){
+                                $html .= '<span class="badge bg-label-danger">Ditolak</span>';
+                            } else {
+                                $html .= '<span class="badge bg-label-success">Diterima</span>';
+                            }
+                            $html .= '</td>   
+                        </tr>';
+                    }
                 } else {
-                    $html .= '<span class="badge bg-label-success">Diterima</span>';
+                    $html .= '<tr>
+                        <td colspan="6" style="text-align: center;">No data available in table</td>                    
+                    </tr>';
                 }
-                $html .= '</td>   
-            </tr>';
-        }
             $html .= '</tbody>
                 </table> 
                 <div style="font-size: 12px;"><p class="mt-2 text-warning"><i>*Silahkan gunakan centang untuk validasi semua sarpras</i></p>   </div>        
