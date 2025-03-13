@@ -239,7 +239,7 @@
                             @if($getPengusul != null)
                             <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                                 <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                <br><br><b>{{$getPengusul->nama_pegawai}}</b>
+                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>Ketua Pelaksana</i>
                             </td>
                             @endif
                             <td class="tdfooterauditor">Disetujui oleh,<br><br> 
@@ -253,7 +253,7 @@
                             @if($getPengusul != null)
                             <td class="tdfooterauditor" colspan="10">Disusun oleh,<br><br>
                                 <p style="margin-top: 2em;"></p>
-                                <br><br><b>{{$getPengusul->nama_pegawai}}</b>
+                                <br><br><b>{{$getPengusul->nama_pegawai}}</b><br><i>Ketua Pelaksana</i>
                             </td>
                             @endif
                             <td class="tdfooterauditor">Disetujui oleh,<br><br> 
