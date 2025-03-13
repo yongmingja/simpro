@@ -309,8 +309,9 @@ class LaporanFpkuController extends Controller
 
         # Get Pengusul according to proposal.user_id
         $getPengusul = DB::table('laporan_fpkus')->leftJoin('pegawais','pegawais.id','=','laporan_fpkus.dibuat_oleh')
+            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
             ->where('laporan_fpkus.id_fpku',$ID)
-            ->select('pegawais.nama_pegawai')
+            ->select('pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
             ->first();
         
         

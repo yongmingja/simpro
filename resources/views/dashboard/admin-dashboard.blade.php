@@ -160,12 +160,12 @@
         </div>
         @endif
 
-        @if($recentRole == 'WRSDP' || $recentRole == 'WRAK')
+        @if($recentRole == 'WAREK' || $recentRole == 'RKT')
           <div class="row">
             <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Proposals</h5>
+                  <h5 class="card-title mb-2">Total Proposals as {{$recentRole}}</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$totalProposals}}</h1>
                 </div>
                 <div class="card-body">

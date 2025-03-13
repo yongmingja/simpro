@@ -45,10 +45,6 @@
             ->select('jabatans.kode_jabatan')
             ->where('jabatans.kode_jabatan',$recentPeranIs)
             ->get();
-        $checkIDValidatorDisetujui = $getModelHandleProposal::leftJoin('jabatans','jabatans.id','=','handle_proposals.id_jabatan')
-            ->select('jabatans.kode_jabatan')
-            ->where('jabatans.kode_jabatan',$recentPeranIs)
-            ->get();
 
         $totalData = $getModelFormRkat::where('status_validasi',0)->count();
 
@@ -307,13 +303,10 @@
         @if($checkIDValidatorPengusul->count() > 0)
             @foreach($checkIDValidatorPengusul as $idvalidator)
                 @if($idvalidator->kode_jabatan == $recentPeranIs)
-                <li class="menu-header small fw-medium">
-                    <div data-i18n="PENGUSUL">PENGUSUL</div>
-                </li> 
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}} OR {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
-                    <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-                    <div data-i18n="Proposals">Proposals</div>
+                    <i class="menu-icon tf-icons bx bx-plus-circle bx-tada-hover"></i>
+                    <div data-i18n="Buat Proposals">Buat Proposals</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item">
@@ -330,7 +323,7 @@
                 </li>
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('undangan-fpku')}} OR {{set_active('index-laporan-fpku')}} OR {{set_active('buat-laporan-fpku')}}">
-                    <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
+                    <i class="menu-icon tf-icons bx bx-mail-send bx-tada-hover"></i>
                     <div data-i18n="Undangan FPKU">Undangan FPKU</div>
                     </a>
                     <ul class="menu-sub">
@@ -350,11 +343,18 @@
             @endforeach        
         @endif
 
+        <li class="menu-item">
+            <a href="{{route('form-rkat.index')}}" class="menu-link {{set_active('form-rkat.index')}}">
+            <i class="menu-icon tf-icons bx bx-list-plus bx-tada-hover"></i>
+            <div data-i18n="Buat RKAT">Buat RKAT</div>
+            </a>
+        </li> 
+
         @if($checkIDValidatorDiketahui->count() > 0)
             @foreach($checkIDValidatorDiketahui as $idvalidator)
                 @if($idvalidator->kode_jabatan == $recentPeranIs)
                 <li class="menu-header small fw-medium">
-                    <div data-i18n="VALIDASI DEKAN/KA.BIRO">VALIDASI DEKAN/KA.BIRO</div>
+                    <div data-i18n="MENU VALIDASI">MENU VALIDASI</div>
                 </li> 
                     <li class="menu-item">
                         <a href="{{route('page-data-proposal.index')}}" class="menu-link {{set_active('page-data-proposal.index')}}">
@@ -373,76 +373,57 @@
         @endif
 
         <!-- Check if peran match and user handle the proposals -->
-        @if($checkIDValidatorDisetujui->count() > 0)
-            @foreach($checkIDValidatorDisetujui as $idvalidator)
-                @if($idvalidator->kode_jabatan == $recentPeranIs) 
-                <li class="menu-header small fw-medium">
-                    <div data-i18n="VALIDASI REKTORAT">VALIDASI REKTORAT</div>
-                </li> 
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
-                        <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-                        <div data-i18n="Proposals">Proposals</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
-                                <div data-i18n="Proposal">Proposal</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="{{route('index-hal-laporan')}}" class="menu-link {{set_active('index-hal-laporan')}}">
-                                <div data-i18n="Laporan Proposal">Laporan Proposal</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li> 
-                @endif
-            @endforeach        
-        @endif
-
-        @if($roleDefault == "WRSDP")
+        @if($roleDefault == "WAREK") 
+            <li class="menu-header small fw-medium">
+                <div data-i18n="VALIDASI REKTORAT">VALIDASI REKTORAT</div>
+            </li> 
             <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}} OR {{set_active('rlaporanfpku')}}">
-                <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
-                <div data-i18n="Undangan FPKU">Undangan FPKU</div>
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
+                <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
+                <div data-i18n="Proposals">Proposals</div>
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item">
-                        <a href="{{route('rundanganfpku')}}" class="menu-link {{set_active('rundanganfpku')}}">
-                        <div data-i18n="Undangan">Undangan</div>
+                        <a href="{{route('dashboard-rektorat')}}" class="menu-link {{set_active('dashboard-rektorat')}}">
+                        <div data-i18n="Proposal">Proposal</div>
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="{{route('rlaporanfpku')}}" class="menu-link {{set_active('rlaporanfpku')}}">
-                        <div data-i18n="Laporan FPKU">Laporan FPKU</div>
+                        <a href="{{route('index-hal-laporan')}}" class="menu-link {{set_active('index-hal-laporan')}}">
+                        <div data-i18n="Laporan Proposal">Laporan Proposal</div>
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li class="menu-header small fw-medium">
-                <div data-i18n="DATABASE RKAT">DATABASE RKAT</div>
             </li> 
-            <li class="menu-item">
-                <a href="{{route('index-form-rkat')}}" class="menu-link {{set_active('index-form-rkat')}}">
-                <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
-                <div data-i18n="Form RKAT">Form RKAT</div>
-                <div class="badge bg-danger rounded-pills ms-auto" style="border-radius: 15px;">{{$totalData}}</div>
-                </a>
-                
-            </li> 
-        @endif 
-        @if($roleDefault != "WRSDP")
-        <li class="menu-header small fw-medium">
-            <div data-i18n="DATABASE RKAT">DATABASE RKAT</div>
-        </li> 
-        <li class="menu-item">
-            <a href="{{route('form-rkat.index')}}" class="menu-link {{set_active('form-rkat.index')}}">
-            <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
-            <div data-i18n="Form RKAT">Form RKAT</div>
-            </a>
-        </li> 
-        @endif  
+            @if($roleDefault == "WAREK" AND $recentPeranKet == "WRSDP")
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}} OR {{set_active('rlaporanfpku')}}">
+                    <i class="menu-icon tf-icons bx bx-user-check bx-tada-hover"></i>
+                    <div data-i18n="Validasi FPKU">Validasi FPKU</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{route('rundanganfpku')}}" class="menu-link {{set_active('rundanganfpku')}}">
+                            <div data-i18n="Undangan">Undangan</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{route('rlaporanfpku')}}" class="menu-link {{set_active('rlaporanfpku')}}">
+                            <div data-i18n="Laporan FPKU">Laporan FPKU</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu-item">
+                    <a href="{{route('index-form-rkat')}}" class="menu-link {{set_active('index-form-rkat')}}">
+                    <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
+                    <div data-i18n="Validasi Form RKAT">Validasi Form RKAT</div>
+                    <div class="badge bg-danger rounded-pills ms-auto" style="border-radius: 15px;">{{$totalData}}</div>
+                    </a>
+                    
+                </li> 
+            @endif 
+        @endif        
     @endif
     
     </ul>

@@ -180,20 +180,7 @@ class HomeController extends Controller
 
     protected function arrJenisKegiatan()
     {
-        $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-            ->select('jabatans.kode_jabatan','jabatans.id AS id_jabatan')
-            ->first();
-
-            if(session()->get('selected_peran') == null){
-                $recentPeranIs = $getPeran->kode_jabatan;
-                $recentPeranId = $getPeran->id_jabatan;
-            } else {
-                $recentPeranIs = session()->get('selected_peran');
-                $recentPeranId = $getPeran->id_jabatan;
-            }
-
-        $datas = HandleProposal::select('id_jenis_kegiatan')->where('id_jabatan',$recentPeranId)->get();
+        $datas = HandleProposal::select('id_jenis_kegiatan')->where('id_pegawai',Auth::user()->id)->get();
         $getID = [];
         if($datas->count() > 0){
             foreach($datas as $data){

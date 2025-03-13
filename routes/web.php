@@ -133,6 +133,9 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::delete('delete-laporan-fpku','General\LaporanFpkuController@hapusLaporanFpku')->name('delete-laporan-fpku');
 
     Route::get('data-form-rkat','Master\FormRkatController@dataForm')->name('data-form-rkat');
+    Route::get('lihat-detail-anggaran','DekanPage\DataProposalController@lihatDetailAnggaran')->name('lihat-detail-anggaran');
+    Route::get('lihat-detail-realisasi-anggaran','DekanPage\LaporanProposalController@lihatDetailRealisasiAnggaran')->name('lihat-detail-realisasi-anggaran');
+    Route::get('lihat-detail-anggaran-fpku','RektoratPage\DashboardController@lihatDetailAnggaran')->name('lihat-detail-anggaran-fpku');
 });
 
 /* 
@@ -141,7 +144,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:PEG,UCC'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:PEG,UCC,RKT'])->group(function() {
     Route::view('/dekan', 'dashboard.dekan-dashboard')->name('dashboard-dekan');
     Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');
     Route::get('data-dash-dekan','AdminPage\DataUser\DataDekanController@dashDekan')->name('data-dash-dekan');
@@ -160,7 +163,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:PEG,UCC'])->group(functio
 |---------------------------------------------
 */
 
-Route::middleware(['auth:pegawai','verified', 'cekrole:WRAK,WRSDP,RKT'])->group(function() {
+Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT'])->group(function() {
     Route::get('/rektorat', 'RektoratPage\DashboardController@index')->name('dashboard-rektorat');
     Route::post('approval-n','RektoratPage\DashboardController@approvalN')->name('approval-n');
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');

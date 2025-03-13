@@ -238,7 +238,7 @@
                                         @if($getDisetujui != null)
                                         <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                                             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                            <br><br><b>{{$getDisetujui->nama_pegawai}}</b><br><i>{{$getDisetujui->kode_jabatan}}</i>
+                                            <br><br><b>{{$getDisetujui->nama_pegawai}}</b><br><i>@if($getDisetujui->ket_jabatan != '') {{$getDisetujui->ket_jabatan}} @else {{$getDisetujui->kode_jabatan}} @endif</i>
                                         </td>
                                         @endif
                                 </tr> 
@@ -260,7 +260,7 @@
                                 @if($getDisetujui != null)
                                 <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                                     <p style="margin-top: 2em;"></p>
-                                    <br><br><b>{{$getDisetujui->nama_pegawai}}</b><br><i>{{$getDisetujui->kode_jabatan}}</i>
+                                    <br><br><b>{{$getDisetujui->nama_pegawai}}</b><br><i>@if($getDisetujui->ket_jabatan != '') {{$getDisetujui->ket_jabatan}} @else {{$getDisetujui->kode_jabatan}} @endif</i>
                                 </td>
                                 @endif 
                             </tr>

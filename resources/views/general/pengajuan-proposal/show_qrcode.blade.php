@@ -42,7 +42,7 @@
                             <td>{{$getDiketahui->nama_pegawai}}</td>
                         </tr>                    
                         <tr>
-                            <td>{{$getDisetujui->nama_jabatan}}</td>
+                            <td>@if($getDisetujui->ket_jabatan != '') {{$getDisetujui->ket_jabatan}} @else {{$getDisetujui->nama_jabatan}} @endif</td>
                             <td style="vertical-align: middle;">{{$getDisetujui->nama_pegawai}}</td>
                         </tr>
                         @foreach($datas as $tgl)

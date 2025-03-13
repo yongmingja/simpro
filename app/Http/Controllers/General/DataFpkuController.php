@@ -64,15 +64,6 @@ class DataFpkuController extends Controller
         if($checkDate == null) { $checkDate = $request->input('cek_tanggal') ?? 0; } 
         else { $checkDate = $request->input('cek_tanggal') ?? 1; }
 
-        // $checkDate = $request->input('cek_tanggal');
-        // if($checkDate == 1){
-        //     $today = date('Y-m-d', strtotime(now()));
-        //     $checkDiff = date_diff($today, $request->tgl_kegiatan);
-        //     if($checkDiff >= 14){
-        //         # code ..
-        //     }
-        // }
-
         $post = DataFpku::updateOrCreate(['id' => $request->id],
         [
             'cek_tanggal'       => $checkDate,

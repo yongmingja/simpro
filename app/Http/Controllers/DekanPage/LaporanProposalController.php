@@ -8,14 +8,26 @@ use App\Models\General\Proposal;
 use App\Models\General\LaporanProposal;
 use App\Models\Master\HandleProposal;
 use App\Models\Master\JabatanPegawai;
+use App\Models\Master\FormRkat;
 use Auth; use DB;
 
 class LaporanProposalController extends Controller
 {
     public function index(Request $request)
     {
+        // $recentRole = Session::get('selected_peran');
+        if(session()->get('selected_peran') == ''){
+            $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+                ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
+                ->select('jabatans.kode_jabatan','jabatan_pegawais.id_fakultas_biro')
+                ->first();
+            $recentRole = $getPeran->kode_jabatan;
+        } else {
+            $recentRole = session()->get('selected_peran');
+        } 
+
         $getJabatanIs = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=','PEG']]) # Remember this is not only for DKN but for BRO as well, so this is not the best query
+            ->where([['jabatan_pegawais.id_pegawai',Auth::guard('pegawai')->user()->id],['jabatans.kode_jabatan','=',$recentRole]])
             ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
@@ -80,8 +92,10 @@ class LaporanProposalController extends Controller
                 } else {
                     return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
                 }
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })
-            ->rawColumns(['laporan','action'])
+            ->rawColumns(['laporan','action','detail'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -100,7 +114,7 @@ class LaporanProposalController extends Controller
                 } elseif($data->status_approval == 3) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
                 } elseif($data->status_approval == 4) {
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending WR</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> Verified</span>';
                 } else {
@@ -125,5 +139,133 @@ class LaporanProposalController extends Controller
             'keterangan_ditolak'    => $request->keterangan_ditolak
         ]);
         return response()->json($post);
+    }
+
+    public function lihatDetailRealisasiAnggaran(Request $request)
+    {
+        # check data rencana anggaran first
+        $rencana = DB::table('data_rencana_anggarans')->where('id_proposal',$request->proposal_id)->get();
+
+        $datas = DB::table('data_realisasi_anggarans')->where('id_proposal',$request->proposal_id)->get();
+        
+        # Check if RKAT or Non-RKAT
+        $checkType = Proposal::where('id',$request->proposal_id)->select('id_form_rkat')->first();
+        if($checkType['id_form_rkat'] != null){
+            $getTotal = FormRkat::where('id',$checkType['id_form_rkat'])->first();
+            $html = '<h4 class="mb-3">Total Budget: '.currency_IDR($getTotal->total).'</h4>';
+        } else {
+            $html = '<p class="mb-3 text-muted">Non RKAT</p>';
+        }
+
+        $html .= '<div class="divider divider-dashed text-start"><div class="divider-text"><a class="me-1 mb-1 text-info" data-bs-toggle="collapse"  href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> Klik untuk melihat data rencana anggaran </a></div></div>';
+        $html .= '<div class="collapse" id="collapseExample">
+            <table class="table table-bordered table-hover table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Item</th>
+                    <th style="text-align: center">Biaya Satuan</th>
+                    <th style="text-align: center">Qty</th>
+                    <th style="text-align: center">Freq</th>
+                    <th style="text-align: center">Sumber Dana</th>
+                </tr>
+            </thead>
+            <tbody>';
+            if($rencana->count() > 0){
+                $total_biaya = array(
+                    'Kampus' => 0,
+                    'Mandiri' => 0,
+                    'Hibah' => 0
+                );
+                $grand_total_rencana = 0;
+                foreach($rencana as $no => $dataRencana){
+                    $html .= '<tr>
+                        <td style="text-align: center">'.++$no.'</td>
+                        <td>'.$dataRencana->item.'</td>
+                        <td style="text-align: right;">'.currency_IDR($dataRencana->biaya_satuan).'</td>
+                        <td style="text-align: center">'.$dataRencana->quantity.'</td>
+                        <td style="text-align: center">'.$dataRencana->frequency.'</td>';
+                            if ($dataRencana->sumber_dana == '1') {
+                                $text = 'Kampus';
+                                $total_biaya['Kampus'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
+                            } else if ($dataRencana->sumber_dana == '2') {
+                                $text = 'Mandiri';
+                                $total_biaya['Mandiri'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
+                            } else {
+                                $text = 'Hibah';
+                                $total_biaya['Hibah'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
+                            }
+                        $html .= '<td style="text-align: center">'.$text.'</td>
+                    </tr>';
+                }
+                $grand_total_rencana = $total_biaya['Kampus'] + $total_biaya['Mandiri'] + $total_biaya['Hibah'];
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Kampus</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Kampus']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Mandiri</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Mandiri']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Hibah</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Hibah']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right; color: orange;"><b>Grand Total</b></td><td style="text-align: right; color: orange;"><b>' . currency_IDR($grand_total_rencana) . '</b></td></tr>';
+            } else {
+                $html .= '<tr>
+                    <td colspan="6" style="text-align: center;">Tidak ada data rencana anggaran</td>
+                </tr>';
+            }
+            $html .= '</body>
+            </table>
+        </div>';
+
+        $html .= '<div class="divider divider-dashed text-start"><div class="divider-text mt-2">Tabel Realisasi Anggaran</div></div>';
+
+        $html .= '<table class="table table-bordered table-hover table-sm mb-3">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Item</th>
+                    <th style="text-align: center">Biaya Satuan</th>
+                    <th style="text-align: center">Qty</th>
+                    <th style="text-align: center">Freq</th>
+                    <th style="text-align: center">Sumber Dana</th>
+                </tr>
+            </thead>
+            <tbody>';
+            if($datas->count() > 0){
+                $total_biaya = array(
+                    'Kampus' => 0,
+                    'Mandiri' => 0,
+                    'Hibah' => 0
+                );
+                $grand_total_realisasi = 0;
+                foreach($datas as $no => $data){
+                    $html .= '<tr>
+                        <td style="text-align: center">'.++$no.'</td>
+                        <td>'.$data->item.'</td>
+                        <td style="text-align: right;">'.currency_IDR($data->biaya_satuan).'</td>
+                        <td style="text-align: center">'.$data->quantity.'</td>
+                        <td style="text-align: center">'.$data->frequency.'</td>';
+                            if ($data->sumber_dana == '1') {
+                                $text = 'Kampus';
+                                $total_biaya['Kampus'] += $data->biaya_satuan * $data->quantity * $data->frequency;
+                            } else if ($data->sumber_dana == '2') {
+                                $text = 'Mandiri';
+                                $total_biaya['Mandiri'] += $data->biaya_satuan * $data->quantity * $data->frequency;
+                            } else {
+                                $text = 'Hibah';
+                                $total_biaya['Hibah'] += $data->biaya_satuan * $data->quantity * $data->frequency;
+                            }
+                        $html .= '<td style="text-align: center">'.$text.'</td>
+                    </tr>';
+                }
+                $grand_total_realisasi = $total_biaya['Kampus'] + $total_biaya['Mandiri'] + $total_biaya['Hibah'];
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Kampus</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Kampus']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Mandiri</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Mandiri']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Hibah</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Hibah']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right; color: orange;"><b>Grand Total</b></td><td style="text-align: right; color: orange;"><b>' . currency_IDR($grand_total_realisasi) . '</b></td></tr>';
+            } else {
+                $html .= '<tr>
+                    <td colspan="6" style="text-align: center;">Tidak ada data realisasi anggaran</td>
+                </tr>';
+            }
+            $html .= '</body>
+            </table>';
+
+        return response()->json(['card' => $html]);
     }
 }

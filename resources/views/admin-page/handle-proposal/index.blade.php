@@ -57,14 +57,14 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label for="id_jabatan" class="form-label">Jabatan</label>
-                                                <select class="form-select select2" id="id_jabatan" name="id_jabatan" aria-label="Default select example" style="cursor:pointer;">
-                                                    <option value="" id="pilih_jabatan">- Pilih -</option>
-                                                    @foreach($getJabatans as $jabatan)
-                                                    <option value="{{$jabatan->id}}">{{$jabatan->nama_jabatan}}</option>
+                                                <label for="id_pegawai" class="form-label">Pegawai</label>
+                                                <select class="form-select select2" id="id_pegawai" name="id_pegawai" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_pegawai">- Pilih -</option>
+                                                    @foreach($getPegawais as $pegawai)
+                                                    <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
                                                     @endforeach
                                                 </select>
-                                                <span class="text-danger" id="idJabatanErrorMsg" style="font-size: 10px;"></span>
+                                                <span class="text-danger" id="idPegawaiErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
                                                 <label for="id_jenis_kegiatan" class="form-label">Kategori Proposal</label>
@@ -170,7 +170,7 @@
                         })
                     },
                     error: function(response) {
-                        $('#idJabatanErrorMsg').text(response.responseJSON.errors.id_jabatan);
+                        $('#idPegawaiErrorMsg').text(response.responseJSON.errors.id_pegawai);
                         $('#categoryErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
@@ -189,7 +189,7 @@
         })
     }
 
-    $('#pilih_jabatan').attr('disabled','disabled');
+    $('#pilih_pegawai').attr('disabled','disabled');
     $('#pilih_kategori').attr('disabled','disabled');
 
     // EDIT DATA
@@ -201,7 +201,7 @@
             $('#tambah-edit-modal').modal('show');
               
             $('#id').val(data.id);
-            $('#id_jabatan').val(data.id_jabatan);
+            $('#id_pegawai').val(data.id_pegawai);
             $('#id_jenis_kegiatan').val(data.id_jenis_kegiatan);
         })
     });

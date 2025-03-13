@@ -15,6 +15,7 @@ use DB;
 use Auth; use URL;
 use App\Models\Master\ValidatorProposal;
 use App\Models\Master\HandleProposal;
+use App\Models\Master\Pegawai;
 use Illuminate\Support\Facades\Session;
 
 class LaporanProposalController extends Controller
@@ -205,23 +206,28 @@ class LaporanProposalController extends Controller
             ->first();
 
         foreach($datas as $r){
-            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
-                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-                ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
-                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
-                ->first();
+            if($r->id_fakultas_biro != null){
+                $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
+                    ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                    ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                    ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+                    ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
+                    ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                    ->first();
+            } else {
+                $getDiketahui = Pegawai::leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+                    ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+                    ->leftJoin('validator_proposals','validator_proposals.diketahui_oleh','=','jabatans.id')
+                    ->where('jabatans.kode_jabatan','=','RKT')
+                    ->select('validator_proposals.diketahui_oleh','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                    ->first();
+            }
 
-            $queryGetJenisKegiatan = HandleProposal::select('handle_proposals.id_jabatan')
-                ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
-                ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
-                ->get();
-
-            $getDisetujui = DB::table('pegawais')->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+            $getDisetujui = Pegawai::leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
                 ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-                ->whereIn('jabatan_pegawais.id_jabatan',$queryGetJenisKegiatan)
-                ->select('jabatans.kode_jabatan','pegawais.nama_pegawai')
+                ->leftJoin('handle_proposals','handle_proposals.id_pegawai','=','pegawais.id')
+                ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->select('jabatans.kode_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
         }
         
@@ -245,7 +251,7 @@ class LaporanProposalController extends Controller
                 } elseif($data->status_approval == 3) {
                     return '<span class="badge bg-label-warning"><i class="bx bx-check-double bx-xs"></i> Proses Verifikasi</span>';
                 } elseif($data->status_approval == 4) {
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending WR</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
                     return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> Verified</span>';
                 } else {
@@ -283,28 +289,33 @@ class LaporanProposalController extends Controller
                 ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
                 ->where('proposals.id','=',$r->id_proposal)
                 ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
-                ->first();
+                ->first();            
 
-            $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
-                ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-                ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-                ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-                ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
-                ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
-                ->first();
+            if($r->id_fakultas_biro != null){
+                $getDiketahui = ValidatorProposal::leftJoin('jabatans','jabatans.id','=','validator_proposals.diketahui_oleh')
+                    ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                    ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+                    ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+                    ->where('jabatan_pegawais.id_fakultas_biro','=',$r->id_fakultas_biro)
+                    ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                    ->first();
+            } else {
+                $getDiketahui = Pegawai::leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+                    ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+                    ->leftJoin('validator_proposals','validator_proposals.diketahui_oleh','=','jabatans.id')
+                    ->where('jabatans.kode_jabatan','=','RKT')
+                    ->select('validator_proposals.diketahui_oleh','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
+                    ->first();
+            }
 
-            $queryGetJenisKegiatan = HandleProposal::select('handle_proposals.id_jabatan')
-                ->leftJoin('proposals','proposals.id_jenis_kegiatan', '=', 'handle_proposals.id_jenis_kegiatan')
-                ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
-                ->get();
-
-            $getDisetujui = DB::table('pegawais')->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
+            $getDisetujui = Pegawai::leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
                 ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-                ->whereIn('jabatan_pegawais.id_jabatan',$queryGetJenisKegiatan)
-                ->select('jabatans.kode_jabatan','jabatans.nama_jabatan','pegawais.nama_pegawai')
+                ->leftJoin('handle_proposals','handle_proposals.id_pegawai','=','pegawais.id')
+                ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->select('jabatans.kode_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
         }
 
-        return view('rektorat-page.data-proposal.show_qrcode', compact('datas','getPengusul','getDiketahui','getDisetujui'));
+        return view('general.laporan-proposal.show_qrcode', compact('datas','getPengusul','getDiketahui','getDisetujui'));
     }
 }

@@ -13,9 +13,8 @@ class HandleProposalController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = HandleProposal::leftJoin('jabatans','jabatans.id','=','handle_proposals.id_jabatan')
-            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        $datas = HandleProposal::leftJoin('pegawais','pegawais.id','=','handle_proposals.id_pegawai')
+            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','handle_proposals.id_jenis_kegiatan')
             ->select('handle_proposals.id AS id','pegawais.nama_pegawai','jenis_kegiatans.nama_jenis_kegiatan','handle_proposals.id_jenis_kegiatan')
             ->orderBy('pegawais.nama_pegawai','ASC')
@@ -41,24 +40,24 @@ class HandleProposalController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        $getJabatans = Jabatan::select('id','nama_jabatan')->orderBy('nama_jabatan','ASC')->get();
+        $getPegawais = Pegawai::select('id','nama_pegawai')->orderBy('nama_pegawai','ASC')->get();
         $getCategories = JenisKegiatan::select('id','nama_jenis_kegiatan')->get();
-        return view('admin-page.handle-proposal.index', compact('getJabatans','getCategories'));
+        return view('admin-page.handle-proposal.index', compact('getPegawais','getCategories'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'id_jabatan'            => 'required',
+            'id_pegawai'            => 'required',
             'id_jenis_kegiatan'     => 'required',
         ],[
-            'id_jabatan.required'           => 'Anda belum memilih pegawai',
+            'id_pegawai.required'           => 'Anda belum memilih pegawai',
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori',
         ]);
 
         $post = HandleProposal::updateOrCreate(['id' => $request->id],
                 [
-                    'id_jabatan'            => $request->id_jabatan,
+                    'id_pegawai'            => $request->id_pegawai,
                     'id_jenis_kegiatan'     => $request->input('id_jenis_kegiatan'),
                 ]); 
 

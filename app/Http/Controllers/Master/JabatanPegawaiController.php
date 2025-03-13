@@ -66,9 +66,11 @@ class JabatanPegawaiController extends Controller
         $request->validate([
             'id_pegawai' => 'required',
             'id_jabatan' => 'required',
+            'ket_jabatan' => 'required',
         ],[
             'id_pegawai.required' => 'Anda belum memilih pegawai',
             'id_jabatan.required' => 'Anda belum memilih jabatan',
+            'ket_jabatan.required' => 'Anda belum menginput keterangan jabatan',
         ]);
 
         $post = JabatanPegawai::updateOrCreate(['id' => $request->id],

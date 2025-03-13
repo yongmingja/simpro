@@ -43,6 +43,7 @@
                                 <th>Undangan</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Ketua Pelaksana</th>
+                                <th>Detail Anggaran</th>
                                 <th>Tgl Kegiatan</th>
                                 <th>Lampiran</th>
                             </tr>
@@ -105,6 +106,22 @@
                 </div>
                 <!-- End of validasi proposal-->
 
+                <!-- Mulai modal lihat detail anggaran -->
+                <div class="modal fade mt-2" tabindex="-1" role="dialog" id="show-detail-anggaran" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title justify-content-center">Detail Anggaran</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="table_detail_anggaran" class="col-sm-12 table-responsive"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of modal lihat detail anggaran-->
+
             </div>
         </div>
     </section>
@@ -146,6 +163,7 @@
                     {data: 'undangan',name: 'undangan'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'ketua_pelaksana',name: 'ketua_pelaksana'},
+                    {data: 'detail',name: 'detail'},
                     {data: 'tgl_kegiatan',name: 'tgl_kegiatan'},
                     {data: 'lampirans',name: 'lampirans'},
                 ]
@@ -307,6 +325,22 @@
             success: function(response, data){
                 $('#show-lampiran').modal('show');
                 $("#table_lampiran").html(response.card)
+            }
+        })
+    });
+
+    $('body').on('click','.lihat-detail', function(){
+        var data_id = $(this).data('id');
+        $.ajax({
+            url: "{{route('lihat-detail-anggaran-fpku')}}",
+            method: "GET",
+            data: {
+                laporan_fpku_id: data_id,  
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response, data){
+                $('#show-detail-anggaran').modal('show');
+                $("#table_detail_anggaran").html(response.card)
             }
         })
     });

@@ -18,7 +18,7 @@ class CreateDataProdiBirosTable extends Migration
             $table->unsignedInteger('id_fakultas_biro');
             $table->foreign('id_fakultas_biro')->references('id')->on('data_fakultas_biros')->onDelete('restrict');
             $table->string('nama_prodi_biro');
-            $table->string('kode_prodi_biro',4)->nullable();
+            $table->string('kode_prodi_biro',50)->nullable();
             $table->timestamps();
         });
     }

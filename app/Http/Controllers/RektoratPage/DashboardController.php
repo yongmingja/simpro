@@ -5,11 +5,8 @@ namespace App\Http\Controllers\RektoratPage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\Proposal;
-use App\Models\General\DataRencanaAnggaran;
-use App\Models\General\LaporanProposal;
 use App\Models\General\DataFpku;
 use App\Models\Master\Pegawai;
-use App\Models\Master\JabatanPegawai;
 use App\Models\Master\HandleProposal;
 use App\Models\General\LaporanFpku;
 use App\Models\General\DelegasiFpku;
@@ -130,6 +127,8 @@ class DashboardController extends Controller
                 }else{
                     return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })->addColumn('lihatDelegasi', function($data){
                 $isExist = DelegasiProposal::where('id_proposal',$data->id)->select('catatan_delegator','delegasi')->get();
                 if($isExist->count() > 0){
@@ -138,7 +137,7 @@ class DashboardController extends Controller
                     return '';
                 }
             })
-            ->rawColumns(['action','validasi','vlampiran','lihatDelegasi'])
+            ->rawColumns(['action','validasi','vlampiran','detail','lihatDelegasi'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -148,20 +147,7 @@ class DashboardController extends Controller
 
     protected function arrJenisKegiatan()
     {
-        $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-            ->select('jabatans.kode_jabatan','jabatans.id AS id_jabatan')
-            ->first();
-
-            if(session()->get('selected_peran') == null){
-                $recentPeranIs = $getPeran->kode_jabatan;
-                $recentPeranId = $getPeran->id_jabatan;
-            } else {
-                $recentPeranIs = session()->get('selected_peran');
-                $recentPeranId = $getPeran->id_jabatan;
-            }
-
-        $datas = HandleProposal::select('id_jenis_kegiatan')->where('id_jabatan',$recentPeranId)->get();
+        $datas = HandleProposal::select('id_jenis_kegiatan')->where('id_pegawai',Auth::user()->id)->get();
         if($datas){
             foreach($datas as $data){
                 $getID = $data->id_jenis_kegiatan;
@@ -227,6 +213,7 @@ class DashboardController extends Controller
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
         }
         if($request->status == 'pending'){
@@ -238,6 +225,7 @@ class DashboardController extends Controller
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
                 ->where('status_laporan_proposals.status_approval',3)
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
         }
         if($request->status == 'accepted'){
@@ -249,6 +237,7 @@ class DashboardController extends Controller
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
                 ->where('status_laporan_proposals.status_approval',5)
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
         }
         if($request->status == 'denied'){
@@ -260,6 +249,7 @@ class DashboardController extends Controller
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
                 ->where('status_laporan_proposals.status_approval',4)
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
+                ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
         }
 
@@ -289,8 +279,10 @@ class DashboardController extends Controller
                 } else {
                     return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
                 }
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })
-            ->rawColumns(['laporan','action'])
+            ->rawColumns(['laporan','action','detail'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -487,8 +479,10 @@ class DashboardController extends Controller
             })->addColumn('ketua_pelaksana', function($data){
                 $name = Pegawai::where('id','=',$data->ketua)->select('nama_pegawai')->first();
                 return $name->nama_pegawai;
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })
-            ->rawColumns(['action','undangan','lampirans','ketua_pelaksana'])
+            ->rawColumns(['action','undangan','lampirans','ketua_pelaksana','detail'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -645,5 +639,125 @@ class DashboardController extends Controller
 
         return response()->json(['card' => $html]);
 
+    }
+
+    # Detail Anggaran FPKU
+    public function lihatDetailAnggaran(Request $request)
+    {
+        # check data rencana anggaran first
+        $rencana = DB::table('data_rencana_anggaran_fpkus')->where('id_laporan_fpku',$request->laporan_fpku_id)->get();
+
+        $datas = DB::table('data_realisasi_anggaran_fpkus')->where('id_laporan_fpku',$request->laporan_fpku_id)->get();
+
+        $html = '<div class="divider divider-dashed text-start"><div class="divider-text"><a class="me-1 mb-1 text-info" data-bs-toggle="collapse"  href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"> Klik untuk melihat data rencana anggaran </a></div></div>';
+        $html .= '<div class="collapse" id="collapseExample">
+            <table class="table table-bordered table-hover table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Item</th>
+                    <th style="text-align: center">Biaya Satuan</th>
+                    <th style="text-align: center">Qty</th>
+                    <th style="text-align: center">Freq</th>
+                    <th style="text-align: center">Sumber Dana</th>
+                </tr>
+            </thead>
+            <tbody>';
+            if($rencana->count() > 0){
+                $total_biaya = array(
+                    'Kampus' => 0,
+                    'Mandiri' => 0,
+                    'Hibah' => 0
+                );
+                $grand_total_rencana = 0;
+                foreach($rencana as $no => $dataRencana){
+                    $html .= '<tr>
+                        <td style="text-align: center">'.++$no.'</td>
+                        <td>'.$dataRencana->item.'</td>
+                        <td style="text-align: right;">'.currency_IDR($dataRencana->biaya_satuan).'</td>
+                        <td style="text-align: center">'.$dataRencana->quantity.'</td>
+                        <td style="text-align: center">'.$dataRencana->frequency.'</td>';
+                            if ($dataRencana->sumber_dana == '1') {
+                                $text = 'Kampus';
+                                $total_biaya['Kampus'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
+                            } else if ($dataRencana->sumber_dana == '2') {
+                                $text = 'Mandiri';
+                                $total_biaya['Mandiri'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
+                            } else {
+                                $text = 'Hibah';
+                                $total_biaya['Hibah'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
+                            }
+                        $html .= '<td style="text-align: center">'.$text.'</td>
+                    </tr>';
+                }
+                $grand_total_rencana = $total_biaya['Kampus'] + $total_biaya['Mandiri'] + $total_biaya['Hibah'];
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Kampus</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Kampus']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Mandiri</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Mandiri']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Hibah</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Hibah']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right; color: orange;"><b>Grand Total</b></td><td style="text-align: right; color: orange;"><b>' . currency_IDR($grand_total_rencana) . '</b></td></tr>';
+            } else {
+                $html .= '<tr>
+                    <td colspan="6" style="text-align: center;">Tidak ada data rencana anggaran</td>
+                </tr>';
+            }
+            $html .= '</body>
+            </table>
+        </div>';
+
+        $html .= '<div class="divider divider-dashed text-start"><div class="divider-text mt-2">Tabel Realisasi Anggaran</div></div>';
+
+        $html .= '<table class="table table-bordered table-hover table-sm mb-3">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center">#</th>
+                    <th style="text-align: center">Item</th>
+                    <th style="text-align: center">Biaya Satuan</th>
+                    <th style="text-align: center">Qty</th>
+                    <th style="text-align: center">Freq</th>
+                    <th style="text-align: center">Sumber Dana</th>
+                </tr>
+            </thead>
+            <tbody>';
+            if($datas->count() > 0){
+                $total_biaya = array(
+                    'Kampus' => 0,
+                    'Mandiri' => 0,
+                    'Hibah' => 0
+                );
+                $grand_total_realisasi = 0;
+                foreach($datas as $no => $data){
+                    $html .= '<tr>
+                        <td style="text-align: center">'.++$no.'</td>
+                        <td>'.$data->item.'</td>
+                        <td style="text-align: right;">'.currency_IDR($data->biaya_satuan).'</td>
+                        <td style="text-align: center">'.$data->quantity.'</td>
+                        <td style="text-align: center">'.$data->frequency.'</td>';
+                            if ($data->sumber_dana == '1') {
+                                $text = 'Kampus';
+                                $total_biaya['Kampus'] += $data->biaya_satuan * $data->quantity * $data->frequency;
+                            } else if ($data->sumber_dana == '2') {
+                                $text = 'Mandiri';
+                                $total_biaya['Mandiri'] += $data->biaya_satuan * $data->quantity * $data->frequency;
+                            } else {
+                                $text = 'Hibah';
+                                $total_biaya['Hibah'] += $data->biaya_satuan * $data->quantity * $data->frequency;
+                            }
+                        $html .= '<td style="text-align: center">'.$text.'</td>
+                    </tr>';
+                }
+                $grand_total_realisasi = $total_biaya['Kampus'] + $total_biaya['Mandiri'] + $total_biaya['Hibah'];
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Kampus</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Kampus']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Mandiri</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Mandiri']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Hibah</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Hibah']) . '</td></tr>';
+                $html .= '<tr><td colspan="5" style="text-align: right; color: orange;"><b>Grand Total</b></td><td style="text-align: right; color: orange;"><b>' . currency_IDR($grand_total_realisasi) . '</b></td></tr>';
+            } else {
+                $html .= '<tr>
+                    <td colspan="6" style="text-align: center;">Tidak ada data realisasi anggaran</td>
+                </tr>';
+            }
+            $html .= '</body>
+            </table>';
+
+        return response()->json(['card' => $html]);
     }
 }

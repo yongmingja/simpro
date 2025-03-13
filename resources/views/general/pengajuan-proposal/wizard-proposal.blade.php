@@ -20,17 +20,7 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/editor.css')}}" />
 @section('content')
-@php
-    if(session()->get('selected_peran') == ''){
-        $getPeran = App\Models\Master\JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-            ->select('jabatans.kode_jabatan','jabatan_pegawais.id_fakultas_biro')
-            ->first();
-        $recentRole = $getPeran->kode_jabatan;
-    } else {
-        $recentRole = session()->get('selected_peran');
-    }                        
-@endphp
+
 <div class="container-fluid flex-grow-1">
     <section id="basic-datatable">
         <div class="row">
@@ -40,7 +30,6 @@
                             <a href="{{route('submission-of-proposal.index')}}"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-chevron-left"></i>Back</button></a> 
                         </div>       
                         
-                        <input type="hidden" name="getRole" id="getRole" value="{{$recentRole}}">            
                         <!-- AKHIR TOMBOL -->
                         <div class="bs-stepper wizard-vertical horizontal">
                             <div class="bs-stepper-header mt-3">
@@ -382,27 +371,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const userRole = $('#getRole').val(); // Ganti ini dengan logika untuk mendapatkan peran pengguna saat ini
-        const selectElement = document.getElementById('id_jenis_kegiatan');
-        const options = selectElement.options;
-
-        for (let i = 0; i < options.length; i++) {
-            const option = options[i];
-            const optionId = option.getAttribute('data-name');
-            
-            if (userRole === 'WRSDP' || userRole === 'WRAK') {
-                if (optionId !== 'Rektorat') {
-                    option.disabled = true;
-                }
-            } else {
-                if(optionId === 'Rektorat') {
-                    option.disabled = true;
-                }
-            }
-        }
     });
 
     const wizardVertical = document.querySelector(".wizard-vertical");
