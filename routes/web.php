@@ -136,6 +136,9 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::get('lihat-detail-anggaran','DekanPage\DataProposalController@lihatDetailAnggaran')->name('lihat-detail-anggaran');
     Route::get('lihat-detail-realisasi-anggaran','DekanPage\LaporanProposalController@lihatDetailRealisasiAnggaran')->name('lihat-detail-realisasi-anggaran');
     Route::get('lihat-detail-anggaran-fpku','RektoratPage\DashboardController@lihatDetailAnggaran')->name('lihat-detail-anggaran-fpku');
+    Route::get('index-export-proposal','General\LaporanProposalController@indexExportProposal')->name('index-export-proposal');
+    Route::get('show-data-proposal-html/{year}','General\LaporanProposalController@showDataProposalHtml')->name('show-data-proposal-html');
+    Route::get('download-proposal-excel/{year}','General\LaporanProposalController@downloadProposalExcel')->name('download-proposal-excel');
 });
 
 /* 

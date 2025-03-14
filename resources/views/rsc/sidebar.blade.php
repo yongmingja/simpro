@@ -380,7 +380,7 @@
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
                 <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-                <div data-i18n="Proposals">Proposals</div>
+                <div data-i18n="Validasi Proposals">Validasi Proposals</div>
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item">
@@ -418,11 +418,32 @@
                     <a href="{{route('index-form-rkat')}}" class="menu-link {{set_active('index-form-rkat')}}">
                     <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
                     <div data-i18n="Validasi Form RKAT">Validasi Form RKAT</div>
-                    <div class="badge bg-danger rounded-pills ms-auto" style="border-radius: 15px;">{{$totalData}}</div>
+                    <div class="badge @if($totalData == 0) bg-success @else bg-danger @endif rounded-pills ms-auto" style="border-radius: 15px;">{{$totalData}}</div>
                     </a>
                     
                 </li> 
             @endif 
+            <li class="menu-header small fw-medium">
+                <div data-i18n="EXPORT DATA">EXPORT DATA</div>
+            </li> 
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-export-proposal')}}">
+                <i class="menu-icon tf-icons bx bx-export bx-tada-hover"></i>
+                <div data-i18n="Export Data">Export Data</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('index-export-proposal')}}" class="menu-link {{set_active('index-export-proposal')}}">
+                        <div data-i18n="Proposal & Laporan">Proposal & Laporan</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#" class="menu-link">
+                        <div data-i18n="FPKU">FPKU</div>
+                        </a>
+                    </li>
+                </ul>
+            </li> 
         @endif        
     @endif
     

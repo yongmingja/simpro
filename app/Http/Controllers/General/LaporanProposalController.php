@@ -17,6 +17,10 @@ use App\Models\Master\ValidatorProposal;
 use App\Models\Master\HandleProposal;
 use App\Models\Master\Pegawai;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanProposalExport;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class LaporanProposalController extends Controller
 {
@@ -317,5 +321,91 @@ class LaporanProposalController extends Controller
         }
 
         return view('general.laporan-proposal.show_qrcode', compact('datas','getPengusul','getDiketahui','getDisetujui'));
+    }
+
+    public function indexExportProposal(Request $request)
+    {
+        $checkYear = Proposal::selectRaw('YEAR(tgl_event) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        if($request->tahun_proposal == null || $request->tahun_proposal == '[semua]'){
+            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval')
+                ->get();
+        } else {
+            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval')
+                ->whereYear('proposals.tgl_event',$request->tahun_proposal)
+                ->get();
+        }
+
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('status', function($data){
+                if(!empty($data->status_approval)) {
+                    if($data->status_approval == 5){
+                        return 'verified by WR';
+                    } else {
+                        return 'pending';
+                    }
+                } else {
+                    return 'Belum ada laporan';
+                }
+            })
+            ->rawColumns(['status'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        return view('general.laporan-proposal.export-data', compact('checkYear'));
+    }
+
+    public function showDataProposalHtml($year)
+    {
+        if($year == null || $year == '[semua]'){
+            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('data_rencana_anggarans','data_rencana_anggarans.id_proposal','=','proposals.id')
+                ->leftJoin('data_realisasi_anggarans','data_realisasi_anggarans.id_proposal','=','proposals.id')
+                ->select(DB::raw('sum(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) as anggaran_proposal'), DB::raw('sum(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as realisasi_anggaran'), 'proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->groupBy('proposals.id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->get();
+        } else {
+            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('data_rencana_anggarans','data_rencana_anggarans.id_proposal','=','proposals.id')
+                ->leftJoin('data_realisasi_anggarans','data_realisasi_anggarans.id_proposal','=','proposals.id')
+                ->select(DB::raw('sum(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) as anggaran_proposal'), DB::raw('sum(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as realisasi_anggaran'), 'proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->groupBy('proposals.id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->whereYear('proposals.tgl_event',$year)
+                ->get();
+        }
+        $getYear = $year;
+        return view('general.laporan-proposal.show-in-html', ['datas' => $datas, 'getYear' => $getYear]);
+    }
+
+    public function downloadProposalExcel($year)
+    {
+        $getYear = $year;
+        $fileName = 'data_proposal_dan_laporan_proposal_'.$getYear.'.xlsx';
+
+        // Simpan file Excel ke penyimpanan sementara
+        Excel::store(new LaporanProposalExport($getYear), $fileName, 'local');
+
+        return Response::stream(function() use ($fileName) {
+            // Buka file dari penyimpanan sementara dan kirim sebagai stream
+            $file = Storage::disk('local')->get($fileName);
+            echo $file;
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 }

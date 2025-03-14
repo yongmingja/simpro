@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Exports;
+
+use App\Models\General\LaporanProposal;
+use App\Models\General\Proposal;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use DB;
+
+class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents, ShouldAutoSize
+{
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+
+    protected $getYear;
+
+    public function __construct($getYear)
+    {
+        $this->getYear = $getYear;
+    }
+
+    public function headings():array{
+        return[
+            'No',
+            'Judul Proposal',
+            'Tgl Kegiatan',
+            'Tgl Pengajuan',
+            'Ketua Pelaksana',
+            'Unit Penyelenggara',
+            'Kode Renstra',
+            'Kode Akun',
+            'Anggaran RKAT',
+            'Anggaran Proposal',
+            'Realisasi Anggaran',
+            'Status Laporan'
+        ];
+    }
+
+    public function collection()
+    {
+        $getYear = $this->getYear;
+        if($getYear == null || $getYear == '[semua]'){
+            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('data_rencana_anggarans','data_rencana_anggarans.id_proposal','=','proposals.id')
+                ->leftJoin('data_realisasi_anggarans','data_realisasi_anggarans.id_proposal','=','proposals.id')
+                ->select(DB::raw('sum(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) as anggaran_proposal'), DB::raw('sum(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as realisasi_anggaran'), 'proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->groupBy('proposals.id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->get();
+        } else {
+            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('data_rencana_anggarans','data_rencana_anggarans.id_proposal','=','proposals.id')
+                ->leftJoin('data_realisasi_anggarans','data_realisasi_anggarans.id_proposal','=','proposals.id')
+                ->select(DB::raw('sum(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) as anggaran_proposal'), DB::raw('sum(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as realisasi_anggaran'), 'proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->groupBy('proposals.id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+                ->whereYear('proposals.tgl_event',$getYear)
+                ->get();
+        }
+
+        return $array = $datas->map(function ($value, $key) {
+            static $no = 1;
+
+            $statusLaporan = '';
+            if($value->status_approval == 5) {
+                $statusLaporan = 'verified by WR';
+            } else {
+                $statusLaporan = 'Belum ada laporan';
+            }
+
+            return [
+                'No' => $no++,
+                'Judul Proposal' => $value->nama_kegiatan,
+                'Tgl Kegiatan' => tanggal_indonesia($value->tgl_event),
+                'Tgl Pengajuan' => tanggal_indonesia($value->created_at),
+                'Ketua Pelaksana' => $value->nama_pegawai,
+                'Unit Penyelenggara' => $value->nama_fakultas_biro,
+                'Kode Renstra' => $value->kode_renstra,
+                'Kode Akun' => '-',
+                'Anggaran RKAT' => currency_IDR($value->total),
+                'Anggaran Proposal' => currency_IDR($value->anggaran_proposal),
+                'Realisasi Anggaran' => currency_IDR($value->realisasi_anggaran),
+                'Status Laporan' => $statusLaporan
+            ];
+        });
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeExport::class  => function(BeforeExport $event) {
+                $event->writer->setCreator('SimproAdministrator');
+            },
+            AfterSheet::class    => function(AfterSheet $event) {
+   
+                $event->sheet->getDelegate()->getStyle('A1:L1')
+                                ->getFont()
+                                ->setBold(true);
+            },
+        ];
+    }
+}
