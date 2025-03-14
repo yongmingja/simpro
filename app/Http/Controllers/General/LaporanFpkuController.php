@@ -11,7 +11,12 @@ use App\Setting\Dekan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Master\ValidatorProposal;
+use App\Models\Master\Pegawai;
 use Auth; use DB; use URL;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanFpkuExport;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class LaporanFpkuController extends Controller
 {
@@ -339,5 +344,95 @@ class LaporanFpkuController extends Controller
     {
         $post = LaporanFpku::where('id',$request->id)->delete();  
         return response()->json($post);
+    }
+
+    public function indexExportFpku(Request $request)
+    {
+        $checkYear = DataFpku::selectRaw('YEAR(tgl_kegiatan) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        if($request->tahun_fpku == null || $request->tahun_fpku == '[semua]'){
+            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
+                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','laporan_fpkus.id')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai','status_laporan_fpkus.status_approval')
+                ->get();
+        } else {
+            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
+                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','laporan_fpkus.id')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai','status_laporan_fpkus.status_approval')
+                ->whereYear('data_fpkus.tgl_kegiatan',$request->tahun_fpku)
+                ->get();
+        }
+
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('status', function($data){
+                if(!empty($data->status_approval)) {
+                    if($data->status_approval == 5){
+                        return 'verified by WR';
+                    } else {
+                        return 'proses validasi';
+                    }
+                } else {
+                    return 'Belum ada laporan';
+                }
+            })->addColumn('anggota_pelaksana', function($data){
+                $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
+                foreach($dataPegawai as $result){
+                    $pegawai[] = $result->nama_pegawai;
+                    
+                }
+                return implode(", <br>", $pegawai);
+            })
+            ->rawColumns(['status','anggota_pelaksana'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+
+        return view('general.laporan-fpku.export-data', compact('checkYear'));
+    }
+
+    public function showDataFpkuHtml($year)
+    {
+        if($year == null || $year == '[semua]'){
+            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
+                ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->get();
+        } else {
+            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
+                ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->whereYear('data_fpkus.tgl_kegiatan',$year)
+                ->get();
+        }
+        $getYear = $year;
+        return view('general.laporan-fpku.show-in-html', ['datas' => $datas, 'getYear' => $getYear]);
+    }
+
+    public function downloadFpkuExcel($year)
+    {
+        $getYear = $year;
+        $fileName = 'data_dan_laporan_fpku_'.$getYear.'.xlsx';
+
+        // Simpan file Excel ke penyimpanan sementara
+        Excel::store(new LaporanFpkuExport($getYear), $fileName, 'local');
+
+        return Response::stream(function() use ($fileName) {
+            // Buka file dari penyimpanan sementara dan kirim sebagai stream
+            $file = Storage::disk('local')->get($fileName);
+            echo $file;
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 }

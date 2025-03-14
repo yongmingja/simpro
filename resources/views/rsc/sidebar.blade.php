@@ -427,7 +427,7 @@
                 <div data-i18n="EXPORT DATA">EXPORT DATA</div>
             </li> 
             <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-export-proposal')}}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-export-proposal')}} OR {{set_active('index-export-fpku')}}">
                 <i class="menu-icon tf-icons bx bx-export bx-tada-hover"></i>
                 <div data-i18n="Export Data">Export Data</div>
                 </a>
@@ -438,7 +438,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="menu-link">
+                        <a href="{{route('index-export-fpku')}}" class="menu-link {{set_active('index-export-fpku')}}">
                         <div data-i18n="FPKU">FPKU</div>
                         </a>
                     </li>

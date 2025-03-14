@@ -136,9 +136,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::get('lihat-detail-anggaran','DekanPage\DataProposalController@lihatDetailAnggaran')->name('lihat-detail-anggaran');
     Route::get('lihat-detail-realisasi-anggaran','DekanPage\LaporanProposalController@lihatDetailRealisasiAnggaran')->name('lihat-detail-realisasi-anggaran');
     Route::get('lihat-detail-anggaran-fpku','RektoratPage\DashboardController@lihatDetailAnggaran')->name('lihat-detail-anggaran-fpku');
-    Route::get('index-export-proposal','General\LaporanProposalController@indexExportProposal')->name('index-export-proposal');
-    Route::get('show-data-proposal-html/{year}','General\LaporanProposalController@showDataProposalHtml')->name('show-data-proposal-html');
-    Route::get('download-proposal-excel/{year}','General\LaporanProposalController@downloadProposalExcel')->name('download-proposal-excel');
+
 });
 
 /* 
@@ -184,4 +182,12 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT'])->group(funct
 
     Route::get('lihat-history-delegasi','RektoratPage\DashboardController@lihatHistoryDelegasi')->name('lihat-history-delegasi');
     Route::get('lihat-history-delegasi-proposal','RektoratPage\DashboardController@lihatHistoryDelegasiProposal')->name('lihat-history-delegasi-proposal');
+
+    Route::get('index-export-proposal','General\LaporanProposalController@indexExportProposal')->name('index-export-proposal');
+    Route::get('show-data-proposal-html/{year}','General\LaporanProposalController@showDataProposalHtml')->name('show-data-proposal-html');
+    Route::get('download-proposal-excel/{year}','General\LaporanProposalController@downloadProposalExcel')->name('download-proposal-excel');
+
+    Route::get('index-export-fpku','General\LaporanFpkuController@indexExportFpku')->name('index-export-fpku');
+    Route::get('show-data-fpku-html/{year}','General\LaporanFpkuController@showDataFpkuHtml')->name('show-data-fpku-html');
+    Route::get('download-fpku-excel/{year}','General\LaporanFpkuController@downloadFpkuExcel')->name('download-fpku-excel');
 });
