@@ -760,4 +760,101 @@ class DashboardController extends Controller
 
         return response()->json(['card' => $html]);
     }
+
+    public function indexMonitoringProposal(Request $request)
+    {
+        $datas = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+            ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+            ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','status_proposals.status_approval')
+            ->orderBy('proposals.id','DESC')
+            ->get();
+
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('preview', function($data){
+                # check any attachment
+                $query = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($query > 0){
+                    $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
+                    return $button;
+                } else {
+                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
+                }
+            })->addColumn('status', function($data){
+                if($data->status_approval == 1){
+                    return '<i class="text-warning">Pengajuan</i>';
+                }elseif($data->status_approval == 2){
+                    return '<i class="text-danger">Ditolak Dekan atau Kepala Unit</i>';
+                }elseif($data->status_approval == 3){
+                    return '<i class="text-success">ACC Dekan atau Kepala Unit</i>';
+                }elseif($data->status_approval == 4){
+                    return '<i class="text-danger">Ditolak Rektorat</i>';
+                }elseif($data->status_approval == 5){
+                    return '<i class="text-success">ACC Rektorat</i>';
+                }else{
+                    return '';
+                }
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+            })
+            ->rawColumns(['preview','status','detail'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        return view('rektorat-page.data-proposal.index-monitoring-proposals');
+    }
+
+    public function indexMonitoringLaporanProposal(Request $request)
+    {
+        $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+            ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+            ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+            ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+            ->orderBy('status_laporan_proposals.status_approval','ASC')
+            ->get();
+        
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('laporan', function($data){
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
+                if($query->count() > 0){
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> view report</a>';
+                } else {
+                    return '<i class="text-secondary">Belum ada laporan</i>';
+                }
+            })->addColumn('action', function($data){
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
+                if($query->count() > 0){
+                    foreach($query as $q){
+                        if($q->status_approval == 1){
+                            return '<i class="text-warning">Pengajuan</i>';
+                        }elseif($q->status_approval == 2){
+                            return '<i class="text-danger">Ditolak Dekan atau Kepala Unit</i>';
+                        }elseif($q->status_approval == 3){
+                            return '<i class="text-success">ACC Dekan atau Kepala Unit</i>';
+                        }elseif($q->status_approval == 4){
+                            return '<i class="text-danger">Ditolak Rektorat</i>';
+                        }elseif($q->status_approval == 5){
+                            return '<i class="text-success">ACC Rektorat</i>';
+                        }else{
+                            return '';
+                        }
+                    }
+                } else {
+                    return '<i class="text-secondary">Belum ada laporan</i>';
+                }
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+            })
+            ->rawColumns(['laporan','action','detail'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+
+        return view('rektorat-page.data-proposal.index-monitoring-laporan-proposals');
+    }
 }

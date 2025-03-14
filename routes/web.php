@@ -190,4 +190,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT'])->group(funct
     Route::get('index-export-fpku','General\LaporanFpkuController@indexExportFpku')->name('index-export-fpku');
     Route::get('show-data-fpku-html/{year}','General\LaporanFpkuController@showDataFpkuHtml')->name('show-data-fpku-html');
     Route::get('download-fpku-excel/{year}','General\LaporanFpkuController@downloadFpkuExcel')->name('download-fpku-excel');
+
+    Route::get('index-monitoring-proposals','RektoratPage\DashboardController@indexMonitoringProposal')->name('index-monitoring-proposals');
+    Route::get('index-monitoring-laporan-proposals','RektoratPage\DashboardController@indexMonitoringLaporanProposal')->name('index-monitoring-laporan-proposals');
 });
