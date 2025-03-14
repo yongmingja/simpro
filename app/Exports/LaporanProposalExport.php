@@ -45,24 +45,69 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
     {
         $getYear = $this->getYear;
         if($getYear == null || $getYear == '[semua]'){
-            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-                ->leftJoin('data_rencana_anggarans','data_rencana_anggarans.id_proposal','=','proposals.id')
-                ->leftJoin('data_realisasi_anggarans','data_realisasi_anggarans.id_proposal','=','proposals.id')
-                ->select(DB::raw('sum(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) as anggaran_proposal'), DB::raw('sum(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as realisasi_anggaran'), 'proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
-                ->groupBy('proposals.id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+            $datas = Proposal::leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+                ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
+                ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+                ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
+                ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
+                ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
+                ->select(
+                    'proposals.id AS id',
+                    'proposals.nama_kegiatan',
+                    'proposals.tgl_event',
+                    'proposals.created_at',
+                    'pegawais.nama_pegawai',
+                    'status_laporan_proposals.status_approval',
+                    'data_fakultas_biros.nama_fakultas_biro',
+                    'form_rkats.kode_renstra',
+                    'form_rkats.total',
+                    DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
+                    DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
+                )
+                ->groupBy(
+                    'proposals.id',
+                    'proposals.nama_kegiatan',
+                    'proposals.tgl_event',
+                    'proposals.created_at',
+                    'pegawais.nama_pegawai',
+                    'status_laporan_proposals.status_approval',
+                    'data_fakultas_biros.nama_fakultas_biro',
+                    'form_rkats.kode_renstra',
+                    'form_rkats.total'
+                )
                 ->get();
+
         } else {
-            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-                ->leftJoin('data_rencana_anggarans','data_rencana_anggarans.id_proposal','=','proposals.id')
-                ->leftJoin('data_realisasi_anggarans','data_realisasi_anggarans.id_proposal','=','proposals.id')
-                ->select(DB::raw('sum(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) as anggaran_proposal'), DB::raw('sum(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as realisasi_anggaran'), 'proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
-                ->groupBy('proposals.id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','data_fakultas_biros.nama_fakultas_biro','form_rkats.kode_renstra','form_rkats.total')
+            $datas = Proposal::leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+                ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
+                ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+                ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
+                ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
+                ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
+                ->select(
+                    'proposals.id AS id',
+                    'proposals.nama_kegiatan',
+                    'proposals.tgl_event',
+                    'proposals.created_at',
+                    'pegawais.nama_pegawai',
+                    'status_laporan_proposals.status_approval',
+                    'data_fakultas_biros.nama_fakultas_biro',
+                    'form_rkats.kode_renstra',
+                    'form_rkats.total',
+                    DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
+                    DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
+                )
+                ->groupBy(
+                    'proposals.id',
+                    'proposals.nama_kegiatan',
+                    'proposals.tgl_event',
+                    'proposals.created_at',
+                    'pegawais.nama_pegawai',
+                    'status_laporan_proposals.status_approval',
+                    'data_fakultas_biros.nama_fakultas_biro',
+                    'form_rkats.kode_renstra',
+                    'form_rkats.total'
+                )
                 ->whereYear('proposals.tgl_event',$getYear)
                 ->get();
         }
