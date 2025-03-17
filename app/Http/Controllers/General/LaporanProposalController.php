@@ -396,6 +396,7 @@ class LaporanProposalController extends Controller
                     'form_rkats.kode_renstra',
                     'form_rkats.total'
                 )
+                ->orderBy('proposals.tgl_event','DESC')
                 ->get();
 
 
@@ -431,6 +432,7 @@ class LaporanProposalController extends Controller
                     'form_rkats.total'
                 )
                 ->whereYear('proposals.tgl_event',$year)
+                ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         }
         $getYear = $year;

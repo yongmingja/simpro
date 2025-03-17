@@ -32,11 +32,11 @@
                         @php $no = 1; @endphp
                         @foreach($datas as $data)
                         <tr>
-                            <td style="text-align: center;">{{$no}}</td>
-                            <td>{{$data->no_surat_undangan}}</td>
-                            <td>{{$data->nama_kegiatan}}</td>
-                            <td style="text-align: center;">{{tanggal_indonesia($data->tgl_kegiatan)}}</td>
-                            <td style="text-align: center;">{{$data->ketua}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$no}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$data->no_surat_undangan}}</td>
+                            <td style="vertical-align: middle;">{{$data->nama_kegiatan}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{tanggal_indonesia($data->tgl_kegiatan)}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$data->ketua}}</td>
                             @php 
                             $dataPegawai = \App\Models\Master\Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
                             $pegawai = [];
@@ -44,9 +44,9 @@
                                 $pegawai[] = $result->nama_pegawai;                                
                             }
                             @endphp
-                            <td>{!! implode(", <br>",$pegawai) !!}</td>
-                            <td><a href="{{$data->link_gdrive}}">{{$data->link_gdrive}}</a></td>
-                            <td style="text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) verified by WR @else Belum ada laporan @endif @endif</td>
+                            <td style="vertical-align: middle; ">{!! implode(", <br>",$pegawai) !!}</td>
+                            <td style="vertical-align: middle; text-align: center;"><a href="{{$data->link_gdrive}}">{{$data->link_gdrive}}</a></td>
+                            <td style="vertical-align: middle; text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) verified by WR @else Belum ada laporan @endif @endif</td>
 
                             
                         </tr>

@@ -36,18 +36,18 @@
                         @php $no = 1; @endphp
                         @foreach($datas as $data)
                         <tr>
-                            <td style="text-align: center;">{{$no}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$no}}</td>
                             <td>{{$data->nama_kegiatan}}</td>
-                            <td style="text-align: center;">{{tanggal_indonesia($data->tgl_event)}}</td>
-                            <td style="text-align: center;">{{tanggal_indonesia($data->created_at)}}</td>
-                            <td style="text-align: center;">{{$data->nama_pegawai}}</td>
-                            <td style="text-align: center;">{{$data->nama_fakultas_biro}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{tanggal_indonesia($data->tgl_event)}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{tanggal_indonesia($data->created_at)}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$data->nama_pegawai}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$data->nama_fakultas_biro}}</td>
                             <td style="vertical-align: middle; text-align: center;">{{$data->kode_renstra}}</td>
                             <td></td>
-                            <td style="text-align: right;">{{currency_IDR($data->total)}}</td>
-                            <td style="text-align: right;">{{currency_IDR($data->anggaran_proposal)}}</td>
-                            <td style="text-align: right;">{{currency_IDR($data->realisasi_anggaran)}}</td>
-                            <td style="text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) verified by WR @else Belum ada laporan @endif @endif</td>
+                            <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->total)}}</td>
+                            <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->anggaran_proposal)}}</td>
+                            <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->realisasi_anggaran)}}</td>
+                            <td style="vertical-align: middle; text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) verified by WR @else Belum ada laporan @endif @endif</td>
 
                             
                         </tr>
