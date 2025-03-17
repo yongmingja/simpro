@@ -768,7 +768,7 @@ class DashboardController extends Controller
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
             ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','status_proposals.status_approval')
-            ->orderBy('proposals.id','DESC')
+            ->orderBy('status_proposals.status_approval','ASC')
             ->get();
 
         if($request->ajax()){
