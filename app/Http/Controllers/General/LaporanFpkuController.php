@@ -23,8 +23,9 @@ class LaporanFpkuController extends Controller
     public function buatLaporan(Request $request,$id)
     {
         $ID = decrypt($id);
+        $getDataFpku = DataFpku::where('id',$ID)->select('nama_kegiatan','tgl_kegiatan')->first();
         $getFakultasBiro = DataFakultasBiro::select('nama_fakultas_biro','id')->get();
-        return view('general.laporan-fpku.buat-laporan',['id' => $ID, 'getFakultasBiro' => $getFakultasBiro]);
+        return view('general.laporan-fpku.buat-laporan',['id' => $ID, 'getDataFpku' => $getDataFpku, 'getFakultasBiro' => $getFakultasBiro]);
     }
 
     public function faculties($id)
@@ -41,7 +42,7 @@ class LaporanFpkuController extends Controller
         // $datas = DataFpku::whereRaw("JSON_CONTAINS(peserta_kegiatan,'\"$userID\"')")->get();
         $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
             ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-            ->select('data_fpkus.id AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval','data_fpkus.ketua')
+            ->select('data_fpkus.id AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval','status_laporan_fpkus.keterangan_ditolak','data_fpkus.ketua')
             ->whereRaw("JSON_CONTAINS(data_fpkus.peserta_kegiatan,'\"$userID\"')")
             ->orderBy('status_laporan_fpkus.status_approval','ASC')
             ->get();
@@ -53,9 +54,9 @@ class LaporanFpkuController extends Controller
                     return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-book-open bx-sm text-primary"></i></a>';                    
                 } else {
                     if($data->ketua == Auth::user()->id){
-                        return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>';
+                        return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';
                     } else {
-                        return '<a href="javascript:void(0)" class="text-secondary"><i class="bx bx-label"></i> not submitted</a>';
+                        return '<small><i class="text-danger">belum submit</i></small>';
                     }
                 }
             })->addColumn('status', function($data){
@@ -63,14 +64,17 @@ class LaporanFpkuController extends Controller
                     if($data->ketua == Auth::user()->id){
                         return '<a href="javascript:void(0)" name="delete" id="'.$data->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i></a>';
                     } else {
-                        return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
+                        return '<small><i class="text-danger">belum submit</i></small>';
                     }
                 } elseif($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    $button = '<a href="javascript:void()" class="delete" id="'.$data->id_laporan.'"><i class="bx bx-refresh"></i> Revisi</a>';
+                    $button .= '&nbsp;|&nbsp;';
+                    $button .= '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';                    
+                    return $button;
                 }elseif($data->status_approval == 3){
                     return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> verified</a>';
                 } else {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Not submitted yet" data-original-title="Not submitted yet"><i class="bx bx-x-circle text-danger"></i></a>';
+                    return '<small><i class="text-danger">belum submit</i></small>';
                 }
             })->addColumn('lampirans', function($data){
                 $checkLampiran = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();

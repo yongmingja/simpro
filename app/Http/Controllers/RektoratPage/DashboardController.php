@@ -426,14 +426,15 @@ class DashboardController extends Controller
     public function indexLaporanFpku(Request $request)
     {
         if($request->status == '' || $request->status == 'all'){
-            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
+
         }
         if($request->status == 'pending'){
-            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->where('status_laporan_fpkus.status_approval',1)
@@ -441,7 +442,7 @@ class DashboardController extends Controller
                 ->get();
         }
         if($request->status == 'accepted'){
-            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->where('status_laporan_fpkus.status_approval',3)
@@ -449,7 +450,7 @@ class DashboardController extends Controller
                 ->get();
         }
         if($request->status == 'denied'){
-            $datas = LaporanFpku::leftJoin('data_fpkus','data_fpkus.id','=','laporan_fpkus.id_fpku')
+            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
                 ->where('status_laporan_fpkus.status_approval',2)
@@ -460,12 +461,16 @@ class DashboardController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                if($data->status_approval == 3){
-                    return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-xs bx-check-shield"></i> validated</a>';
-                } elseif($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" class="text-danger"><i class="bx bx-xs bx-shield-x"></i> denied</a>';
+                if($data->id_laporan != null ){
+                    if($data->status_approval == 3){
+                        return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-xs bx-check-shield"></i> validated</a>';
+                    } elseif($data->status_approval == 2){
+                        return '<a href="javascript:void(0)" class="text-danger"><i class="bx bx-xs bx-shield-x"></i> denied</a>';
+                    } else {
+                        return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
+                    }
                 } else {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
+                    return '<i>Belum Submit</i>';
                 }
             })->addColumn('undangan', function($data){
                 return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku">'.$data->undangan_dari.'</a>';
@@ -480,7 +485,7 @@ class DashboardController extends Controller
                 $name = Pegawai::where('id','=',$data->ketua)->select('nama_pegawai')->first();
                 return $name->nama_pegawai;
             })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id_laporan.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })
             ->rawColumns(['action','undangan','lampirans','ketua_pelaksana','detail'])
             ->addIndexColumn(true)

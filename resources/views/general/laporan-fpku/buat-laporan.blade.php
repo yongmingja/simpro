@@ -96,12 +96,12 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                            <input type="text" id="nama_kegiatan" name="nama_kegiatan" class="form-control">
+                                            <input type="text" id="nama_kegiatan" name="nama_kegiatan" value="{{$getDataFpku->nama_kegiatan}}" class="form-control">
                                             <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="tgl_kegiatan" class="form-label">Tanggal Kegiatan</label>
-                                            <input type="date" class="form-control" id="tgl_kegiatan" name="tgl_kegiatan" value="" placeholder="mm/dd/yyyy" />
+                                            <input type="date" class="form-control" id="tgl_kegiatan" name="tgl_kegiatan" value="{{$getDataFpku->tgl_kegiatan}}" placeholder="mm/dd/yyyy" />
                                             <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                         </div>
                                         <div class="col-md-6">
@@ -216,7 +216,6 @@
                                             <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
                                               <option value="1">Kampus</option>
                                               <option value="2">Mandiri</option>
-                                              <option value="3">Hibah</option>
                                             </select></td>
                                             <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
                                         </tr>
@@ -463,7 +462,7 @@
     $("#tombol-add-anggaran").click(function(){
       ++j;
 
-      $("#dynamicAddRemoveAnggaran").append('<tr><td><input type="text" class="form-control" id="item" name="rows['+j+'][item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="biaya_satuan" name="rows['+j+'][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="quantity" name="rows['+j+'][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="frequency" name="rows['+j+'][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="text" class="form-control" id="total_biaya" name="rows['+j+'][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="sumber" name="rows['+j+'][sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option><option value="3">Hibah</option></select></td><td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
+      $("#dynamicAddRemoveAnggaran").append('<tr><td><input type="text" class="form-control" id="item" name="rows['+j+'][item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="biaya_satuan" name="rows['+j+'][biaya_satuan]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="quantity" name="rows['+j+'][quantity]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="number" class="form-control" id="frequency" name="rows['+j+'][frequency]" value="" min="0" onkeyup="OnChange(this.value)" /></td><td><input type="text" class="form-control" id="total_biaya" name="rows['+j+'][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="sumber" name="rows['+j+'][sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option></select></td><td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
 
       OnChange();
 
@@ -487,7 +486,7 @@
     $("#tombol-realisasi-anggaran").click(function(){
       ++n;
 
-      $("#dynamicRealisasiAnggaran").append('<tr><td><input type="text" class="form-control" id="r_item" name="baris['+n+'][r_item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="r_biaya_satuan" name="baris['+n+'][r_biaya_satuan]" value="" min="0" onkeyup="OnChange2(this.value)" /></td><td><input type="number" class="form-control" id="r_quantity" name="baris['+n+'][r_quantity]" value="" min="0" onkeyup="OnChange2(this.value)" /></td><td><input type="number" class="form-control" id="r_frequency" name="baris['+n+'][r_frequency]" value="" min="0" onkeyup="OnChange2(this.value)" /></td><td><input type="text" class="form-control" id="r_total_biaya" name="baris['+n+'][r_total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="r_sumber" name="baris['+n+'][r_sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option><option value="3">Hibah</option></select></td><td><button type="button" class="btn btn-danger remove-tr-realisasi-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
+      $("#dynamicRealisasiAnggaran").append('<tr><td><input type="text" class="form-control" id="r_item" name="baris['+n+'][r_item]" value="" placeholder="Input item" /></td><td><input type="number" class="form-control" id="r_biaya_satuan" name="baris['+n+'][r_biaya_satuan]" value="" min="0" onkeyup="OnChange2(this.value)" /></td><td><input type="number" class="form-control" id="r_quantity" name="baris['+n+'][r_quantity]" value="" min="0" onkeyup="OnChange2(this.value)" /></td><td><input type="number" class="form-control" id="r_frequency" name="baris['+n+'][r_frequency]" value="" min="0" onkeyup="OnChange2(this.value)" /></td><td><input type="text" class="form-control" id="r_total_biaya" name="baris['+n+'][r_total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td><td><select class="select2 form-select" id="r_sumber" name="baris['+n+'][r_sumber]" style="cursor:pointer;"><option value="1">Kampus</option><option value="2">Mandiri</option></select></td><td><button type="button" class="btn btn-danger remove-tr-realisasi-anggaran"><i class="bx bx-trash"></i></button></td></tr>');
 
       OnChange2();
 
