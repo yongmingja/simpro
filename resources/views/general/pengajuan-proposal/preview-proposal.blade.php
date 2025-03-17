@@ -163,7 +163,7 @@
                                 <td style="text-align: center;" class="table_td">{{date('d-m-Y', strtotime($item->tgl_kegiatan))}}</td>
                                 <td class="table_td">{{$item->sarpras_item}}</td>
                                 <td style="text-align: center;" class="table_td">{{$item->jumlah}}</td>
-                                <td style="text-align: center;" class="table_td">@if($item->sumber_dana == '1') Kampus @elseif($item->sumber_dana == '2') Mandiri @else Hibah @endif</td>
+                                <td style="text-align: center;" class="table_td">@if($item->sumber_dana == '1') Kampus @else Mandiri @endif</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -197,7 +197,7 @@
                                 <td style="text-align: center;" class="table_td">{{$anggaran->frequency}}</td>
                                 @php $total = 0; $total = $anggaran->biaya_satuan * $anggaran->quantity * $anggaran->frequency; @endphp
                                 <td style="text-align: right;" class="table_td">{{currency_IDR($total)}}</td>
-                                <td style="text-align: center;" class="table_td">@if($anggaran->sumber_dana == '1') Kampus @elseif($anggaran->sumber_dana == '2') Mandiri @else Hibah @endif</td>
+                                <td style="text-align: center;" class="table_td">@if($anggaran->sumber_dana == '1') Kampus @else Mandiri @endif</td>
                             </tr>
                             @endforeach
                             <tr>

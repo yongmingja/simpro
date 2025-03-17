@@ -194,7 +194,6 @@
                                                     <select class="select2 form-select" id="e_sumber" name="e_sumber" style="cursor:pointer;">
                                                         <option value="1">Kampus</option>
                                                         <option value="2">Mandiri</option>
-                                                        <option value="3">Hibah</option>
                                                       </select>
                                                 </div>
                                             </div>
@@ -294,7 +293,6 @@
                                             <select class="select2 form-select" id="e_anggaran_sumber_dana" name="e_anggaran_sumber_dana" style="cursor:pointer;">
                                                 <option value="1">Kampus</option>
                                                 <option value="2">Mandiri</option>
-                                                <option value="3">Hibah</option>
                                               </select>
                                         </div>
                                         <div class="col-sm-offset-2 col-sm-12">

@@ -166,7 +166,7 @@
                                                     <td>{{$data->frequency}}</td>
                                                     @php $total = 0; $total = $data->biaya_satuan * $data->quantity * $data->frequency; @endphp
                                                     <td>{{currency_IDR($total)}}</td>
-                                                    <td>@if($data->sumber_dana == '1') Kampus @elseif($data->sumber_dana == '2') Mandiri @else Hibah @endif</td>
+                                                    <td>@if($data->sumber_dana == '1') Kampus @else Mandiri @endif</td>
                                                 </tr>
                                                 @endforeach
                                                 <tr>
@@ -204,7 +204,6 @@
                                                   <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
                                                     <option value="1">Kampus</option>
                                                     <option value="2">Mandiri</option>
-                                                    <option value="3">Hibah</option>
                                                   </select></td>
                                                   <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
                                               </tr>

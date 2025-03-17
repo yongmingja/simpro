@@ -175,7 +175,7 @@
                         <td style="text-align: center;" class="table_td">{{$anggaran->frequency}}</td>
                         @php $total = 0; $total = $anggaran->biaya_satuan * $anggaran->quantity * $anggaran->frequency; @endphp
                         <td style="text-align: right;" class="table_td">{{currency_IDR($total)}}</td>
-                        <td style="text-align: center;" class="table_td">@if($anggaran->sumber_dana == '1') Kampus @elseif($anggaran->sumber_dana == '2') Mandiri @else Hibah @endif</td>
+                        <td style="text-align: center;" class="table_td">@if($anggaran->sumber_dana == '1') Kampus @else Mandiri @endif</td>
                     </tr>
                     @endforeach
                     <tr>
@@ -211,7 +211,7 @@
                         <td style="text-align: center;" class="table_td">{{$realisasi->frequency}}</td>
                         @php $total = 0; $total = $realisasi->biaya_satuan * $realisasi->quantity * $realisasi->frequency; @endphp
                         <td style="text-align: right;" class="table_td">{{currency_IDR($total)}}</td>
-                        <td style="text-align: center;" class="table_td">@if($realisasi->sumber_dana == '1') Kampus @elseif($realisasi->sumber_dana == '2') Mandiri @else Hibah @endif</td>
+                        <td style="text-align: center;" class="table_td">@if($realisasi->sumber_dana == '1') Kampus @else Mandiri @endif</td>
                     </tr>
                     @endforeach
                     <tr>

@@ -217,13 +217,13 @@
         <li class="menu-item">
             <a href="{{route('data-proposal.index')}}" class="menu-link {{set_active('data-proposal.index')}}">
             <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-            <div data-i18n="Proposals">Proposals</div>
+            <div data-i18n="Validasi Proposal">Validasi Proposal</div>
             </a>
         </li>
         <li class="menu-item">
             <a href="{{route('data-fpku.index')}}" class="menu-link {{set_active('data-fpku.index')}}">
-            <i class="menu-icon tf-icons bx bx-envelope bx-tada-hover"></i>
-            <div data-i18n="Data FPKU">Data FPKU</div>
+            <i class="menu-icon tf-icons bx bx-plus-circle bx-tada-hover"></i>
+            <div data-i18n="Buat FPKU">Buat FPKU</div>
             </a>
         </li>
         @endif

@@ -203,7 +203,6 @@
                                                   <td><select class="select2 form-select" id="sumber" name="kolom[0][sumber]" style="cursor:pointer;">
                                                       <option value="1">Kampus</option>
                                                       <option value="2">Mandiri</option>
-                                                      <option value="3">Hibah</option>
                                                   </select></td>
                                                   <td><textarea class="form-control" id="ket" name="kolom[0][ket]" rows="3"></textarea></td>
                                                   <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-sarpras"><i class="bx bx-plus-circle"></i></button></td>
@@ -253,10 +252,10 @@
                                                     <td><input type="number" class="form-control quantity" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this)" /></td>
                                                     <td><input type="number" class="form-control frequency" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this)" /></td>
                                                     <td><input type="text" class="form-control total_biaya" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
-                                                    <td><select class="select2 form-select" id="sumber" name="rows[0][sumber]" style="cursor:pointer;">
+                                                    <td><select class="select2 form-select" id="sumber_anggaran" name="rows[0][sumber]" onchange="calculateGrandTotal()" style="cursor:pointer;">
+                                                        <option value="" id="pilih_sumber_anggaran">- Pilih -</option>
                                                         <option value="1">Kampus</option>
                                                         <option value="2">Mandiri</option>
-                                                        <option value="3">Hibah</option>
                                                     </select></td>
                                                     <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-anggaran"><i class="bx bx-plus-circle"></i></button></td>
                                                 </tr>
@@ -504,14 +503,19 @@
                     });
                 },
                 error: function(xhr, status, error) {
+                    $('#kategoriErrorMsg').text('Gagal mengambil data RKAT, silakan coba lagi.');
                     console.error('Error: ' + error);
                 }
+
             });
         } else {
             $('#showForm').addClass('d-none');
+            $('#tampilkan-total').text('');
+            $('#tampilkan-total').data('rkat_total', 0);
         }
     }
     $('#choose_pilihan_rkat').attr('disabled','disabled');
+    $('#pilih_sumber_anggaran').attr('disabled','disabled');
 
     $('select[name="id_fakultas_biro"]').on('change', function() {
         $('#id_prodi_biro').empty();
@@ -546,7 +550,6 @@
                 <select class="select2 form-select" id="sumber" name="kolom['+i+'][sumber]" style="cursor:pointer;">
                     <option value="1">Kampus</option>
                     <option value="2">Mandiri</option>
-                    <option value="3">Hibah</option>
                 </select>
             </td>
             <td><textarea class="form-control" id="ket" name="kolom['+i+'][ket]" rows="3"></textarea></td>
@@ -568,10 +571,9 @@
             <td><input type="number" class="form-control quantity" name="rows['+j+'][quantity]" min="0" onkeyup="OnChange(this)" /></td>
             <td><input type="number" class="form-control frequency" name="rows['+j+'][frequency]" min="0" onkeyup="OnChange(this)" /></td>
             <td><input type="text" class="form-control total_biaya" name="rows['+j+'][total_biaya]" readonly style="cursor: no-drop;" /></td>
-            <td><select class="select2 form-select" name="rows['+j+'][sumber]" style="cursor:pointer;">
+            <td><select class="select2 form-select" id="sumber_anggaran" name="rows['+j+'][sumber]" style="cursor:pointer;">
                 <option value="1">Kampus</option>
                 <option value="2">Mandiri</option>
-                <option value="3">Hibah</option>
             </select></td>
             <td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td>
         </tr>`);
@@ -587,30 +589,42 @@
 
     function calculateGrandTotal() {
         var total = 0;
-        $('#table-body tr').each(function() {
+
+        // Hitung Grand Total untuk semua baris
+        $('#table-body tr').each(function () {
             var rowTotal = parseInt($(this).find('.total_biaya').val()) || 0;
-            total += rowTotal;
+            total += rowTotal; // Tambahkan ke total, tanpa memeriksa sumber
         });
 
-        // Format total sebagai Rupiah dan update elemen grand-total
+        // Format Grand Total sebagai Rupiah dan update elemen grand-total
         var formattedTotal = formatRupiah(total);
         $('#grand-total').text(formattedTotal);
 
-        // Retrieve the tampilkan total value
-        var tampilkanTotal = $('#tampilkan-total').data('rkat_total') || 0;
-
-        // Compare grand total with tampilkan total
-        if (tampilkanTotal > 0 && total > tampilkanTotal) {
-            $('#next-anggaran').prop("disabled", true);
-            $('#tombol-page-4').prop("disabled", true);
-            $('#tombol-page-5').prop("disabled", true);
-            alert('Mohon maaf anda tidak bisa melanjutkan proposal karena total biaya melebihi total anggaran RKAT yang anda pilih yaitu sebesar '+ formatRupiah(tampilkanTotal) +'');
-        } else {
-            $('#next-anggaran').prop("disabled", false);
-            $('#tombol-page-4').prop("disabled", false);
-            $('#tombol-page-5').prop("disabled", false);
-        }
+        // Validasi hanya untuk kategori Kampus
+        var totalRkat = 0; // Anggaran total RKAT
+        $('#table-body tr').each(function () {
+            var sumber = $(this).find('#sumber_anggaran').val(); // Ambil sumber
+            if (sumber === "1") { // Hanya cek jika kategori adalah Kampus
+                var rowTotal = parseInt($(this).find('.total_biaya').val()) || 0;
+                var totalRkat = $('#tampilkan-total').data('rkat_total') || 0;
+                if (totalRkat > 0 && rowTotal > totalRkat) {
+                    $('#next-anggaran').prop("disabled", true);
+                    $('#tombol-page-4').prop("disabled", true);
+                    $('#tombol-page-5').prop("disabled", true);
+                    alert('Total biaya melebihi total RKAT sebesar ' + formatRupiah(totalRkat));
+                } else {
+                    $('#next-anggaran').prop("disabled", false);
+                    $('#tombol-page-4').prop("disabled", false);
+                    $('#tombol-page-5').prop("disabled", false);
+                }
+            } else {
+                $('#next-anggaran').prop("disabled", false);
+                $('#tombol-page-4').prop("disabled", false);
+                $('#tombol-page-5').prop("disabled", false);
+            }
+        });
     }
+
 
     function formatRupiah(angka) {
         return 'Rp' + angka.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }).replace('Rp', '');

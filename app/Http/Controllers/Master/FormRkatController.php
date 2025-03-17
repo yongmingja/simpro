@@ -18,13 +18,14 @@ class FormRkatController extends Controller
         if(session()->get('selected_peran') == ''){
             $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                 ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-                ->select('jabatans.kode_jabatan','jabatans.id AS id_jabatan')
+                ->select('jabatan_pegawais.id AS jab_id','jabatans.kode_jabatan','jabatans.id AS id_jabatan')
                 ->first();
             $recentRole = $getPeran->kode_jabatan;
-            $recentRoleId = $getPeran->id_jabatan;
+            $recentRoleId = $getPeran->jab_id;
         } else {
-            $getPeran = Jabatan::where('kode_jabatan',session()->get('selected_peran'))->select('id AS id_jabatan')->first();
-            $recentRoleId = $getPeran->id_jabatan;
+            $getPeran = Jabatan::leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                ->where('jabatans.kode_jabatan',session()->get('selected_peran'))->select('jabatans.id AS id_jabatan','jabatan_pegawais.id AS jab_id')->first();
+            $recentRoleId = $getPeran->jab_id;
         }
 
         $datas = FormRkat::where('penanggung_jawab',$recentRoleId)->get();
@@ -78,13 +79,14 @@ class FormRkatController extends Controller
         if(session()->get('selected_peran') == ''){
             $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                 ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-                ->select('jabatans.kode_jabatan','jabatans.id AS id_jabatan')
+                ->select('jabatan_pegawais.id AS jab_id','jabatans.kode_jabatan','jabatans.id AS id_jabatan')
                 ->first();
             $recentRole = $getPeran->kode_jabatan;
-            $recentRoleId = $getPeran->id_jabatan;
+            $recentRoleId = $getPeran->jab_id;
         } else {
-            $getPeran = Jabatan::where('kode_jabatan',session()->get('selected_peran'))->select('id AS id_jabatan')->first();
-            $recentRoleId = $getPeran->id_jabatan;
+            $getPeran = Jabatan::leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+                ->where('jabatans.kode_jabatan',session()->get('selected_peran'))->select('jabatans.id AS id_jabatan','jabatan_pegawais.id AS jab_id')->first();
+            $recentRoleId = $getPeran->jab_id;
         }
 
         $post = FormRkat::updateOrCreate(['id' => $request->id],
