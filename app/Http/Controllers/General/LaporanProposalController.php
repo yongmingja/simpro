@@ -334,12 +334,14 @@ class LaporanProposalController extends Controller
             $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval')
+                ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         } else {
             $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval')
                 ->whereYear('proposals.tgl_event',$request->tahun_proposal)
+                ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         }
 

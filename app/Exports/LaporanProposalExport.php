@@ -75,6 +75,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'form_rkats.kode_renstra',
                     'form_rkats.total'
                 )
+                ->orderBy('proposals.tgl_event','DESC')
                 ->get();
 
         } else {
@@ -109,6 +110,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'form_rkats.total'
                 )
                 ->whereYear('proposals.tgl_event',$getYear)
+                ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         }
 

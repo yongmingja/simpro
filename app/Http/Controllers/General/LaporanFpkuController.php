@@ -362,6 +362,7 @@ class LaporanFpkuController extends Controller
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','laporan_fpkus.id')
                 ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai','status_laporan_fpkus.status_approval')
+                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         } else {
             $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
@@ -369,6 +370,7 @@ class LaporanFpkuController extends Controller
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','laporan_fpkus.id')
                 ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai','status_laporan_fpkus.status_approval')
                 ->whereYear('data_fpkus.tgl_kegiatan',$request->tahun_fpku)
+                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         }
 

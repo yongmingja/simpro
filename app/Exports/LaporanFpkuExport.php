@@ -44,6 +44,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
                 ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         } else {
             $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
@@ -52,6 +53,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
                 ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
                 ->whereYear('data_fpkus.tgl_kegiatan',$getYear)
+                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         }
         return $array = $datas->map(function ($value, $key) {
