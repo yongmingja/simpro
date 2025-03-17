@@ -174,8 +174,7 @@ class LaporanProposalController extends Controller
             if($rencana->count() > 0){
                 $total_biaya = array(
                     'Kampus' => 0,
-                    'Mandiri' => 0,
-                    'Hibah' => 0
+                    'Mandiri' => 0
                 );
                 $grand_total_rencana = 0;
                 foreach($rencana as $no => $dataRencana){
@@ -188,20 +187,16 @@ class LaporanProposalController extends Controller
                             if ($dataRencana->sumber_dana == '1') {
                                 $text = 'Kampus';
                                 $total_biaya['Kampus'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
-                            } else if ($dataRencana->sumber_dana == '2') {
+                            } else {
                                 $text = 'Mandiri';
                                 $total_biaya['Mandiri'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
-                            } else {
-                                $text = 'Hibah';
-                                $total_biaya['Hibah'] += $dataRencana->biaya_satuan * $dataRencana->quantity * $dataRencana->frequency;
-                            }
+                            } 
                         $html .= '<td style="text-align: center">'.$text.'</td>
                     </tr>';
                 }
-                $grand_total_rencana = $total_biaya['Kampus'] + $total_biaya['Mandiri'] + $total_biaya['Hibah'];
+                $grand_total_rencana = $total_biaya['Kampus'] + $total_biaya['Mandiri'];
                 $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Kampus</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Kampus']) . '</td></tr>';
                 $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Mandiri</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Mandiri']) . '</td></tr>';
-                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Hibah</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Hibah']) . '</td></tr>';
                 $html .= '<tr><td colspan="5" style="text-align: right; color: orange;"><b>Grand Total</b></td><td style="text-align: right; color: orange;"><b>' . currency_IDR($grand_total_rencana) . '</b></td></tr>';
             } else {
                 $html .= '<tr>
@@ -229,8 +224,7 @@ class LaporanProposalController extends Controller
             if($datas->count() > 0){
                 $total_biaya = array(
                     'Kampus' => 0,
-                    'Mandiri' => 0,
-                    'Hibah' => 0
+                    'Mandiri' => 0
                 );
                 $grand_total_realisasi = 0;
                 foreach($datas as $no => $data){
@@ -243,20 +237,16 @@ class LaporanProposalController extends Controller
                             if ($data->sumber_dana == '1') {
                                 $text = 'Kampus';
                                 $total_biaya['Kampus'] += $data->biaya_satuan * $data->quantity * $data->frequency;
-                            } else if ($data->sumber_dana == '2') {
+                            } else {
                                 $text = 'Mandiri';
                                 $total_biaya['Mandiri'] += $data->biaya_satuan * $data->quantity * $data->frequency;
-                            } else {
-                                $text = 'Hibah';
-                                $total_biaya['Hibah'] += $data->biaya_satuan * $data->quantity * $data->frequency;
-                            }
+                            } 
                         $html .= '<td style="text-align: center">'.$text.'</td>
                     </tr>';
                 }
-                $grand_total_realisasi = $total_biaya['Kampus'] + $total_biaya['Mandiri'] + $total_biaya['Hibah'];
+                $grand_total_realisasi = $total_biaya['Kampus'] + $total_biaya['Mandiri'];
                 $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Kampus</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Kampus']) . '</td></tr>';
                 $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Mandiri</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Mandiri']) . '</td></tr>';
-                $html .= '<tr><td colspan="5" style="text-align: right;"><i>Total Hibah</i></td><td style="text-align: right;">' . currency_IDR($total_biaya['Hibah']) . '</td></tr>';
                 $html .= '<tr><td colspan="5" style="text-align: right; color: orange;"><b>Grand Total</b></td><td style="text-align: right; color: orange;"><b>' . currency_IDR($grand_total_realisasi) . '</b></td></tr>';
             } else {
                 $html .= '<tr>

@@ -67,7 +67,7 @@ class LaporanFpkuController extends Controller
                         return '<small><i class="text-danger">belum submit</i></small>';
                     }
                 } elseif($data->status_approval == 2){
-                    $button = '<a href="javascript:void()" class="delete" id="'.$data->id_laporan.'"><i class="bx bx-refresh"></i> Revisi</a>';
+                    $button = '<a href="javascript:void()" class="delete" id="'.$data->id_laporan.'"><i class="bx bx-refresh"></i> Recreate</a>';
                     $button .= '&nbsp;|&nbsp;';
                     $button .= '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';                    
                     return $button;
