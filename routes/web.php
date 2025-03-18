@@ -136,6 +136,7 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::get('lihat-detail-anggaran','DekanPage\DataProposalController@lihatDetailAnggaran')->name('lihat-detail-anggaran');
     Route::get('lihat-detail-realisasi-anggaran','DekanPage\LaporanProposalController@lihatDetailRealisasiAnggaran')->name('lihat-detail-realisasi-anggaran');
     Route::get('lihat-detail-anggaran-fpku','RektoratPage\DashboardController@lihatDetailAnggaran')->name('lihat-detail-anggaran-fpku');
+    Route::get('get-recent-peran','Auth\PeranController@getRecentPeran')->name('get-recent-peran');
 
 });
 
