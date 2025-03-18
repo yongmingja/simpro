@@ -236,7 +236,19 @@ class LaporanProposalController extends Controller
         }
         
         $fileName = 'laporan_proposal_'.date(now()).'.pdf';
-        $pdf = PDF::loadview('general.laporan-proposal.preview-laporan-proposal', compact('datas','getQR','qrcode','anggarans','realisasianggarans','grandTotalAnggarans','grandTotalRealisasiAnggarans','data_lampiran','getPengusul','getDiketahui','getDisetujui'));
+        $pdf = PDF::loadview('general.laporan-proposal.preview-laporan-proposal', [
+            'datas'=> $datas,
+            'getQR' => $getQR,
+            'qrcode' => $qrcode,
+            'anggarans' =>$anggarans,
+            'realisasianggarans' => $realisasianggarans,
+            'grandTotalAnggarans' => $grandTotalAnggarans,
+            'grandTotalRealisasiAnggarans' => $grandTotalRealisasiAnggarans,
+            'data_lampiran' => $data_lampiran,
+            'getPengusul' => $getPengusul,
+            'getDiketahui' => $getDiketahui,
+            'getDisetujui' => $getDisetujui
+        ]);
         $pdf->setPaper('F4','P');
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -415,6 +427,7 @@ class LaporanProposalController extends Controller
                     'proposals.tgl_event',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
+                    'status_laporan_proposals.id_laporan_proposal',
                     'status_laporan_proposals.status_approval',
                     'data_fakultas_biros.nama_fakultas_biro',
                     'form_rkats.kode_renstra',
@@ -428,6 +441,7 @@ class LaporanProposalController extends Controller
                     'proposals.tgl_event',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
+                    'status_laporan_proposals.id_laporan_proposal',
                     'status_laporan_proposals.status_approval',
                     'data_fakultas_biros.nama_fakultas_biro',
                     'form_rkats.kode_renstra',

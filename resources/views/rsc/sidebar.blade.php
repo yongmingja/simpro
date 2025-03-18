@@ -422,10 +422,13 @@
                     </a>
                     
                 </li> 
-            @endif 
-            <li class="menu-header small fw-medium">
-                <div data-i18n="MENU LAINNYA">MENU LAINNYA</div>
-            </li> 
+            @endif            
+        @endif
+        
+        @if($roleDefault == "WAREK" || $roleDefault == "RKT")
+        <li class="menu-header small fw-medium">
+            <div data-i18n="MENU LAINNYA">MENU LAINNYA</div>
+        </li> 
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-monitoring-proposals')}} OR {{set_active('index-monitoring-laporan-proposals')}}">
                 <i class="menu-icon tf-icons bx bx-search bx-tada-hover"></i>
@@ -462,7 +465,7 @@
                     </li>
                 </ul>
             </li> 
-        @endif        
+        @endif
     @endif
     
     </ul>

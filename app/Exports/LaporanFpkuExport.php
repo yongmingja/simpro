@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use URL;
 
 class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, ShouldAutoSize
 {
@@ -31,7 +32,8 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             'Ketua Pelaksana',
             'Anggota Pelaksana',
             'Undangan',
-            'Status Laporan'
+            'Status Laporan',
+            'Link Laporan'
         ];
     }
 
@@ -43,7 +45,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
                 ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         } else {
@@ -51,7 +53,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
                 ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')
                 ->whereYear('data_fpkus.tgl_kegiatan',$getYear)
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
@@ -60,7 +62,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             static $no = 1;
 
             $statusLaporan = '';
-            if($value->status_approval == 5) {
+            if($value->status_approval == 3) {
                 $statusLaporan = 'verified by WR';
             } else {
                 $statusLaporan = 'Belum ada laporan';
@@ -81,7 +83,8 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
                 'Ketua Pelaksana' => $value->ketua,
                 'Anggota Pelaksana' => $peserta_kegiatan,
                 'Undangan' => $value->link_gdrive,
-                'Status Laporan' => $statusLaporan
+                'Status Laporan' => $statusLaporan,
+                'Link Laporan' => ''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($value->id_laporan)
             ];
         });
     }
@@ -94,7 +97,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             },
             AfterSheet::class    => function(AfterSheet $event) {
    
-                $event->sheet->getDelegate()->getStyle('A1:H1')
+                $event->sheet->getDelegate()->getStyle('A1:I1')
                                 ->getFont()
                                 ->setBold(true);
             },

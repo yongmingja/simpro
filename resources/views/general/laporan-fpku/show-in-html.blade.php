@@ -26,6 +26,7 @@
                             <th style="vertical-align: middle; text-align: center;">Anggota Pelaksana</th>
                             <th style="vertical-align: middle; text-align: center;">Undangan</th>
                             <th style="vertical-align: middle; text-align: center;">Status Laporan</th>
+                            <th style="vertical-align: middle; text-align: center; text-wrap: wrap;" width="50%;">Link Laporan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,7 +47,8 @@
                             @endphp
                             <td style="vertical-align: middle; ">{!! implode(", <br>",$pegawai) !!}</td>
                             <td style="vertical-align: middle; text-align: center;"><a href="{{$data->link_gdrive}}">{{$data->link_gdrive}}</a></td>
-                            <td style="vertical-align: middle; text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) verified by WR @else Belum ada laporan @endif @endif</td>
+                            <td style="vertical-align: middle; text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 3) verified by WR @else Belum ada laporan @endif @endif</td>
+                            <td>@if(!empty($data->status_approval)) @if($data->status_approval == 3) <a href="{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}">{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}</a> @else Belum ada laporan @endif @endif</td>
 
                             
                         </tr>

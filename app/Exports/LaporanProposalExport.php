@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use DB;
+use DB; use URL;
 
 class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents, ShouldAutoSize
 {
@@ -37,7 +37,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             'Anggaran RKAT',
             'Anggaran Proposal',
             'Realisasi Anggaran',
-            'Status Laporan'
+            'Status Laporan',
+            'Link Laporan'
         ];
     }
 
@@ -136,7 +137,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 'Anggaran RKAT' => currency_IDR($value->total),
                 'Anggaran Proposal' => currency_IDR($value->anggaran_proposal),
                 'Realisasi Anggaran' => currency_IDR($value->realisasi_anggaran),
-                'Status Laporan' => $statusLaporan
+                'Status Laporan' => $statusLaporan,
+                'Link Laporan' => ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id)
             ];
         });
     }
@@ -149,7 +151,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             },
             AfterSheet::class    => function(AfterSheet $event) {
    
-                $event->sheet->getDelegate()->getStyle('A1:L1')
+                $event->sheet->getDelegate()->getStyle('A1:M1')
                                 ->getFont()
                                 ->setBold(true);
             },

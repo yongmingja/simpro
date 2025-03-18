@@ -409,7 +409,7 @@ class LaporanFpkuController extends Controller
                 ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         } else {
@@ -417,7 +417,7 @@ class LaporanFpkuController extends Controller
                 ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')
                 ->whereYear('data_fpkus.tgl_kegiatan',$year)
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
