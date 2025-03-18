@@ -144,7 +144,7 @@
                 <li>
                     <a class="dropdown-item" href="{{route('profile')}}">
                     <i class="bx bx-user me-2"></i>
-                    <span class="align-middle">My Profile</span>
+                    <span class="align-middle">Pegaturan Akun</span>
                     </a>
                 </li>
                 <li>
@@ -153,7 +153,7 @@
                             {{ csrf_field() }}
                         </form>
                     <i class="bx bx-power-off me-2"></i>
-                    <span class="align-middle">Sign out</span>
+                    <span class="align-middle">Keluar</span>
                     </a>
                 </li>
                 </ul>
@@ -201,7 +201,7 @@
     <ul class="menu-inner py-1">
 
     <li class="menu-header small fw-medium">
-        <div data-i18n="MENUS">MENUS</div>
+        <div data-i18n="MENU">MENU</div>
     </li>
 
 
@@ -306,7 +306,7 @@
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}} OR {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
                     <i class="menu-icon tf-icons bx bx-plus-circle bx-tada-hover"></i>
-                    <div data-i18n="Buat Proposals">Buat Proposals</div>
+                    <div data-i18n="Buat Proposal">Buat Proposal</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item">
@@ -359,7 +359,7 @@
                     <li class="menu-item">
                         <a href="{{route('page-data-proposal.index')}}" class="menu-link {{set_active('page-data-proposal.index')}}">
                         <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-                        <div data-i18n="Proposals">Proposals</div>
+                        <div data-i18n="Proposal">Proposal</div>
                         </a>
                     </li>
                     <li class="menu-item">
@@ -380,7 +380,7 @@
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
                 <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-                <div data-i18n="Validasi Proposals">Validasi Proposals</div>
+                <div data-i18n="Validasi Proposal">Validasi Proposal</div>
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item">
@@ -425,7 +425,7 @@
             @endif            
         @endif
         
-        @if($roleDefault == "WAREK" || $roleDefault == "RKT")
+        @if($roleDefault == "WAREK" || $roleDefault == "RKT" || $roleDefault == "SADM")
         <li class="menu-header small fw-medium">
             <div data-i18n="MENU LAINNYA">MENU LAINNYA</div>
         </li> 
@@ -442,7 +442,7 @@
                     </li>
                     <li class="menu-item">
                         <a href="{{route('index-monitoring-laporan-proposals')}}" class="menu-link {{set_active('index-monitoring-laporan-proposals')}}">
-                        <div data-i18n="Laporan Proposal">Laporan Proposal</div>
+                        <div data-i18n="Laporan PJK">Laporan PJK</div>
                         </a>
                     </li>
                 </ul>

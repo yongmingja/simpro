@@ -378,13 +378,13 @@ class LaporanFpkuController extends Controller
             return datatables()->of($datas)
             ->addColumn('status', function($data){
                 if(!empty($data->status_approval)) {
-                    if($data->status_approval == 5){
-                        return 'verified by WR';
+                    if($data->status_approval == 3){
+                        return '<i class="text-success">ACC Rektorat</i>';
                     } else {
-                        return 'proses validasi';
+                        return '<i class="text-secondary">Belum ada laporan</i>';
                     }
                 } else {
-                    return 'Belum ada laporan';
+                    return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('anggota_pelaksana', function($data){
                 $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();

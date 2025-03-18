@@ -636,9 +636,9 @@
                 var rowTotal = parseInt($(this).find('.total_biaya').val()) || 0;
                 var totalRkat = $('#tampilkan-total').data('rkat_total') || 0;
                 if (totalRkat > 0 && rowTotal > totalRkat) {
-                    $('#next-anggaran').prop("disabled", true);
-                    $('#tombol-page-4').prop("disabled", true);
-                    $('#tombol-page-5').prop("disabled", true);
+                    $('#next-anggaran').prop("disabled", false);
+                    $('#tombol-page-4').prop("disabled", false);
+                    $('#tombol-page-5').prop("disabled", false);
                     alert('Total biaya melebihi total RKAT sebesar ' + formatRupiah(totalRkat));
                 } else {
                     $('#next-anggaran').prop("disabled", false);

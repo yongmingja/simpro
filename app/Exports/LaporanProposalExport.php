@@ -120,7 +120,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
 
             $statusLaporan = '';
             if($value->status_approval == 5) {
-                $statusLaporan = 'verified by WR';
+                $statusLaporan = 'ACC Rektorat';
                 $linkLaporan = ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id);
             } else {
                 $statusLaporan = 'Belum ada laporan';

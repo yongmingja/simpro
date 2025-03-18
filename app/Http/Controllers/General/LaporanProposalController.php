@@ -362,12 +362,12 @@ class LaporanProposalController extends Controller
             ->addColumn('status', function($data){
                 if(!empty($data->status_approval)) {
                     if($data->status_approval == 5){
-                        return 'verified by WR';
+                        return '<i class="text-success">ACC Rektorat</i>';
                     } else {
-                        return 'pending';
+                        return '<i class="text-secondary">Belum ada laporan</i>';
                     }
                 } else {
-                    return 'Belum ada laporan';
+                    return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })
             ->rawColumns(['status'])

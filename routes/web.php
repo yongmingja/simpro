@@ -154,6 +154,9 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT'])->group(funct
     Route::post('rkat-approval-n','RektoratPage\FormRkatController@approvalN')->name('rkat-approval-n');
     Route::get('lihat-history-delegasi','RektoratPage\DashboardController@lihatHistoryDelegasi')->name('lihat-history-delegasi');
     Route::get('lihat-history-delegasi-proposal','RektoratPage\DashboardController@lihatHistoryDelegasiProposal')->name('lihat-history-delegasi-proposal');
+});
+
+Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT,SADM'])->group(function(){
     Route::get('index-export-proposal','General\LaporanProposalController@indexExportProposal')->name('index-export-proposal');
     Route::get('show-data-proposal-html/{year}','General\LaporanProposalController@showDataProposalHtml')->name('show-data-proposal-html');
     Route::get('download-proposal-excel/{year}','General\LaporanProposalController@downloadProposalExcel')->name('download-proposal-excel');

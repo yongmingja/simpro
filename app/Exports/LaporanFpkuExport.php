@@ -63,7 +63,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
 
             $statusLaporan = '';
             if($value->status_approval == 3) {
-                $statusLaporan = 'verified by WR';
+                $statusLaporan = 'ACC Rektorat';
                 $linkLaporan = ''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($value->id_laporan);
             } else {
                 $statusLaporan = 'Belum ada laporan';

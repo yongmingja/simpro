@@ -160,13 +160,13 @@ class PengajuanProposalController extends Controller
                 if($data->status_approval == 2){
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Dekan</span><span class="badge bg-danger badge-notifications">Cek alasan ditolak</span></a>';
                 } elseif($data->status_approval == 3) {
-                    return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan</span>';
+                    return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Dekan/Kepala Biro</span>';
                 } elseif($data->status_approval == 4) {
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat&nbsp;</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
-                    return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> ACC Rektorat</span>';
+                    return '<i class="text-success">ACC Rektorat</i>';
                 } else {
-                    return '<span class="badge bg-label-secondary">Menunggu Validasi</span>';
+                    return '<i class="text-secondary">Menunggu Validasi</i>';
                 }
             }
         } else {
