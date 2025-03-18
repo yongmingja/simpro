@@ -599,7 +599,7 @@
             <td><input type="number" class="form-control quantity" name="rows['+j+'][quantity]" min="0" onkeyup="OnChange(this)" /></td>
             <td><input type="number" class="form-control frequency" name="rows['+j+'][frequency]" min="0" onkeyup="OnChange(this)" /></td>
             <td><input type="text" class="form-control total_biaya" name="rows['+j+'][total_biaya]" readonly style="cursor: no-drop;" /></td>
-            <td><select class="select2 form-select" id="sumber_anggaran" name="rows['+j+'][sumber]" style="cursor:pointer;">
+            <td><select class="select2 form-select" id="sumber_anggaran" name="rows['+j+'][sumber]" onchange="calculateGrandTotal()" style="cursor:pointer;">
                 <option value="1">Kampus</option>
                 <option value="2">Mandiri</option>
             </select></td>

@@ -288,6 +288,46 @@
     });
 
     $('body').on('click','.tombol-yes', function(){
+        var data_id = $(this).attr('data-id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "It will be confirm as accepted!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, confirm it!',
+            showLoaderOnConfirm: true,
+            preConfirm: function() {
+                return new Promise(function(resolve) {
+                    $.ajax({
+                        url: "{{route('approval-y')}}",
+                        type: 'POST',
+                        data: {proposal_id:data_id},
+                        dataType: 'json'
+                    }).done(function(response) {
+                        Swal.fire({
+                            title: 'Confirmed!',
+                            text: 'Your data has been confirmed.',
+                            type: 'success',
+                            timer: 2000
+                        })
+                        $('#table_proposal').DataTable().ajax.reload(null, true);
+                    }).fail(function() {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: 'Data failed to confirmed!',
+                            type: 'error',
+                            timer: 2000
+                        })
+                    });
+                });
+            },
+        });
+
+    });
+
+    $('body').on('click','.tambah-delegasi', function(){
         var data_id = $(this).attr('data-id');  
         $('#form-add-delegasi').trigger("reset");
         $('#modal-judul-delegasi').html("Tambah Delegasi");
@@ -303,7 +343,7 @@
 
                 $.ajax({
                     data: $('#form-add-delegasi').serialize(), 
-                    url: "{{route('approval-y')}}",
+                    url: "{{route('tambah-delegasi-proposal')}}",
                     type: "POST",
                     dataType: 'json',
                     beforeSend: function(){
@@ -311,7 +351,7 @@
                                     '<i class="bx bx-loader-circle bx-spin text-warning"></i>'+
                                     ' Mohon tunggu ...');
                             },
-                    success: function (data) {
+                    success: function (response) {
                         $('#form-add-delegasi').trigger("reset");
                         $('#add-delegasi-modal').modal('hide');
                         $('#tombol-kirim').html('Kirim');

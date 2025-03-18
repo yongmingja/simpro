@@ -140,6 +140,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT'])->group(funct
     Route::get('/rektorat', 'RektoratPage\DashboardController@index')->name('dashboard-rektorat');
     Route::post('approval-n','RektoratPage\DashboardController@approvalN')->name('approval-n');
     Route::post('approval-y','RektoratPage\DashboardController@approvalY')->name('approval-y');
+    Route::post('tambah-delegasi-proposal','RektoratPage\DashboardController@tambahDelegasiProposal')->name('tambah-delegasi-proposal');
     Route::get('index-hal-laporan','RektoratPage\DashboardController@indexlaporan')->name('index-hal-laporan');
     Route::post('laporan-selesai','RektoratPage\DashboardController@selesailaporan')->name('laporan-selesai');
     Route::get('rundanganfpku','RektoratPage\DashboardController@indexUndanganFpku')->name('rundanganfpku');

@@ -134,7 +134,16 @@ class DashboardController extends Controller
                 if($isExist->count() > 0){
                     return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><i class="bx bx-paperclip"></i> lihat</a>';
                 } else {
-                    return '';
+                    $checkState = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->first();
+                    if($checkState != null){
+                        if($checkState->status_approval == 5){
+                            return '<a href="javascript:void(0)" class="tambah-delegasi text-warning" data-id="'.$data->id.'"><i class="bx bx-plus-circle"></i> Input</a>';
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        return '';
+                    }
                 }
             })
             ->rawColumns(['action','validasi','vlampiran','detail','lihatDelegasi'])
@@ -166,6 +175,11 @@ class DashboardController extends Controller
             'generate_qrcode' => ''.URL::to('/').'/in/'.time().'.png'
         ]);
 
+        return response()->json($post);
+    }
+
+    public function tambahDelegasiProposal(Request $request)
+    {
         $post = DelegasiProposal::updateOrCreate([
             'id_proposal'       => $request->proposal_id,
             'catatan_delegator' => $request->catatan_delegator,
