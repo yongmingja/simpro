@@ -121,8 +121,10 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             $statusLaporan = '';
             if($value->status_approval == 5) {
                 $statusLaporan = 'verified by WR';
+                $linkLaporan = ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id);
             } else {
                 $statusLaporan = 'Belum ada laporan';
+                $linkLaporan = 'Belum ada laporan';
             }
 
             return [
@@ -138,7 +140,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 'Anggaran Proposal' => currency_IDR($value->anggaran_proposal),
                 'Realisasi Anggaran' => currency_IDR($value->realisasi_anggaran),
                 'Status Laporan' => $statusLaporan,
-                'Link Laporan' => ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id)
+                'Link Laporan' => $linkLaporan
             ];
         });
     }

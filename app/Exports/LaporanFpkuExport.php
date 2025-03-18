@@ -64,8 +64,10 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             $statusLaporan = '';
             if($value->status_approval == 3) {
                 $statusLaporan = 'verified by WR';
+                $linkLaporan = ''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($value->id_laporan);
             } else {
                 $statusLaporan = 'Belum ada laporan';
+                $linkLaporan = 'Belum ada laporan';
             }
 
             $dataPegawai = Pegawai::whereIn('id',$value->peserta_kegiatan)->select('nama_pegawai')->get();
@@ -84,7 +86,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
                 'Anggota Pelaksana' => $peserta_kegiatan,
                 'Undangan' => $value->link_gdrive,
                 'Status Laporan' => $statusLaporan,
-                'Link Laporan' => ''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($value->id_laporan)
+                'Link Laporan' => $linkLaporan
             ];
         });
     }
