@@ -81,16 +81,16 @@ class LaporanProposalController extends Controller
             ->addColumn('laporan', function($data){
                 $query = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> view report</a>';
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat laporan</a>';
                 } else {
-                    return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
+                    return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return $this->statusLaporanProposal($data->id);
                 } else {
-                    return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
+                    return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
@@ -112,13 +112,13 @@ class LaporanProposalController extends Controller
                 } elseif($data->status_approval == 2){
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 3) {
-                    return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
+                    return '<i class="text-warning">Menunggu Validasi Rektorat</i>';
                 } elseif($data->status_approval == 4) {
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
-                    return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> Verified</span>';
+                    return '<i class="text-success">ACC Rektorat</i>';
                 } else {
-                    return '<span class="badge bg-label-secondary">Pending</span>';
+                    return '<i class="text-secondary">Pending</i>';
                 }
             }
         } else {

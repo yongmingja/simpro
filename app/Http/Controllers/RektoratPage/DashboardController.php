@@ -88,11 +88,11 @@ class DashboardController extends Controller
                                 $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
                                 return $button;
                             } elseif($state->status_approval == 4){
-                                return '<span class="badge bg-label-danger">Ditolak</span>';
+                                return '<i class="text-success">Ditolak Rektorat</i>';
                             } elseif($state->status_approval == 5) {
-                                return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
+                                return '<i class="text-success">ACC Rektorat</i>';
                             } else {
-                                return '<span class="badge bg-label-secondary">Pending</span>';
+                                return '<i class="text-secondary">Pending</i>';
                             }
                         }
                     } else {
@@ -108,11 +108,11 @@ class DashboardController extends Controller
                                 $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
                                 return $button;
                             } elseif($state->status_approval == 2){
-                                return '<span class="badge bg-label-danger">Ditolak</span>';
+                                return '<i class="text-success">Ditolak Rektorat</i>';
                             } elseif($state->status_approval == 3) {
-                                return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> Diterima</span>';
+                                return '<i class="text-success">ACC Rektorat</i>';
                             } else {
-                                return '<span class="badge bg-label-secondary">Pending</span>';
+                                return '<i class="text-secondary">Pending</i>';
                             }
                         }
                     } else {
@@ -272,26 +272,26 @@ class DashboardController extends Controller
             ->addColumn('laporan', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> view report</a>';
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat laporan</a>';
                 } else {
-                    return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
+                    return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     foreach($query as $q){
                         if($q->status_approval == 5){
-                            return '<span class="badge bg-label-success"><i class="bx bx-check-shield bx-xs"></i> verified</span>';
+                            return '<i class="text-success">ACC Rektorat</i>';
                         } elseif($q->status_approval == 4){
                             return '<a href="javascript:void(0)" class="info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                         } elseif($q->status_approval == 3) {
                             return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="ACC Selesai" data-placement="bottom" data-original-title="ACC Selesai" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                         } else {
-                            return '<span class="badge bg-label-secondary">Menunggu</span>';
+                            return '<i class="text-secondary">Pending</i>';
                         }
                     }
                 } else {
-                    return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
+                    return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
