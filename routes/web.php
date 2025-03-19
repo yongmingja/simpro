@@ -45,6 +45,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
     Route::resource('data-fpku','General\DataFpkuController');
     Route::resource('validator-proposal','AdminPage\ValidatorProposalController');
     Route::resource('handle-proposal','AdminPage\HandleProposalController');
+    Route::resource('tahun-akademik','General\TahunAkademikController');
     Route::get('validasi-proposal','AdminPage\DataProposalController@validasi')->name('validasi-proposal');
     Route::post('valid-y','AdminPage\DataProposalController@validY')->name('valid-y');
     Route::post('valid-n','AdminPage\DataProposalController@validN')->name('valid-n');
@@ -55,6 +56,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,ADU'])->group(functi
     Route::get('check-jabatan-akademik-user','Master\JabatanAkademikController@checkjabatanakademik')->name('check-jabatan-akademik-user');
     Route::get('check-jabatan-pegawai','Master\JabatanPegawaiController@checkjabatan')->name('check-jabatan-pegawai');
     Route::post('reset-pass-pegawai','AdminPage\DataUser\DataPegawaiController@resetPass')->name('reset-pass-pegawai');
+    Route::post('switch-period','General\TahunAkademikController@switchPeriode')->name('change-period-status');
 });
 
 /* 

@@ -266,11 +266,16 @@
                 </ul>
             </li>
             <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('data-fakultas-biro.index')}} OR {{set_active('data-prodi-biro.index')}} OR {{set_active('validator-proposal.index')}} OR {{set_active('handle-proposal.index')}} OR {{set_active('data-jenis-kegiatan.index')}}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('tahun-akademik.index')}} OR {{set_active('data-fakultas-biro.index')}} OR {{set_active('data-prodi-biro.index')}} OR {{set_active('validator-proposal.index')}} OR {{set_active('handle-proposal.index')}} OR {{set_active('data-jenis-kegiatan.index')}}">
                 <i class="menu-icon tf-icons bx bx-data bx-tada-hover"></i>
                 <div data-i18n="Data Lainnya">Data Lainnya</div>
                 </a>
                 <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('tahun-akademik.index')}}" class="menu-link {{set_active('tahun-akademik.index')}}">
+                        <div data-i18n="Tahun Akademik">Tahun Akademik</div>
+                        </a>
+                    </li>        
                     <li class="menu-item">
                         <a href="{{route('data-fakultas-biro.index')}}" class="menu-link {{set_active('data-fakultas-biro.index')}}">
                         <div data-i18n="Fakultas & Biro">Fakultas & Biro</div>

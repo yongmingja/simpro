@@ -15,6 +15,8 @@ class CreateFormRkatsTable extends Migration
     {
         Schema::create('form_rkats', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('id_tahun_akademik');
+            $table->foreign('id_tahun_akademik')->references('id')->on('tahun_akademiks')->onDelete('restrict');
             $table->text('sasaran_strategi');
             $table->text('program_strategis');
             $table->text('program_kerja');

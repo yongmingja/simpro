@@ -15,6 +15,8 @@ class CreateDataFpkusTable extends Migration
     {
         Schema::create('data_fpkus', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('id_tahun_akademik');
+            $table->foreign('id_tahun_akademik')->references('id')->on('tahun_akademiks')->onDelete('restrict');
             $table->integer('cek_tanggal')->nullable();
             $table->string('no_surat_undangan');
             $table->string('undangan_dari');

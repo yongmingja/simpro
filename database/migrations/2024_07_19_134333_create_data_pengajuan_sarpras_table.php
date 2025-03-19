@@ -17,6 +17,8 @@ class CreateDataPengajuanSarprasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('id_proposal');
             $table->foreign('id_proposal')->references('id')->on('proposals')->onDelete('cascade');
+            $table->unsignedInteger('id_tahun_akademik');
+            $table->foreign('id_tahun_akademik')->references('id')->on('tahun_akademiks')->onDelete('restrict');
             $table->date('tgl_kegiatan')->nullable();
             $table->text('sarpras_item')->nullable();
             $table->integer('jumlah')->nullable();
