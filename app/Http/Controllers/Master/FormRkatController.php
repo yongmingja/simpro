@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Master\FormRkat;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\Jabatan;
+use App\Models\General\TahunAkademik;
 use Illuminate\Support\Facades\Session;
 use Auth;
 
@@ -28,7 +29,10 @@ class FormRkatController extends Controller
             $recentRoleId = $getPeran->jab_id;
         }
 
-        $datas = FormRkat::where('penanggung_jawab',$recentRoleId)->get();
+        $datas = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
+            ->select('form_rkats.id AS id','form_rkats.*','tahun_akademiks.year')
+            ->where('form_rkats.penanggung_jawab',$recentRoleId)
+            ->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -54,12 +58,14 @@ class FormRkatController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('master.form-rkat.index');
+        $getTahunAkademik = TahunAkademik::select('id','year','is_active')->orderBy('year','DESC')->get();
+        return view('master.form-rkat.index', compact('getTahunAkademik'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'id_tahun_akademik'  => 'required',
             'sasaran_strategi'   => 'required',
             'program_strategis'  => 'required',
             'program_kerja'      => 'required',
@@ -67,6 +73,7 @@ class FormRkatController extends Controller
             'nama_kegiatan'      => 'required',
             'kode_pagu'          => 'required',
         ],[
+            'id_tahun_akademik.required' => 'Anda belum memilih tahun akademik',
             'sasaran_strategi.required'  => 'Anda belum menginputkan sasaran strategi',
             'program_strategis.required' => 'Anda belum menginputkan program strategis',
             'program_kerja.required'     => 'Anda belum menginputkan program kerja',
@@ -91,6 +98,7 @@ class FormRkatController extends Controller
 
         $post = FormRkat::updateOrCreate(['id' => $request->id],
                 [
+                    'id_tahun_akademik'  => $request->id_tahun_akademik,
                     'sasaran_strategi'   => $request->sasaran_strategi,
                     'program_strategis'  => $request->program_strategis,
                     'program_kerja'      => $request->program_kerja,
@@ -120,7 +128,10 @@ class FormRkatController extends Controller
 
     public function dataForm(Request $request)
     {
-        $datas = FormRkat::all();
+        $datas = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
+            ->where('tahun_akademiks.is_active',1)
+            ->select('form_rkats.id AS id','form_rkats.*','tahun_akademiks.is_active','tahun_akademiks.year','tahun_akademiks.id AS id_year')
+            ->get();
         return response()->json($datas);
 
     }

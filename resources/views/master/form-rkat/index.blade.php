@@ -35,6 +35,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
+                                  <th>Tahun Akademik</th>
                                   <th>Sasaran Strategi</th>
                                   <th>Program Strategis</th>
                                   <th>Kode Renstra</th>
@@ -51,7 +52,7 @@
 
                     <!-- MULAI MODAL FORM TAMBAH/EDIT-->
                     <div class="modal fade" id="tambah-edit-modal" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="modal-judul"></h5>
@@ -61,6 +62,19 @@
                                     <form id="form-tambah-edit" name="form-tambah-edit" class="form-horizontal">
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="id_tahun_akademik">Tahun Akademik</label>
+                                                <select class="select2 form-control" id="id_tahun_akademik" name="id_tahun_akademik" aria-label="Default select example" style="cursor:pointer;">
+                                                @foreach($getTahunAkademik as $tahun)
+                                                    @if($tahun->is_active == 1)
+                                                    <option value="{{$tahun->id}}" selected>{{$tahun->year}} (Aktif)</option>
+                                                    @else
+                                                    <option value="{{$tahun->id}}">{{$tahun->year}}</option>
+                                                    @endif
+                                                @endforeach
+                                                </select>
+                                                <span class="text-danger" id="yearErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
                                             <div class="mb-3">
                                                 <label for="sasaran_strategi" class="form-label">Sasaran Strategi</label>
                                                 <textarea class="form-control" id="sasaran_strategi" name="sasaran_strategi" rows="3"></textarea>
@@ -145,6 +159,7 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
+                {data: 'year',name: 'year'},
                 {data: 'sasaran_strategi',name: 'sasaran_strategi'},
                 {data: 'program_strategis',name: 'program_strategis'},
                 {data: 'kode_renstra',name: 'kode_renstra'},
@@ -228,6 +243,7 @@
             $('#tambah-edit-modal').modal('show');
               
             $('#id').val(data.id);
+            $('#id_tahun_akademik').val(data.id_tahun_akademik);
             $('#sasaran_strategi').val(data.sasaran_strategi);
             $('#program_strategis').val(data.program_strategis);
             $('#program_kerja').val(data.program_kerja);

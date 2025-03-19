@@ -31,12 +31,12 @@
                                 <div class="container">
                                     <div class="col-sm-3 mt-2">
                                         <div class="form-group">
-                                            <label for="tahun_proposal" class="form-label">Pilih Tahun Kegiatan</label>
+                                            <label for="tahun_proposal" class="form-label">Pilih Tahun Akademik</label>
                                             <select class="select2 form-select" id="tahun_proposal" name="tahun_proposal" aria-label="Default select example" style="cursor:pointer;">
                                                 <option value="" id="pilih_tahun">- Pilih -</option>
                                                 <option value="[semua]" selected>Semua (default)</option>
-                                                @foreach($checkYear as $year)
-                                                <option value="{{ $year }}">{{ $year }}</option>
+                                                @foreach($checkYear as $years)
+                                                <option value="{{ $years->id }}">{{ $years->year }}</option>
                                                 @endforeach
                                             </select>
                                             <div class="form-text text-danger" id="tahunErrorMsg"></div>
@@ -71,6 +71,7 @@
                                 <table class="table table-hover table-responsive" id="table-proposal">
                                     <thead>
                                         <th>#</th>
+                                        <th>Tahun Akademik</th>
                                         <th>Judul Proposal</th>
                                         <th>Tgl Kegiatan</th>
                                         <th>Tgl Pengajuan</th>
@@ -119,6 +120,7 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     }, 
+                    {data: 'year',name: 'year'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'tgl_event',name: 'tgl_event',
                         render: function (data, type, row) {

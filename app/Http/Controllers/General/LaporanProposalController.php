@@ -8,6 +8,7 @@ use App\Models\General\DataRencanaAnggaran;
 use App\Models\General\LaporanProposal;
 use App\Models\General\DataRealisasiAnggaran;
 use App\Models\General\Proposal;
+use App\Models\General\TahunAkademik;
 use App\Setting\Dekan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -337,22 +338,21 @@ class LaporanProposalController extends Controller
 
     public function indexExportProposal(Request $request)
     {
-        $checkYear = Proposal::selectRaw('YEAR(tgl_event) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
+        $checkYear = TahunAkademik::select('year','id')->get();
 
         if($request->tahun_proposal == null || $request->tahun_proposal == '[semua]'){
             $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval')
+                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         } else {
             $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval')
-                ->whereYear('proposals.tgl_event',$request->tahun_proposal)
+                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
+                ->where('proposals.id_tahun_akademik',$request->tahun_proposal)
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         }
@@ -449,7 +449,7 @@ class LaporanProposalController extends Controller
                     'form_rkats.kode_renstra',
                     'form_rkats.total'
                 )
-                ->whereYear('proposals.tgl_event',$year)
+                ->where('proposals.id_tahun_akademik',$year)
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         }

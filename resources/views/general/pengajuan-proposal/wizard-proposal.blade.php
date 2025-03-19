@@ -119,10 +119,25 @@
                                         </div>
                                         
                                     </div>
-                                    <div class="col-sm-6">
-                                        <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
-                                        <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
-                                        <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="id_tahun_akademik">Tahun Akademik</label>
+                                                <select class="select2 form-control border border-primary" id="id_tahun_akademik" name="id_tahun_akademik" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_tahun" readonly>- Select faculty or unit -</option>
+                                                    @foreach($getTahunAkademik as $tahun)
+                                                        <option value="{{$tahun->id}}">{{$tahun->year}} (Aktif)</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="yearErrorMsg" style="font-size: 10px;"></span>
+                                            </div>                                            
+                                            
+                                            <div class="col-sm-6">
+                                                <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
+                                                <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
+                                                <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
@@ -463,6 +478,7 @@
                                 window.location = '{{ route("submission-of-proposal.index") }}';
                             },
                             error: function (response) {
+                                $('#yearErrorMsg').text(response.responseJSON.errors.id_tahun_akademik);
                                 $('#kategoriErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
                                 $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
                                 $('#fakultasBiroErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);
@@ -615,6 +631,7 @@
         calculateGrandTotal();
     });
 
+    var alertShown = false; // Flag untuk melacak apakah alert sudah ditampilkan
     function calculateGrandTotal() {
         var total = 0;
 
@@ -629,29 +646,19 @@
         $('#grand-total').text(formattedTotal);
 
         // Validasi hanya untuk kategori Kampus
-        var totalRkat = 0; // Anggaran total RKAT
+        var totalRkat = $('#tampilkan-total').data('rkat_total') || 0; // Anggaran total RKAT
         $('#table-body tr').each(function () {
             var sumber = $(this).find('#sumber_anggaran').val(); // Ambil sumber
             if (sumber === "1") { // Hanya cek jika kategori adalah Kampus
                 var rowTotal = parseInt($(this).find('.total_biaya').val()) || 0;
-                var totalRkat = $('#tampilkan-total').data('rkat_total') || 0;
-                if (totalRkat > 0 && rowTotal > totalRkat) {
-                    $('#next-anggaran').prop("disabled", false);
-                    $('#tombol-page-4').prop("disabled", false);
-                    $('#tombol-page-5').prop("disabled", false);
+                if (totalRkat > 0 && rowTotal > totalRkat && !alertShown) {
                     alert('Total biaya melebihi total RKAT sebesar ' + formatRupiah(totalRkat));
-                } else {
-                    $('#next-anggaran').prop("disabled", false);
-                    $('#tombol-page-4').prop("disabled", false);
-                    $('#tombol-page-5').prop("disabled", false);
+                    alertShown = true; // Set flag menjadi true agar alert tidak muncul lagi
                 }
-            } else {
-                $('#next-anggaran').prop("disabled", false);
-                $('#tombol-page-4').prop("disabled", false);
-                $('#tombol-page-5').prop("disabled", false);
             }
         });
     }
+
 
 
     function formatRupiah(angka) {

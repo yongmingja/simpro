@@ -15,6 +15,8 @@ class CreateProposalsTable extends Migration
     {
         Schema::create('proposals', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('id_tahun_akademik');
+            $table->foreign('id_tahun_akademik')->references('id')->on('tahun_akademiks')->onDelete('restrict');
             $table->integer('id_jenis_kegiatan');
             $table->integer('id_form_rkat')->nullable();
             $table->string('user_id');

@@ -9,6 +9,7 @@ use App\Models\General\JenisKegiatan;
 use App\Models\General\DataFakultasBiro;
 use App\Models\General\DataPengajuanSarpras;
 use App\Models\General\DataRencanaAnggaran;
+use App\Models\General\TahunAkademik;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Setting\Dekan;
 use App\Setting\Rektorat;
@@ -178,7 +179,8 @@ class PengajuanProposalController extends Controller
     {
         $getJenisKegiatan = JenisKegiatan::all();
         $getFakultasBiro = DataFakultasBiro::select('nama_fakultas_biro','id')->get();
-        return view('general.pengajuan-proposal.wizard-proposal', compact('getJenisKegiatan','getFakultasBiro'));
+        $getTahunAkademik = TahunAkademik::select('id','year','is_active')->where('is_active',1)->get();
+        return view('general.pengajuan-proposal.wizard-proposal', compact('getJenisKegiatan','getFakultasBiro','getTahunAkademik'));
     }
 
     public function faculties($id)
@@ -193,6 +195,7 @@ class PengajuanProposalController extends Controller
     {
         
         $request->validate([
+            'id_tahun_akademik' => 'required',
             'id_jenis_kegiatan' => 'required',
             'nama_kegiatan'     => 'required',
             'pendahuluan'       => 'required',
@@ -204,6 +207,7 @@ class PengajuanProposalController extends Controller
             'lokasi_tempat'     => 'required',
             'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
+            'id_tahun_akademik.required'    => 'Tahun akademik wajib', 
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
             'nama_kegiatan.required'        => 'Anda belum menginput nama kegiatan', 
             'pendahuluan.required'          => 'Anda belum menginput pendahuluan', 
@@ -219,6 +223,7 @@ class PengajuanProposalController extends Controller
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
+                    'id_tahun_akademik'     => $request->id_tahun_akademik,
                     'id_jenis_kegiatan'     => $request->id_jenis_kegiatan,
                     'id_form_rkat'          => $request->pilihan_rkat,
                     'user_id'               => Auth::user()->user_id,

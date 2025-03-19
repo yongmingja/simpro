@@ -60,7 +60,7 @@
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
                                                 <label for="year" class="form-label">Tahun</label>
-                                                <input type="number" min="0" class="form-control" id="year" name="year" value="" autofocus />
+                                                <input type="text" class="form-control" id="year" name="year" value="" autofocus />
                                                 <span class="text-danger" id="yearErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
