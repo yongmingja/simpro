@@ -415,6 +415,19 @@
         }
     });
 
+    // Untuk mendeteksi selisih hari, tidak boleh < 14 hari
+    document.getElementById("tgl_event").addEventListener("change", function() {
+        const selectedDate = new Date(this.value);
+        const today = new Date();
+        const diffTime = selectedDate - today;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24); 
+
+        if (diffDays < 14) {
+            alert("Tanggal kegiatan kurang dari 14 hari");
+            this.value = ""; 
+        }
+    });
+
     const wizardVertical = document.querySelector(".wizard-vertical");
 
       if (typeof wizardVertical !== undefined && wizardVertical !== null) {
