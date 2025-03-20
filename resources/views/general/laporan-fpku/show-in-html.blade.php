@@ -19,6 +19,7 @@
                     <thead>
                         <tr>
                             <th style="vertical-align: middle; text-align: center;">#</th>
+                            <th style="vertical-align: middle; text-align: center;">Tahun Akademik</th>
                             <th style="vertical-align: middle; text-align: center;">No. FPKU</th>
                             <th style="vertical-align: middle; text-align: center;">Nama Kegiatan</th>
                             <th style="vertical-align: middle; text-align: center;">Tgl Kegiatan</th>
@@ -34,6 +35,7 @@
                         @foreach($datas as $data)
                         <tr>
                             <td style="vertical-align: middle; text-align: center;">{{$no}}</td>
+                            <td style="vertical-align: middle; text-align: center;">{{$data->year}}</td>
                             <td style="vertical-align: middle; text-align: center;">{{$data->no_surat_undangan}}</td>
                             <td style="vertical-align: middle;">{{$data->nama_kegiatan}}</td>
                             <td style="vertical-align: middle; text-align: center;">{{tanggal_indonesia($data->tgl_kegiatan)}}</td>

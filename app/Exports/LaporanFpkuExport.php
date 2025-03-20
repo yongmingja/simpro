@@ -26,6 +26,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
     public function headings():array{
         return[
             'No',
+            'Tahun Akademik',
             'No. FPKU',
             'Nama Kegiatan',
             'Tgl Kegiatan',
@@ -44,17 +45,19 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
                 ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan','tahun_akademiks.year')
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         } else {
             $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
                 ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan')
-                ->whereYear('data_fpkus.tgl_kegiatan',$getYear)
+                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan','tahun_akademiks.year')
+                ->where('data_fpkus.id_tahun_akademik',$getYear)
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         }
@@ -79,6 +82,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
 
             return [
                 'No' => $no++,
+                'Tahun Akademik' => $value->year,
                 'No. FPKU' => $value->no_surat_undangan,
                 'Nama Kegiatan' => $value->nama_kegiatan,
                 'Tgl Kegiatan' => tanggal_indonesia($value->tgl_kegiatan),
@@ -99,7 +103,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             },
             AfterSheet::class    => function(AfterSheet $event) {
    
-                $event->sheet->getDelegate()->getStyle('A1:I1')
+                $event->sheet->getDelegate()->getStyle('A1:J1')
                                 ->getFont()
                                 ->setBold(true);
             },

@@ -35,6 +35,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
+                                  <th>Tahun Akademik</th>
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
                                   <th>Peserta Kegiatan</th>
@@ -75,11 +76,21 @@
                                                     </label>
                                                 </div>
                                             </div> 
-                                            <div class="mb-3 mt-3">
+                                            <div class="col-sm-6 mb-3 mt-3">
                                                 <label for="no_surat_undangan" class="form-label">No Surat Undangan</label>
-                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="contoh: No. 001/2024" value="" autofocus />
+                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="e.g: No. 001/UVERS/III/2025" value="" autofocus />
                                                 <span class="text-danger" id="noUndanganErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                          
+                                            </div>
+                                            <div class="col-sm-6 mb-3 mt-3">
+                                                <label class="form-label" for="id_tahun_akademik">Tahun Akademik</label>
+                                                <select class="select2 form-control border border-primary" id="id_tahun_akademik" name="id_tahun_akademik" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_tahun" readonly>- Select -</option>
+                                                    @foreach($getTahunAkademik as $tahun)
+                                                        <option value="{{$tahun->id}}">{{$tahun->year}} (Aktif)</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="yearErrorMsg" style="font-size: 10px;"></span>
+                                            </div>                                           
                                             <div class="mb-3">
                                                 <label for="undangan_dari" class="form-label">Undangan Dari</label>
                                                 <input type="text" class="form-control" id="undangan_dari" name="undangan_dari" value="" />
@@ -196,6 +207,7 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
+                {data: 'year',name: 'year'},
                 {data: 'preview_undangan',name: 'preview_undangan'},
                 {data: 'tgl_kegiatan',name: 'tgl_kegiatan',
                     render: function (data, type, row) {
@@ -249,6 +261,7 @@
                         })
                     },
                     error: function(response) {
+                        $('#yearErrorMsg').text(response.responseJSON.errors.id_tahun_akademik);
                         $('#noUndanganErrorMsg').text(response.responseJSON.errors.no_surat_undangan);
                         $('#undanganDariErrorMsg').text(response.responseJSON.errors.undangan_dari);
                         $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);

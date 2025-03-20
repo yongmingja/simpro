@@ -5,6 +5,7 @@ namespace App\Http\Controllers\General;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\DataFpku;
+use App\Models\General\TahunAkademik;
 use App\Models\Master\Pegawai;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UndanganFpku;
@@ -15,7 +16,10 @@ class DataFpkuController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = DataFpku::orderBy('id','DESC')->get();
+        $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
+            ->select('data_fpkus.id AS id','data_fpkus.*','tahun_akademiks.year')
+            ->orderBy('data_fpkus.id','DESC')
+            ->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
@@ -40,18 +44,21 @@ class DataFpkuController extends Controller
             ->make(true);
         }
         $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
-        return view('general.data-fpku.index', compact('getDataPegawai'));
+        $getTahunAkademik = TahunAkademik::select('id','year','is_active')->where('is_active',1)->get();
+        return view('general.data-fpku.index', compact('getDataPegawai','getTahunAkademik'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'id_tahun_akademik' => 'required',
             'no_surat_undangan' => 'required',
             'undangan_dari'     => 'required',
             'nama_kegiatan'     => 'required',
             'tgl_kegiatan'      => 'required',
             'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048',
         ],[
+            'id_tahun_akademik.required'    => 'Anda belum memilih tahun akademik',
             'no_surat_undangan.required'    => 'Anda belum menginputkan no surat undangan',
             'undangan_dari.required'        => 'Anda belum menginputkan undangan dari',
             'nama_kegiatan.required'        => 'Anda belum menginputkan nama kegiatan',
@@ -67,6 +74,7 @@ class DataFpkuController extends Controller
         $post = DataFpku::updateOrCreate(['id' => $request->id],
         [
             'cek_tanggal'       => $checkDate,
+            'id_tahun_akademik' => $request->id_tahun_akademik,
             'no_surat_undangan' => $request->no_surat_undangan,
             'undangan_dari'     => $request->undangan_dari,
             'nama_kegiatan'     => $request->nama_kegiatan,
