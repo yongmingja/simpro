@@ -423,8 +423,7 @@
         const diffDays = diffTime / (1000 * 60 * 60 * 24); 
 
         if (diffDays < 14) {
-            alert("Tanggal kegiatan kurang dari 14 hari");
-            this.value = ""; 
+            alert("Peringatan! Pengajuan proposal minimal 14 hari sebelum tanggal kegiatan.");
         }
     });
 
