@@ -35,7 +35,7 @@
                                   <th>Nama Kegiatan</th>
                                   <th>Kode Pagu</th>
                                   <th>Total</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

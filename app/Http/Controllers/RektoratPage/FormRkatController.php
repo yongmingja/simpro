@@ -16,9 +16,9 @@ class FormRkatController extends Controller
             return datatables()->of($datas)
             ->addColumn('action', function($data){
                 if($data->status_validasi == 1){
-                    return '<i class="bx bx-check-shield text-success"></i> verified';
+                    return '<i class="text-success">ACC Rektorat</i>';
                 } elseif($data->status_validasi == 2){
-                    return '<i class="bx bx-shield-x text-danger"></i> denied';
+                    return '<i class="text-danger">Ditolak</i>';
                 } else {
                     return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes"><i class="bx bx-sm bx-check-shield text-success"></i></a>';
                 }
