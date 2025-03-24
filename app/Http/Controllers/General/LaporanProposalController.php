@@ -453,7 +453,12 @@ class LaporanProposalController extends Controller
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         }
-        $getYear = $year;
+        $getYear = TahunAkademik::where('id',$year)->select('year')->first();
+        if($getYear){
+            $getYear = $getYear->year;
+        } else {
+            $getYear = '[Semua]';
+        }
         return view('general.laporan-proposal.show-in-html', ['datas' => $datas, 'getYear' => $getYear]);
     }
 

@@ -424,7 +424,12 @@ class LaporanFpkuController extends Controller
                 ->orderBy('data_fpkus.tgl_kegiatan','DESC')
                 ->get();
         }
-        $getYear = $year;
+        $getYear = TahunAkademik::where('id',$year)->select('year')->first();
+        if($getYear){
+            $getYear = $getYear->year;
+        } else {
+            $getYear = '[Semua]';
+        }
         return view('general.laporan-fpku.show-in-html', ['datas' => $datas, 'getYear' => $getYear]);
     }
 

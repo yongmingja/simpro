@@ -13,7 +13,7 @@
                         <center>Data Proposal dan Laporan Kegiatan</center>
                     </h4>                
                     <h5 class="mb-3">
-                        <center>Tahun {{$getYear}}</center>
+                        <center>Tahun Akademik {{$getYear}}</center>
                     </h5>
                 <table class="table table-bordered table-hover mt-2 table-sm">
                     <thead>

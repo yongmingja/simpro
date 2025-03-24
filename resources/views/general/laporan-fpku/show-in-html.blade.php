@@ -13,7 +13,7 @@
                         <center>Data dan Laporan FPKU</center>
                     </h4>                
                     <h5 class="mb-3">
-                        <center>Tahun {{$getYear}}</center>
+                        <center>Tahun Akademik {{$getYear}}</center>
                     </h5>
                 <table class="table table-bordered table-hover mt-2 table-sm">
                     <thead>
@@ -49,7 +49,7 @@
                             @endphp
                             <td style="vertical-align: middle; ">{!! implode(", <br>",$pegawai) !!}</td>
                             <td style="vertical-align: middle; text-align: center;"><a href="{{$data->link_gdrive}}">{{$data->link_gdrive}}</a></td>
-                            <td style="vertical-align: middle; text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 3) ACC Rektorat @else Belum ada laporan @endif @endif</td>
+                            <td style="vertical-align: middle; text-align: center;">@if($data->status_approval != '') @if($data->status_approval == 3) ACC Rektorat @else Belum ada laporan @endif @endif</td>
                             <td>@if(!empty($data->status_approval)) @if($data->status_approval == 3) <a href="{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}">{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}</a> @else Belum ada laporan @endif @endif</td>
 
                             

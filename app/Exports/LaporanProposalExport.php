@@ -27,6 +27,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
     public function headings():array{
         return[
             'No',
+            'Tahun Akademik',
             'Judul Proposal',
             'Tgl Kegiatan',
             'Tgl Pengajuan',
@@ -52,6 +53,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
                 ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
                 ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select(
                     'proposals.id AS id',
                     'proposals.nama_kegiatan',
@@ -62,6 +64,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'data_fakultas_biros.nama_fakultas_biro',
                     'form_rkats.kode_renstra',
                     'form_rkats.total',
+                    'tahun_akademiks.year',
                     DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
                     DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
                 )
@@ -74,7 +77,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'status_laporan_proposals.status_approval',
                     'data_fakultas_biros.nama_fakultas_biro',
                     'form_rkats.kode_renstra',
-                    'form_rkats.total'
+                    'form_rkats.total',
+                    'tahun_akademiks.year'
                 )
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
@@ -86,6 +90,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
                 ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
                 ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select(
                     'proposals.id AS id',
                     'proposals.nama_kegiatan',
@@ -96,6 +101,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'data_fakultas_biros.nama_fakultas_biro',
                     'form_rkats.kode_renstra',
                     'form_rkats.total',
+                    'tahun_akademiks.year',
                     DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
                     DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
                 )
@@ -108,7 +114,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'status_laporan_proposals.status_approval',
                     'data_fakultas_biros.nama_fakultas_biro',
                     'form_rkats.kode_renstra',
-                    'form_rkats.total'
+                    'form_rkats.total',
+                    'tahun_akademiks.year'
                 )
                 ->where('proposals.id_tahun_akademik',$getYear)
                 ->orderBy('proposals.tgl_event','DESC')
@@ -129,6 +136,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
 
             return [
                 'No' => $no++,
+                'Tahun Akademik' => $value->year,
                 'Judul Proposal' => $value->nama_kegiatan,
                 'Tgl Kegiatan' => tanggal_indonesia($value->tgl_event),
                 'Tgl Pengajuan' => tanggal_indonesia($value->created_at),
@@ -153,7 +161,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             },
             AfterSheet::class    => function(AfterSheet $event) {
    
-                $event->sheet->getDelegate()->getStyle('A1:M1')
+                $event->sheet->getDelegate()->getStyle('A1:N1')
                                 ->getFont()
                                 ->setBold(true);
             },
