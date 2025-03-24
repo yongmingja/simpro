@@ -78,7 +78,7 @@
                                 <th>Nama Kegiatan</th>
                                 <th>Nama Pengaju</th>
                                 <th>Tgl dibuat</th>
-                                <th>Aksi</th>
+                                <th>Aksi (Status)</th>
                             </tr>
                             </thead>
                         </table>
