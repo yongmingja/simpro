@@ -43,8 +43,9 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval','>',0]])
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval','>',0],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
         }
@@ -55,8 +56,9 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',1]])
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',1],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 
@@ -68,8 +70,9 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',5]])
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 
@@ -81,8 +84,9 @@ class DataProposalController extends Controller
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
                 ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',4]])
+                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
 

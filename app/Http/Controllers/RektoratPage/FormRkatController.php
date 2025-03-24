@@ -11,7 +11,10 @@ class FormRkatController extends Controller
 {
     public function index(Request $request)
     {
-        $datas = FormRkat::orderBy('status_validasi','ASC')->get();
+        $datas = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
+            ->where('tahun_akademiks.is_active',1)
+            ->orderBy('form_rkats.status_validasi','ASC')
+            ->get();
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){

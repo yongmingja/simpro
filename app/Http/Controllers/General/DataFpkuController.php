@@ -18,6 +18,7 @@ class DataFpkuController extends Controller
     {
         $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
             ->select('data_fpkus.id AS id','data_fpkus.*','tahun_akademiks.year')
+            ->where('tahun_akademiks.is_active',1)
             ->orderBy('data_fpkus.id','DESC')
             ->get();
         if($request->ajax()){

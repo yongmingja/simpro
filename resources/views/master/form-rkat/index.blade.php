@@ -43,7 +43,7 @@
                                   <th>Kode Pagu</th>
                                   <th>Total</th>
                                   <th>Status</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

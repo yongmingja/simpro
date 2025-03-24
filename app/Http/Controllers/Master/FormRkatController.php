@@ -47,9 +47,9 @@ class FormRkatController extends Controller
                 }
             })->addColumn('status', function($data){
                 if($data->status_validasi == 1){
-                    return '<i class="bx bx-check-shield text-success"></i> verified';
+                    return '<i class="text-success">ACC Rektorat</i> ';
                 } elseif($data->status_validasi == 2) {
-                    return '<i class="bx bx-shield-x text-danger"></i> denied';
+                    return '<i class="text-danger">Ditolak</i>';
                 } else {
                     return '<i class="bx bx-loader-circle bx-spin text-warning"></i> Pending';
                 }

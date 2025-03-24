@@ -31,8 +31,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where('proposals.is_archived',0)
+                ->where([['proposals.is_archived',0],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
@@ -43,8 +44,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['status_proposals.status_approval',3]])
+                ->where([['proposals.is_archived',0],['status_proposals.status_approval',3],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
@@ -55,8 +57,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['status_proposals.status_approval',5]])
+                ->where([['proposals.is_archived',0],['status_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
@@ -67,8 +70,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['status_proposals.status_approval',4]])
+                ->where([['proposals.is_archived',0],['status_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
                 ->orderBy('status_proposals.status_approval','ASC')
                 ->get();
@@ -268,7 +272,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+                ->where('tahun_akademiks.is_active',1)
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
                 ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
@@ -279,8 +285,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where('status_laporan_proposals.status_approval',3)
+                ->where([['status_laporan_proposals.status_approval',3],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
                 ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
@@ -291,8 +298,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where('status_laporan_proposals.status_approval',5)
+                ->where([['status_laporan_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
                 ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
@@ -303,8 +311,9 @@ class DashboardController extends Controller
                 ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
                 ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where('status_laporan_proposals.status_approval',4)
+                ->where([['status_laporan_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
                 ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
                 ->orderBy('status_laporan_proposals.status_approval','ASC')
                 ->get();
@@ -409,15 +418,27 @@ class DashboardController extends Controller
     public function indexUndanganFpku(Request $request)
     {
         if($request->status == '' || $request->status == 'all'){
-            $datas = DataFpku::orderBy('id','DESC')->get();
+            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
+                ->where('tahun_akademiks.is_active',1)
+                ->orderBy('data_fpkus.id','DESC')
+                ->get();
         }elseif($request->status == 'pending'){
-            $datas = DataFpku::leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
-                ->where('status_fpkus.status_approval',1)->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')->get();
+            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
+                ->leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
+                ->where([['status_fpkus.status_approval',1],['tahun_akademiks.is_active',1]])
+                ->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')
+                ->get();
         }elseif($request->status == 'accepted'){
-            $datas = DataFpku::leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
-                ->where('status_fpkus.status_approval',2)->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')->get();
+            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
+                ->leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
+                ->where([['status_fpkus.status_approval',2],['tahun_akademiks.is_active',1]])
+                ->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')
+                ->get();
         }else{
-            $datas = DataFpku::orderBy('id','DESC')->get();
+            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
+                ->where('tahun_akademiks.is_active',1)
+                ->orderBy('data_fpkus.id','DESC')
+                ->get();
         }
 
         if($request->ajax()){
@@ -527,7 +548,9 @@ class DashboardController extends Controller
         if($request->status == '' || $request->status == 'all'){
             $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
+                ->where('tahun_akademiks.is_active',1)
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
 
@@ -535,24 +558,27 @@ class DashboardController extends Controller
         if($request->status == 'pending'){
             $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where('status_laporan_fpkus.status_approval',1)
+                ->where([['status_laporan_fpkus.status_approval',1],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
         }
         if($request->status == 'accepted'){
             $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where('status_laporan_fpkus.status_approval',3)
+                ->where([['status_laporan_fpkus.status_approval',3],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
         }
         if($request->status == 'denied'){
             $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
                 ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
                 ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where('status_laporan_fpkus.status_approval',2)
+                ->where([['status_laporan_fpkus.status_approval',2],['tahun_akademiks.is_active',1]])
                 ->orderBy('status_laporan_fpkus.status_approval','ASC')
                 ->get();
         }
@@ -871,7 +897,9 @@ class DashboardController extends Controller
             ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
             ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+            ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
             ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','status_proposals.status_approval')
+            ->where('tahun_akademiks.is_active',1)
             ->orderBy('status_proposals.status_approval','ASC')
             ->get();
 
@@ -917,7 +945,9 @@ class DashboardController extends Controller
             ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
             ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
             ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+            ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
             ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
+            ->where('tahun_akademiks.is_active',1)
             ->orderBy('status_laporan_proposals.status_approval','ASC')
             ->get();
         
