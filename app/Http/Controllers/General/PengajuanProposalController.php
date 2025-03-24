@@ -354,12 +354,12 @@ class PengajuanProposalController extends Controller
             ->select('pegawais.email')
             ->first();
         # get Email Admin Umum
-        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where('jabatans.kode_jabatan','=','ADU')
-            ->select('pegawais.email')
-            ->first();
-        $listEmail = strtolower([$emailADU->email,$emailDekanBiro->email]);
+        // $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //     ->where('jabatans.kode_jabatan','=','ADU')
+        //     ->select('pegawais.email')
+        //     ->first();
+        $listEmail = strtolower(['bennyalfian@uvers.ac.id',$emailDekanBiro->email]);
         $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
 
         if (isset($listEmail) && count($listEmail) > 0){

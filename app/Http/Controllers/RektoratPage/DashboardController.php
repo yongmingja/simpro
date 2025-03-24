@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UndanganFpku;
 use App\Mail\EmailDelegasiFpku;
 use App\Mail\EmailDelegasiProposal;
+use App\Mail\EmailDiterimaRektorat;
+use App\Mail\EmailDitolakRektorat;
 use Auth;
 use DB;
 use URL;
@@ -175,6 +177,26 @@ class DashboardController extends Controller
             'generate_qrcode' => ''.URL::to('/').'/in/'.time().'.png'
         ]);
 
+        # Get the specific email address according to proposal id
+        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->select('pegawais.email')
+            ->where('proposals.id',$request->proposal_id)
+            ->first();
+        
+        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
+            $emailAddress = strtolower($getEmail->email);
+        }
+        
+        if (isset($emailAddress) && count($emailAddress) > 0){
+            $content = [
+                'name' => 'Diterima!',
+                'body' => 'Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
+            ];
+            Mail::to([$emailAddress,'bennyalfian@uvers.ac.id'])->send(new EmailDiterimaRektorat($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
         return response()->json($post);
     }
 
@@ -214,6 +236,27 @@ class DashboardController extends Controller
             'status_approval' => 4,
             'keterangan_ditolak' => $request->keterangan_ditolak
         ]);
+
+        # Get the specific email address according to proposal id
+        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->select('pegawais.email')
+            ->where('proposals.id',$request->propsl_id)
+            ->first();
+        
+        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
+            $emailAddress = strtolower($getEmail->email);
+        }
+        
+        if (isset($emailAddress) && count($emailAddress) > 0){
+            $content = [
+                'name' => 'Ditolak!',
+                'body' => 'Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
+            ];
+            Mail::to([$emailAddress,'bennyalfian@uvers.ac.id'])->send(new EmailDitolakRektorat($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
         return response()->json($post);
     }
 
@@ -309,6 +352,27 @@ class DashboardController extends Controller
             'status_approval' => 5,
             'generate_qrcode' => ''.URL::to('/').'/report/'.time().'.png'
         ]);
+
+        # Get the specific email address according to proposal id
+        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->select('pegawais.email')
+            ->where('proposals.id',$request->proposal_id)
+            ->first();
+        
+        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
+            $emailAddress = strtolower($getEmail->email);
+        }
+        
+        if (isset($emailAddress) && count($emailAddress) > 0){
+            $content = [
+                'name' => 'Diterima!',
+                'body' => 'Laporan Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
+            ];
+            Mail::to($emailAddress)->send(new EmailDiterimaRektorat($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
         return response()->json($post);
     }
 
@@ -318,6 +382,27 @@ class DashboardController extends Controller
             'status_approval'       => 4,
             'keterangan_ditolak'    => $request->keterangan_ditolak
         ]);
+
+        # Get the specific email address according to proposal id
+        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->select('pegawais.email')
+            ->where('proposals.id',$request->propsl_id)
+            ->first();
+        
+        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
+            $emailAddress = strtolower($getEmail->email);
+        }
+        
+        if (isset($emailAddress) && count($emailAddress) > 0){
+            $content = [
+                'name' => 'Ditolak!',
+                'body' => 'Laporan Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
+            ];
+            Mail::to($emailAddress)->send(new EmailDitolakRektorat($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
         return response()->json($post);
     }
 

@@ -8,6 +8,11 @@ use App\Models\General\Proposal;
 use App\Models\General\DataRencanaAnggaran;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\FormRkat;
+use App\Models\Master\Pegawai;
+use App\Models\Master\HandleProposal;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailDitolakDekan;
+use App\Mail\EmailDiterimaDekan;
 use Auth;
 use DB;
 
@@ -161,7 +166,25 @@ class DataProposalController extends Controller
 
     public function approvalDeanY(Request $request)
     {
-        $post = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->update(['status_approval' => 3, 'keterangan_ditolak' => '']);
+        $post = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->update([
+            'status_approval' => 3, 
+            'keterangan_ditolak' => ''
+        ]);   
+        
+        $content = [
+            'name' => 'Update Status Proposal',
+            'body' => 'Anda memiliki proposal yang perlu divalidasi. Silahkan buka SIMPRO.',
+        ];
+
+        # seleksi alamat email berdasarkan RKAT atau Non-RKAT
+        $getJenisKegiatan = Proposal::select('id_jenis_kegiatan')->where('id',$request->proposal_id)->first();
+        $getEmailRektorat = HandleProposal::leftJoin('pegawais','pegawais.id','=','handle_proposals.id_pegawai')
+            ->select('pegawais.email')
+            ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $getJenisKegiatan->id_jenis_kegiatan)
+            ->first();        
+
+        Mail::to(strtolower($getEmailRektorat->email))->send(new EmailDiterimaDekan($content));
+
         return response()->json($post);
     }
 
@@ -171,6 +194,23 @@ class DataProposalController extends Controller
             'status_approval'       => 2,
             'keterangan_ditolak'    => $request->keterangan_ditolak
         ]);
+
+        # Get the specific email address according to proposal id
+        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+            ->select('pegawais.email')
+            ->where('proposals.id',$request->propsl_id)
+            ->first();
+        
+        if ($getEmail->email != null){
+            $content = [
+                'name' => 'Proposal Ditolak!',
+                'body' => 'Mohon maaf, proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
+            ];
+            Mail::to(strtolower($getEmail->email))->send(new EmailDitolakDekan($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
         return response()->json($post);
     }
 
