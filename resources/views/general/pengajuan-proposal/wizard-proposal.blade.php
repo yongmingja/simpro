@@ -120,24 +120,9 @@
                                         
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <label class="form-label" for="id_tahun_akademik">Tahun Akademik</label>
-                                                <select class="select2 form-control border border-primary" id="id_tahun_akademik" name="id_tahun_akademik" aria-label="Default select example" style="cursor:pointer;">
-                                                    <option value="" id="pilih_tahun" readonly>- Select faculty or unit -</option>
-                                                    @foreach($getTahunAkademik as $tahun)
-                                                        <option value="{{$tahun->id}}">{{$tahun->year}} (Aktif)</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="text-danger" id="yearErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                            
-                                            
-                                            <div class="col-sm-6">
-                                                <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
-                                                <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
-                                                <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
-                                            </div>
-                                        </div>
+                                        <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
+                                        <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
+                                        <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
@@ -427,6 +412,12 @@
         }
     });
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const tahunAkademik = document.getElementById("id_tahun_akademik");
+        tahunAkademik.disabled = true;
+        tahunAkademik.style.backgroundColor = "#e9ecef";
+    });
+
     const wizardVertical = document.querySelector(".wizard-vertical");
 
       if (typeof wizardVertical !== undefined && wizardVertical !== null) {
@@ -490,7 +481,6 @@
                                 window.location = '{{ route("submission-of-proposal.index") }}';
                             },
                             error: function (response) {
-                                $('#yearErrorMsg').text(response.responseJSON.errors.id_tahun_akademik);
                                 $('#kategoriErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
                                 $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
                                 $('#fakultasBiroErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);

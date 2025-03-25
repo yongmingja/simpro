@@ -52,14 +52,12 @@ class DataFpkuController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_tahun_akademik' => 'required',
             'no_surat_undangan' => 'required',
             'undangan_dari'     => 'required',
             'nama_kegiatan'     => 'required',
             'tgl_kegiatan'      => 'required',
             'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048',
         ],[
-            'id_tahun_akademik.required'    => 'Anda belum memilih tahun akademik',
             'no_surat_undangan.required'    => 'Anda belum menginputkan no surat undangan',
             'undangan_dari.required'        => 'Anda belum menginputkan undangan dari',
             'nama_kegiatan.required'        => 'Anda belum menginputkan nama kegiatan',
@@ -72,10 +70,12 @@ class DataFpkuController extends Controller
         if($checkDate == null) { $checkDate = $request->input('cek_tanggal') ?? 0; } 
         else { $checkDate = $request->input('cek_tanggal') ?? 1; }
 
+        $getIdTahunAkademik = TahunAkademik::where('is_active',1)->select('id')->first();
+
         $post = DataFpku::updateOrCreate(['id' => $request->id],
         [
             'cek_tanggal'       => $checkDate,
-            'id_tahun_akademik' => $request->id_tahun_akademik,
+            'id_tahun_akademik' => $getIdTahunAkademik->id,
             'no_surat_undangan' => $request->no_surat_undangan,
             'undangan_dari'     => $request->undangan_dari,
             'nama_kegiatan'     => $request->nama_kegiatan,

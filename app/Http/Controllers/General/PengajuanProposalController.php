@@ -179,7 +179,7 @@ class PengajuanProposalController extends Controller
     {
         $getJenisKegiatan = JenisKegiatan::all();
         $getFakultasBiro = DataFakultasBiro::select('nama_fakultas_biro','id')->get();
-        $getTahunAkademik = TahunAkademik::select('id','year','is_active')->where('is_active',1)->get();
+        $getTahunAkademik = TahunAkademik::select('id','year','is_active')->where('is_active',1)->first();
         return view('general.pengajuan-proposal.wizard-proposal', compact('getJenisKegiatan','getFakultasBiro','getTahunAkademik'));
     }
 
@@ -195,7 +195,6 @@ class PengajuanProposalController extends Controller
     {
         
         $request->validate([
-            'id_tahun_akademik' => 'required',
             'id_jenis_kegiatan' => 'required',
             'nama_kegiatan'     => 'required',
             'pendahuluan'       => 'required',
@@ -207,7 +206,6 @@ class PengajuanProposalController extends Controller
             'lokasi_tempat'     => 'required',
             'berkas.*'          => 'file|mimes:pdf,doc,docx|max:2048'
         ],[
-            'id_tahun_akademik.required'    => 'Tahun akademik wajib', 
             'id_jenis_kegiatan.required'    => 'Anda belum memilih kategori proposal', 
             'nama_kegiatan.required'        => 'Anda belum menginput nama kegiatan', 
             'pendahuluan.required'          => 'Anda belum menginput pendahuluan', 
@@ -219,11 +217,13 @@ class PengajuanProposalController extends Controller
             'lokasi_tempat.required'        => 'Anda belum menginput lokasi kegiatan',
             'berkas.*.max'                  => 'Ukuran berkas tidak boleh melebihi 2MB', 
             'berkas.*.mimes'                => 'File harus berjenis (pdf atau docx)',
-        ]);      
+        ]); 
+        
+        $getIdTahunAkademik = TahunAkademik::where('is_active',1)->select('id')->first();
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
-                    'id_tahun_akademik'     => $request->id_tahun_akademik,
+                    'id_tahun_akademik'     => $getIdTahunAkademik->id,
                     'id_jenis_kegiatan'     => $request->id_jenis_kegiatan,
                     'id_form_rkat'          => $request->pilihan_rkat,
                     'user_id'               => Auth::user()->user_id,
