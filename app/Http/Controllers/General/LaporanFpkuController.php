@@ -435,7 +435,12 @@ class LaporanFpkuController extends Controller
 
     public function downloadFpkuExcel($year)
     {
-        $getYear = $year;
+        $getYear = TahunAkademik::where('id',$year)->select('year')->first();
+        if($getYear){
+            $getYear = $getYear->year;
+        } else {
+            $getYear = '[Semua]';
+        }
         $fileName = 'data_dan_laporan_fpku_'.$getYear.'.xlsx';
 
         // Simpan file Excel ke penyimpanan sementara

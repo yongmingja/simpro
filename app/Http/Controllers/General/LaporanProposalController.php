@@ -464,7 +464,12 @@ class LaporanProposalController extends Controller
 
     public function downloadProposalExcel($year)
     {
-        $getYear = $year;
+        $getYear = TahunAkademik::where('id',$year)->select('year')->first();
+        if($getYear){
+            $getYear = $getYear->year;
+        } else {
+            $getYear = '[Semua]';
+        }
         $fileName = 'data_proposal_dan_laporan_proposal_'.$getYear.'.xlsx';
 
         // Simpan file Excel ke penyimpanan sementara
