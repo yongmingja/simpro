@@ -21,6 +21,21 @@
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/editor.css')}}" />
 @section('content')
 
+<style>
+    body.no-scroll {
+        overflow: hidden; /* Menghentikan scroll */
+    }
+    #wizard-container {
+        max-height: 70vh; /* Batasi tinggi wizard */
+        overflow-y: auto;
+        padding: 0.8rem; 
+        background-color: rgba(255, 255, 255, 0.03); 
+        backdrop-filter: blur(px); 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    }
+
+</style>
+
 <div class="container-fluid flex-grow-1">
     <section id="basic-datatable">
         <div class="row">
@@ -66,7 +81,7 @@
                                     <button type="button" class="step-trigger">
                                     <span class="bs-stepper-circle">4</span>
                                     <span class="bs-stepper-label mt-1">
-                                        <span class="bs-stepper-title">Lampiran</span>
+                                        <span class="bs-stepper-title">Lampiran <i>(Opsional)</i></span>
                                         <span class="bs-stepper-subtitle">Upload Lampiran</span>
                                     </span>
                                     </button>
@@ -83,17 +98,13 @@
                                 </div>
                             </div>
 
-                            <div class="bs-stepper-content">
+                            <div class="bs-stepper-content" id="wizard-container">
                             <form onSubmit="return false" id="form-laporan-proposal">
                                 <input type="hidden" name="id_pro" id="id_pro" value="{{$id['id']}}">
 
                                 <!-- Hasil Kegiatan -->
                                 <div class="container">
                                     <div id="page-1" class="content mt-3">
-                                        <div class="content-header mb-3">
-                                            <h6 class="mb-0">Hasil Kegiatan</h6>
-                                            <small>Lengkapi Hasil Kegiatan</small>
-                                        </div>
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                               <label for="hasil_kegiatan" class="form-label">Hasil Kegiatan</label>
@@ -114,10 +125,6 @@
                                 <!-- Evaluasi Kegiatan -->
                                 <div class="container">
                                     <div id="page-2" class="content mt-3">
-                                        <div class="content-header mb-3">
-                                          <h6 class="mb-0">Evaluasi Kegiatan</h6>
-                                          <small>Input Evaluasi dan Catatan Kegiatan</small>
-                                        </div>
                                         <div class="row g-3">
                                           <div class="col-md-6">
                                               <label for="evaluasi_catatan_kegiatan" class="form-label">Evaluasi dan Catatan Kegiatan</label>
@@ -138,10 +145,6 @@
                                 <!-- Rencana Anggaran -->
                                 <div class="container">
                                     <div id="page-3" class="content mt-3">
-                                        <div class="content-header mb-3">
-                                          <h6 class="mb-0">Rencana Anggaran</h6>
-                                          <small>Data Rencana Anggaran</small>
-                                        </div>
                                         <div class="row g-3">
                                           <table class="table table-bordered table-hover">
                                             <thead>
@@ -221,14 +224,10 @@
                                 <!-- Lampiran -->
                                 <div class="container">
                                     <div id="page-4" class="content mt-3">
-                                        <div class="content-header mb-3">
-                                          <h6 class="mb-0">Lampiran Proposal <i>(Opsional)</i></h6>
-                                          <small>Upload Lampiran Proposal.</small>
-                                        </div>
                                         <div class="col form-group p-0">
                                             <p style="font-size: 12px; line-height:12px;" class="text-primary mt-1">Note:<br>- Anda bisa menggunakan link google drive atau unggah berkas.<br>- Jika ingin unggah berupa berkas, silakan checklist upload berkas.<br></p>
                                         </div>
-                                        <input type="checkbox" id="switch" name="switch" class="mb-3">
+                                        <input type="checkbox" id="switch" name="switch" class="mb-3"> Upload Berkas
                                         <div class="row g-3">                                    
                                             <div>
                                                 <div class="row firstRow">
@@ -248,7 +247,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p style="font-size: 12px;" class="text-warning"><i>*Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan.</i></p>
+                                            <p style="font-size: 14px;" class="text-info">**Silakan klik Next jika tidak ada data atau berkas yang ingin dilampirkan</p>
                                             <div class="col-12 d-flex justify-content-between">
                                                 <button class="btn btn-primary btn-prev"> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                                   <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -262,10 +261,6 @@
                                 <!-- Penutup -->
                                 <div class="container">
                                     <div id="page-5" class="content mt-3">
-                                        <div class="content-header mb-3">
-                                          <h6 class="mb-0">Penutup</h6>
-                                          <small>Lengkapi Penutup Laporan Proposal</small>
-                                        </div>
                                         <div class="row g-3">
                                           <div class="col-md-6">
                                             <label for="penutup" class="form-label">Penutup</label>
@@ -309,6 +304,16 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const body = document.body;
+        const wizardContainer = document.getElementById("wizard-container");
+
+        // Saat wizard diaktifkan, tambahkan kelas no-scroll
+        if (wizardContainer) {
+            body.classList.add("no-scroll");
+        }
     });
 
     const wizardVertical = document.querySelector(".wizard-vertical");

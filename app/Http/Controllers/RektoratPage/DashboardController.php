@@ -192,7 +192,7 @@ class DashboardController extends Controller
             $emailAddress = strtolower($getEmail->email);
         }
         
-        if (isset($emailAddress) && count($emailAddress) > 0){
+        if (isset($emailAddress)){
             $content = [
                 'name' => 'Diterima!',
                 'body' => 'Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',

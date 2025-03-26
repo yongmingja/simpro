@@ -191,27 +191,33 @@
                             <div id="page-2" class="content">
                                 <div class="row g-3">
                                     <div class="col-md-12">
-                                    <table class="table table-borderless" id="dynamicAddRemove">
-                                        <tr>
-                                            <th>Tgl. Kegiatan</th>
-                                            <th>Sarpras</th>
-                                            <th width="12%;">Jumlah</th>
-                                            <th>Sumber Dana</th>
-                                            <th>Ket.</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="date" class="form-control" id="tgl_kegiatan" name="kolom[0][tgl_kegiatan]" value="" placeholder="mm/dd/yyyy" /></td>
-                                            <td><input type="text" class="form-control" id="sarpras_item" name="kolom[0][sarpras_item]"></td>
-                                            <td><input type="number" class="form-control" id="jumlah" name="kolom[0][jumlah]" value="" min="0" /></td>
-                                            <td><select class="select2 form-select" id="sumber" name="kolom[0][sumber]" style="cursor:pointer;">
-                                                <option value="1">Kampus</option>
-                                                <option value="2">Mandiri</option>
-                                            </select></td>
-                                            <td><input type="text" class="form-control" id="ket" name="kolom[0][ket]"></td>
-                                            <td><button type="button" class="btn btn-warning btn-block" id="tombol-add-sarpras"><i class="bx bx-plus-circle"></i></button></td>
-                                        </tr>
-                                    </table>
+                                        <table class="table table-borderless" id="dynamicAddRemove">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tgl. Kegiatan</th>
+                                                    <th>Sarpras</th>
+                                                    <th width="12%">Jumlah</th>
+                                                    <th>Sumber Dana</th>
+                                                    <th>Ket.</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><input type="date" class="form-control" name="kolom[0][tgl_kegiatan]" placeholder="mm/dd/yyyy" /></td>
+                                                    <td><input type="text" class="form-control" name="kolom[0][sarpras_item]" /></td>
+                                                    <td><input type="number" class="form-control" name="kolom[0][jumlah]" min="0" /></td>
+                                                    <td>
+                                                        <select class="select2 form-select" name="kolom[0][sumber_sarpras]">
+                                                            <option value="1">Kampus</option>
+                                                            <option value="2">Mandiri</option>
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="text" class="form-control" name="kolom[0][ket]" /></td>
+                                                    <td><button type="button" class="btn btn-warning" id="tombol-add-sarpras"><i class="bx bx-plus-circle"></i></button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>                                        
                                     </div>
                                     <p style="font-size: 14px;" class="text-info">**Silakan klik next jika tidak ada sarana prasarana yang dibutuhkan</p>
                                     <div class="col-12 d-flex justify-content-between">
@@ -254,7 +260,7 @@
                                             <td><input type="number" class="form-control quantity" id="quantity" name="rows[0][quantity]" value="" min="0" onkeyup="OnChange(this)" /></td>
                                             <td><input type="number" class="form-control frequency" id="frequency" name="rows[0][frequency]" value="" min="0" onkeyup="OnChange(this)" /></td>
                                             <td><input type="text" class="form-control total_biaya" id="total_biaya" name="rows[0][total_biaya]" value="" min="0" readonly style="cursor: no-drop;" /></td>
-                                            <td><select class="select2 form-select" id="sumber_anggaran" name="rows[0][sumber]" onchange="calculateGrandTotal()" style="cursor:pointer;">
+                                            <td><select class="select2 form-select" id="sumber_anggaran" name="rows[0][sumber_anggaran]" onchange="calculateGrandTotal()" style="cursor:pointer;">
                                                 <option value="" id="pilih_sumber_anggaran">- Pilih -</option>
                                                 <option value="1">Kampus</option>
                                                 <option value="2">Mandiri</option>
@@ -410,12 +416,6 @@
         if (diffDays < 14) {
             alert("Peringatan! Pengajuan proposal minimal 14 hari sebelum tanggal kegiatan.");
         }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const tahunAkademik = document.getElementById("id_tahun_akademik");
-        tahunAkademik.disabled = true;
-        tahunAkademik.style.backgroundColor = "#e9ecef";
     });
 
     const wizardVertical = document.querySelector(".wizard-vertical");
@@ -584,53 +584,65 @@
         }
     });
 
-    var i = 0;
-    $("#tombol-add-sarpras").click(function(){
-        ++i;
+    document.addEventListener('DOMContentLoaded', function() {
+        let i = 0;
 
-        $("#dynamicAddRemove").append(`<tr>
-            <td><input type="date" class="form-control" id="tgl_kegiatan" name="kolom['+i+'][tgl_kegiatan]" value="" placeholder="mm/dd/yyyy" /></td>
-            <td><input type="text" class="form-control" id="sarpras_item" name="kolom['+i+'][sarpras_item]"></td>
-            <td><input type="number" class="form-control" id="jumlah" name="kolom['+i+'][jumlah]" value="" min="0" /></td>
-            <td>
-                <select class="select2 form-select" id="sumber" name="kolom['+i+'][sumber]" style="cursor:pointer;">
-                    <option value="1">Kampus</option>
-                    <option value="2">Mandiri</option>
-                </select>
-            </td>
-            <td><input type="text" class="form-control" id="ket" name="kolom['+i+'][ket]"></td>
-            <td><button type="button" class="btn btn-danger remove-tr"><i class="bx bx-trash"></i></button></td>
-        </tr>`);
+        // Fungsi untuk menambah baris
+        $("#tombol-add-sarpras").click(function () {
+            i++;
+            const newRow = `
+                <tr>
+                    <td><input type="date" class="form-control" name="kolom[${i}][tgl_kegiatan]" placeholder="mm/dd/yyyy" /></td>
+                    <td><input type="text" class="form-control" name="kolom[${i}][sarpras_item]" /></td>
+                    <td><input type="number" class="form-control" name="kolom[${i}][jumlah]" min="0" /></td>
+                    <td>
+                        <select class="select2 form-select" name="kolom[${i}][sumber_sarpras]">
+                            <option value="1">Kampus</option>
+                            <option value="2">Mandiri</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control" name="kolom[${i}][ket]" /></td>
+                    <td><button type="button" class="btn btn-danger remove-tr"><i class="bx bx-trash"></i></button></td>
+                </tr>
+            `;
+            $("#dynamicAddRemove tbody").append(newRow);
+        });
+
+
+        // Fungsi untuk menghapus baris
+        $(document).on("click", ".remove-tr", function () {
+            $(this).closest("tr").remove();
+        });
     });
 
-    $(document).on('click', '.remove-tr', function(){  
-        $(this).parents('tr').remove();
-    });
 
-    var j = 0;
-    $("#tombol-add-anggaran").click(function() {
-        ++j;
-
-        $("#table-body").append(`<tr>
-            <td><input type="text" class="form-control" name="rows['+j+'][item]" placeholder="Input nama item" /></td>
-            <td><input type="number" class="form-control biaya_satuan" name="rows['+j+'][biaya_satuan]" min="0" onkeyup="OnChange(this)" /></td>
-            <td><input type="number" class="form-control quantity" name="rows['+j+'][quantity]" min="0" onkeyup="OnChange(this)" /></td>
-            <td><input type="number" class="form-control frequency" name="rows['+j+'][frequency]" min="0" onkeyup="OnChange(this)" /></td>
-            <td><input type="text" class="form-control total_biaya" name="rows['+j+'][total_biaya]" readonly style="cursor: no-drop;" /></td>
-            <td><select class="select2 form-select" id="sumber_anggaran" name="rows['+j+'][sumber]" onchange="calculateGrandTotal()" style="cursor:pointer;">
-                <option value="1">Kampus</option>
-                <option value="2">Mandiri</option>
-            </select></td>
-            <td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td>
-        </tr>`);
-
-        calculateGrandTotal();
-
-    });
-
-    $(document).on('click', '.remove-tr-anggaran', function(){  
-        $(this).parents('tr').remove();
-        calculateGrandTotal();
+    document.addEventListener('DOMContentLoaded', function(){
+        let j = 0;
+        $("#tombol-add-anggaran").click(function() {
+            j++;
+            const bariBaru = `    
+                <tr>
+                    <td><input type="text" class="form-control" name="rows[${j}][item]" placeholder="Input nama item" /></td>
+                    <td><input type="number" class="form-control biaya_satuan" name="rows[${j}][biaya_satuan]" min="0" onkeyup="OnChange(this)" /></td>
+                    <td><input type="number" class="form-control quantity" name="rows[${j}][quantity]" min="0" onkeyup="OnChange(this)" /></td>
+                    <td><input type="number" class="form-control frequency" name="rows[${j}][frequency]" min="0" onkeyup="OnChange(this)" /></td>
+                    <td><input type="text" class="form-control total_biaya" name="rows[${j}][total_biaya]" readonly style="cursor: no-drop;" /></td>
+                    <td><select class="select2 form-select" id="sumber_anggaran" name="rows[${j}][sumber_anggaran]" onchange="calculateGrandTotal()" style="cursor:pointer;">
+                        <option value="1">Kampus</option>
+                        <option value="2">Mandiri</option>
+                    </select></td>
+                    <td><button type="button" class="btn btn-danger remove-tr-anggaran"><i class="bx bx-trash"></i></button></td>
+                </tr>
+            `;
+            $("#dynamicAddRemoveAnggaran tbody").append(bariBaru);
+            calculateGrandTotal();
+    
+        });
+    
+        $(document).on('click', '.remove-tr-anggaran', function(){  
+            $(this).closest('tr').remove();
+            calculateGrandTotal();
+        });
     });
 
     var alertShown = false; // Flag untuk melacak apakah alert sudah ditampilkan

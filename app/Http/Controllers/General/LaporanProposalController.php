@@ -61,14 +61,20 @@ class LaporanProposalController extends Controller
 
         $dataRenang = [];
         foreach($request->rows as $k => $renang){
-            if(!empty($renang['item']) && !empty($renang['biaya_satuan']) && !empty($renang['quantity']) && !empty($renang['frequency']) && !empty($renang['sumber'])){
+            if (!empty($renang['item']) && 
+                !empty($renang['biaya_satuan']) && 
+                !empty($renang['quantity']) && 
+                !empty($renang['frequency'])){
+
+                $sumber_dana_anggaran = !empty($renang['sumber']) ? $renang['sumber'] : 1;
+
                 $dataRenang[] = [
                     'id_proposal'   => $getId,
                     'item'          => $renang['item'],
                     'biaya_satuan'  => $renang['biaya_satuan'],
                     'quantity'      => $renang['quantity'],
                     'frequency'     => $renang['frequency'],
-                    'sumber_dana'   => $renang['sumber'],
+                    'sumber_dana'   => $sumber_dana_anggaran,
                     'created_at'    => now(),
                     'updated_at'    => now()
                 ];
@@ -150,17 +156,17 @@ class LaporanProposalController extends Controller
                     if($query->count() > 0){
                         return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i></a>';
                     } else {
-                        return '<a href="'.Route('index-laporan',encrypt(['id' => $data->id])).'" class="btn btn-outline-primary btn-sm"><i class="bx bx-plus-circle bx-tada-hover bx-xs"></i> Buat Laporan</a>';
+                        return '<a href="'.Route('index-laporan',encrypt(['id' => $data->id])).'" class="text-primary"><i class="bx bx-plus-circle bx-tada-hover bx-xs"></i> <small>Buat Laporan</small></a>';
                     }
                 } else {
-                    return '<span class="badge bg-label-secondary">Pending</span>';
+                    return '<small><i class="text-secondary">Pending</i></small>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return $this->statusLaporanProposal($data->id);
                 } else {
-                    return '<span class="badge bg-label-secondary">Belum ada laporan</span>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })
             ->rawColumns(['laporan','action'])
@@ -266,13 +272,13 @@ class LaporanProposalController extends Controller
                 } elseif($data->status_approval == 2){
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 3) {
-                    return '<i class="text-warning">Proses Verifikasi</i>';
+                    return '<small><i class="text-warning">Proses Verifikasi</i></small>';
                 } elseif($data->status_approval == 4) {
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
-                    return '<i class="text-success">ACC Rektorat</i>';
+                    return '<small><i class="text-success">ACC Rektorat</i></small>';
                 } else {
-                    return '<i class="text-secondary">Proses Verifikasi</i>';
+                    return '<small><i class="text-secondary">Proses Verifikasi</i></small>';
                 }
             }
         } else {

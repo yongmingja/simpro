@@ -161,13 +161,13 @@ class PengajuanProposalController extends Controller
                 if($data->status_approval == 2){
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek alasan ditolak</span></a>';
                 } elseif($data->status_approval == 3) {
-                    return '<span class="badge bg-label-success"><i class="bx bx-check-double bx-xs"></i> ACC Atasan</span>';
+                    return '<small><i class="text-success">ACC Atasan</i></small>';
                 } elseif($data->status_approval == 4) {
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat&nbsp;</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 5) {
-                    return '<i class="text-success">ACC Rektorat</i>';
+                    return '<small><i class="text-success">ACC Rektorat</i></small>';
                 } else {
-                    return '<i class="text-secondary">Menunggu Validasi</i>';
+                    return '<small><i class="text-secondary">Menunggu Validasi</i></small>';
                 }
             }
         } else {
@@ -241,47 +241,56 @@ class PengajuanProposalController extends Controller
                 ]);        
 
         $latest_id = Proposal::latest()->first();
-
-        if($latest_id == ''){
-            $latest = '1';
-        } else {
-            $latest = $latest_id->id;
-        }
-
-        
+        $latest = $latest_id ? $latest_id->id : '1';                
 
         # Insert data into data_pengajuan_sarpras
         $dataSet = [];
-        foreach($request->kolom as $key => $sarpras){
-            if(!empty($sarpras['tgl_kegiatan']) && !empty($sarpras['sarpras_item']) && !empty($sarpras['jumlah']) && !empty($sarpras['sumber'])) {
+        foreach ($request->kolom as $sarpras) {
+            // Validasi setiap inputan
+            if (!empty($sarpras['tgl_kegiatan']) && 
+                !empty($sarpras['sarpras_item']) && 
+                !empty($sarpras['jumlah'])) {
+
+                // Jika sumber_sarpras kosong, default ke '1'
+                $sumber_dana = !empty($sarpras['sumber_sarpras']) ? $sarpras['sumber_sarpras'] : 1;
+
+                // Tambahkan ke $dataSet
                 $dataSet[] = [
-                    'id_proposal'       => $latest,
-                    'tgl_kegiatan'      => $sarpras['tgl_kegiatan'],
-                    'sarpras_item'      => $sarpras['sarpras_item'],
-                    'jumlah'            => $sarpras['jumlah'],
-                    'sumber_dana'       => $sarpras['sumber'],
-                    'status'            => 1,
-                    'created_at'        => now(),
-                    'updated_at'        => now()
+                    'id_proposal'   => $latest,
+                    'tgl_kegiatan'  => $sarpras['tgl_kegiatan'],
+                    'sarpras_item'  => $sarpras['sarpras_item'],
+                    'jumlah'        => $sarpras['jumlah'],
+                    'sumber_dana'   => $sumber_dana,
+                    'status'        => 1,
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
                 ];
             }
-        }                
-        // Cek apakah $dataSet tidak kosong sebelum insert
+        }
+
+        // Insert data jika $dataSet tidak kosong
         if (!empty($dataSet)) {
-            $post = DataPengajuanSarpras::insert($dataSet);
+            DataPengajuanSarpras::insert($dataSet);
         }
 
         # Insert data into data_rencana_anggaran
         $dataRenang = [];
         foreach($request->rows as $k => $renang){
-            if(!empty($renang['item']) && !empty($renang['biaya_satuan']) && !empty($renang['quantity']) && !empty($renang['frequency']) && !empty($renang['sumber'])) {
+            if  (!empty($renang['item']) && 
+                !empty($renang['biaya_satuan']) && 
+                !empty($renang['quantity']) && 
+                !empty($renang['frequency'])) {
+
+                    // Jika sumber_anggaran kosong, default ke '1'
+                $sumber_dana_anggaran = !empty($sarpras['sumber_anggaran']) ? $sarpras['sumber_anggaran'] : 1;
+
                 $dataRenang[] = [
                     'id_proposal'   => $latest,
                     'item'          => $renang['item'],
                     'biaya_satuan'  => $renang['biaya_satuan'],
                     'quantity'      => $renang['quantity'],
                     'frequency'     => $renang['frequency'],
-                    'sumber_dana'   => $renang['sumber'],
+                    'sumber_dana'   => $sumber_dana_anggaran,
                     'status'        => 1,
                     'created_at'    => now(),
                     'updated_at'    => now()
