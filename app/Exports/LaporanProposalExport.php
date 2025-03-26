@@ -129,6 +129,9 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             if($value->status_approval == 5) {
                 $statusLaporan = 'ACC Rektorat';
                 $linkLaporan = ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id);
+            } elseif($value->status_approval == '') {
+                $statusLaporan = 'Pengajuan';
+                $linkLaporan = 'Pengajuan';
             } else {
                 $statusLaporan = 'Belum ada laporan';
                 $linkLaporan = 'Belum ada laporan';

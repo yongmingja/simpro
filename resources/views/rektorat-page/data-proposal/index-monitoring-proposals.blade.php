@@ -25,6 +25,16 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
+                        <div class="col-sm-2 mb-3">
+                            <fieldset class="form-group">
+                                <select style="cursor:pointer;" class="select2 form-control border" id="lembaga" name="lembaga" required>
+                                    <option value="all" selected>Semua Lembaga (default)</option>
+                                    @foreach($getLembaga as $lembaga)
+                                        <option value="{{$lembaga->id}}">{{$lembaga->nama_fakultas_biro}}</option>
+                                    @endforeach
+                                </select>
+                            </fieldset>
+                        </div>
                             <table class="table table-hover table-responsive" id="table_proposal">
                               <thead>
                                 <tr>
@@ -79,33 +89,54 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_proposal').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('index-monitoring-proposals') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                }, 
-                {data: 'preview',name: 'preview'},
-                {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'tgl_event',name: 'tgl_event',
-                    render: function ( data, type, row ){
-                        return moment(row.tgl_event).format("DD MMM YYYY")
+        fill_datatable();
+        function fill_datatable(lembaga = ''){
+            var table = $('#table_proposal').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('index-monitoring-proposals') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.lembaga = $('#lembaga').val();
                     }
                 },
-                {data: 'created_at',name: 'created_at',
-                    render: function ( data, type, row ){
-                        return moment(row.created_at).format("DD MMM YYYY")
-                    }
-                },
-                {data: 'detail',name: 'detail'},
-                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
-                {data: 'status',name: 'status'},
-            ]
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    }, 
+                    {data: 'preview',name: 'preview'},
+                    {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'tgl_event',name: 'tgl_event',
+                        render: function ( data, type, row ){
+                            return moment(row.tgl_event).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'created_at',name: 'created_at',
+                        render: function ( data, type, row ){
+                            return moment(row.created_at).format("DD MMM YYYY")
+                        }
+                    },
+                    {data: 'detail',name: 'detail'},
+                    {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
+                    {data: 'status',name: 'status'},
+                ]
+            });
+        }
+        $('#lembaga').on('change', function(e){
+            var selectLemabga = this.value;
+
+            if(selectLemabga != ''){
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable(selectLemabga);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 

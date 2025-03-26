@@ -20,7 +20,7 @@
                   </div>
                   <h4 class="ms-1 mb-0">{{$countProposals}}</h4>
                 </div>
-                <p class="mb-1">Total Proposals</p>
+                <p class="mb-1">Total Proposal</p>
                 <p class="mb-0">
                   <span class="fw-medium me-1">{{$countProposals}}</span>
                   <small class="text-muted">Pengajuan Proposal</small>
@@ -87,7 +87,7 @@
           <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
             <div class="card h-100">
               <div class="card-header">
-                <h5 class="card-title mb-2">Total Proposals</h5>
+                <h5 class="card-title mb-2">Total Proposal</h5>
                 <h1 class="display-6 fw-normal mb-0">{{$totalProposalsSadm}}</h1>
               </div>
               <div class="card-body">
@@ -124,7 +124,7 @@
           <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
             <div class="card h-100">
               <div class="card-header">
-                <h5 class="card-title mb-2">Total Laporan Proposals</h5>
+                <h5 class="card-title mb-2">Total Laporan Proposal</h5>
                 <h1 class="display-6 fw-normal mb-0">{{$totalLaporanProposalsSadm}}</h1>
               </div>
               <div class="card-body">
@@ -165,7 +165,7 @@
             <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Proposals as {{$recentRole}}</h5>
+                  <h5 class="card-title mb-2">Total Proposal as {{$recentRole}}</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$totalProposals}}</h1>
                 </div>
                 <div class="card-body">
@@ -202,7 +202,7 @@
             <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Laporan Proposals</h5>
+                  <h5 class="card-title mb-2">Total Laporan Proposal</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$totalLaporanProposals}}</h1>
                 </div>
                 <div class="card-body">
@@ -239,7 +239,7 @@
             <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Proposals Saya</h5>
+                  <h5 class="card-title mb-2">Total Proposal Saya</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$countProposals}}</h1>
                 </div>
                 <div class="card-body">
@@ -281,7 +281,7 @@
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Proposals</h5>
+                  <h5 class="card-title mb-2">Total Proposal</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$totalProposalsDekanBiro}}</h1>
                 </div>
                 <div class="card-body">
@@ -318,7 +318,7 @@
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Laporan Proposals</h5>
+                  <h5 class="card-title mb-2">Total Laporan Proposal</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$totalLaporanProposalsDekanBiro}}</h1>
                 </div>
                 <div class="card-body">

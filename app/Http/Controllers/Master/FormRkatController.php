@@ -65,7 +65,6 @@ class FormRkatController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_tahun_akademik'  => 'required',
             'sasaran_strategi'   => 'required',
             'program_strategis'  => 'required',
             'program_kerja'      => 'required',
@@ -73,7 +72,6 @@ class FormRkatController extends Controller
             'nama_kegiatan'      => 'required',
             'kode_pagu'          => 'required',
         ],[
-            'id_tahun_akademik.required' => 'Anda belum memilih tahun akademik',
             'sasaran_strategi.required'  => 'Anda belum menginputkan sasaran strategi',
             'program_strategis.required' => 'Anda belum menginputkan program strategis',
             'program_kerja.required'     => 'Anda belum menginputkan program kerja',
@@ -96,9 +94,11 @@ class FormRkatController extends Controller
             $recentRoleId = $getPeran->jab_id;
         }
 
+        $getTahunAkademik = TahunAkademik::where('is_active',1)->select('id')->first();
+
         $post = FormRkat::updateOrCreate(['id' => $request->id],
                 [
-                    'id_tahun_akademik'  => $request->id_tahun_akademik,
+                    'id_tahun_akademik'  => $getTahunAkademik->id,
                     'sasaran_strategi'   => $request->sasaran_strategi,
                     'program_strategis'  => $request->program_strategis,
                     'program_kerja'      => $request->program_kerja,

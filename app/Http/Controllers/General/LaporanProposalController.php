@@ -264,7 +264,7 @@ class LaporanProposalController extends Controller
                 if($data->status_approval == 1){
                     return '<button type="button" name="delete" id="'.$id.'" data-toggle="tooltip" data-placement="bottom" title="Hapus Laporan" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
                 } elseif($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 } elseif($data->status_approval == 3) {
                     return '<i class="text-warning">Proses Verifikasi</i>';
                 } elseif($data->status_approval == 4) {
@@ -364,7 +364,7 @@ class LaporanProposalController extends Controller
                     if($data->status_approval == 5){
                         return '<i class="text-success">ACC Rektorat</i>';
                     } else {
-                        return '<i class="text-secondary">Belum ada laporan</i>';
+                        return '<i class="text-warning">Pengajuan</i>';
                     }
                 } else {
                     return '<i class="text-secondary">Belum ada laporan</i>';
@@ -473,7 +473,7 @@ class LaporanProposalController extends Controller
         $fileName = 'data_proposal_dan_laporan_proposal_'.$getYear.'.xlsx';
 
         // Simpan file Excel ke penyimpanan sementara
-        Excel::store(new LaporanProposalExport($getYear), $fileName, 'local');
+        Excel::store(new LaporanProposalExport($year), $fileName, 'local');
 
         return Response::stream(function() use ($fileName) {
             // Buka file dari penyimpanan sementara dan kirim sebagai stream

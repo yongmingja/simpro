@@ -893,15 +893,28 @@ class DashboardController extends Controller
 
     public function indexMonitoringProposal(Request $request)
     {
-        $datas = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-            ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-            ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','status_proposals.status_approval')
-            ->where('tahun_akademiks.is_active',1)
-            ->orderBy('status_proposals.status_approval','ASC')
-            ->get();
+        if($request->lembaga == '' || $request->lembaga == 'all'){
+            $datas = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
+                ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','status_proposals.status_approval')
+                ->where('tahun_akademiks.is_active',1)
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+        } else {
+            $datas = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+                ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
+                ->select('proposals.id AS id','proposals.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','status_proposals.status_approval')
+                ->where([['tahun_akademiks.is_active',1],['proposals.id_fakultas_biro',$request->lembaga]])
+                ->orderBy('status_proposals.status_approval','ASC')
+                ->get();
+
+        }
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -935,7 +948,8 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('rektorat-page.data-proposal.index-monitoring-proposals');
+        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
+        return view('rektorat-page.data-proposal.index-monitoring-proposals', compact('getLembaga'));
     }
 
     public function indexMonitoringLaporanProposal(Request $request)

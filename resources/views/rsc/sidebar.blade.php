@@ -400,7 +400,7 @@
                     </li>
                 </ul>
             </li> 
-            @if($roleDefault == "WAREK" AND $recentPeranKet == "WRSDP")
+            {{-- @if($roleDefault == "WAREK" AND $recentPeranKet == "WRSDP") --}}
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}} OR {{set_active('rlaporanfpku')}}">
                     <i class="menu-icon tf-icons bx bx-user-check bx-tada-hover"></i>
@@ -427,7 +427,7 @@
                     </a>
                     
                 </li> 
-            @endif            
+            {{-- @endif             --}}
         @endif
         
         @if($roleDefault == "WAREK" || $roleDefault == "RKT" || $roleDefault == "SADM")

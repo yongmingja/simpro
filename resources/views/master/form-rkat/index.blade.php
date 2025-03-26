@@ -63,19 +63,6 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
-                                                <label class="form-label" for="id_tahun_akademik">Tahun Akademik</label>
-                                                <select class="select2 form-control" id="id_tahun_akademik" name="id_tahun_akademik" aria-label="Default select example" style="cursor:pointer;">
-                                                @foreach($getTahunAkademik as $tahun)
-                                                    @if($tahun->is_active == 1)
-                                                    <option value="{{$tahun->id}}" selected>{{$tahun->year}} (Aktif)</option>
-                                                    @else
-                                                    <option value="{{$tahun->id}}">{{$tahun->year}}</option>
-                                                    @endif
-                                                @endforeach
-                                                </select>
-                                                <span class="text-danger" id="yearErrorMsg" style="font-size: 10px;"></span>
-                                            </div>
-                                            <div class="mb-3">
                                                 <label for="sasaran_strategi" class="form-label">Sasaran Strategi</label>
                                                 <textarea class="form-control" id="sasaran_strategi" name="sasaran_strategi" rows="3"></textarea>
                                                 <span class="text-danger" id="sasaranStrategiErrorMsg" style="font-size: 10px;"></span>

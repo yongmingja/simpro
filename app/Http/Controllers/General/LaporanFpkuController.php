@@ -63,7 +63,7 @@ class LaporanFpkuController extends Controller
             })->addColumn('status', function($data){
                 if($data->status_approval == 1){
                     if($data->ketua == Auth::user()->id){
-                        return '<a href="javascript:void(0)" name="delete" id="'.$data->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i></a>';
+                        return '<a href="javascript:void(0)" name="delete" id="'.$data->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i> <small><i class="text-warning">Pengajuan</i></small></a>';
                     } else {
                         return '<small><i class="text-danger">belum submit</i></small>';
                     }
@@ -73,7 +73,7 @@ class LaporanFpkuController extends Controller
                     $button .= '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';                    
                     return $button;
                 }elseif($data->status_approval == 3){
-                    return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> verified</a>';
+                    return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> ACC Rektorat</a>';
                 } else {
                     return '<small><i class="text-danger">belum submit</i></small>';
                 }
@@ -381,7 +381,7 @@ class LaporanFpkuController extends Controller
                     if($data->status_approval == 3){
                         return '<i class="text-success">ACC Rektorat</i>';
                     } else {
-                        return '<i class="text-secondary">Belum ada laporan</i>';
+                        return '<i class="text-warning">Pengajuan</i>';
                     }
                 } else {
                     return '<i class="text-secondary">Belum ada laporan</i>';
@@ -444,7 +444,7 @@ class LaporanFpkuController extends Controller
         $fileName = 'data_dan_laporan_fpku_'.$getYear.'.xlsx';
 
         // Simpan file Excel ke penyimpanan sementara
-        Excel::store(new LaporanFpkuExport($getYear), $fileName, 'local');
+        Excel::store(new LaporanFpkuExport($year), $fileName, 'local');
 
         return Response::stream(function() use ($fileName) {
             // Buka file dari penyimpanan sementara dan kirim sebagai stream
