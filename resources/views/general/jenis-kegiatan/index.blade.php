@@ -36,7 +36,7 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Nama Kategori</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

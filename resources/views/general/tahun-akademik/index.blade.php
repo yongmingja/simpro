@@ -39,7 +39,7 @@
                                   <th>Tanggal Mulai</th>
                                   <th>Tanggal Akhir</th>
                                   <th>Status</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

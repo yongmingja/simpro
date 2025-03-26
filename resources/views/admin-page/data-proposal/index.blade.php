@@ -35,7 +35,7 @@
                                   <th>Proposal Dibuat</th>
                                   <th>Nama Fakultas / Biro</th>
                                   <th>Nama Prodi / Biro</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

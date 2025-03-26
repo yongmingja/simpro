@@ -37,7 +37,7 @@
                                   <th>#</th>
                                   <th>Kode Jabatan</th>
                                   <th>Level (Nama Jabatan)</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

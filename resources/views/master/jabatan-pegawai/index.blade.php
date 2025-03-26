@@ -38,7 +38,7 @@
                                   <th>Pegawai</th>
                                   <th>NIP / User ID</th>
                                   <th>Nama Jabatan</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

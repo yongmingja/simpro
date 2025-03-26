@@ -40,7 +40,7 @@
                                   <th>N I P</th>
                                   <th>Email</th>
                                   <th>Reset Password</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>

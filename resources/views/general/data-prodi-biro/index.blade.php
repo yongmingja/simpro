@@ -37,7 +37,7 @@
                                   <th>#</th>
                                   <th>Nama Prodi & Biro</th>
                                   <th>Nama Fakultas & Biro</th>
-                                  <th>Actions</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>
