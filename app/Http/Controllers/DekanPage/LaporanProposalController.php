@@ -34,66 +34,53 @@ class LaporanProposalController extends Controller
             ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
-        if($request->status == '' || $request->status == 'all'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','laporan_proposals.created_at AS tgl_proposal')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['tahun_akademiks.is_active',1]])
-                ->get();
+        $status = $request->status ?? 'all'; // Default ke 'all' jika status kosong
+
+        $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
+            ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+            ->leftJoin('laporan_proposals', 'laporan_proposals.id_proposal', '=', 'proposals.id')
+            ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai', 'laporan_proposals.created_at AS tgl_proposal')
+            ->where([['proposals.id_fakultas_biro', $getJabatanIs->id_fakultas_biro], ['tahun_akademiks.is_active', 1]]);
+        
+        // Tambahkan filter berdasarkan status
+        $statusApproval = null;
+        switch ($status) {
+            case 'pending':
+                $statusApproval = 1;
+                break;
+            case 'accepted':
+                $statusApproval = 5;
+                break;
+            case 'denied':
+                $statusApproval = 4;
+                break;
+            default:
+                $statusApproval = null;
+                break;
         }
-        if($request->status == 'pending'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','laporan_proposals.created_at AS tgl_proposal')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',1],['tahun_akademiks.is_active',1]])
-                ->get();
+
+        if ($statusApproval !== null) {
+            $query->where('status_laporan_proposals.status_approval', $statusApproval);
         }
-        if($request->status == 'accepted'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','laporan_proposals.created_at AS tgl_proposal')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
-                ->get();
-        }
-        if($request->status == 'denied'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('laporan_proposals','laporan_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','laporan_proposals.created_at AS tgl_proposal')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_laporan_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
-                ->get();
-        }
+        
+        $datas = $query->orderBy('status_laporan_proposals.status_approval', 'ASC')->get();
+            
 
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('laporan', function($data){
-                $query = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat laporan</a>';
                 } else {
                     return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('action', function($data){
-                $query = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return $this->statusLaporanProposal($data->id);
                 } else {

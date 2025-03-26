@@ -30,7 +30,7 @@
                                 <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
                                     <option value="all" selected>Semua data (default)</option>
                                     <option value="pending">Pending</option>
-                                    <option value="accepted">Telah divalidasi</option>
+                                    <option value="accepted">Diterima</option>
                                     <option value="denied">Ditolak</option>
                                 </select>
                             </fieldset>
@@ -145,7 +145,7 @@
     // DATATABLE
     $(document).ready(function () {
         fill_datatable();
-        function fill_datatable(status = ''){
+        function fill_datatable(status = 'all'){
             var table = $('#table_proposal').DataTable({
                 processing: true,
                 serverSide: true,

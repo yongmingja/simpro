@@ -36,61 +36,43 @@ class DataProposalController extends Controller
             ->select('jabatan_pegawais.id_fakultas_biro')
             ->first();
 
-        if($request->status == '' || $request->status == 'all'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval','>',0],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'pending') {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',1],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
+            $status = $request->status ?? 'all'; // Default ke 'all' jika status kosong
 
-        }
-        if($request->status == 'accepted') {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
-
-        }
-        if($request->status == 'denied') {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user','form_rkats.total')
-                ->where([['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro],['status_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
-
-        } 
+            // Inisialisasi query dasar
+            $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
+                ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+                ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+                ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+                ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
+                ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
+                ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+                ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai AS nama_user', 'form_rkats.total')
+                ->where([['proposals.id_fakultas_biro', $getJabatanIs->id_fakultas_biro], ['tahun_akademiks.is_active', 1]]);
+            
+            // Tambahkan filter berdasarkan status
+            $statusApproval = null;
+            switch ($status) {
+                case 'pending':
+                    $statusApproval = 1;
+                    break;
+                case 'accepted':
+                    $statusApproval = 5;
+                    break;
+                case 'denied':
+                    $statusApproval = 4;
+                    break;
+                default:
+                    $statusApproval = null;
+                    break;
+            }
+            
+            if ($statusApproval !== null) {
+                $query->where('status_proposals.status_approval', $statusApproval);
+            }
+            
+            $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
+            
+            
 
         if($request->ajax()){
             return datatables()->of($datas)
