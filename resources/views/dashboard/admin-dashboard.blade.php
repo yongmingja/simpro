@@ -165,7 +165,7 @@
             <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
                 <div class="card-header">
-                  <h5 class="card-title mb-2">Total Proposal as {{$recentRole}}</h5>
+                  <h5 class="card-title mb-2">Total Proposal as Validator</h5>
                   <h1 class="display-6 fw-normal mb-0">{{$totalProposals}}</h1>
                 </div>
                 <div class="card-body">

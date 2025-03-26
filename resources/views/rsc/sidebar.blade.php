@@ -36,6 +36,7 @@
                 $recentPeranKet = $getPeran->ket_jabatan;
             } else {
                 $recentPeranIs = session()->get('selected_peran');
+                $recentPeranKet = $getPeran->ket_jabatan;
             }
         $checkIDValidatorPengusul = $getModelValidator::leftJoin('jabatans','jabatans.id','=','validator_proposals.diusulkan_oleh')
             ->select('jabatans.kode_jabatan')
@@ -382,6 +383,7 @@
             <li class="menu-header small fw-medium">
                 <div data-i18n="VALIDASI REKTORAT">VALIDASI REKTORAT</div>
             </li> 
+            @if($recentPeranKet == "WRAK" || $recentPeranKet == "WRSDP")
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
                 <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
@@ -400,7 +402,8 @@
                     </li>
                 </ul>
             </li> 
-            {{-- @if($roleDefault == "WAREK" AND $recentPeranKet == "WRSDP") --}}
+            @endif
+            @if($recentPeranKet == "WRSDP")
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}} OR {{set_active('rlaporanfpku')}}">
                     <i class="menu-icon tf-icons bx bx-user-check bx-tada-hover"></i>
@@ -427,7 +430,7 @@
                     </a>
                     
                 </li> 
-            {{-- @endif             --}}
+            @endif            
         @endif
         
         @if($roleDefault == "WAREK" || $roleDefault == "RKT" || $roleDefault == "SADM")
