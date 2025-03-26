@@ -32,7 +32,7 @@
                                 <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
                                     <option value="all" selected>Semua data (default)</option>
                                     <option value="pending">Pending</option>
-                                    <option value="accepted">Telah divalidasi</option>
+                                    <option value="accepted">Diterima</option>
                                 </select>
                             </fieldset>
                         </div>

@@ -25,6 +25,34 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row pl-4">
+                                        <div class="col-sm-2 mb-3 ml-3">
+                                            <fieldset class="form-group">
+                                                <select style="cursor:pointer;" class="select2 form-control border" id="tahun_akademik" name="tahun_akademik" required>
+                                                    <option value="all" selected>Semua TA (default)</option>                                    
+                                                    @foreach($getYear as $y)
+                                                        <option value="{{$y->id}}">{{$y->year}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-sm-2 mb-3">
+                                            <fieldset class="form-group">
+                                                <select style="cursor:pointer;" class="select2 form-control border" id="lembaga" name="lembaga" required>
+                                                    <option value="all" selected>Semua Lembaga (default)</option>   
+                                                    <option value="emp">Belum ada laporan</option>                                 
+                                                    @foreach($getLembaga as $lembaga)
+                                                        <option value="{{$lembaga->id}}">{{$lembaga->nama_fakultas_biro}}</option>
+                                                    @endforeach
+                                                    <option value="others">Lainnya (Rektorat)</option>
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <table class="table table-hover table-responsive" id="table_proposal">
                               <thead>
                                 <tr>
@@ -77,35 +105,54 @@
 
     // DATATABLE
     $(document).ready(function () {
-        var table = $('#table_proposal').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('index-monitoring-laporan-proposals') }}",
-            columns: [
-                {data: null,sortable:false,
-                    render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                }, 
-                {data: 'laporan',name: 'laporan'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'detail',name: 'detail'},
-                {data: 'nama_user',name: 'nama_user',
-                render: function(data,type,row){
-                        return row.nama_pegawai || row.nama_user
+        fill_datatable();
+        function fill_datatable(tahun_akademik = 'all', lembaga = 'all'){
+            var table = $('#table_proposal').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('index-monitoring-laporan-proposals') }}",
+                    "type": "GET",
+                    "data": function(data){
+                        data.tahun_akademik = $('#tahun_akademik').val();
+                        data.lembaga = $('#lembaga').val();
                     }
                 },
-                {data: 'tgl_proposal',name: 'tgl_proposal',
-                    render: function ( data, type, row ){
-                        if(row.tgl_proposal == null){
-                            return '&ndash;';
-                        } else {
-                            return moment(row.tgl_proposal).format("DD MMM YYYY")
+                columns: [
+                    {data: null,sortable:false,
+                        render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
                         }
-                    }
-                },
-                {data: 'action',name: 'action'},
-            ]
+                    }, 
+                    {data: 'laporan',name: 'laporan'},
+                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                    {data: 'detail',name: 'detail'},
+                    {data: 'nama_pegawai',name: 'nama_pegawai'},
+                    {data: 'tgl_proposal',name: 'tgl_proposal',
+                        render: function ( data, type, row ){
+                            if(row.tgl_proposal == null){
+                                return '&ndash;';
+                            } else {
+                                return moment(row.tgl_proposal).format("DD MMM YYYY")
+                            }
+                        }
+                    },
+                    {data: 'action',name: 'action'},
+                ]
+            });
+        }
+        $('#tahun_akademik, #lembaga').on('change', function(e){
+            var selectTahun = this.value;
+            var selectLembaga = this.value;
+
+            if(selectTahun != '' || selectLembaga != ''){
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable(selectTahun, selectLembaga);
+            } else {
+                alert('Anda belum memilih filter.');
+                $('#table_proposal').DataTable().destroy();
+                fill_datatable();
+            }
         });
     });
 

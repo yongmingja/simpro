@@ -70,14 +70,13 @@
                 <div class="card table-responsive">
                     <div class="card-body">
                         <div class="col-sm-2 mb-3">
-                            <fieldset class="form-group">
-                                <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
-                                    <option value="all" selected>Semua Proposal (default)</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="accepted">Diterima</option>
-                                    <option value="denied">Ditolak</option>
-                                </select>
-                            </fieldset>
+                            <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
+                                <option value="all" selected>Semua Proposal (default)</option>
+                                <option value="emp">Belum ada laporan</option>
+                                <option value="pending">Pending</option>
+                                <option value="accepted">Diterima</option>
+                                <option value="denied">Ditolak</option>
+                            </select>
                         </div>
                         <table class="table table-hover table-responsive" id="table_proposal">
                             <thead>

@@ -25,16 +25,33 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
-                        <div class="col-sm-2 mb-3">
-                            <fieldset class="form-group">
-                                <select style="cursor:pointer;" class="select2 form-control border" id="lembaga" name="lembaga" required>
-                                    <option value="all" selected>Semua Lembaga (default)</option>
-                                    @foreach($getLembaga as $lembaga)
-                                        <option value="{{$lembaga->id}}">{{$lembaga->nama_fakultas_biro}}</option>
-                                    @endforeach
-                                </select>
-                            </fieldset>
-                        </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row pl-4">
+                                        <div class="col-sm-2 mb-3 ml-3">
+                                            <fieldset class="form-group">
+                                                <select style="cursor:pointer;" class="select2 form-control border" id="tahun_akademik" name="tahun_akademik" required>
+                                                    <option value="all" selected>Semua TA (default)</option>                                    
+                                                    @foreach($getYear as $y)
+                                                        <option value="{{$y->id}}">{{$y->year}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-sm-2 mb-3">
+                                            <fieldset class="form-group">
+                                                <select style="cursor:pointer;" class="select2 form-control border" id="lembaga" name="lembaga" required>
+                                                    <option value="all" selected>Semua Lembaga (default)</option>                                    
+                                                    @foreach($getLembaga as $lembaga)
+                                                        <option value="{{$lembaga->id}}">{{$lembaga->nama_fakultas_biro}}</option>
+                                                    @endforeach
+                                                    <option value="others">Lainnya (Rektorat)</option>
+                                                </select>
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <table class="table table-hover table-responsive" id="table_proposal">
                               <thead>
                                 <tr>
@@ -90,7 +107,7 @@
     // DATATABLE
     $(document).ready(function () {
         fill_datatable();
-        function fill_datatable(lembaga = ''){
+        function fill_datatable(lembaga = 'all', tahun_akademik = 'all'){
             var table = $('#table_proposal').DataTable({
                 processing: true,
                 serverSide: true,
@@ -99,6 +116,7 @@
                     "type": "GET",
                     "data": function(data){
                         data.lembaga = $('#lembaga').val();
+                        data.tahun_akademik = $('#tahun_akademik').val();
                     }
                 },
                 columns: [
@@ -126,12 +144,13 @@
                 ]
             });
         }
-        $('#lembaga').on('change', function(e){
-            var selectLemabga = this.value;
+        $('#tahun_akademik, #lembaga').on('change', function(e){
+            var selectTahun = this.value;
+            var selectLembaga = this.value;
 
-            if(selectLemabga != ''){
+            if(selectTahun != '' || selectLembaga != ''){
                 $('#table_proposal').DataTable().destroy();
-                fill_datatable(selectLemabga);
+                fill_datatable(selectTahun, selectLembaga);
             } else {
                 alert('Anda belum memilih filter.');
                 $('#table_proposal').DataTable().destroy();
