@@ -26,58 +26,38 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        if($request->status == '' || $request->status == 'all'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) // filter WR yang akan handle pengecekan proposal, namun diubah semua default ke role WRAK
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
+        // Query Dasar
+        $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
+        ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+        ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+        ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+        ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
+        ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+        ->select(
+            'proposals.id AS id',
+            'proposals.*',
+            'jenis_kegiatans.nama_jenis_kegiatan',
+            'data_fakultas_biros.nama_fakultas_biro',
+            'data_prodi_biros.nama_prodi_biro',
+            'pegawais.nama_pegawai AS nama_user'
+        )
+        ->where([['proposals.is_archived', 0], ['tahun_akademiks.is_active', 1]])
+        ->whereIn('proposals.id_jenis_kegiatan', $this->arrJenisKegiatan());
+
+        // Tambahkan Kondisi Berdasarkan Status
+        if ($request->status == '' || $request->status == 'all') {
+        // Tidak ada filter tambahan
+        } elseif ($request->status == 'pending') {
+        $query->where('status_proposals.status_approval', '<=', 3);
+        } elseif ($request->status == 'accepted') {
+        $query->where('status_proposals.status_approval', 5);
+        } elseif ($request->status == 'denied') {
+        $query->where('status_proposals.status_approval', 4);
         }
-        if($request->status == 'pending') {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['status_proposals.status_approval','<=',3],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'accepted') {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['status_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'denied') {
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai AS nama_user')
-                ->where([['proposals.is_archived',0],['status_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan()) 
-                ->orderBy('status_proposals.status_approval','ASC')
-                ->get();
-        }
+
+        // Eksekusi Query
+        $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
+
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -95,11 +75,11 @@ class DashboardController extends Controller
                                 $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
                                 return $button;
                             } elseif($state->status_approval == 4){
-                                return '<i class="text-success">Ditolak Rektorat</i>';
+                                return '<small><i class="text-success">Ditolak Rektorat</i></small>';
                             } elseif($state->status_approval == 5) {
-                                return '<i class="text-success">ACC Rektorat</i>';
+                                return '<small><i class="text-success">ACC Rektorat</i></small>';
                             } else {
-                                return '<i class="text-secondary">Pending</i>';
+                                return '<small><i class="text-secondary">Pending</i></small>';
                             }
                         }
                     } else {
@@ -340,24 +320,24 @@ class DashboardController extends Controller
                 if($query->count() > 0){
                     return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat laporan</a>';
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     foreach($query as $q){
                         if($q->status_approval == 5){
-                            return '<i class="text-success">ACC Rektorat</i>';
+                            return '<small><i class="text-success">ACC Rektorat</i></small>';
                         } elseif($q->status_approval == 4){
                             return '<a href="javascript:void(0)" class="info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                         } elseif($q->status_approval == 3) {
                             return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="ACC Selesai" data-placement="bottom" data-original-title="ACC Selesai" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                         } else {
-                            return '<i class="text-secondary">Pending</i>';
+                            return '<small><i class="text-secondary">Pending</i></small>';
                         }
                     }
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
