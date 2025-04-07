@@ -14,7 +14,6 @@ class HandleProposalController extends Controller
     public function index(Request $request)
     {
         $datas = HandleProposal::leftJoin('pegawais','pegawais.id','=','handle_proposals.id_pegawai')
-            ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_pegawai','=','pegawais.id')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','handle_proposals.id_jenis_kegiatan')
             ->select('handle_proposals.id AS id','pegawais.nama_pegawai','jenis_kegiatans.nama_jenis_kegiatan','handle_proposals.id_jenis_kegiatan')
             ->orderBy('pegawais.nama_pegawai','ASC')

@@ -143,25 +143,26 @@ class LaporanFpkuController extends Controller
                     'dibuat_oleh'                   => Auth::user()->id,
                 ]);
 
-        $latest_id = LaporanFpku::latest()->first();
-
-        if($latest_id == ''){
-            $latest = '1';
-        } else {
-            $latest = $latest_id->id;
-        } 
+            $latest_id = LaporanFpku::latest()->first();
+            $latest = $latest_id ? $latest_id->id : '1'; 
 
             # Insert data into data_rencana_anggaran
             $dataRenang = [];
             foreach($request->rows as $k => $renang){
-                if(!empty($renang['item']) && !empty($renang['biaya_satuan']) && !empty($renang['quantity']) && !empty($renang['frequency']) && !empty($renang['sumber'])) {
+                if (!empty($renang['item']) && 
+                    !empty($renang['biaya_satuan']) && 
+                    !empty($renang['quantity']) && 
+                    !empty($renang['frequency'])) {
+
+                    $sumber_dana_anggaran = !empty($renang['sumber']) ? $renang['sumber'] : 1;
+
                     $dataRenang[] = [
                         'id_laporan_fpku'  => $latest,
                         'item'             => $renang['item'],
                         'biaya_satuan'     => $renang['biaya_satuan'],
                         'quantity'         => $renang['quantity'],
                         'frequency'        => $renang['frequency'],
-                        'sumber_dana'      => $renang['sumber'],
+                        'sumber_dana'      => $sumber_dana_anggaran,
                         'created_at'       => now(),
                         'updated_at'       => now()
                     ];
@@ -173,14 +174,20 @@ class LaporanFpkuController extends Controller
 
             $dataRealisasi = [];
             foreach($request->baris as $l => $realisasi){
-                if(!empty($realisasi['r_item']) && !empty($realisasi['r_biaya_satuan']) && !empty($realisasi['r_quantity']) && !empty($realisasi['r_frequency']) && !empty($realisasi['r_sumber'])) {
+                if (!empty($realisasi['r_item']) && 
+                    !empty($realisasi['r_biaya_satuan']) && 
+                    !empty($realisasi['r_quantity']) && 
+                    !empty($realisasi['r_frequency'])) {
+
+                    $realisasi_sumber = !empty($realisasi['r_sumber']) ? $realisasi['r_sumber'] : 1;
+
                     $dataRealisasi[] = [
                         'id_laporan_fpku'   => $latest,
                         'item'              => $realisasi['r_item'],
                         'biaya_satuan'      => $realisasi['r_biaya_satuan'],
                         'quantity'          => $realisasi['r_quantity'],
                         'frequency'         => $realisasi['r_frequency'],
-                        'sumber_dana'       => $realisasi['r_sumber'],
+                        'sumber_dana'       => $realisasi_sumber,
                         'created_at'        => now(),
                         'updated_at'        => now()
                     ];

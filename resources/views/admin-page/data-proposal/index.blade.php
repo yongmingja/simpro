@@ -333,8 +333,8 @@
                             dataType: 'json'
                         }).done(function (response) {
                             Swal.fire({
-                                title: 'acceptd!',
-                                text: 'Your data has been acceptd successfully!',
+                                title: 'accepted!',
+                                text: 'Your data has been accepted successfully!',
                                 type: 'success',
                                 timer: 2000
                             })
