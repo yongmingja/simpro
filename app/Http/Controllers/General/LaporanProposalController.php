@@ -264,26 +264,33 @@ class LaporanProposalController extends Controller
 
     protected function statusLaporanProposal($id)
     {
-        $query = DB::table('status_laporan_proposals')->select('status_approval','keterangan_ditolak')->where('id_laporan_proposal','=',$id)->get();
-        if($query){
-            foreach($query as $data){                
-                if($data->status_approval == 1){
-                    return '<button type="button" name="delete" id="'.$id.'" data-toggle="tooltip" data-placement="bottom" title="Hapus Laporan" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
-                } elseif($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
-                } elseif($data->status_approval == 3) {
+        $query = DB::table('status_laporan_proposals')
+            ->select('status_approval', 'keterangan_ditolak')
+            ->where('id_laporan_proposal', '=', $id)
+            ->get();
+
+        if ($query->isNotEmpty()) { // Hindari `foreach` jika data kosong
+            $data = $query->first(); // Ambil data pertama langsung
+            
+            switch ($data->status_approval) {
+                case 1:
+                    return '<button type="button" name="delete" id="' . $id . '" data-toggle="tooltip" data-placement="bottom" title="Hapus Laporan" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
+                case 2:
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                case 3:
                     return '<small><i class="text-warning">Proses Verifikasi</i></small>';
-                } elseif($data->status_approval == 4) {
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
-                } elseif($data->status_approval == 5) {
+                case 4:
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
-                } else {
+                default:
                     return '<small><i class="text-secondary">Proses Verifikasi</i></small>';
-                }
             }
-        } else {
-            return 'x';
-        }
+        } 
+
+        // Jika query kosong
+        return 'x';
+
     }
 
     public function hapuslaporan(Request $request)
@@ -367,13 +374,22 @@ class LaporanProposalController extends Controller
             return datatables()->of($datas)
             ->addColumn('status', function($data){
                 if(!empty($data->status_approval)) {
-                    if($data->status_approval == 5){
-                        return '<i class="text-success">ACC Rektorat</i>';
-                    } else {
-                        return '<i class="text-warning">Pengajuan</i>';
+                    switch ($data->status_approval) {
+                        case 1:
+                            return '<small><i class="text-warning">Pengajuan</i></small>';
+                        case 2:
+                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
+                        case 3:
+                            return '<small><i class="text-success">ACC Atasan</i></small>';
+                        case 4:
+                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
+                        case 5:
+                            return '<small><i class="text-success">ACC Rektorat</i></small>';
+                        default:
+                        return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                     }
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })
             ->rawColumns(['status'])

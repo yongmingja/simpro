@@ -26,38 +26,42 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Query Dasar
         $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
-        ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
-        ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
-        ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
-        ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
-        ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-        ->select(
-            'proposals.id AS id',
-            'proposals.*',
-            'jenis_kegiatans.nama_jenis_kegiatan',
-            'data_fakultas_biros.nama_fakultas_biro',
-            'data_prodi_biros.nama_prodi_biro',
-            'pegawais.nama_pegawai AS nama_user'
-        )
-        ->where([['proposals.is_archived', 0], ['tahun_akademiks.is_active', 1]])
-        ->whereIn('proposals.id_jenis_kegiatan', $this->arrJenisKegiatan());
+            ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+            ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            ->select(
+                'proposals.id AS id',
+                'proposals.*',
+                'jenis_kegiatans.nama_jenis_kegiatan',
+                'data_fakultas_biros.nama_fakultas_biro',
+                'data_prodi_biros.nama_prodi_biro',
+                'pegawais.nama_pegawai AS nama_user'
+            )
+            ->where([
+                ['proposals.is_archived', 0],
+                ['tahun_akademiks.is_active', 1]
+            ])
+            ->whereIn('proposals.id_jenis_kegiatan', $this->arrJenisKegiatan());
 
-        // Tambahkan Kondisi Berdasarkan Status
-        if ($request->status == '' || $request->status == 'all') {
-        // Tidak ada filter tambahan
-        } elseif ($request->status == 'pending') {
-        $query->where('status_proposals.status_approval', '<=', 3);
-        } elseif ($request->status == 'accepted') {
-        $query->where('status_proposals.status_approval', 5);
-        } elseif ($request->status == 'denied') {
-        $query->where('status_proposals.status_approval', 4);
+        // Mapping status untuk kondisi dinamis
+        $statusMapping = [
+            '' => null,
+            'all' => null,
+            'pending' => ['status_proposals.status_approval', '<=', 3],
+            'accepted' => ['status_proposals.status_approval', '=', 5],
+            'denied' => ['status_proposals.status_approval', '=', 4],
+        ];
+
+        // Tambahkan kondisi berdasarkan status jika diperlukan
+        if (array_key_exists($request->status, $statusMapping) && $statusMapping[$request->status] !== null) {
+            $query->where($statusMapping[$request->status][0], $statusMapping[$request->status][1], $statusMapping[$request->status][2] ?? null);
         }
 
-        // Eksekusi Query
+        // Eksekusi query
         $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
-
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -247,71 +251,45 @@ class DashboardController extends Controller
 
     public function indexlaporan(Request $request)
     {
-        if($request->status == '' || $request->status == 'all'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where('tahun_akademiks.is_active',1)
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-                ->orderBy('status_laporan_proposals.status_approval','ASC')
-                ->get();
+        $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
+            ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+            ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            ->select(
+                'proposals.id AS id',
+                'proposals.*',
+                'jenis_kegiatans.nama_jenis_kegiatan',
+                'data_fakultas_biros.nama_fakultas_biro',
+                'data_prodi_biros.nama_prodi_biro',
+                'pegawais.nama_pegawai',
+                'status_laporan_proposals.keterangan_ditolak',
+                'status_laporan_proposals.created_at AS tgl_proposal'
+            )
+            ->where('tahun_akademiks.is_active', 1)
+            ->whereIn('proposals.id_jenis_kegiatan', $this->arrJenisKegiatan());
+
+        $statusMapping = [
+            '' => null,
+            'all' => null,
+            'pending' => ['status_laporan_proposals.status_approval', '<=', 3],
+            'accepted' => ['status_laporan_proposals.status_approval', '=', 5],
+            'denied' => ['status_laporan_proposals.status_approval', '=', 4],
+            'emp' => ['status_laporan_proposals.status_approval', '=', null],
+        ];
+
+        // Tambahkan kondisi berdasarkan status jika diperlukan
+        if (isset($statusMapping[$request->status]) && $statusMapping[$request->status] !== null) {
+            $query->where(
+                $statusMapping[$request->status][0],
+                $statusMapping[$request->status][1],
+                $statusMapping[$request->status][2] ?? null
+            );
         }
-        if($request->status == 'pending'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where([['status_laporan_proposals.status_approval','<=',3],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-                ->orderBy('status_laporan_proposals.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'accepted'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where([['status_laporan_proposals.status_approval',5],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-                ->orderBy('status_laporan_proposals.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'denied'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where([['status_laporan_proposals.status_approval',4],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-                ->orderBy('status_laporan_proposals.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'emp'){
-            $datas = Proposal::leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
-                ->leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')
-                ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->select('proposals.id AS id','proposals.*','jenis_kegiatans.nama_jenis_kegiatan','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','pegawais.nama_pegawai','status_laporan_proposals.keterangan_ditolak','status_laporan_proposals.created_at AS tgl_proposal')
-                ->where([['status_laporan_proposals.status_approval','=',null],['tahun_akademiks.is_active',1]])
-                ->whereIn('proposals.id_jenis_kegiatan',$this->arrJenisKegiatan())
-                ->orderBy('status_laporan_proposals.status_approval','ASC')
-                ->get();
-        }
+
+        // Eksekusi query
+        $datas = $query->orderBy('status_laporan_proposals.status_approval', 'ASC')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -536,52 +514,44 @@ class DashboardController extends Controller
 
     public function indexLaporanFpku(Request $request)
     {
-        if($request->status == '' || $request->status == 'all'){
-            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where('tahun_akademiks.is_active',1)
-                ->orderBy('status_laporan_fpkus.status_approval','ASC')
-                ->get();
+        // Query
+        $query = DataFpku::leftJoin('laporan_fpkus', 'laporan_fpkus.id_fpku', '=', 'data_fpkus.id')
+            ->leftJoin('status_laporan_fpkus', 'status_laporan_fpkus.id_laporan_fpku', '=', 'laporan_fpkus.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
+            ->select(
+                'laporan_fpkus.id_fpku AS id',
+                'laporan_fpkus.id AS id_laporan',
+                'data_fpkus.peserta_kegiatan',
+                'data_fpkus.ketua',
+                'data_fpkus.undangan_dari',
+                'data_fpkus.nama_kegiatan',
+                'data_fpkus.tgl_kegiatan',
+                'status_laporan_fpkus.status_approval'
+            )
+            ->where('tahun_akademiks.is_active', 1)
+            ->orderBy('status_laporan_fpkus.status_approval', 'ASC');
 
+        // Mapping status untuk kondisi dinamis
+        $statusMapping = [
+            '' => null,
+            'all' => null,
+            'emp' => ['status_laporan_fpkus.status_approval', '=', null],
+            'pending' => ['status_laporan_fpkus.status_approval', '=', 1],
+            'accepted' => ['status_laporan_fpkus.status_approval', '=', 3],
+            'denied' => ['status_laporan_fpkus.status_approval', '=', 2],
+        ];
+
+        // Tambahkan kondisi berdasarkan status jika diperlukan
+        if (array_key_exists($request->status, $statusMapping) && $statusMapping[$request->status] !== null) {
+            $query->where(
+                $statusMapping[$request->status][0],
+                $statusMapping[$request->status][1],
+                $statusMapping[$request->status][2] ?? null
+            );
         }
-        if($request->status == 'emp'){
-            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where([['status_laporan_fpkus.status_approval','=',null],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_laporan_fpkus.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'pending'){
-            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where([['status_laporan_fpkus.status_approval',1],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_laporan_fpkus.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'accepted'){
-            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where([['status_laporan_fpkus.status_approval',3],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_laporan_fpkus.status_approval','ASC')
-                ->get();
-        }
-        if($request->status == 'denied'){
-            $datas = DataFpku::leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('laporan_fpkus.id_fpku AS id','laporan_fpkus.id AS id_laporan','data_fpkus.peserta_kegiatan','data_fpkus.ketua','data_fpkus.undangan_dari','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','status_laporan_fpkus.status_approval')
-                ->where([['status_laporan_fpkus.status_approval',2],['tahun_akademiks.is_active',1]])
-                ->orderBy('status_laporan_fpkus.status_approval','ASC')
-                ->get();
-        }
+
+        // Eksekusi query
+        $datas = $query->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -932,19 +902,20 @@ class DashboardController extends Controller
                     return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
                 }
             })->addColumn('status', function($data){
-                if($data->status_approval == 1){
-                    return '<i class="text-warning">Pengajuan</i>';
-                }elseif($data->status_approval == 2){
-                    return '<i class="text-danger">Ditolak Atasan</i>';
-                }elseif($data->status_approval == 3){
-                    return '<i class="text-success">ACC Atasan</i>';
-                }elseif($data->status_approval == 4){
-                    return '<i class="text-danger">Ditolak Rektorat</i>';
-                }elseif($data->status_approval == 5){
-                    return '<i class="text-success">ACC Rektorat</i>';
-                }else{
-                    return '';
-                }
+                switch ($data->status_approval) {
+                    case 1:
+                        return '<i class="text-warning">Pengajuan</i>';
+                    case 2:
+                        return '<i class="text-danger">Ditolak Atasan</i>';
+                    case 3:
+                        return '<i class="text-success">ACC Atasan</i>';
+                    case 4:
+                        return '<i class="text-danger">Ditolak Rektorat</i>';
+                    case 5:
+                        return '<i class="text-success">ACC Rektorat</i>';
+                    default:
+                        return '';
+                }                
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })
@@ -999,26 +970,31 @@ class DashboardController extends Controller
                     return '<i class="text-secondary">Belum ada laporan</i>';
                 }
             })->addColumn('action', function($data){
-                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
-                if($query->count() > 0){
-                    foreach($query as $q){
-                        if($q->status_approval == 1){
+                $query = DB::table('status_laporan_proposals')
+                    ->where('id_laporan_proposal', $data->id)
+                    ->select('status_approval')
+                    ->get();
+
+                if ($query->isNotEmpty()) {
+                    $statusApproval = $query->first()->status_approval; 
+
+                    switch ($statusApproval) {
+                        case 1:
                             return '<i class="text-warning">Pengajuan</i>';
-                        }elseif($q->status_approval == 2){
+                        case 2:
                             return '<i class="text-danger">Ditolak Atasan</i>';
-                        }elseif($q->status_approval == 3){
+                        case 3:
                             return '<i class="text-success">ACC Atasan</i>';
-                        }elseif($q->status_approval == 4){
+                        case 4:
                             return '<i class="text-danger">Ditolak Rektorat</i>';
-                        }elseif($q->status_approval == 5){
+                        case 5:
                             return '<i class="text-success">ACC Rektorat</i>';
-                        }else{
+                        default:
                             return '';
-                        }
                     }
-                } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
-                }
+                } 
+                return '<i class="text-secondary">Belum ada laporan</i>';
+
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
             })

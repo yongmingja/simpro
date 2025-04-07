@@ -61,22 +61,22 @@ class LaporanFpkuController extends Controller
                     }
                 }
             })->addColumn('status', function($data){
-                if($data->status_approval == 1){
-                    if($data->ketua == Auth::user()->id){
-                        return '<a href="javascript:void(0)" name="delete" id="'.$data->id_laporan.'" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i> <small><i class="text-warning">Pengajuan</i></small></a>';
-                    } else {
+                switch ($data->status_approval) {
+                    case 1:
+                        if ($data->ketua == Auth::user()->id) {
+                            return '<a href="javascript:void(0)" name="delete" id="' . $data->id_laporan . '" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i> <small><i class="text-warning">Pengajuan</i></small></a>';
+                        } else {
+                            return '<small><i class="text-danger">belum submit</i></small>';
+                        }
+                    case 2:
+                        return '<a href="javascript:void()" class="delete" id="' . $data->id_laporan . '"><i class="bx bx-refresh"></i> Recreate</a>'
+                            . '&nbsp;|&nbsp;'
+                            . '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="' . $data->keterangan_ditolak . '"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    case 3:
+                        return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> ACC Rektorat</a>';
+                    default:
                         return '<small><i class="text-danger">belum submit</i></small>';
-                    }
-                } elseif($data->status_approval == 2){
-                    $button = '<a href="javascript:void()" class="delete" id="'.$data->id_laporan.'"><i class="bx bx-refresh"></i> Recreate</a>';
-                    $button .= '&nbsp;|&nbsp;';
-                    $button .= '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';                    
-                    return $button;
-                }elseif($data->status_approval == 3){
-                    return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> ACC Rektorat</a>';
-                } else {
-                    return '<small><i class="text-danger">belum submit</i></small>';
-                }
+                }                
             })->addColumn('lampirans', function($data){
                 $checkLampiran = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();
                 if($checkLampiran->count() > 0){                   
@@ -362,24 +362,30 @@ class LaporanFpkuController extends Controller
     {
         $checkYear = TahunAkademik::select('year','id')->get();
 
-        if($request->tahun_fpku == null || $request->tahun_fpku == '[semua]'){
-            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
-                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai','status_laporan_fpkus.status_approval','tahun_akademiks.year')
-                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
-                ->get();
-        } else {
-            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
-                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','laporan_fpkus.id')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai','status_laporan_fpkus.status_approval','tahun_akademiks.year')
-                ->where('data_fpkus.id_tahun_akademik',$request->tahun_fpku)
-                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
-                ->get();
+        // Query
+        $query = DataFpku::leftJoin('pegawais', 'pegawais.id', '=', 'data_fpkus.ketua')
+            ->leftJoin('laporan_fpkus', 'laporan_fpkus.id_fpku', '=', 'data_fpkus.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
+            ->leftJoin('status_laporan_fpkus', 'status_laporan_fpkus.id_laporan_fpku', '=', 'laporan_fpkus.id')
+            ->select(
+                'data_fpkus.id AS id',
+                'data_fpkus.no_surat_undangan',
+                'data_fpkus.nama_kegiatan',
+                'data_fpkus.tgl_kegiatan',
+                'data_fpkus.peserta_kegiatan',
+                'pegawais.nama_pegawai',
+                'status_laporan_fpkus.status_approval',
+                'tahun_akademiks.year'
+            )
+            ->orderBy('data_fpkus.tgl_kegiatan', 'DESC');
+
+        // Tambahkan kondisi tahun jika ada
+        if ($request->tahun_fpku && $request->tahun_fpku !== '[semua]') {
+            $query->where('data_fpkus.id_tahun_akademik', $request->tahun_fpku);
         }
+
+        // Ambil data
+        $datas = $query->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -411,26 +417,33 @@ class LaporanFpkuController extends Controller
 
     public function showDataFpkuHtml($year)
     {
-        if($year == null || $year == '[semua]'){
-            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
-                ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan','tahun_akademiks.year')
-                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
-                ->get();
-        } else {
-            $datas = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
-                ->leftJoin('lampiran_fpkus','lampiran_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('laporan_fpkus','laporan_fpkus.id_fpku','=','data_fpkus.id')
-                ->leftJoin('status_laporan_fpkus','status_laporan_fpkus.id_laporan_fpku','=','laporan_fpkus.id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->select('data_fpkus.id AS id','data_fpkus.no_surat_undangan','data_fpkus.nama_kegiatan','data_fpkus.tgl_kegiatan','data_fpkus.peserta_kegiatan','pegawais.nama_pegawai as ketua','lampiran_fpkus.link_gdrive','status_laporan_fpkus.status_approval','laporan_fpkus.id AS id_laporan','tahun_akademiks.year')
-                ->where('data_fpkus.id_tahun_akademik',$year)
-                ->orderBy('data_fpkus.tgl_kegiatan','DESC')
-                ->get();
+        $query = DataFpku::leftJoin('pegawais', 'pegawais.id', '=', 'data_fpkus.ketua')
+            ->leftJoin('lampiran_fpkus', 'lampiran_fpkus.id_fpku', '=', 'data_fpkus.id')
+            ->leftJoin('laporan_fpkus', 'laporan_fpkus.id_fpku', '=', 'data_fpkus.id')
+            ->leftJoin('status_laporan_fpkus', 'status_laporan_fpkus.id_laporan_fpku', '=', 'laporan_fpkus.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
+            ->select(
+                'data_fpkus.id AS id',
+                'data_fpkus.no_surat_undangan',
+                'data_fpkus.nama_kegiatan',
+                'data_fpkus.tgl_kegiatan',
+                'data_fpkus.peserta_kegiatan',
+                'pegawais.nama_pegawai as ketua',
+                'lampiran_fpkus.link_gdrive',
+                'status_laporan_fpkus.status_approval',
+                'laporan_fpkus.id AS id_laporan',
+                'tahun_akademiks.year'
+            )
+            ->orderBy('data_fpkus.tgl_kegiatan', 'DESC');
+
+        // Tambahkan kondisi tahun jika diperlukan
+        if ($year && $year !== '[semua]') {
+            $query->where('data_fpkus.id_tahun_akademik', $year);
         }
+
+        // Ambil data
+        $datas = $query->get();
+
         $getYear = TahunAkademik::where('id',$year)->select('year')->first();
         if($getYear){
             $getYear = $getYear->year;
