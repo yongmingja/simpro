@@ -10,7 +10,7 @@
         <div class="row p-3 bg-transparent rounded">
             <div class="col-sm-12">
                     <h4 class="mt-3">
-                        <center>Data Proposal dan Laporan Kegiatan</center>
+                        <center>Data Proposal dan Laporan Pertanggungjawaban Kegiatan</center>
                     </h4>                
                     <h5 class="mb-3">
                         <center>Tahun Akademik {{$getYear}}</center>
@@ -74,7 +74,7 @@
                                 @if(!empty($data->status_approval))
                                     @switch($data->status_approval)
                                         @case(5)
-                                        <a href="{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}">{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}</a>
+                                        <a href="{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}" target="_blank">{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}</a>
                                             @break
                                         @case(4)
                                             Ditolak Rektorat

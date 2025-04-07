@@ -83,6 +83,8 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             }
             $peserta_kegiatan = implode(', ', $pegawai);            
 
+            static $no = 1;
+            
             return [
                 'No' => $no++,
                 'Tahun Akademik' => $value->year,

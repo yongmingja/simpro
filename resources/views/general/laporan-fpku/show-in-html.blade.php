@@ -69,7 +69,7 @@
                             @if(!empty($data->status_approval))
                                 @switch($data->status_approval)
                                     @case(3)
-                                        <a href="{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}">{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}</a>
+                                        <a href="{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}" target="_blank">{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}</a>
                                         @break
                                     @case(2)
                                         Ditolak Rektorat

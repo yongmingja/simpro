@@ -139,6 +139,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 $linkLaporan = 'Belum ada laporan';
             }            
 
+            static $no = 1;
+            
             return [
                 'No' => $no++,
                 'Tahun Akademik' => $value->year,
