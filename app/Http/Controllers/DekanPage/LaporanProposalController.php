@@ -12,6 +12,7 @@ use App\Models\Master\FormRkat;
 use App\Models\Master\Pegawai;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailDitolakDekan;
+use App\Mail\EmailDiterimaDekan;
 use Auth; use DB;
 
 class LaporanProposalController extends Controller

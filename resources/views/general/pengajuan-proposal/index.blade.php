@@ -78,9 +78,9 @@
                             <!-- MULAI TOMBOL TAMBAH -->
                             @if($checkLap->count() > 0)
                                 @foreach($checkLap as $p)  @endforeach
-                                    @if($p->slp == '')
+                                    @if($p->slp != 5)
                                         <div class="mb-3">
-                                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di verifikasi oleh Rektorat! Mohon periksa kembali status proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di validasi oleh Rektorat! Mohon periksa kembali status proposal atau status laporan proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
                                         </div>
                                     @else
                                         <div class="mb-3">
