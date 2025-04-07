@@ -37,7 +37,9 @@
                                   <th>#</th>
                                   <th>Nama Validator</th>
                                   <th>Kategori Proposal</th>
-                                  <th>Actions</th>
+                                  <th>Tgl Dibuat</th>
+                                  <th>Tgl Diupdate</th>
+                                  <th>Aksi</th>
                                 </tr>
                               </thead>
                             </table>
@@ -127,6 +129,16 @@
                 }, 
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'kategori',name: 'kategori'},
+                {data: 'created_at',name: 'created_at',
+                    render: function ( data, type, row ){
+                        return moment(row.created_at).format("DD MMM YYYY")
+                    }
+                },
+                {data: 'updated_at',name: 'updated_at',
+                    render: function ( data, type, row ){
+                        return moment(row.updated_at).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });

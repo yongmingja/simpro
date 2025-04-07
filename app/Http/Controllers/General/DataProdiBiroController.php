@@ -12,7 +12,7 @@ class DataProdiBiroController extends Controller
     public function index(Request $request)
     {
         $datas = DataProdiBiro::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','data_prodi_biros.id_fakultas_biro')
-            ->select('data_prodi_biros.id AS id','data_prodi_biros.*','data_fakultas_biros.nama_fakultas_biro')
+            ->select('data_prodi_biros.id AS id','data_prodi_biros.*','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.created_at AS created_at','data_prodi_biros.updated_at AS updated_at')
             ->get();
 
         if($request->ajax()){

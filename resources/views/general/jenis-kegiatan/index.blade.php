@@ -36,6 +36,8 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Nama Kategori</th>
+                                  <th>Tgl Dibuat</th>
+                                  <th>Tgl Diupdate</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>
@@ -110,6 +112,16 @@
                     }
                 }, 
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                {data: 'created_at',name: 'created_at',
+                    render: function ( data, type, row ){
+                        return moment(row.created_at).format("DD MMM YYYY")
+                    }
+                },
+                {data: 'updated_at',name: 'updated_at',
+                    render: function ( data, type, row ){
+                        return moment(row.updated_at).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });

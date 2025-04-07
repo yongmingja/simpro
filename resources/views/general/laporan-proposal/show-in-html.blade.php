@@ -48,10 +48,50 @@
                             <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->total)}}</td>
                             <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->anggaran_proposal)}}</td>
                             <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->realisasi_anggaran)}}</td>
-                            <td style="vertical-align: middle; text-align: center;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) ACC Rektorat @else Pengajuan @endif @else Belum ada laporan @endif</td>
-                            <td style="vertical-align: middle;">@if(!empty($data->status_approval)) @if($data->status_approval == 5) <a href="{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}">{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}</a> @else Pengajuan @endif @else Belum ada laporan @endif</td>
-
-                            
+                            <td style="vertical-align: middle; text-align: center;">
+                                @if(!empty($data->status_approval))
+                                    @switch($data->status_approval)
+                                        @case(5)
+                                            ACC Rektorat
+                                            @break
+                                        @case(4)
+                                            Ditolak Rektorat
+                                            @break
+                                        @case(3)
+                                            ACC Atasan
+                                            @break
+                                        @case(2)
+                                            Ditolak Atasan
+                                            @break
+                                        @default
+                                            Pengajuan
+                                    @endswitch
+                                @else
+                                    Belum ada laporan
+                                @endif
+                            </td>
+                            <td style="vertical-align: middle;">
+                                @if(!empty($data->status_approval))
+                                    @switch($data->status_approval)
+                                        @case(5)
+                                        <a href="{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}">{{''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($data->id_laporan_proposal)}}</a>
+                                            @break
+                                        @case(4)
+                                            Ditolak Rektorat
+                                            @break
+                                        @case(3)
+                                            ACC Atasan
+                                            @break
+                                        @case(2)
+                                            Ditolak Atasan
+                                            @break
+                                        @default
+                                            Pengajuan
+                                    @endswitch
+                                @else
+                                    Belum ada laporan
+                                @endif
+                            </td>                            
                         </tr>
                         @php $no++ @endphp
                         @endforeach

@@ -13,7 +13,7 @@ class ValidatorProposalController extends Controller
     {
         $datas = ValidatorProposal::leftJoin('jabatans AS a','a.id','=','validator_proposals.diusulkan_oleh')
             ->leftJoin('jabatans AS b','b.id','=','validator_proposals.diketahui_oleh')
-            ->select('validator_proposals.id AS id','a.nama_jabatan AS pengusul','b.nama_jabatan AS diketahui')
+            ->select('validator_proposals.id AS id','a.nama_jabatan AS pengusul','b.nama_jabatan AS diketahui','validator_proposals.created_at AS created_at','validator_proposals.updated_at AS updated_at')
             ->get();
 
         if($request->ajax()){

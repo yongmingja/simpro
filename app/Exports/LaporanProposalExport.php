@@ -123,19 +123,21 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
         }
 
         return $array = $datas->map(function ($value, $key) {
-            static $no = 1;
-
-            $statusLaporan = '';
-            if($value->status_approval == 5) {
-                $statusLaporan = 'ACC Rektorat';
-                $linkLaporan = ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id);
-            } elseif($value->status_approval == '') {
-                $statusLaporan = 'Pengajuan';
-                $linkLaporan = 'Pengajuan';
+            $statuses = [
+                5 => ['status' => 'ACC Rektorat', 'link' => ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id)],
+                4 => ['status' => 'Ditolak Rektorat', 'link' => 'Ditolak Rektorat'],
+                3 => ['status' => 'ACC Atasan', 'link' => 'ACC Atasan'],
+                2 => ['status' => 'Ditolak Atasan', 'link' => 'Ditolak Atasan'],
+                1 => ['status' => 'Pengajuan', 'link' => 'Pengajuan'],
+            ];
+            
+            if (isset($statuses[$value->status_approval])) {
+                $statusLaporan = $statuses[$value->status_approval]['status'];
+                $linkLaporan = $statuses[$value->status_approval]['link'];
             } else {
                 $statusLaporan = 'Belum ada laporan';
                 $linkLaporan = 'Belum ada laporan';
-            }
+            }            
 
             return [
                 'No' => $no++,

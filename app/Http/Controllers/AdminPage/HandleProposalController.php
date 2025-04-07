@@ -15,7 +15,7 @@ class HandleProposalController extends Controller
     {
         $datas = HandleProposal::leftJoin('pegawais','pegawais.id','=','handle_proposals.id_pegawai')
             ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','handle_proposals.id_jenis_kegiatan')
-            ->select('handle_proposals.id AS id','pegawais.nama_pegawai','jenis_kegiatans.nama_jenis_kegiatan','handle_proposals.id_jenis_kegiatan')
+            ->select('handle_proposals.id AS id','pegawais.nama_pegawai','jenis_kegiatans.nama_jenis_kegiatan','handle_proposals.id_jenis_kegiatan','handle_proposals.updated_at AS updated_at','handle_proposals.created_at AS created_at')
             ->orderBy('pegawais.nama_pegawai','ASC')
             ->get();
 

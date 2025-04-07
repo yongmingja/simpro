@@ -37,6 +37,8 @@
                                   <th>#</th>
                                   <th>Kode Jabatan</th>
                                   <th>Level (Nama Jabatan)</th>
+                                  <th>Tgl Dibuat</th>
+                                  <th>Tgl Diupdate</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>
@@ -130,6 +132,16 @@
                 }, 
                 {data: 'kode_jabatan',name: 'kode_jabatan'},
                 {data: 'nama_jabatan',name: 'nama_jabatan'},
+                {data: 'created_at',name: 'created_at',
+                    render: function ( data, type, row ){
+                        return moment(row.created_at).format("DD MMM YYYY")
+                    }
+                },
+                {data: 'updated_at',name: 'updated_at',
+                    render: function ( data, type, row ){
+                        return moment(row.updated_at).format("DD MMM YYYY")
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });
