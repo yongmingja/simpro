@@ -245,38 +245,45 @@
                 $('#tombol-simpan').html('Saving..');
 
                 $.ajax({
-                    data: $('#form-add-keterangan').serialize(), 
-                    url: "{{route('dean-report-approval-n')}}",
+                    data: $('#form-add-keterangan').serialize(),
+                    url: "{{ route('dean-report-approval-n') }}",
                     type: "POST",
                     dataType: 'json',
-                    success: function (data) {
+                    beforeSend: function () {
+                        $('#tombol-simpan').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+                    },
+                    success: function (response) {
                         $('#form-add-keterangan').trigger("reset");
                         $('#add-keterangan-modal').modal('hide');
                         $('#tombol-simpan').html('Save');
                         $('#table_proposal').DataTable().ajax.reload(null, true);
+
                         Swal.fire({
-                            title: 'Good job!',
-                            text: 'Data saved successfully!',
-                            type: 'success',
+                            title: response.title || 'Good job!',
+                            text: response.message || 'Data saved successfully!',
+                            icon: response.type || 'success',
                             customClass: {
-                            confirmButton: 'btn btn-primary'
+                                confirmButton: 'btn btn-primary'
                             },
                             buttonsStyling: false,
                             timer: 2000
-                        })
+                        });
                     },
-                    error: function(response) {
+                    error: function (xhr, status, error) {
                         $('#tombol-simpan').html('Save');
+                        $('#table_proposal').DataTable().ajax.reload(null, true);
+
+                        let errorMessage = xhr.responseJSON?.message || 'Data failed to save!';
                         Swal.fire({
                             title: 'Error!',
-                            text: 'Data failed to save!',
-                            type: 'error',
+                            text: errorMessage,
+                            icon: 'error',
                             customClass: {
-                            confirmButton: 'btn btn-primary'
+                                confirmButton: 'btn btn-primary'
                             },
                             buttonsStyling: false,
                             timer: 2000
-                        })
+                        });
                     }
                 });
             }

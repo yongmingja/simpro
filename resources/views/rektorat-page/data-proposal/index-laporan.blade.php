@@ -231,45 +231,63 @@
         })
     });
 
-    $('body').on('click','.tombol-yes', function(){
+    $('body').on('click', '.tombol-yes', function () {
         var data_id = $(this).attr('data-id');
+
         Swal.fire({
             title: 'Are you sure?',
             text: "Click yes to confirm that it's done!",
-            type: 'warning',
+            icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, confirm!',
             showLoaderOnConfirm: true,
-            preConfirm: function() {
-                return new Promise(function(resolve) {
-                    $.ajax({
-                        url: "{{route('laporan-selesai')}}",
-                        type: "POST",
-                        data: {
-                            proposal_id: data_id,
-                            _token: '{{csrf_token()}}'
-                        },
-                        dataType: 'json',
-                        success: function (data) {
-                            Swal.fire({
-                                title: 'Agree!',
-                                text: 'Data saved successfully!',
-                                type: 'success',
-                                customClass: {
-                                confirmButton: 'btn btn-primary'
-                                },
-                                buttonsStyling: false,
-                                timer: 2000
-                            })
-                            $('#table_proposal').DataTable().ajax.reload(null, true);
-                        }
-                    });
+            preConfirm: function () {
+                return $.ajax({
+                    url: "{{ route('laporan-selesai') }}",
+                    type: "POST",
+                    data: {
+                        proposal_id: data_id,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $('.tombol-yes').prop('disabled', true); // Disable tombol selama proses
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message || 'Data saved successfully!',
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                            buttonsStyling: false,
+                            timer: 2000,
+                        });
+                        $('#table_proposal').DataTable().ajax.reload(null, true);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: xhr.responseJSON?.message || 'Failed to save data!',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                            },
+                            buttonsStyling: false,
+                            timer: 2000,
+                        });
+                    },
+                    complete: function () {
+                        $('.tombol-yes').prop('disabled', false); // Re-enable tombol setelah proses selesai
+                    },
                 });
             },
-        });        
+        });
     });
+
 
     $('body').on('click','.tombol-no', function(){
         var data_id = $(this).attr('data-id');

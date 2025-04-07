@@ -172,11 +172,8 @@ class DashboardController extends Controller
             ->where('proposals.id',$request->proposal_id)
             ->first();
         
-        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
+        if ($getEmail && filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)) {
             $emailAddress = strtolower($getEmail->email);
-        }
-        
-        if (isset($emailAddress)){
             $content = [
                 'name' => 'Diterima!',
                 'body' => 'Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
@@ -327,32 +324,34 @@ class DashboardController extends Controller
 
     public function selesailaporan(Request $request)
     {
-        $post = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->proposal_id)->update([
-            'status_approval' => 5,
-            'generate_qrcode' => ''.URL::to('/').'/report/'.time().'.png'
-        ]);
+        // Update status laporan proposal
+        $post = DB::table('status_laporan_proposals')
+            ->where('id_laporan_proposal', $request->proposal_id)
+            ->update([
+                'status_approval' => 5,
+                'generate_qrcode' => URL::to('/').'/report/'.time().'.png',
+            ]);
 
-        # Get the specific email address according to proposal id
-        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-            ->select('pegawais.email')
-            ->where('proposals.id',$request->proposal_id)
-            ->first();
-        
-        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
-            $emailAddress = strtolower($getEmail->email);
-        }
-        
-        if (isset($emailAddress) && count($emailAddress) > 0){
+        // Ambil email pegawai berdasarkan proposal_id
+        $getEmail = Pegawai::join('proposals', 'proposals.user_id', '=', 'pegawais.user_id')
+            ->where('proposals.id', $request->proposal_id)
+            ->value('pegawais.email'); // Langsung ambil nilai email tanpa objek
+
+        // Validasi email dan kirim notifikasi
+        if ($getEmail && filter_var($getEmail, FILTER_VALIDATE_EMAIL)) {
+            $emailAddress = strtolower($getEmail);
             $content = [
                 'name' => 'Diterima!',
                 'body' => 'Laporan Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
-            Mail::to($emailAddress)->send(new EmailDiterimaRektorat($content));        
-        } else {
-            return 'No valid email addresses found';
+            Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new EmailDiterimaRektorat($content));
         }
 
-        return response()->json($post);
+        // Kirim respon sebagai JSON
+        return response()->json([
+            'success' => (bool)$post,
+            'message' => $post ? 'Status updated successfully!' : 'Failed to update status!',
+        ]);
     }
 
     public function approvalRektorN(Request $request)
@@ -900,15 +899,15 @@ class DashboardController extends Controller
             })->addColumn('status', function($data){
                 switch ($data->status_approval) {
                     case 1:
-                        return '<i class="text-warning">Pengajuan</i>';
+                        return '<small><i class="text-warning">Pengajuan</i></small>';
                     case 2:
-                        return '<i class="text-danger">Ditolak Atasan</i>';
+                        return '<small><i class="text-danger">Ditolak Atasan</i></small>';
                     case 3:
-                        return '<i class="text-success">ACC Atasan</i>';
+                        return '<small><i class="text-success">ACC Atasan</i></small>';
                     case 4:
-                        return '<i class="text-danger">Ditolak Rektorat</i>';
+                        return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
                     case 5:
-                        return '<i class="text-success">ACC Rektorat</i>';
+                        return '<small><i class="text-success">ACC Rektorat</i></small>';
                     default:
                         return '';
                 }                
@@ -961,9 +960,9 @@ class DashboardController extends Controller
             ->addColumn('laporan', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> view report</a>';
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-search bx-xs"></i> lihat</a>';
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')
@@ -976,20 +975,20 @@ class DashboardController extends Controller
 
                     switch ($statusApproval) {
                         case 1:
-                            return '<i class="text-warning">Pengajuan</i>';
+                            return '<small><i class="text-warning">Pengajuan</i></small>';
                         case 2:
-                            return '<i class="text-danger">Ditolak Atasan</i>';
+                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
                         case 3:
-                            return '<i class="text-success">ACC Atasan</i>';
+                            return '<small><i class="text-success">ACC Atasan</i></small>';
                         case 4:
-                            return '<i class="text-danger">Ditolak Rektorat</i>';
+                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
                         case 5:
-                            return '<i class="text-success">ACC Rektorat</i>';
+                            return '<small><i class="text-success">ACC Rektorat</i></small>';
                         default:
                             return '';
                     }
                 } 
-                return '<i class="text-secondary">Belum ada laporan</i>';
+                return '<small><i class="text-secondary">Belum ada laporan</i></small>';
 
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';

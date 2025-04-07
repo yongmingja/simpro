@@ -157,30 +157,44 @@ class LaporanProposalController extends Controller
 
     public function approvalDeanN(Request $request)
     {
-        $post = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->propsl_id)->update([
-            'status_approval'       => 2,
-            'keterangan_ditolak'    => $request->keterangan_ditolak
-        ]);
-
         // Ambil email pegawai berdasarkan proposal id
-        $getEmail = Pegawai::leftJoin('proposals', 'proposals.user_id', '=', 'pegawais.user_id')
-            ->select('pegawais.email')
+        $getEmail = Pegawai::join('proposals', 'proposals.user_id', '=', 'pegawais.user_id')
             ->where('proposals.id', $request->propsl_id)
-            ->first();
+            ->value('pegawais.email'); // Mengambil langsung nilai email, bukan seluruh objek
 
         // Pastikan $getEmail tidak null dan email valid
-        if ($getEmail && filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)) {
-            $emailAddress = strtolower($getEmail->email);
-            $content = [
-                'name' => 'Update Status Laporan Proposal Anda',
-                'body' => 'Mohon maaf, laporan proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
-            ];
-            Mail::to($emailAddress)->send(new EmailDitolakDekan($content));
+        if ($getEmail) {
+            $emailAddress = strtolower($getEmail);
+
+            // Validasi email untuk mencegah error jika format tidak valid
+            if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
+                $content = [
+                    'name' => 'Update Status Laporan Proposal Anda',
+                    'body' => 'Mohon maaf, laporan proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
+                ];
+                Mail::to($emailAddress)->send(new EmailDitolakDekan($content));
+            } else {
+                return response()->json(['message' => 'Invalid email format.'], 400);
+            }
         } else {
-            return 'No valid email addresses found or email is invalid.';
+            return response()->json(['message' => 'No valid email addresses found.'], 404);
         }
 
-        return response()->json($post);
+        // Update status laporan proposal dengan validasi request
+        $post = DB::table('status_laporan_proposals')
+            ->where('id_laporan_proposal', $request->propsl_id)
+            ->update([
+                'status_approval'    => 2,
+                'keterangan_ditolak' => $request->keterangan_ditolak,
+            ]);
+
+        // Pastikan hasil update berhasil
+        if ($post) {
+            return response()->json(['message' => 'Status updated successfully.']);
+        } else {
+            return response()->json(['message' => 'Failed to update status.'], 500);
+        }
+
     }
 
     public function lihatDetailRealisasiAnggaran(Request $request)
