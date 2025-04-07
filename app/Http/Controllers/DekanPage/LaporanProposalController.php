@@ -161,24 +161,22 @@ class LaporanProposalController extends Controller
             'keterangan_ditolak'    => $request->keterangan_ditolak
         ]);
 
-        # Get the specific email address according to proposal id
-        $getEmail = Pegawai::leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
+        // Ambil email pegawai berdasarkan proposal id
+        $getEmail = Pegawai::leftJoin('proposals', 'proposals.user_id', '=', 'pegawais.user_id')
             ->select('pegawais.email')
-            ->where('proposals.id',$request->propsl_id)
+            ->where('proposals.id', $request->propsl_id)
             ->first();
-        
-        if (filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)){
+
+        // Pastikan $getEmail tidak null dan email valid
+        if ($getEmail && filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)) {
             $emailAddress = strtolower($getEmail->email);
-        }
-        
-        if (isset($emailAddress) && count($emailAddress) > 0){
             $content = [
                 'name' => 'Update Status Laporan Proposal Anda',
                 'body' => 'Mohon maaf, laporan proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
             ];
-            Mail::to($emailAddress)->send(new EmailDitolakDekan($content));        
+            Mail::to($emailAddress)->send(new EmailDitolakDekan($content));
         } else {
-            return 'No valid email addresses found';
+            return 'No valid email addresses found or email is invalid.';
         }
 
         return response()->json($post);
