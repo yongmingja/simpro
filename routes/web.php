@@ -111,6 +111,13 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::get('lihat-detail-anggaran-fpku','RektoratPage\DashboardController@lihatDetailAnggaran')->name('lihat-detail-anggaran-fpku');
     Route::get('get-recent-peran','Auth\PeranController@getRecentPeran')->name('get-recent-peran');
 
+    # Route Revisi Laporan Proposal
+    Route::get('check-lap-informasi','General\LaporanProposalController@checkInformasi')->name('check-informasi-lap-proposal');
+    Route::post('update-hasil-kegiatan','General\LaporanProposalController@updateHasilKegiatan')->name('update-hasil-kegiatan');
+    Route::post('update-catatan-kegiatan','General\LaporanProposalController@updateCatatanKegiatan')->name('update-catatan-kegiatan');
+    Route::post('update-penutup-laporan-proposal','General\LaporanProposalController@updatePenutup')->name('update-penutup-laporan-proposal');
+    Route::post('resubmit-laporan-proposal','General\LaporanProposalController@submitUlangLaporanProposal')->name('re-submit-laporan-proposal');
+
 });
 
 /* 

@@ -161,15 +161,39 @@ class LaporanProposalController extends Controller
                 } else {
                     return '<small><i class="text-secondary">Pending</i></small>';
                 }
-            })->addColumn('action', function($data){
-                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
-                if($query->count() > 0){
+            })->addColumn('status', function($data){
+                if (DB::table('status_laporan_proposals')->where('id_laporan_proposal', $data->id)->exists()) {
                     return $this->statusLaporanProposal($data->id);
                 } else {
                     return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                }                
+            })->addColumn('action', function($data){
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
+                if($query->count() > 0){
+                    foreach($query as $get){
+                        if($get->status_approval == 2 || $get->status_approval == 4){
+                            $dropdownMenu = '<div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown">
+                                        <small class="text-danger"><i class="bx bx-revision"></i> Revisi</small>
+                                    </button>
+                                <div class="dropdown-menu">';
+                            $dropdownMenu .= '<small>
+                                <a class="dropdown-item revisi-informasi text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-show me-2"></i>Revisi Isi Laporan</a>
+                                <a class="dropdown-item revisi-anggaran text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-money me-2"></i>Revisi Anggaran</a>
+                                <a class="dropdown-item delete text-danger" id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-trash me-2"></i>Hapus Laporan</a></small>';
+                            $dropdownMenu .= '</div></div>';
+                            return $dropdownMenu;
+                        } elseif($get->status_approval == 1){
+                            return '<button type="button" name="delete" id="' . $data->id . '" data-toggle="tooltip" data-placement="bottom" title="Hapus Laporan" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
+                        } else {
+                            return '<small><i class="bx bx-minus-circle bx-xs"></i></small>';
+                        }
+                    }
+                } else {
+                    return '<small><i class="bx bx-minus-circle"></i></small>';
                 }
             })
-            ->rawColumns(['laporan','action'])
+            ->rawColumns(['laporan','status','action'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -269,27 +293,25 @@ class LaporanProposalController extends Controller
             ->where('id_laporan_proposal', '=', $id)
             ->get();
 
-        if ($query->isNotEmpty()) { // Hindari `foreach` jika data kosong
-            $data = $query->first(); // Ambil data pertama langsung
+        if ($query->isNotEmpty()) { 
+            $data = $query->first();
             
             switch ($data->status_approval) {
                 case 1:
-                    return '<button type="button" name="delete" id="' . $id . '" data-toggle="tooltip" data-placement="bottom" title="Hapus Laporan" class="delete btn btn-danger btn-xs"><i class="bx bx-xs bx-trash"></i></button>';
+                    return '<small><i class="text-warning">Pengajuan</i></small>';
                 case 2:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 3:
                     return '<small><i class="text-warning">ACC Atasan</i></small>';
                 case 4:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:
-                    return '<small><i class="text-secondary">Proses Verifikasi</i></small>';
+                    return '<small><i class="text-warning">Pengajuan</i></small>';
             }
         } 
-
-        // Jika query kosong
-        return 'x';
+        return '<small><i class="text-secondary">Belum ada laporan</i></small>';
 
     }
 
@@ -505,5 +527,59 @@ class LaporanProposalController extends Controller
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ]);
+    }
+
+    # Revisi Laporan Proposal
+    public function checkInformasi(Request $request)
+    {
+        $datas = LaporanProposal::where('id_proposal',$request->proposal_id)->get();
+        $html = '<table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Deskripsi</th>
+                            <th>Isi Data</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                foreach($datas as $no => $item){
+                    $html .= '<tr><td>Hasil Kegiatan</td><td>'.$item->hasil_kegiatan.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-hasil-kegiatan="'.$item->hasil_kegiatan.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-hasil-kegiatan"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Evaluasi Catatan Kegiatan</td><td>'.$item->evaluasi_catatan_kegiatan.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-catatan="'.$item->evaluasi_catatan_kegiatan.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-catatan"><i class="bx bx-edit bx-xs"></i></a></td></tr>
+                        <tr><td>Penutup</td><td>'.$item->penutup.'</td><td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-penutup="'.$item->penutup.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-penutup"><i class="bx bx-edit bx-xs"></i></a></td></tr>';
+                }
+        return response()->json(['card' => $html]);
+    }
+
+    public function updateHasilKegiatan(Request $request)
+    {
+        $post = LaporanProposal::where('id_proposal',$request->props_id_hasil_kegiatan)->update([
+            'hasil_kegiatan' => $request->e_hasil_kegiatan
+        ]);
+        return response()->json($post);
+    }
+
+    public function updateCatatanKegiatan(Request $request)
+    {
+        $post = LaporanProposal::where('id_proposal',$request->props_id_catatan_kegiatan)->update([
+            'evaluasi_catatan_kegiatan' => $request->e_catatan_kegiatan
+        ]);
+        return response()->json($post);
+    }
+
+    public function updatePenutup(Request $request)
+    {
+        $post = LaporanProposal::where('id_proposal',$request->props_id_penutup)->update([
+            'penutup' => $request->e_penutup
+        ]);
+        return response()->json($post);
+    }
+
+    public function submitUlangLaporanProposal(Request $request)
+    {
+        $post = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->id_proposal)->update([
+            'status_approval' => 1,
+            'keterangan_ditolak' => ''
+        ]);
+        return response()->json($post);
     }
 }
