@@ -75,6 +75,7 @@ class LaporanProposalController extends Controller
                     'quantity'      => $renang['quantity'],
                     'frequency'     => $renang['frequency'],
                     'sumber_dana'   => $sumber_dana_anggaran,
+                    'status'        => 1,
                     'created_at'    => now(),
                     'updated_at'    => now()
                 ];
@@ -180,6 +181,7 @@ class LaporanProposalController extends Controller
                             $dropdownMenu .= '<small>
                                 <a class="dropdown-item revisi-informasi text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-show me-2"></i>Revisi Isi Laporan</a>
                                 <a class="dropdown-item revisi-anggaran text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-money me-2"></i>Revisi Anggaran</a>
+                                <a class="dropdown-item done-revision text-info" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-check-double me-2"></i>Selesai Revisi</a>
                                 <a class="dropdown-item delete text-danger" id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-trash me-2"></i>Hapus Laporan</a></small>';
                             $dropdownMenu .= '</div></div>';
                             return $dropdownMenu;
@@ -574,7 +576,96 @@ class LaporanProposalController extends Controller
         return response()->json($post);
     }
 
-    public function submitUlangLaporanProposal(Request $request)
+    # Revisi Realisasi Anggaran Laporan Proposal
+    public function checkRealisasiAnggaran(Request $request)
+    {
+        $checkKeteranganDiTolak = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->proposal_id)->select('keterangan_ditolak')->get();
+        $datas = DataRealisasiAnggaran::where('id_proposal',$request->proposal_id)->get();
+        if($checkKeteranganDiTolak->count() > 0){
+            foreach($checkKeteranganDiTolak as $dataKet){
+                if($dataKet->keterangan_ditolak == ''){
+                    $html = '';
+                } else {
+                    $html = '<i class="bx bx-spa mb-1"></i> Keterangan pending:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
+                    <hr>';
+                }
+            }
+        } else {
+            $html .= '';
+        }
+
+        if($datas->count() > 0){
+        $html .= '<table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Biaya Satuan</th>
+                            <th>Jumlah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        
+            foreach($datas as $no => $item){
+                $html .= '<tr>
+                        <td>'.++$no.'</td>
+                        <td>'.$item->item.'</td>
+                        <td>'.currency_IDR($item->biaya_satuan).'</td>
+                        <td>'.$item->quantity.'</td>';
+                    if($item->status == '1'){
+                        $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-id="'.$item->id.'" data-item="'.$item->item.'" data-biaya-satuan="'.$item->biaya_satuan.'" data-quantity="'.$item->quantity.'" data-frequency="'.$item->frequency.'" data-sumber-dana="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-realisasi-anggaran"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-realisasi-anggaran"><i class="bx bx-trash bx-xs"></i></a></td>';
+                    } else {
+                        $html .= '<td></td></tr>';
+                    }
+            }
+            $html .= '</tbody>
+                </table>';
+        } else {
+            $html = '<table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Biaya Satuan</th>
+                            <th>Jumlah</th>
+                            <th>Status</th>
+                            <th>Ket</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" style="text-align: center;">No data available in table</td>
+                        </tr>
+                    </tbody>';
+        }
+        return response()->json(['card' => $html]);
+    }
+
+    public function updateRealisasiAnggaranItem(Request $request){
+        $post = DataRealisasiAnggaran::where('id',$request->e_anggaran_id)->update([
+            'item'          => $request->e_anggaran_item,
+            'biaya_satuan'  => $request->e_anggaran_biaya_satuan,
+            'quantity'      => $request->e_anggaran_quantity,
+            'frequency'     => $request->e_anggaran_frequency,
+            'sumber_dana'   => $request->e_anggaran_sumber_dana
+        ]);
+        return response()->json($post);
+    }
+
+    public function hapusItemRealisasiAnggaran(Request $request)
+    {
+        $post = DataRealisasiAnggaran::where('id',$request->id)->delete(); 
+        return response()->json($post);
+    }
+
+    public function doneRevision(Request $request)
+    {
+        $html = 'Ini adalah halaman Konfirmasi Selesai Revisi. Silakan klik pada check-box lalu ajukan kembali untuk mengkonfirmasi bahwa revisi laporan proposal yang anda buat telah selesai.<br><br>Sebagai catatan, setelah konfirmasi ajukan kembali maka status laporan anda kembali menjadi "Pengajuan".';
+        return response()->json(['card' => $html]);
+    }
+
+    public function confirmDoneRevision(Request $request)
     {
         $post = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$request->id_proposal)->update([
             'status_approval' => 1,

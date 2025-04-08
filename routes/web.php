@@ -116,7 +116,14 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::post('update-hasil-kegiatan','General\LaporanProposalController@updateHasilKegiatan')->name('update-hasil-kegiatan');
     Route::post('update-catatan-kegiatan','General\LaporanProposalController@updateCatatanKegiatan')->name('update-catatan-kegiatan');
     Route::post('update-penutup-laporan-proposal','General\LaporanProposalController@updatePenutup')->name('update-penutup-laporan-proposal');
-    Route::post('resubmit-laporan-proposal','General\LaporanProposalController@submitUlangLaporanProposal')->name('re-submit-laporan-proposal');
+
+    # Route Revisi Realisasi Anggaran Laporan Proposal
+    Route::get('check-realisasi-anggaran','General\LaporanProposalController@checkRealisasiAnggaran')->name('check-realisasi-anggaran-proposal');
+    Route::post('update-realisasi-anggaran-item','General\LaporanProposalController@updateRealisasiAnggaranItem')->name('update-realisasi-anggaran-item');
+    Route::delete('delete-item-realisasi-anggaran','General\LaporanProposalController@hapusItemRealisasiAnggaran')->name('delete-item-realisasi-anggaran');
+
+    Route::get('check-done-revision','General\LaporanProposalController@doneRevision')->name('check-done-revision');
+    Route::post('confirm-done-revision','General\LaporanProposalController@confirmDoneRevision')->name('confirm-done-revision');
 
 });
 
