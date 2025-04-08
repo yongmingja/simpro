@@ -216,16 +216,16 @@ class DataProposalController extends Controller
                         . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                 case 2:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                        . '<small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 3:
-                    return '<i class="text-warning">Menunggu Validasi Rektorat</i>';
+                    return '<small><i class="text-warning">Menunggu Validasi Rektorat</i></small>';
                 case 4:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<span class="badge bg-label-danger">Pending Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                        . '<small class="text-danger">Ditolak Rektorat</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 5:
-                    return '<i class="text-success">ACC Rektorat</i>';
+                    return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:
-                    return '<i class="text-secondary">Pending</i>';
+                    return '<small><i class="text-secondary">Pending</i></small>';
             }
         } 
 

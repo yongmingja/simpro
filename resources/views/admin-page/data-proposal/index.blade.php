@@ -33,8 +33,8 @@
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
                                   <th>Proposal Dibuat</th>
-                                  <th>Nama Fakultas / Biro</th>
-                                  <th>Nama Prodi / Biro</th>
+                                  <th>Fakultas / Biro</th>
+                                  <th>Prodi / Biro</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>
