@@ -181,7 +181,7 @@ class LaporanProposalController extends Controller
                             $dropdownMenu .= '<small>
                                 <a class="dropdown-item revisi-informasi text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-show me-2"></i>Revisi Isi Laporan</a>
                                 <a class="dropdown-item revisi-anggaran text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-money me-2"></i>Revisi Anggaran</a>
-                                <a class="dropdown-item done-revision text-info" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-check-double me-2"></i>Selesai Revisi</a>
+                                <a class="dropdown-item done-revision text-danger" data-id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-check-double me-2"></i>Selesai Revisi</a>
                                 <a class="dropdown-item delete text-danger" id="'.$data->id.'" href="javascript:void(0);"><i class="bx bx-trash me-2"></i>Hapus Laporan</a></small>';
                             $dropdownMenu .= '</div></div>';
                             return $dropdownMenu;
@@ -586,7 +586,7 @@ class LaporanProposalController extends Controller
                 if($dataKet->keterangan_ditolak == ''){
                     $html = '';
                 } else {
-                    $html = '<i class="bx bx-spa mb-1"></i> Keterangan pending:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
+                    $html = '<i class="bx bx-spa mb-1"></i> Keterangan ditolak:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
                     <hr>';
                 }
             }

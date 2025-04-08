@@ -92,9 +92,12 @@
         <p class="text-muted">Sistem Informasi Pengajuan Proposal</p>
         <form id="loginForm" action="{{ route('postLogin') }}" method="POST">
             @csrf
+            @if($errors->any())
+            <div class="text-danger mb-2">{{ $errors->first() }}</div>
+            @endif
             <div class="mb-3">
                 <label for="user_id" class="form-label">ID Pengguna</label>
-                <input type="text" id="user_id" name="user_id" class="form-control" placeholder="Masukkan ID pengguna" required>
+                <input type="text" id="user_id" name="user_id" class="form-control" placeholder="Masukkan ID pengguna" value="{{ old('user_id') }}" required>
             </div>
             <div class="mb-3 position-relative">
                 <label for="password" class="form-label">Kata Sandi</label>

@@ -201,7 +201,7 @@
                 <!-- End of modal edit penutup-->
 
                 <!-- Mulai modal lihat realisasi anggaran -->
-                <div class="modal fade" tabindex="-1" role="dialog" id="show-anggaran" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal fade" tabindex="-1" role="dialog" id="show-anggaran" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
