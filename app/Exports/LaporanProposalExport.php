@@ -39,7 +39,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             'Anggaran Proposal',
             'Realisasi Anggaran',
             'Status Laporan',
-            'Link Laporan'
+            'Link Laporan',
+            'Link Proposal'
         ];
     }
 
@@ -126,9 +127,9 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             $statuses = [
                 5 => ['status' => 'ACC Rektorat', 'link' => ''.URL::to('/').'/preview-laporan-proposal'.'/'.encrypt($value->id)],
                 4 => ['status' => 'Ditolak Rektorat', 'link' => 'Ditolak Rektorat'],
-                3 => ['status' => 'ACC Atasan', 'link' => 'ACC Atasan'],
+                3 => ['status' => 'Menunggu validasi rektorat', 'link' => 'Menunggu validasi rektorat'],
                 2 => ['status' => 'Ditolak Atasan', 'link' => 'Ditolak Atasan'],
-                1 => ['status' => 'Pengajuan', 'link' => 'Pengajuan'],
+                1 => ['status' => 'Menunggu validasi atasan', 'link' => 'Menunggu validasi atasan'],
             ];
             
             if (isset($statuses[$value->status_approval])) {
@@ -155,7 +156,8 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 'Anggaran Proposal' => currency_IDR($value->anggaran_proposal),
                 'Realisasi Anggaran' => currency_IDR($value->realisasi_anggaran),
                 'Status Laporan' => $statusLaporan,
-                'Link Laporan' => $linkLaporan
+                'Link Laporan' => $linkLaporan,
+                'Link Proposal' => ''.URL::to('/').'/preview-proposal'.'/'.encrypt($value->id)
             ];
         });
     }
@@ -168,7 +170,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
             },
             AfterSheet::class    => function(AfterSheet $event) {
    
-                $event->sheet->getDelegate()->getStyle('A1:N1')
+                $event->sheet->getDelegate()->getStyle('A1:O1')
                                 ->getFont()
                                 ->setBold(true);
             },

@@ -59,7 +59,7 @@
                                         Ditolak Rektorat
                                         @break
                                     @default
-                                        Pengajuan
+                                        Menunggu validasi rektorat
                                 @endswitch
                             @else
                                 Belum ada laporan
@@ -75,7 +75,7 @@
                                         Ditolak Rektorat
                                         @break
                                     @default
-                                        Pengajuan
+                                        Menunggu validasi rektorat
                                 @endswitch
                             @else
                                 Belum ada laporan

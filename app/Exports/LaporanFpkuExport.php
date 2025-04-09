@@ -65,7 +65,7 @@ class LaporanFpkuExport implements FromCollection, WithHeadings, WithEvents, Sho
             $statuses = [
                 3 => ['status' => 'ACC Rektorat', 'link' => ''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($value->id_laporan)],
                 2 => ['status' => 'Ditolak Rektorat', 'link' => 'Ditolak Rektorat'],
-                1 => ['status' => 'Pengajuan', 'link' => 'Pengajuan'],
+                1 => ['status' => 'Menunggu validasi rektorat', 'link' => 'Menunggu validasi rektorat'],
             ];
             
             if (isset($statuses[$value->status_approval])) {

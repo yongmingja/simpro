@@ -77,13 +77,13 @@
                                             Ditolak Rektorat
                                             @break
                                         @case(3)
-                                            ACC Atasan
+                                            Menunggu validasi rektorat
                                             @break
                                         @case(2)
                                             Ditolak Atasan
                                             @break
                                         @default
-                                            Pengajuan
+                                            Menunggu validasi atasan
                                     @endswitch
                                 @else
                                     Belum ada laporan
@@ -99,13 +99,13 @@
                                             Ditolak Rektorat
                                             @break
                                         @case(3)
-                                            ACC Atasan
+                                            Menunggu validasi rektorat
                                             @break
                                         @case(2)
                                             Ditolak Atasan
                                             @break
                                         @default
-                                            Pengajuan
+                                            Menunggu validasi atasan
                                     @endswitch
                                 @else
                                     Belum ada laporan
