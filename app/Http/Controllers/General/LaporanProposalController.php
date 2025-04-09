@@ -404,7 +404,7 @@ class LaporanProposalController extends Controller
                         case 2:
                             return '<small><i class="text-danger">Ditolak Atasan</i></small>';
                         case 3:
-                            return '<small><i class="text-success">Menunggu validasi rektorat</i></small>';
+                            return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                         case 4:
                             return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
                         case 5:
