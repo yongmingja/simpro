@@ -44,6 +44,7 @@
                                 <th>Undangan</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
+                                <th>Ketua Pelaksana</th>
                                 <th>Peserta</th>
                                 <th>Lampiran</th>
                                 <th>History Delegasi</th>
@@ -187,6 +188,7 @@
                             return moment(row.tgl_kegiatan).format("DD MMM YYYY")
                         }
                     },
+                    {data: 'ketua_pelaksana',name: 'ketua_pelaksana'},
                     {data: 'nama_pegawai',name: 'nama_pegawai'},
                     {data: 'lampirans',name: 'lampirans'},
                     {data: 'lihatDelegasi',name: 'lihatDelegasi'},

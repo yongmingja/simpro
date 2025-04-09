@@ -47,7 +47,7 @@
                                   <th>Detail Anggaran</th>
                                   <th>Fakultas / Biro</th>
                                   <th>Prodi / Biro</th>
-                                  <th width="12%;">Status</th>
+                                  <th width="12%;">Status (Validasi)</th>
                                   <th>Lampiran</th>
                                   <th>History Delegasi</th>
                                 </tr>

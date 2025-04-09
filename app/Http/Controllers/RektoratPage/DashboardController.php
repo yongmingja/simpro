@@ -24,6 +24,7 @@ use URL;
 
 class DashboardController extends Controller
 {
+    # Method untuk Proposal dan Laporan Proposal
     public function index(Request $request)
     {
         $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
@@ -78,12 +79,14 @@ class DashboardController extends Controller
                                 $button .= '&nbsp;';
                                 $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
                                 return $button;
+                            } elseif($state->status_approval == 2){
+                                return '<small><i class="text-danger">Ditolak Atasan</i></small>';
                             } elseif($state->status_approval == 4){
-                                return '<small><i class="text-success">Ditolak Rektorat</i></small>';
+                                return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
                             } elseif($state->status_approval == 5) {
                                 return '<small><i class="text-success">ACC Rektorat</i></small>';
                             } else {
-                                return '<small><i class="text-secondary">Pending</i></small>';
+                                return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
                             }
                         }
                     } else {
@@ -158,6 +161,7 @@ class DashboardController extends Controller
         return $getID;
     }
 
+    # Method validasi proposal diterima oleh Rektorat
     public function approvalY(Request $request)
     {
         $post = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->update([
@@ -179,6 +183,34 @@ class DashboardController extends Controller
                 'body' => 'Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
             Mail::to([$emailAddress,'bennyalfian@uvers.ac.id'])->send(new EmailDiterimaRektorat($content));        
+        } else {
+            return 'No valid email addresses found';
+        }
+
+        return response()->json($post);
+    }
+
+    public function approvalN(Request $request)
+    {
+        $post = DB::table('status_proposals')->where('id_proposal',$request->propsl_id)->update([
+            'status_approval' => 4,
+            'keterangan_ditolak' => $request->keterangan_ditolak
+        ]);
+
+        // Query untuk mendapatkan email pegawai berdasarkan proposal ID
+        $getEmail = Pegawai::leftJoin('proposals', 'proposals.user_id', '=', 'pegawais.user_id')
+            ->select('pegawais.email')
+            ->where('proposals.id', $request->propsl_id)
+            ->first();
+
+        // Validasi jika $getEmail tidak null dan email valid
+        if ($getEmail && filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)) {
+            $emailAddress = strtolower($getEmail->email);
+            $content = [
+                'name' => 'Ditolak!',
+                'body' => 'Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
+            ];
+            Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new EmailDitolakRektorat($content));
         } else {
             return 'No valid email addresses found';
         }
@@ -209,34 +241,6 @@ class DashboardController extends Controller
                 'link' => ''.URL::to('preview-proposal').'/'.encrypt($request->proposal_id).'',
             ];
             Mail::to($delemails)->send(new EmailDelegasiProposal($content));        
-        } else {
-            return 'No valid email addresses found';
-        }
-
-        return response()->json($post);
-    }
-
-    public function approvalN(Request $request)
-    {
-        $post = DB::table('status_proposals')->where('id_proposal',$request->propsl_id)->update([
-            'status_approval' => 4,
-            'keterangan_ditolak' => $request->keterangan_ditolak
-        ]);
-
-        // Query untuk mendapatkan email pegawai berdasarkan proposal ID
-        $getEmail = Pegawai::leftJoin('proposals', 'proposals.user_id', '=', 'pegawais.user_id')
-            ->select('pegawais.email')
-            ->where('proposals.id', $request->propsl_id)
-            ->first();
-
-        // Validasi jika $getEmail tidak null dan email valid
-        if ($getEmail && filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)) {
-            $emailAddress = strtolower($getEmail->email);
-            $content = [
-                'name' => 'Ditolak!',
-                'body' => 'Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
-            ];
-            Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new EmailDitolakRektorat($content));
         } else {
             return 'No valid email addresses found';
         }
@@ -302,11 +306,13 @@ class DashboardController extends Controller
                         if($q->status_approval == 5){
                             return '<small><i class="text-success">ACC Rektorat</i></small>';
                         } elseif($q->status_approval == 4){
-                            return '<a href="javascript:void(0)" class="info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                            return '<a href="javascript:void(0)" class="info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Rektorat</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                         } elseif($q->status_approval == 3) {
                             return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="ACC Selesai" data-placement="bottom" data-original-title="ACC Selesai" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                        } elseif($q->status_approval == 2){
+                            return '<a href="javascript:void(0)" class="info-ditolak" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                         } else {
-                            return '<small><i class="text-secondary">Pending</i></small>';
+                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
                         }
                     }
                 } else {
@@ -322,6 +328,7 @@ class DashboardController extends Controller
         return view('rektorat-page.data-proposal.index-laporan');
     }
 
+    # Method validasi laporan proposal diterima (telah selesai) oleh Rektorat
     public function selesailaporan(Request $request)
     {
         // Update status laporan proposal
@@ -382,28 +389,216 @@ class DashboardController extends Controller
         return response()->json($post);
     }
 
+    public function lihatHistoryDelegasiProposal(Request $request)
+    {
+        $datas = DelegasiProposal::where('id_proposal',$request->proposal_id)->get();
+        if($datas->count() > 0){
+            $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Catatan Delegator</th>
+                            <th>Delegasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach($datas as $item){
+                        $html .= '<tr>
+                            <td><li></li></td>
+                            <td>'.$item->catatan_delegator.'</td>';
+                            $getPegawai = Pegawai::whereIn('id',$item->delegasi)->select('nama_pegawai')->get();
+                            foreach($getPegawai as $result){
+                                $pegawai[] = $result->nama_pegawai;
+                                
+                            }
+                        $html .= '<td>'.implode(", <br>", $pegawai).'</td>
+                        </tr>';
+                    }   
+                    $html .= '</tbody>
+                    </table>';                 
+        } else {
+            $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>#</th>
+                            <th>Catatan Delegator</th>
+                            <th>Delegasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">No data available in table</td>
+                        </tr>
+                    </tbody>
+                </table>';
+        }
+
+        return response()->json(['card' => $html]);
+
+    }
+
+    public function indexMonitoringProposal(Request $request)
+    {
+        $tahun_akademik = $request->tahun_akademik;
+        $lembaga = $request->lembaga;
+
+        $query = Proposal::leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+            ->leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
+            ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            ->select('proposals.id AS id', 'proposals.*', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'jenis_kegiatans.nama_jenis_kegiatan', 'status_proposals.status_approval');
+
+        // Filter berdasarkan tahun akademik
+        if ($tahun_akademik && $tahun_akademik != 'all') {
+            $query->where('tahun_akademiks.id', $tahun_akademik);
+        }
+
+        // Filter berdasarkan lembaga
+        if ($lembaga && $lembaga != 'all') {
+            if ($lembaga == 'others') {
+                $query->whereNull('proposals.id_fakultas_biro');
+            } else {
+                $query->where('proposals.id_fakultas_biro', $lembaga);
+            }
+        }
+
+        $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
+
+
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('preview', function($data){
+                # check any attachment
+                $query = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($query > 0){
+                    $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
+                    return $button;
+                } else {
+                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
+                }
+            })->addColumn('status', function($data){
+                switch ($data->status_approval) {
+                    case 1:
+                        return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
+                    case 2:
+                        return '<small><i class="text-danger">Ditolak Atasan</i></small>';
+                    case 3:
+                        return '<small><i class="text-success">Menunggu validasi rektorat</i></small>';
+                    case 4:
+                        return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
+                    case 5:
+                        return '<small><i class="text-success">ACC Rektorat</i></small>';
+                    default:
+                        return '';
+                }                
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+            })
+            ->rawColumns(['preview','status','detail'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
+        $getYear = TahunAkademik::select('year','id')->get();
+        return view('rektorat-page.data-proposal.index-monitoring-proposals', compact('getLembaga','getYear'));
+    }
+
+    public function indexMonitoringLaporanProposal(Request $request)
+    {
+        $tahun_akademik = $request->tahun_akademik;
+        $lembaga = $request->lembaga;
+
+        $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
+            ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
+            ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai', 'status_laporan_proposals.keterangan_ditolak', 'status_laporan_proposals.created_at AS tgl_proposal');
+
+        // Filter Tahun Akademik
+        if ($tahun_akademik && $tahun_akademik != 'all') {
+            $query->where('tahun_akademiks.is_active', $tahun_akademik);
+        }
+
+        // Filter Lembaga
+        if ($lembaga && $lembaga != 'all') {
+            if ($lembaga == 'others') {
+                $query->whereNull('proposals.id_fakultas_biro');
+            } elseif ($lembaga == 'emp') {
+                $query->whereNull('status_laporan_proposals.status_approval');
+            } else {
+                $query->where('proposals.id_fakultas_biro', $lembaga);
+            }
+        }
+
+        $datas = $query->orderBy('status_laporan_proposals.status_approval', 'ASC')->get();
+
+        
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('laporan', function($data){
+                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
+                if($query->count() > 0){
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-search bx-xs"></i> lihat</a>';
+                } else {
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                }
+            })->addColumn('action', function($data){
+                $query = DB::table('status_laporan_proposals')
+                    ->where('id_laporan_proposal', $data->id)
+                    ->select('status_approval')
+                    ->get();
+
+                if ($query->isNotEmpty()) {
+                    $statusApproval = $query->first()->status_approval; 
+
+                    switch ($statusApproval) {
+                        case 1:
+                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
+                        case 2:
+                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
+                        case 3:
+                            return '<small><i class="text-success">Menunggu validasi rektorat</i></small>';
+                        case 4:
+                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
+                        case 5:
+                            return '<small><i class="text-success">ACC Rektorat</i></small>';
+                        default:
+                            return '';
+                    }
+                } 
+                return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+            })
+            ->rawColumns(['laporan','action','detail'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
+        $getYear = TahunAkademik::select('year','id')->get();
+        return view('rektorat-page.data-proposal.index-monitoring-laporan-proposals', compact('getLembaga','getYear'));
+    }
+
+    # Method untuk FPKU
     public function indexUndanganFpku(Request $request)
     {
-        if($request->status == '' || $request->status == 'all'){
-            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->where('tahun_akademiks.is_active',1)
-                ->orderBy('data_fpkus.id','DESC')
-                ->get();
+        $status = $request->status;
+        $query = DataFpku::leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
+                        ->leftJoin('status_fpkus', 'status_fpkus.id_fpku', '=', 'data_fpkus.id')
+                        ->select('data_fpkus.id AS id', 'data_fpkus.*', 'status_fpkus.status_approval')
+                        ->where('tahun_akademiks.is_active', 1);
+
+        if ($status == 'pending') {
+            $query->where('status_fpkus.status_approval', 1);
+        } elseif ($status == 'accepted') {
+            $query->where('status_fpkus.status_approval', 2);
         }
-        if($request->status == 'pending'){
-            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
-                ->where([['status_fpkus.status_approval',1],['tahun_akademiks.is_active',1]])
-                ->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')
-                ->get();
-        }
-        if($request->status == 'accepted'){
-            $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-                ->leftJoin('status_fpkus','status_fpkus.id_fpku','=','data_fpkus.id')
-                ->where([['status_fpkus.status_approval',2],['tahun_akademiks.is_active',1]])
-                ->select('data_fpkus.id AS id','data_fpkus.*','status_fpkus.status_approval')
-                ->get();
-        }
+
+        $datas = $query->orderBy('data_fpkus.id', 'DESC')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -414,6 +609,10 @@ class DashboardController extends Controller
                 } else {
                     return '<a href="javascript:void(0)" class="btn btn-success btn-sm disabled"><i class="bx bx-xs bx-check-double"></i></a>';
                 }
+                // return '';
+            })->addColumn('ketua_pelaksana', function($data){
+                $peg = Pegawai::where('id',$data->ketua)->select('nama_pegawai')->first();
+                return $peg->nama_pegawai;
             })->addColumn('nama_pegawai', function($data){
                 $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
                 foreach($dataPegawai as $result){
@@ -438,12 +637,12 @@ class DashboardController extends Controller
                     return '';
                 }
             })
-            ->rawColumns(['action','nama_pegawai','undangan','lampirans','lihatDelegasi'])
+            ->rawColumns(['action','ketua_pelaksana','nama_pegawai','undangan','lampirans','lihatDelegasi'])
             ->addIndexColumn(true)
             ->make(true);
         }
         $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
-        return view('rektorat-page.data-proposal.index-undangan-fpku', compact('getDataPegawai'));
+        return view('rektorat-page.data-fpku.index-undangan-fpku', compact('getDataPegawai'));
     }
 
     public function confirmUndanganFpku(Request $request)
@@ -553,14 +752,14 @@ class DashboardController extends Controller
             ->addColumn('action', function($data){
                 if($data->id_laporan != null ){
                     if($data->status_approval == 3){
-                        return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-xs bx-check-shield"></i> validated</a>';
+                        return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-xs bx-check-shield"></i> ACC Rektorat</a>';
                     } elseif($data->status_approval == 2){
-                        return '<a href="javascript:void(0)" class="text-danger"><i class="bx bx-xs bx-shield-x"></i> denied</a>';
+                        return '<a href="javascript:void(0)" class="text-danger"><i class="bx bx-xs bx-shield-x"></i> Ditolak Rektorat</a>';
                     } else {
                         return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
                     }
                 } else {
-                    return '<i>Belum Submit</i>';
+                    return '<small><i>Belum ada laporan</i></small>';
                 }
             })->addColumn('undangan', function($data){
                 return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku">'.$data->undangan_dari.'</a>';
@@ -581,7 +780,7 @@ class DashboardController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('rektorat-page.data-proposal.index-laporan-fpku');
+        return view('rektorat-page.data-fpku.index-laporan-fpku');
     }
 
     public function confirmLaporanFpku(Request $request)
@@ -638,102 +837,6 @@ class DashboardController extends Controller
             $html .= '</tbody>
                 </table>';
         return response()->json(['card' => $html]);
-    }
-
-    public function lihatHistoryDelegasi(Request $request)
-    {
-        $datas = DelegasiFpku::where('id_fpku',$request->fpku_id)->get();
-        if($datas->count() > 0){
-            $html = '<table class="table table-bordered table-hover table-sm">
-                    <thead class="bg-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Catatan Delegator</th>
-                            <th>Delegasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                    foreach($datas as $item){
-                        $html .= '<tr>
-                            <td><li></li></td>
-                            <td>'.$item->catatan_delegator.'</td>';
-                            $getPegawai = Pegawai::whereIn('id',$item->delegasi)->select('nama_pegawai')->get();
-                            foreach($getPegawai as $result){
-                                $pegawai[] = $result->nama_pegawai;
-                                
-                            }
-                        $html .= '<td>'.implode(", <br>", $pegawai).'</td>
-                        </tr>';
-                    }   
-                    $html .= '</tbody>
-                    </table>';                 
-        } else {
-            $html = '<table class="table table-bordered table-hover table-sm">
-                    <thead class="bg-dark text-white">
-                        <tr>
-                            <th>#</th>
-                            <th>Catatan Delegator</th>
-                            <th>Delegasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="3">No data available in table</td>
-                        </tr>
-                    </tbody>
-                </table>';
-        }
-
-        return response()->json(['card' => $html]);
-
-    }
-
-    public function lihatHistoryDelegasiProposal(Request $request)
-    {
-        $datas = DelegasiProposal::where('id_proposal',$request->proposal_id)->get();
-        if($datas->count() > 0){
-            $html = '<table class="table table-bordered table-hover table-sm">
-                    <thead class="bg-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Catatan Delegator</th>
-                            <th>Delegasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                    foreach($datas as $item){
-                        $html .= '<tr>
-                            <td><li></li></td>
-                            <td>'.$item->catatan_delegator.'</td>';
-                            $getPegawai = Pegawai::whereIn('id',$item->delegasi)->select('nama_pegawai')->get();
-                            foreach($getPegawai as $result){
-                                $pegawai[] = $result->nama_pegawai;
-                                
-                            }
-                        $html .= '<td>'.implode(", <br>", $pegawai).'</td>
-                        </tr>';
-                    }   
-                    $html .= '</tbody>
-                    </table>';                 
-        } else {
-            $html = '<table class="table table-bordered table-hover table-sm">
-                    <thead class="bg-dark text-white">
-                        <tr>
-                            <th>#</th>
-                            <th>Catatan Delegator</th>
-                            <th>Delegasi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="3">No data available in table</td>
-                        </tr>
-                    </tbody>
-                </table>';
-        }
-
-        return response()->json(['card' => $html]);
-
     }
 
     # Detail Anggaran FPKU
@@ -856,149 +959,154 @@ class DashboardController extends Controller
         return response()->json(['card' => $html]);
     }
 
-    public function indexMonitoringProposal(Request $request)
+    public function lihatHistoryDelegasi(Request $request)
     {
-        $tahun_akademik = $request->tahun_akademik;
-        $lembaga = $request->lembaga;
-
-        $query = Proposal::leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
-            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
-            ->leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
-            ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
-            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-            ->select('proposals.id AS id', 'proposals.*', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'jenis_kegiatans.nama_jenis_kegiatan', 'status_proposals.status_approval');
-
-        // Filter berdasarkan tahun akademik
-        if ($tahun_akademik && $tahun_akademik != 'all') {
-            $query->where('tahun_akademiks.id', $tahun_akademik);
+        $datas = DelegasiFpku::where('id_fpku',$request->fpku_id)->get();
+        if($datas->count() > 0){
+            $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Catatan Delegator</th>
+                            <th>Delegasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach($datas as $item){
+                        $html .= '<tr>
+                            <td><li></li></td>
+                            <td>'.$item->catatan_delegator.'</td>';
+                            $getPegawai = Pegawai::whereIn('id',$item->delegasi)->select('nama_pegawai')->get();
+                            foreach($getPegawai as $result){
+                                $pegawai[] = $result->nama_pegawai;
+                                
+                            }
+                        $html .= '<td>'.implode(", <br>", $pegawai).'</td>
+                        </tr>';
+                    }   
+                    $html .= '</tbody>
+                    </table>';                 
+        } else {
+            $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>#</th>
+                            <th>Catatan Delegator</th>
+                            <th>Delegasi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">No data available in table</td>
+                        </tr>
+                    </tbody>
+                </table>';
         }
 
-        // Filter berdasarkan lembaga
-        if ($lembaga && $lembaga != 'all') {
-            if ($lembaga == 'others') {
-                $query->whereNull('proposals.id_fakultas_biro');
-            } else {
-                $query->where('proposals.id_fakultas_biro', $lembaga);
-            }
-        }
+        return response()->json(['card' => $html]);
 
-        $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
-
-
-        if($request->ajax()){
-            return datatables()->of($datas)
-            ->addColumn('preview', function($data){
-                # check any attachment
-                $query = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
-                if($query > 0){
-                    $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
-                    return $button;
-                } else {
-                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
-                }
-            })->addColumn('status', function($data){
-                switch ($data->status_approval) {
-                    case 1:
-                        return '<small><i class="text-warning">Pengajuan</i></small>';
-                    case 2:
-                        return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                    case 3:
-                        return '<small><i class="text-success">ACC Atasan</i></small>';
-                    case 4:
-                        return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                    case 5:
-                        return '<small><i class="text-success">ACC Rektorat</i></small>';
-                    default:
-                        return '';
-                }                
-            })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
-            })
-            ->rawColumns(['preview','status','detail'])
-            ->addIndexColumn(true)
-            ->make(true);
-        }
-        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
-        $getYear = TahunAkademik::select('year','id')->get();
-        return view('rektorat-page.data-proposal.index-monitoring-proposals', compact('getLembaga','getYear'));
     }
 
-    public function indexMonitoringLaporanProposal(Request $request)
+    public function indexMonitoringFpku(Request $request)
     {
-        $tahun_akademik = $request->tahun_akademik;
-        $lembaga = $request->lembaga;
+        $query = DataFpku::leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
+                        ->leftJoin('status_fpkus', 'status_fpkus.id_fpku', '=', 'data_fpkus.id')
+                        ->select('data_fpkus.id AS id', 'data_fpkus.*', 'status_fpkus.status_approval')
+                        ->where('tahun_akademiks.is_active', 1);
 
-        $query = Proposal::leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
-            ->leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
-            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
-            ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
-            ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
-            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai', 'status_laporan_proposals.keterangan_ditolak', 'status_laporan_proposals.created_at AS tgl_proposal');
+        $datas = $query->orderBy('data_fpkus.id', 'DESC')->get();
 
-        // Filter Tahun Akademik
-        if ($tahun_akademik && $tahun_akademik != 'all') {
-            $query->where('tahun_akademiks.is_active', $tahun_akademik);
-        }
-
-        // Filter Lembaga
-        if ($lembaga && $lembaga != 'all') {
-            if ($lembaga == 'others') {
-                $query->whereNull('proposals.id_fakultas_biro');
-            } elseif ($lembaga == 'emp') {
-                $query->whereNull('status_laporan_proposals.status_approval');
-            } else {
-                $query->where('proposals.id_fakultas_biro', $lembaga);
-            }
-        }
-
-        $datas = $query->orderBy('status_laporan_proposals.status_approval', 'ASC')->get();
-
-        
         if($request->ajax()){
             return datatables()->of($datas)
-            ->addColumn('laporan', function($data){
-                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
-                if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-search bx-xs"></i> lihat</a>';
-                } else {
-                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+            ->addColumn('ketua_pelaksana', function($data){
+                $peg = Pegawai::where('id',$data->ketua)->select('nama_pegawai')->first();
+                return $peg->nama_pegawai;
+            })->addColumn('nama_pegawai', function($data){
+                $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();
+                foreach($dataPegawai as $result){
+                    $pegawai[] = $result->nama_pegawai;
+                    
                 }
-            })->addColumn('action', function($data){
-                $query = DB::table('status_laporan_proposals')
-                    ->where('id_laporan_proposal', $data->id)
-                    ->select('status_approval')
-                    ->get();
-
-                if ($query->isNotEmpty()) {
-                    $statusApproval = $query->first()->status_approval; 
-
-                    switch ($statusApproval) {
-                        case 1:
-                            return '<small><i class="text-warning">Pengajuan</i></small>';
-                        case 2:
-                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                        case 3:
-                            return '<small><i class="text-success">ACC Atasan</i></small>';
-                        case 4:
-                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                        case 5:
-                            return '<small><i class="text-success">ACC Rektorat</i></small>';
-                        default:
-                            return '';
-                    }
-                } 
-                return '<small><i class="text-secondary">Belum ada laporan</i></small>';
-
-            })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+                return implode(", <br>", $pegawai);
+            })->addColumn('undangan', function($data){
+                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Undangan" data-original-title="Preview Undangan" class="preview-undangan">'.$data->undangan_dari.'</a>';
+            })->addColumn('lampirans', function($data){
+                $isExist = DB::table('lampiran_fpkus')->where('id_fpku',$data->id)->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran" style="font-size: 10px;">lihat lampiran</a>';
+                } else {
+                    return '<i class="bx bx-minus-circle text-secondary"></i>';
+                }
+            })->addColumn('lihatDelegasi', function($data){
+                $isExist = DelegasiFpku::where('id_fpku',$data->id)->select('catatan_delegator','delegasi')->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><i class="bx bx-paperclip"></i> lihat</a>';
+                } else {
+                    return '';
+                }
             })
-            ->rawColumns(['laporan','action','detail'])
+            ->rawColumns(['ketua_pelaksana','nama_pegawai','undangan','lampirans','lihatDelegasi'])
             ->addIndexColumn(true)
             ->make(true);
         }
-        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
-        $getYear = TahunAkademik::select('year','id')->get();
-        return view('rektorat-page.data-proposal.index-monitoring-laporan-proposals', compact('getLembaga','getYear'));
+        $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
+        return view('rektorat-page.data-fpku.index-monitoring-fpkus', compact('getDataPegawai'));
+    }
+
+    public function indexMonitoringLaporanFpku(Request $request)
+    {
+        // Query
+        $query = DataFpku::leftJoin('laporan_fpkus', 'laporan_fpkus.id_fpku', '=', 'data_fpkus.id')
+            ->leftJoin('status_laporan_fpkus', 'status_laporan_fpkus.id_laporan_fpku', '=', 'laporan_fpkus.id')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
+            ->select(
+                'laporan_fpkus.id_fpku AS id',
+                'laporan_fpkus.id AS id_laporan',
+                'data_fpkus.peserta_kegiatan',
+                'data_fpkus.ketua',
+                'data_fpkus.undangan_dari',
+                'data_fpkus.nama_kegiatan',
+                'data_fpkus.tgl_kegiatan',
+                'status_laporan_fpkus.status_approval'
+            )
+            ->where('tahun_akademiks.is_active', 1)
+            ->orderBy('status_laporan_fpkus.status_approval', 'ASC');
+            
+        $datas = $query->get();
+
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('status', function($data){
+                if($data->id_laporan != null ){
+                    if($data->status_approval == 3){
+                        return '<small class="text-success"><i>ACC Rektorat</i></small>'; 
+                    } elseif($data->status_approval == 2){
+                        return '<small class="text-danger"><i>Ditolak Rektorat</i></small>'; 
+                    } else {
+                        return '<small class="text-warning"><i>Menunggu validasi rektorat</i></small>';                   
+                    }
+                } else {
+                    return '<small class="text-secondary"><i>Belum ada laporan</i></small>';
+                }
+            })->addColumn('undangan', function($data){
+                return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku">'.$data->undangan_dari.'</a>';
+            })->addColumn('lampirans', function($data){
+                $isExist = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran-laporan-fpku" style="font-size: 10px;">lihat lampiran</a>';
+                } else {
+                    return '<i class="bx bx-minus-circle text-secondary"></i>';
+                }
+            })->addColumn('ketua_pelaksana', function($data){
+                $name = Pegawai::where('id','=',$data->ketua)->select('nama_pegawai')->first();
+                return $name->nama_pegawai;
+            })->addColumn('detail', function($data){
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id_laporan.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+            })
+            ->rawColumns(['status','undangan','lampirans','ketua_pelaksana','detail'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        return view('rektorat-page.data-fpku.index-monitoring-laporan-fpkus');
     }
 }

@@ -78,12 +78,11 @@
                             <tr>
                                 <th>#</th>
                                 <th>Laporan</th>
-                                <th>Proposal</th>
+                                <th>Kategori</th>
                                 <th>Nama Kegiatan</th>
-                                <th>Nama Pengaju</th>
                                 <th>Tgl dibuat</th>
-                                <th>Aksi</th>
                                 <th>Status</th>
+                                <th>Aksi</th>
                             </tr>
                             </thead>
                         </table>
@@ -326,11 +325,6 @@
                 {data: 'laporan',name: 'laporan'},
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
-                {data: 'nama_user',name: 'nama_user',
-                    render: function(data,type,row){
-                        return row.nama_user_dosen || row.nama_user_mahasiswa
-                    }
-                },
                 {data: 'tgl_proposal',name: 'tgl_proposal',
                     render: function ( data, type, row ){
                         if(row.tgl_proposal == null){
@@ -340,8 +334,8 @@
                         }
                     }
                 },
-                {data: 'action',name: 'action'},
                 {data: 'status',name: 'status'},
+                {data: 'action',name: 'action'},
             ]
         });
     });

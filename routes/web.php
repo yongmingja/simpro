@@ -168,6 +168,9 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT'])->group(funct
     Route::get('rform-rkat','RektoratPage\FormRkatController@index')->name('index-form-rkat');
     Route::post('rkat-approval-y','RektoratPage\FormRkatController@approvalY')->name('rkat-approval-y');
     Route::post('rkat-approval-n','RektoratPage\FormRkatController@approvalN')->name('rkat-approval-n');
+});
+
+Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,WAREK,RKT,PEGS'])->group(function() {
     Route::get('lihat-history-delegasi','RektoratPage\DashboardController@lihatHistoryDelegasi')->name('lihat-history-delegasi');
     Route::get('lihat-history-delegasi-proposal','RektoratPage\DashboardController@lihatHistoryDelegasiProposal')->name('lihat-history-delegasi-proposal');
 });
@@ -181,4 +184,6 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT,SADM'])->group(
     Route::get('download-fpku-excel/{year}','General\LaporanFpkuController@downloadFpkuExcel')->name('download-fpku-excel');
     Route::get('index-monitoring-proposals','RektoratPage\DashboardController@indexMonitoringProposal')->name('index-monitoring-proposals');
     Route::get('index-monitoring-laporan-proposals','RektoratPage\DashboardController@indexMonitoringLaporanProposal')->name('index-monitoring-laporan-proposals');
+    Route::get('index-monitoring-fpkus','RektoratPage\DashboardController@indexMonitoringFpku')->name('index-monitoring-fpkus');
+    Route::get('index-monitoring-laporan-fpkus','RektoratPage\DashboardController@indexMonitoringLaporanFpku')->name('index-monitoring-laporan-fpkus');
 });

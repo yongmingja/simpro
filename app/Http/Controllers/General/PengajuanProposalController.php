@@ -27,6 +27,7 @@ use App\Models\Master\Pegawai;
 use App\Models\Master\HandleProposal;
 use App\Models\Master\FormRkat;
 use App\Models\Master\ValidatorProposal;
+use App\Models\General\DelegasiProposal;
 use Illuminate\Support\Facades\Session;
 
 class PengajuanProposalController extends Controller
@@ -101,6 +102,7 @@ class PengajuanProposalController extends Controller
                             case 2:
                                 $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
                                                 <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                                <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
                                                 <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-warning"></i>Batalkan Proposal</a>';
                                 break;
                             case 3:
@@ -136,8 +138,15 @@ class PengajuanProposalController extends Controller
                 } else {
                     return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
+            })->addColumn('delegasi', function($data){
+                $isExist = DelegasiProposal::where('id_proposal',$data->id)->select('catatan_delegator','delegasi')->get();
+                if($isExist->count() > 0){
+                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small><i class="bx bx-paperclip"></i> lihat</small></a>';
+                } else {
+                    return '';
+                }
             })
-            ->rawColumns(['action','preview_with_name','status','lampiran'])
+            ->rawColumns(['action','preview_with_name','status','lampiran','delegasi'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -153,24 +162,46 @@ class PengajuanProposalController extends Controller
 
     protected function statusProposal($id)
     {
-        $query = DB::table('status_proposals')->select('status_approval','keterangan_ditolak')->where('id_proposal','=',$id)->get();
-        if($query){
-            foreach($query as $data){                
-                if($data->status_approval == 2){
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Ditolak Atasan</span><span class="badge bg-danger badge-notifications">Cek alasan ditolak</span></a>';
-                } elseif($data->status_approval == 3) {
-                    return '<small><i class="text-success">ACC Atasan</i></small>';
-                } elseif($data->status_approval == 4) {
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="'.$data->keterangan_ditolak.'" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="badge bg-label-danger">Pending Rektorat&nbsp;</span><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
-                } elseif($data->status_approval == 5) {
-                    return '<small><i class="text-success">ACC Rektorat</i></small>';
-                } else {
-                    return '<small><i class="text-secondary">Menunggu Validasi</i></small>';
-                }
-            }
-        } else {
+        $query = DB::table('status_proposals')
+            ->select('status_approval', 'keterangan_ditolak')
+            ->where('id_proposal', $id)
+            ->get();
+
+        if ($query->isEmpty()) {
             return 'x';
         }
+
+        foreach ($query as $data) {
+            switch ($data->status_approval) {
+                case 2:
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" 
+                            data-keteranganditolak="' . $data->keterangan_ditolak . '" 
+                            data-toggle="tooltip" 
+                            data-placement="bottom" 
+                            title="Klik untuk melihat keterangan ditolak" 
+                            data-original-title="Klik untuk melihat keterangan ditolak">
+                            <span class="badge bg-label-danger">Ditolak Atasan&nbsp;</span>
+                            <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span>
+                            </a>';
+                case 3:
+                    return '<small><i class="text-success">Menunggu validasi rektorat</i></small>';
+                case 4:
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" 
+                            data-keteranganditolak="' . $data->keterangan_ditolak . '" 
+                            data-toggle="tooltip" 
+                            data-placement="bottom" 
+                            title="Klik untuk melihat keterangan ditolak" 
+                            data-original-title="Klik untuk melihat keterangan ditolak">
+                            <span class="badge bg-label-danger">Ditolak Rektorat&nbsp;</span>
+                            <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span>
+                            </a>';
+                case 5:
+                    return '<small><i class="text-success">ACC Rektorat</i></small>';
+                default:
+                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>';
+            }
+        }
+
     }
 
     public function tampilkanWizard(Request $request)

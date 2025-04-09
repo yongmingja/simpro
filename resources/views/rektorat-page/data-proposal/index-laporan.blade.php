@@ -87,7 +87,7 @@
                                 <th>Detail Anggaran</th>
                                 <th>Nama Pengaju</th>
                                 <th>Tgl dibuat</th>
-                                <th>Aksi</th>
+                                <th>Status (Validasi)</th>
                             </tr>
                             </thead>
                         </table>

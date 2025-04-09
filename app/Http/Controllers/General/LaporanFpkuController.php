@@ -57,16 +57,16 @@ class LaporanFpkuController extends Controller
                     if($data->ketua == Auth::user()->id){
                         return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';
                     } else {
-                        return '<small><i class="text-danger">belum submit</i></small>';
+                        return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                     }
                 }
             })->addColumn('status', function($data){
                 switch ($data->status_approval) {
                     case 1:
                         if ($data->ketua == Auth::user()->id) {
-                            return '<a href="javascript:void(0)" name="delete" id="' . $data->id_laporan . '" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i> <small><i class="text-warning">Pengajuan</i></small></a>';
+                            return '<a href="javascript:void(0)" name="delete" id="' . $data->id_laporan . '" data-toggle="tooltip" data-placement="bottom" title="Delete" class="delete text-danger"><i class="bx bx-xs bx-trash"></i> <small><i class="text-warning">Menunggu validasi rektorat</i></small></a>';
                         } else {
-                            return '<small><i class="text-danger">belum submit</i></small>';
+                            return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                         }
                     case 2:
                         return '<a href="javascript:void()" class="delete" id="' . $data->id_laporan . '"><i class="bx bx-refresh"></i> Recreate</a>'
@@ -75,7 +75,7 @@ class LaporanFpkuController extends Controller
                     case 3:
                         return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> ACC Rektorat</a>';
                     default:
-                        return '<small><i class="text-danger">belum submit</i></small>';
+                        return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }                
             })->addColumn('lampirans', function($data){
                 $checkLampiran = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();
@@ -392,12 +392,12 @@ class LaporanFpkuController extends Controller
             ->addColumn('status', function($data){
                 if(!empty($data->status_approval)) {
                     if($data->status_approval == 3){
-                        return '<i class="text-success">ACC Rektorat</i>';
+                        return '<small><i class="text-success">ACC Rektorat</i></small>';
                     } else {
-                        return '<i class="text-warning">Pengajuan</i>';
+                        return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                     }
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })->addColumn('anggota_pelaksana', function($data){
                 $dataPegawai = Pegawai::whereIn('id',$data->peserta_kegiatan)->select('nama_pegawai')->get();

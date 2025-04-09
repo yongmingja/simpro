@@ -109,14 +109,14 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Proposal</th>
+                                <th>Kategori</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
                                 <th>Proposal Dibuat</th>
-                                <th>Nama Pengaju</th>
                                 <th>Lampiran</th>
                                 <th width="12%;">Status</th>
                                 <th width="12%;">Aksi</th>
+                                <th width="12%;">FU Delegasi</th>
                             </tr>
                             </thead>
                         </table>
@@ -572,6 +572,25 @@
                     </div>
                     <!-- end of modal edit nama kegiatan-->
 
+                    <!-- Mulai modal show history delegasi  -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-history" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">History Delegasi Data ini</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_show_history" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal show history delegasi -->
+
                 </div>
             </div>
         </div>
@@ -623,10 +642,10 @@
                             return moment(row.created_at).format("DD MMM YYYY")
                         }
                     },
-                    {data: 'nama_pengaju',name: 'nama_pengaju'},
                     {data: 'lampiran',name: 'lampiran'},
                     {data: 'status',name: 'status'},
                     {data: 'action',name: 'action'},
+                    {data: 'delegasi',name: 'delegasi'},
                 ]
             });
         }
@@ -1552,6 +1571,19 @@
                 });
             },
         });
+    });
+
+    $('body').on('click','.lihat-delegasi', function(){
+        var id_proposal = $(this).data('id');
+        $.ajax({
+            url: "{{route('lihat-history-delegasi-proposal')}}",
+            method: "GET",
+            data: {proposal_id: id_proposal},
+            success: function(response, data){
+                $('#show-history').modal('show');
+                $("#table_show_history").html(response.card)
+            }
+        })
     });
 
 

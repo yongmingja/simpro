@@ -58,6 +58,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Laporan</th>
+                                    <th>Kategori</th>
                                     <th>Nama Kegiatan</th>
                                     <th>Detail Anggaran</th>
                                     <th>Ketua Pelaksana</th>
@@ -125,6 +126,7 @@
                         }
                     }, 
                     {data: 'laporan',name: 'laporan'},
+                    {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'detail',name: 'detail'},
                     {data: 'nama_pegawai',name: 'nama_pegawai'},

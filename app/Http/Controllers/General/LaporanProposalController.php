@@ -300,17 +300,17 @@ class LaporanProposalController extends Controller
             
             switch ($data->status_approval) {
                 case 1:
-                    return '<small><i class="text-warning">Pengajuan</i></small>';
+                    return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
                 case 2:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 3:
-                    return '<small><i class="text-warning">ACC Atasan</i></small>';
+                    return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                 case 4:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Rektorat</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:
-                    return '<small><i class="text-warning">Pengajuan</i></small>';
+                    return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
             }
         } 
         return '<small><i class="text-secondary">Belum ada laporan</i></small>';
@@ -400,11 +400,11 @@ class LaporanProposalController extends Controller
                 if(!empty($data->status_approval)) {
                     switch ($data->status_approval) {
                         case 1:
-                            return '<small><i class="text-warning">Pengajuan</i></small>';
+                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
                         case 2:
                             return '<small><i class="text-danger">Ditolak Atasan</i></small>';
                         case 3:
-                            return '<small><i class="text-success">ACC Atasan</i></small>';
+                            return '<small><i class="text-success">Menunggu validasi rektorat</i></small>';
                         case 4:
                             return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
                         case 5:

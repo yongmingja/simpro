@@ -456,6 +456,24 @@
                 </ul>
             </li> 
             <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-monitoring-fpkus')}} OR {{set_active('index-monitoring-laporan-fpkus')}}">
+                <i class="menu-icon tf-icons bx bx-search bx-tada-hover"></i>
+                <div data-i18n="Monitor FPKU">Monitor FPKU</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('index-monitoring-fpkus')}}" class="menu-link {{set_active('index-monitoring-fpkus')}}">
+                        <div data-i18n="Data FPKU">Data FPKU</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{route('index-monitoring-laporan-fpkus')}}" class="menu-link {{set_active('index-monitoring-laporan-fpkus')}}">
+                        <div data-i18n="Laporan PJK FPKU">Laporan PJK FPKU</div>
+                        </a>
+                    </li>
+                </ul>
+            </li> 
+            <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-export-proposal')}} OR {{set_active('index-export-fpku')}}">
                 <i class="menu-icon tf-icons bx bx-export bx-tada-hover"></i>
                 <div data-i18n="Export Data">Export Data</div>

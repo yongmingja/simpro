@@ -218,14 +218,14 @@ class DataProposalController extends Controller
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
                         . '<small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 3:
-                    return '<small><i class="text-warning">Menunggu Validasi Rektorat</i></small>';
+                    return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                 case 4:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
                         . '<small class="text-danger">Ditolak Rektorat</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
                 case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:
-                    return '<small><i class="text-secondary">Pending</i></small>';
+                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>';
             }
         } 
 
