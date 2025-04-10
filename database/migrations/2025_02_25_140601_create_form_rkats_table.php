@@ -17,6 +17,8 @@ class CreateFormRkatsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('id_tahun_akademik');
             $table->foreign('id_tahun_akademik')->references('id')->on('tahun_akademiks')->onDelete('restrict');
+            $table->unsignedInteger('id_fakultas_biro');
+            $table->foreign('id_fakultas_biro')->references('id')->on('data_fakultas_biros')->onDelete('restrict');
             $table->text('sasaran_strategi');
             $table->text('program_strategis');
             $table->text('program_kerja');

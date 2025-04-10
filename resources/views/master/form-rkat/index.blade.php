@@ -63,6 +63,16 @@
                                         <div class="row">
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
+                                                <label for="id_fakultas_biro" class="form-label">Fakultas / Biro</label>
+                                                <select class="form-select" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_fakultas">- Pilih -</option>
+                                                    @foreach($getFakultasBiro as $fakultas_biro)
+                                                    <option value="{{$fakultas_biro->id}}">{{$fakultas_biro->nama_fakultas_biro}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="dataFakultasBiroErrorMsg" style="font-size: 10px;"></span>
+                                            </div> 
+                                            <div class="mb-3">
                                                 <label for="sasaran_strategi" class="form-label">Sasaran Strategi</label>
                                                 <textarea class="form-control" id="sasaran_strategi" name="sasaran_strategi" rows="3"></textarea>
                                                 <span class="text-danger" id="sasaranStrategiErrorMsg" style="font-size: 10px;"></span>
@@ -76,24 +86,28 @@
                                                 <label for="program_kerja" class="form-label">Program Kerja</label>
                                                 <textarea class="form-control" id="program_kerja" name="program_kerja" rows="3"></textarea>
                                                 <span class="text-danger" id="programKerjaErrorMsg" style="font-size: 10px;"></span>
-                                            </div>                                          
-                                            <div class="mb-3">
-                                                <label for="kode_renstra" class="form-label">Kode Renstra</label>
-                                                <input type="text" class="form-control" id="kode_renstra" name="kode_renstra" value="" />
-                                                <span class="text-danger" id="kodeRenstraErrorMsg" style="font-size: 10px;"></span>
-                                            </div>     
+                                            </div> 
                                             <div class="mb-3">
                                                 <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
                                                 <textarea class="form-control" id="nama_kegiatan" name="nama_kegiatan" rows="3"></textarea>
                                                 <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
+                                            <div class="col-sm-12">
+                                                <div class="row mb-2">
+                                                    <div class="col-sm-6">
+                                                        <label for="kode_renstra" class="form-label">Kode Renstra</label>
+                                                        <input type="text" class="form-control" id="kode_renstra" name="kode_renstra" value="" />
+                                                        <span class="text-danger" id="kodeRenstraErrorMsg" style="font-size: 10px;"></span>
+                                                    </div>   
+                                                    <div class="col-sm-6">
+                                                        <label for="kode_pagu" class="form-label">Kode Pagu</label>
+                                                        <input type="text" class="form-control" id="kode_pagu" name="kode_pagu" value="" />
+                                                        <span class="text-danger" id="kodePaguErrorMsg" style="font-size: 10px;"></span>
+                                                    </div>
+                                                </div> 
+                                            </div>    
                                             <div class="mb-3">
-                                                <label for="kode_pagu" class="form-label">Kode Pagu</label>
-                                                <input type="text" class="form-control" id="kode_pagu" name="kode_pagu" value="" />
-                                                <span class="text-danger" id="kodePaguErrorMsg" style="font-size: 10px;"></span>
-                                            </div>     
-                                            <div class="mb-3">
-                                                <label for="total" class="form-label">Total</label>
+                                                <label for="total" class="form-label">Total Anggaran</label>
                                                 <input type="text" class="form-control" id="total" name="total" value="" />
                                                 <span class="text-danger" id="totalErrorMsg" style="font-size: 10px;"></span>
                                             </div>     
@@ -197,6 +211,7 @@
                         })
                     },
                     error: function(response) {
+                        $('#dataFakultasBiroErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);
                         $('#sasaranStrategiErrorMsg').text(response.responseJSON.errors.sasaran_strategi);
                         $('#programStrategisErrorMsg').text(response.responseJSON.errors.program_strategis);
                         $('#programKerjaErrorMsg').text(response.responseJSON.errors.program_kerja);

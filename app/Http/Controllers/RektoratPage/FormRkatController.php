@@ -12,6 +12,7 @@ class FormRkatController extends Controller
     public function index(Request $request)
     {
         $datas = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
+            ->select('form_rkats.id AS id','form_rkats.*')
             ->where('tahun_akademiks.is_active',1)
             ->orderBy('form_rkats.status_validasi','ASC')
             ->get();

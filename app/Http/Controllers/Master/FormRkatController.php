@@ -8,6 +8,7 @@ use App\Models\Master\FormRkat;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\Jabatan;
 use App\Models\General\TahunAkademik;
+use App\Models\General\DataFakultasBiro;
 use Illuminate\Support\Facades\Session;
 use Auth;
 
@@ -59,12 +60,14 @@ class FormRkatController extends Controller
             ->make(true);
         }
         $getTahunAkademik = TahunAkademik::select('id','year','is_active')->orderBy('year','DESC')->get();
-        return view('master.form-rkat.index', compact('getTahunAkademik'));
+        $getFakultasBiro = DataFakultasBiro::select('id','nama_fakultas_biro')->orderBy('nama_fakultas_biro','ASC')->get();
+        return view('master.form-rkat.index', compact('getTahunAkademik','getFakultasBiro'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'id_fakultas_biro'   => 'required',
             'sasaran_strategi'   => 'required',
             'program_strategis'  => 'required',
             'program_kerja'      => 'required',
@@ -72,6 +75,7 @@ class FormRkatController extends Controller
             'nama_kegiatan'      => 'required',
             'kode_pagu'          => 'required',
         ],[
+            'id_fakultas_biro.required'  => 'Anda belum memilih data ini',
             'sasaran_strategi.required'  => 'Anda belum menginputkan sasaran strategi',
             'program_strategis.required' => 'Anda belum menginputkan program strategis',
             'program_kerja.required'     => 'Anda belum menginputkan program kerja',
@@ -99,6 +103,7 @@ class FormRkatController extends Controller
         $post = FormRkat::updateOrCreate(['id' => $request->id],
                 [
                     'id_tahun_akademik'  => $getTahunAkademik->id,
+                    'id_fakultas_biro'   => $request->id_fakultas_biro,
                     'sasaran_strategi'   => $request->sasaran_strategi,
                     'program_strategis'  => $request->program_strategis,
                     'program_kerja'      => $request->program_kerja,
