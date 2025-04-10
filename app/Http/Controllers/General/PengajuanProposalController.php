@@ -62,8 +62,7 @@ class PengajuanProposalController extends Controller
                 'pegawais.nama_pegawai AS nama_pengaju'
             )
             ->where([
-                ['proposals.user_id', Auth::user()->user_id],
-                ['proposals.is_archived', 0]
+                ['proposals.user_id', Auth::user()->user_id]
             ]);
         
         // Tambahkan kondisi status jika ada
@@ -79,53 +78,55 @@ class PengajuanProposalController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                $query = DB::table('status_proposals')
-                    ->select('status_approval', 'id_proposal')
-                    ->where('id_proposal', $data->id)
-                    ->get();
-
-                if ($query->isNotEmpty()) {
-                    foreach ($query as $get) {
-                        $dropdownMenu = '<div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown">
-                                <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">';
-                        
-                        switch ($get->status_approval) {
-                            case 1:
-                                $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                                <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
-                                                <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
-                                                <a class="dropdown-item delete" id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-trash me-2 text-danger"></i>Hapus Proposal</a>';
-                                break;
-                            case 2:
-                                $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                                <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
-                                                <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
-                                                <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-warning"></i>Batalkan Proposal</a>';
-                                break;
-                            case 3:
-                                $dropdownMenu .= '<a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>';
-                                break;
-                            case 4:
-                                $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                                <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
-                                                <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-warning"></i>Batalkan Proposal</a>';
-                                break;
-                            default:
-                                $dropdownMenu = '';
-                                break;
+                if($data->is_archived != 1){
+                    $query = DB::table('status_proposals')
+                        ->select('status_approval', 'id_proposal')
+                        ->where('id_proposal', $data->id)
+                        ->get();
+    
+                    if ($query->isNotEmpty()) {
+                        foreach ($query as $get) {
+                            $dropdownMenu = '<div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">';
+                            
+                            switch ($get->status_approval) {
+                                case 1:
+                                    $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
+                                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                                    <a class="dropdown-item delete" id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-trash me-2 text-danger"></i>Hapus Proposal</a>';
+                                    break;
+                                case 2:
+                                    $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
+                                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                                    <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-share me-2 text-warning"></i>Batalkan Proposal</a>';
+                                    break;
+                                case 3:
+                                    $dropdownMenu .= '<a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>';
+                                    break;
+                                case 4:
+                                    $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
+                                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                                    <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-share me-2 text-warning"></i>Batalkan Proposal</a>';
+                                    break;
+                                default:
+                                    $dropdownMenu = '';
+                                    break;
+                            }
+    
+                            $dropdownMenu .= '</div></div>';
+                            return $dropdownMenu;
                         }
-
-                        $dropdownMenu .= '</div></div>';
-                        return $dropdownMenu;
+                    } else {
+                        return 'Tidak ada data ditemukan';
                     }
                 } else {
-                    return 'Tidak ada data ditemukan';
-                }
-
-                
+                    return '<small class="text-secondary"><i class="bx bx-archive bx-xs"></i> Archived</small>';
+                }              
             })->addColumn('status', function($data){
                 $btn = $this->statusProposal($data->id);                
                 return $btn;
@@ -149,15 +150,50 @@ class PengajuanProposalController extends Controller
             ->rawColumns(['action','preview_with_name','status','lampiran','delegasi'])
             ->addIndexColumn(true)
             ->make(true);
-        }
-        $checkLap = DB::table('status_laporan_proposals')->rightJoin('proposals','proposals.id','=','status_laporan_proposals.id_laporan_proposal')
-            ->leftJoin('status_proposals','status_proposals.id_proposal','=','proposals.id')
-            ->select('proposals.id','status_laporan_proposals.status_approval AS slp','status_proposals.status_approval AS status_approval')
-            ->where('proposals.user_id',Auth::user()->user_id)
-            ->whereIn('status_proposals.status_approval',[1,3,5]) # Check status approval to activate new proposal button
-            ->get();
+        }      
+        $canAddProposal = $this->canAddProposal();
         $dataFormRkat = FormRkat::all();
-        return view('general.pengajuan-proposal.index', compact('datas','checkLap','dataFormRkat'));
+        return view('general.pengajuan-proposal.index', compact('datas','canAddProposal','dataFormRkat'));
+    }
+
+    protected function canAddProposal()
+    {
+        $datas = Proposal::join('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
+            ->select('proposals.id AS id_proposal', 'proposals.is_archived', 'status_proposals.status_approval')
+            ->where('proposals.user_id', '=', Auth::user()->user_id)
+            ->get();
+
+        if ($datas->isEmpty()) {
+            return true; // Jika data proposal kosong
+        }
+
+        foreach ($datas as $data) {
+            if ($data->status_approval == 5) {
+                $cekLaporan = DB::table('laporan_proposals')
+                    ->join('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'laporan_proposals.id_proposal')
+                    ->select('laporan_proposals.id AS id_laporan', 'status_laporan_proposals.status_approval AS status_approval_laporan')
+                    ->where('id_proposal', $data->id_proposal)
+                    ->get();
+
+                if ($cekLaporan->isNotEmpty()) { // Jika laporan proposal ada
+                    foreach ($cekLaporan as $laporan) {
+                        if ($laporan->status_approval_laporan == 5) {
+                            return true;
+                        }
+                    }
+                    return false; // Jika tidak ada laporan dengan status 5
+                }
+
+                return false; // Jika laporan proposal tidak ada
+            }
+
+            // Jika proposal diarsip
+            if ($data->is_archived == 1) {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     protected function statusProposal($id)
@@ -180,11 +216,11 @@ class PengajuanProposalController extends Controller
                             data-placement="bottom" 
                             title="Klik untuk melihat keterangan ditolak" 
                             data-original-title="Klik untuk melihat keterangan ditolak">
-                            <span class="badge bg-label-danger">Ditolak Atasan&nbsp;</span>
-                            <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span>
+                            <span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
+                            <span class="badge bg-danger badge-notifications">?</span>
                             </a>';
                 case 3:
-                    return '<small><i class="text-success">Menunggu validasi rektorat</i></small>';
+                    return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                 case 4:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" 
                             data-keteranganditolak="' . $data->keterangan_ditolak . '" 
@@ -192,13 +228,13 @@ class PengajuanProposalController extends Controller
                             data-placement="bottom" 
                             title="Klik untuk melihat keterangan ditolak" 
                             data-original-title="Klik untuk melihat keterangan ditolak">
-                            <span class="badge bg-label-danger">Ditolak Rektorat&nbsp;</span>
-                            <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span>
+                            <span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
+                            <span class="badge bg-danger badge-notifications">?</span>
                             </a>';
                 case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:
-                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>';
+                    return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
             }
         }
 

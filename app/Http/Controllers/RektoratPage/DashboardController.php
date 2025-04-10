@@ -42,7 +42,6 @@ class DashboardController extends Controller
                 'pegawais.nama_pegawai AS nama_user'
             )
             ->where([
-                ['proposals.is_archived', 0],
                 ['tahun_akademiks.is_active', 1]
             ])
             ->whereIn('proposals.id_jenis_kegiatan', $this->arrJenisKegiatan());
@@ -53,7 +52,7 @@ class DashboardController extends Controller
             'all' => null,
             'pending' => ['status_proposals.status_approval', '<=', 3],
             'accepted' => ['status_proposals.status_approval', '=', 5],
-            'denied' => ['status_proposals.status_approval', '=', 4],
+            'denied' => ['status_proposals.status_approval', '=', [2,4]],
         ];
 
         // Tambahkan kondisi berdasarkan status jika diperlukan
@@ -70,49 +69,48 @@ class DashboardController extends Controller
                 $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal">'.$data->nama_kegiatan.'</a>';               
                 return $button;
             })->addColumn('validasi', function($data){
-                if($data->id_jenis_kegiatan != 3){
-                    $checkState = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
-                    if($checkState->count() > 0){
-                        foreach($checkState as $state){
-                            if($state->status_approval == 3){                            
-                                $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
-                                $button .= '&nbsp;';
-                                $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
-                                return $button;
-                            } elseif($state->status_approval == 2){
-                                return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                            } elseif($state->status_approval == 4){
-                                return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                            } elseif($state->status_approval == 5) {
-                                return '<small><i class="text-success">ACC Rektorat</i></small>';
-                            } else {
-                                return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
-                            }
-                        }
-                    } else {
-                        return '';
-                    }
-                } else {
-                    $checkState = DB::table('status_proposals')->where('id_proposal',$data->id)->select('status_approval')->get();
-                    if($checkState->count() > 0){
-                        foreach($checkState as $state){
-                            if($state->status_approval == 1){                            
-                                $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
-                                $button .= '&nbsp;';
-                                $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';                            
-                                return $button;
-                            } elseif($state->status_approval == 2){
-                                return '<i class="text-success">Ditolak Rektorat</i>';
-                            } elseif($state->status_approval == 3) {
-                                return '<i class="text-success">ACC Rektorat</i>';
-                            } else {
-                                return '<i class="text-secondary">Pending</i>';
-                            }
-                        }
-                    } else {
-                        return '';
-                    }                    
+                // Query utama untuk mengambil status_proposals
+                $checkState = DB::table('status_proposals')
+                    ->where('id_proposal', $data->id)
+                    ->select('status_approval')
+                    ->get();
+
+                if ($checkState->isEmpty()) {
+                    return ''; // Jika tidak ada data
                 }
+
+                foreach ($checkState as $state) {
+                    if ($data->is_archived != 1) { // Jika proposal tidak diarsipkan
+                        if ($state->status_approval == 3) {
+                            // Tombol untuk ACC
+                            $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $data->id . '" data-placement="bottom" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                            $button .= '&nbsp;';
+                            $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $data->id . '" data-placement="bottom" title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';
+                            return $button;
+                        } elseif ($state->status_approval == 2) {
+                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
+                        } elseif ($state->status_approval == 4) {
+                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
+                        } elseif ($state->status_approval == 5) {
+                            return '<small><i class="text-success">ACC Rektorat</i></small>';
+                        } else {
+                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
+                        }
+                    } else { // Jika proposal diarsipkan
+                        if ($state->status_approval == 2) {
+                            return '<small><i class="text-danger">Ditolak Atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                        } elseif ($state->status_approval == 3) {
+                            return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                        } elseif ($state->status_approval == 4) {
+                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                        } elseif ($state->status_approval == 5) {
+                            return '<small><i class="text-success">ACC Rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                        } else {
+                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                        }
+                    }
+                }
+
             })->addColumn('vlampiran', function($data){
                 # check any attachment
                 $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
@@ -182,7 +180,7 @@ class DashboardController extends Controller
                 'name' => 'Diterima!',
                 'body' => 'Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
-            Mail::to([$emailAddress,'bennyalfian@uvers.ac.id'])->send(new EmailDiterimaRektorat($content));        
+            $post = Mail::to([$emailAddress,'bennyalfian@uvers.ac.id'])->send(new EmailDiterimaRektorat($content));        
         } else {
             return 'No valid email addresses found';
         }
@@ -210,7 +208,7 @@ class DashboardController extends Controller
                 'name' => 'Ditolak!',
                 'body' => 'Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
-            Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new EmailDitolakRektorat($content));
+            $post = Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new EmailDitolakRektorat($content));
         } else {
             return 'No valid email addresses found';
         }

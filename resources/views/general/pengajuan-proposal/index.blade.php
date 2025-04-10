@@ -76,22 +76,14 @@
                         <div class="row">
 
                             <!-- MULAI TOMBOL TAMBAH -->
-                            @if($checkLap->count() > 0)
-                                @foreach($checkLap as $p)  @endforeach
-                                    @if($p->slp != 5)
-                                        <div class="mb-3">
-                                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di validasi oleh Rektorat! Mohon periksa kembali status proposal atau status laporan proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                                        </div>
-                                    @else
-                                        <div class="mb-3">
-                                            <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                                        </div>
-                                    @endif
-                               
+                            @if($canAddProposal)
+                            <div class="mb-3">
+                                <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                            </div>
                             @else
-                                <div class="mb-3">
-                                    <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                                </div>
+                            <div class="mb-3">
+                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di validasi oleh Rektorat! Mohon periksa kembali status proposal atau status laporan proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                            </div>
                             @endif
                             <!-- AKHIR TOMBOL -->
                             <div class="col-sm-2 mb-3">
@@ -115,8 +107,8 @@
                                 <th>Proposal Dibuat</th>
                                 <th>Lampiran</th>
                                 <th width="12%;">Status</th>
-                                <th width="12%;">Aksi</th>
                                 <th width="12%;">FU Delegasi</th>
+                                <th width="12%;">Aksi</th>
                             </tr>
                             </thead>
                         </table>
@@ -644,8 +636,8 @@
                     },
                     {data: 'lampiran',name: 'lampiran'},
                     {data: 'status',name: 'status'},
-                    {data: 'action',name: 'action'},
                     {data: 'delegasi',name: 'delegasi'},
+                    {data: 'action',name: 'action'},
                 ]
             });
         }

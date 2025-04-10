@@ -49,25 +49,17 @@ class DataProposalController extends Controller
                 ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai AS nama_user', 'form_rkats.total')
                 ->where([['proposals.id_fakultas_biro', $getJabatanIs->id_fakultas_biro], ['tahun_akademiks.is_active', 1]]);
             
-            // Tambahkan filter berdasarkan status
-            $statusApproval = null;
-            switch ($status) {
-                case 'pending':
-                    $statusApproval = 1;
-                    break;
-                case 'accepted':
-                    $statusApproval = 5;
-                    break;
-                case 'denied':
-                    $statusApproval = 4;
-                    break;
-                default:
-                    $statusApproval = null;
-                    break;
-            }
-            
-            if ($statusApproval !== null) {
-                $query->where('status_proposals.status_approval', $statusApproval);
+            $statusMapping = [
+                '' => null,
+                'all' => null,
+                'pending' => ['status_proposals.status_approval', '<=', 3],
+                'accepted' => ['status_proposals.status_approval', '=', 5],
+                'denied' => ['status_proposals.status_approval', '=', [2,4]],
+            ];
+    
+            // Tambahkan kondisi berdasarkan status jika diperlukan
+            if (array_key_exists($request->status, $statusMapping) && $statusMapping[$request->status] !== null) {
+                $query->where($statusMapping[$request->status][0], $statusMapping[$request->status][1], $statusMapping[$request->status][2] ?? null);
             }
             
             $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
@@ -169,7 +161,7 @@ class DataProposalController extends Controller
             ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $getJenisKegiatan->id_jenis_kegiatan)
             ->first();        
 
-        Mail::to(strtolower($getEmailRektorat->email))->send(new EmailDiterimaDekan($content));
+        $post = Mail::to(strtolower($getEmailRektorat->email))->send(new EmailDiterimaDekan($content));
 
         return response()->json($post);
     }
@@ -192,7 +184,7 @@ class DataProposalController extends Controller
                 'name' => 'Proposal Ditolak!',
                 'body' => 'Mohon maaf, proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
             ];
-            Mail::to(strtolower($getEmail->email))->send(new EmailDitolakDekan($content));        
+            $post = Mail::to(strtolower($getEmail->email))->send(new EmailDitolakDekan($content));        
         } else {
             return 'No valid email addresses found';
         }
@@ -202,14 +194,20 @@ class DataProposalController extends Controller
 
     protected function statusProposal($id)
     {
+        // Mengambil data proposal dan status_proposals
+        $proposal = Proposal::where('id', $id)->select('is_archived')->first();
         $query = DB::table('status_proposals')
             ->select('status_approval', 'keterangan_ditolak')
             ->where('id_proposal', '=', $id)
             ->get();
 
-        if ($query->isNotEmpty()) { // Memastikan data tidak kosong
-            $data = $query->first(); // Mengambil data pertama
+        if ($query->isEmpty()) {
+            return 'x'; // Jika tidak ada data pada status_proposals
+        }
 
+        $data = $query->first(); // Mengambil data pertama
+
+        if ($proposal->is_archived != 1) { // Kondisi jika tidak diarsip
             switch ($data->status_approval) {
                 case 1:
                     return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;'
@@ -229,11 +227,26 @@ class DataProposalController extends Controller
                 default:
                     return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>';
             }
-        } 
-
-        // Jika query kosong
-        return 'x';
-
+        } else { // Kondisi jika diarsip
+            switch ($data->status_approval) {
+                case 1:
+                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                case 2:
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
+                        . '<span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
+                            <span class="badge bg-danger badge-notifications">?</span></a>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                case 3:
+                    return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                case 4:
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
+                        . '<span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
+                        <span class="badge bg-danger badge-notifications">?</span></a>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                case 5:
+                    return '<small><i class="text-success">ACC Rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+                default:
+                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
+            }
+        }
     }
 
     public function lihatDetailAnggaran(Request $request)
