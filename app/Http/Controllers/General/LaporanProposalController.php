@@ -302,11 +302,14 @@ class LaporanProposalController extends Controller
                 case 1:
                     return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
                 case 2:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
+                    <span class="badge bg-danger badge-notifications">?</span>
+                    </a>';
                 case 3:
                     return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                 case 4:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><small class="text-danger">Ditolak Rektorat</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak" data-original-title="Klik untuk melihat keterangan ditolak"><span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
+                    <span class="badge bg-danger badge-notifications">?</span></a>';
                 case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:

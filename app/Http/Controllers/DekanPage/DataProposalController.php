@@ -216,12 +216,14 @@ class DataProposalController extends Controller
                         . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                 case 2:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                        . '<span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
+                            <span class="badge bg-danger badge-notifications">?</span></a>';
                 case 3:
                     return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
                 case 4:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<small class="text-danger">Ditolak Rektorat</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                        . '<span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
+                        <span class="badge bg-danger badge-notifications">?</span></a>';
                 case 5:
                     return '<small><i class="text-success">ACC Rektorat</i></small>';
                 default:
