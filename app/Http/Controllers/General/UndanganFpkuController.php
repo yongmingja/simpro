@@ -24,9 +24,9 @@ class UndanganFpkuController extends Controller
             })->addColumn('lampirans', function($data){
                 $isExist = DB::table('lampiran_fpkus')->where('id_fpku',$data->id)->get();
                 if($isExist->count() > 0){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran" style="font-size: 10px;">lihat lampiran</a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran"><small><i class="bx bx-paperclip bx-xs"></i> Lihat</small></a>';
                 } else {
-                    return '<i class="bx bx-minus-circle text-secondary"></i>';
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }
             })
             ->rawColumns(['action','lampirans'])

@@ -166,7 +166,7 @@ class LaporanProposalController extends Controller
                 if (DB::table('status_laporan_proposals')->where('id_laporan_proposal', $data->id)->exists()) {
                     return $this->statusLaporanProposal($data->id);
                 } else {
-                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
                 }                
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
@@ -316,7 +316,7 @@ class LaporanProposalController extends Controller
                     return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
             }
         } 
-        return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+        return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
 
     }
 
@@ -413,10 +413,10 @@ class LaporanProposalController extends Controller
                         case 5:
                             return '<small><i class="text-success">ACC Rektorat</i></small>';
                         default:
-                        return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                        return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
                     }
                 } else {
-                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
                 }
             })
             ->rawColumns(['status'])

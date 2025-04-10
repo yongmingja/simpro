@@ -142,9 +142,9 @@ class PengajuanProposalController extends Controller
             })->addColumn('delegasi', function($data){
                 $isExist = DelegasiProposal::where('id_proposal',$data->id)->select('catatan_delegator','delegasi')->get();
                 if($isExist->count() > 0){
-                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small><i class="bx bx-paperclip"></i> lihat</small></a>';
+                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small><i class="bx bx-paperclip bx-xs"></i> lihat</small></a>';
                 } else {
-                    return '';
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }
             })
             ->rawColumns(['action','preview_with_name','status','lampiran','delegasi'])
@@ -152,7 +152,10 @@ class PengajuanProposalController extends Controller
             ->make(true);
         }      
         $canAddProposal = $this->canAddProposal();
-        $dataFormRkat = FormRkat::all();
+        $dataFormRkat = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
+            ->select('form_rkats.id AS id','form_rkats.*')
+            ->where('tahun_akademiks.is_active',1)
+            ->get();
         return view('general.pengajuan-proposal.index', compact('datas','canAddProposal','dataFormRkat'));
     }
 

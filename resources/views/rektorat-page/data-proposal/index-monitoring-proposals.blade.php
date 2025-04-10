@@ -64,6 +64,7 @@
                                     <th>Detail Anggaran</th>
                                     <th>Fakultas atau Unit</th>
                                     <th>Status</th>
+                                    <th>History Delegasi</th>
                                 </tr>
                               </thead>
                             </table>
@@ -85,6 +86,25 @@
                         </div>
                     </div>
                     <!-- End of modal lihat detail anggaran-->
+
+                    <!-- Mulai modal show history delegasi  -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-history" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">History Delegasi Data ini</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_show_history" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal show history delegasi -->
                     
                 </div>
             </div>
@@ -141,6 +161,7 @@
                     {data: 'detail',name: 'detail'},
                     {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
                     {data: 'status',name: 'status'},
+                    {data: 'history',name: 'history'},
                 ]
             });
         }
@@ -171,6 +192,19 @@
             success: function(response, data){
                 $('#show-detail-anggaran').modal('show');
                 $("#table_detail_anggaran").html(response.card)
+            }
+        })
+    });
+
+    $('body').on('click','.lihat-delegasi', function(){
+        var id_proposal = $(this).data('id');
+        $.ajax({
+            url: "{{route('lihat-history-delegasi-proposal')}}",
+            method: "GET",
+            data: {proposal_id: id_proposal},
+            success: function(response, data){
+                $('#show-history').modal('show');
+                $("#table_show_history").html(response.card)
             }
         })
     });
