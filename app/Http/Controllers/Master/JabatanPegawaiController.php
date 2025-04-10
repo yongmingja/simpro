@@ -56,7 +56,7 @@ class JabatanPegawaiController extends Controller
             ->make(true);
         }
         $getPegawai = Pegawai::select('id','user_id','nama_pegawai')->orderBy('nama_pegawai','ASC')->get();
-        $getJabatan = Jabatan::select('id','nama_jabatan')->orderBy('nama_jabatan','ASC')->get();
+        $getJabatan = Jabatan::select('id','nama_jabatan','kode_jabatan')->orderBy('nama_jabatan','ASC')->get();
         $getFakultasBiro = DataFakultasBiro::select('id','nama_fakultas_biro')->orderBy('id','ASC')->get();
         return view('master.jabatan-pegawai.index', compact('getPegawai','getJabatan','getFakultasBiro'));
     }

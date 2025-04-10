@@ -14,13 +14,17 @@ class PeranController extends Controller
     {
         $getPeran = JabatanPegawai::leftJoin('jabatans', 'jabatans.id', '=', 'jabatan_pegawais.id_jabatan')
             ->where('jabatan_pegawais.id_pegawai', Auth::user()->id)
-            ->select('jabatans.kode_jabatan', 'jabatan_pegawais.ket_jabatan')
+            ->whereNotNull('jabatan_pegawais.id_fakultas_biro') // Pastikan id_fakultas_biro tidak null
+            ->where('jabatan_pegawais.id_fakultas_biro', '!=', '') // Pastikan id_fakultas_biro tidak kosong
+            ->select('jabatans.kode_jabatan', 'jabatan_pegawais.ket_jabatan', 'jabatan_pegawais.id_fakultas_biro')
             ->first();
-
+    
         $recentPeranIs = session()->get('selected_peran') ?? $getPeran->kode_jabatan;
+        $unitIs = $getPeran->id_fakultas_biro; # sekalian ambil data id fakultas biro untuk menyeleksi pilihan rkat pada saat ajukan proposal on wizard
 
         return response()->json([
             'recentPeranIs' => $recentPeranIs,
+            'unitIs' => $unitIs, # sekalian ambil data id fakultas biro untuk menyeleksi pilihan rkat pada saat ajukan proposal on wizard
         ]);
     }
 }
