@@ -12,6 +12,7 @@ use App\Models\General\LaporanFpku;
 use App\Models\General\DelegasiFpku;
 use App\Models\General\DelegasiProposal;
 use App\Models\General\TahunAkademik;
+use App\Models\General\DataPengajuanSarpras;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UndanganFpku;
 use App\Mail\EmailDelegasiFpku;
@@ -61,7 +62,7 @@ class DashboardController extends Controller
         }
 
         // Eksekusi query
-        $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
+        $datas = $query->orderBy('proposals.tgl_event', 'DESC')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -461,7 +462,7 @@ class DashboardController extends Controller
             }
         }
 
-        $datas = $query->orderBy('status_proposals.status_approval', 'ASC')->get();
+        $datas = $query->orderBy('proposals.tgl_event', 'DESC')->get();
 
 
         if($request->ajax()){
@@ -603,7 +604,7 @@ class DashboardController extends Controller
             $query->where('status_fpkus.status_approval', 2);
         }
 
-        $datas = $query->orderBy('data_fpkus.id', 'DESC')->get();
+        $datas = $query->orderBy('data_fpkus.tgl_kegiatan', 'DESC')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -1019,7 +1020,7 @@ class DashboardController extends Controller
                         ->select('data_fpkus.id AS id', 'data_fpkus.*', 'status_fpkus.status_approval')
                         ->where('tahun_akademiks.is_active', 1);
 
-        $datas = $query->orderBy('data_fpkus.id', 'DESC')->get();
+        $datas = $query->orderBy('data_fpkus.tgl_kegiatan', 'DESC')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -1114,5 +1115,98 @@ class DashboardController extends Controller
             ->make(true);
         }
         return view('rektorat-page.data-fpku.index-monitoring-laporan-fpkus');
+    }
+
+    public function indexMonitoringSarpras(Request $request)
+    {
+        $tahun_akademik = $request->tahun_akademik;
+        $lembaga = $request->lembaga;
+
+        $query = DataPengajuanSarpras::leftJoin('proposals','proposals.id','=','data_pengajuan_sarpras.id_proposal')
+            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('data_prodi_biros','data_prodi_biros.id','=','proposals.id_prodi_biro')
+            ->leftJoin('jenis_kegiatans','jenis_kegiatans.id','=','proposals.id_jenis_kegiatan')
+            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            ->select('proposals.id AS idproposal','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','proposals.tgl_event','proposals.id_tahun_akademik','tahun_akademiks.id','proposals.id_jenis_kegiatan','proposals.id_form_rkat','proposals.nama_kegiatan')
+            ->groupBy('proposals.id','data_fakultas_biros.nama_fakultas_biro','data_prodi_biros.nama_prodi_biro','jenis_kegiatans.nama_jenis_kegiatan','proposals.tgl_event','proposals.id_tahun_akademik','tahun_akademiks.id','proposals.id_jenis_kegiatan','proposals.id_form_rkat','proposals.nama_kegiatan');
+        
+         // Filter berdasarkan tahun akademik
+         if ($tahun_akademik && $tahun_akademik != 'all') {
+            $query->where('tahun_akademiks.id', $tahun_akademik);
+        }
+
+        // Filter berdasarkan lembaga
+        if ($lembaga && $lembaga != 'all') {
+            if ($lembaga == 'others') {
+                $query->whereNull('proposals.id_fakultas_biro');
+            } else {
+                $query->where('proposals.id_fakultas_biro', $lembaga);
+            }
+        }
+
+        $datas = $query->orderBy('proposals.tgl_event', 'DESC')->get();
+
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('action', function($data){
+                return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->idproposal.'" class="status-mon-sarpras"><small class="text-info"><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a></a>';
+            })
+            ->rawColumns(['action'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+
+        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
+        $getYear = TahunAkademik::select('year','id')->get();
+        return view('rektorat-page.data-proposal.index-monitoring-sarpras', compact('getLembaga','getYear'));
+    }
+    
+    public function statusSarpras(Request $request)
+    {
+        $datas = DataPengajuanSarpras::where('id_proposal',$request->proposal_id)->get();
+        
+            $html = '<div class="card">
+            <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tgl Kegiatan</th>
+                    <th>Sarpras Item</th>
+                    <th>Jumlah</th>
+                    <th width="25%;">Status</th>
+                </tr>
+                </thead>
+                <tbody>';
+                if($datas->count() > 0){
+                    foreach($datas as $no => $data){
+                        $html .= '<tr>
+                            <td>'.++$no.'</td>
+                            <td>'.tanggal_indonesia($data->tgl_kegiatan).'</td>
+                            <td>'.$data->sarpras_item.'</td>
+                            <td>'.$data->jumlah.'</td>
+                            <td style="text-align: center;">';
+                            if($data->status == '1'){
+                                $html .= '<small class="text-warning"><i>Belum divalidasi</i></small>';
+                            } else if($data->status == '2'){
+                                $html .= '<small class="text-success"><i>ACC Admin Umum</i></small>';
+                            } else if($data->status == '3'){
+                                $html .= '<small class="text-danger"><i>Ditolak</i></small>';
+                            } else {
+                                $html .= '<small class="text-success"><i>ACC Admin Umum</i></small>';
+                            }
+                            $html .= '</td>   
+                        </tr>';
+                    }
+                } else {
+                    $html .= '<tr>
+                        <td colspan="5" style="text-align: center;">No data available in table</td>                    
+                    </tr>';
+                }
+            $html .= '</tbody>
+                </table> 
+                </div>            
+            </div>';
+        return response()->json(['card' => $html]);
     }
 }

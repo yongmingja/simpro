@@ -202,4 +202,6 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT,SADM'])->group(
     Route::get('index-monitoring-laporan-proposals','RektoratPage\DashboardController@indexMonitoringLaporanProposal')->name('index-monitoring-laporan-proposals');
     Route::get('index-monitoring-fpkus','RektoratPage\DashboardController@indexMonitoringFpku')->name('index-monitoring-fpkus');
     Route::get('index-monitoring-laporan-fpkus','RektoratPage\DashboardController@indexMonitoringLaporanFpku')->name('index-monitoring-laporan-fpkus');
+    Route::get('index-monitoring-sarpras','RektoratPage\DashboardController@indexMonitoringSarpras')->name('index-monitoring-sarpras');
+    Route::get('status-monitoring-sarpras','RektoratPage\DashboardController@statusSarpras')->name('status-monitoring-sarpras');
 });

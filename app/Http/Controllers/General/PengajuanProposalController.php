@@ -73,7 +73,7 @@ class PengajuanProposalController extends Controller
         }
         
         // Ambil data dengan pengurutan
-        $datas = $datas->orderBy('proposals.id', 'DESC')->get();        
+        $datas = $datas->orderBy('proposals.tgl_event', 'DESC')->get();        
 
         if($request->ajax()){
             return datatables()->of($datas)
