@@ -1070,6 +1070,7 @@ class DashboardController extends Controller
                 'data_fpkus.peserta_kegiatan',
                 'data_fpkus.ketua',
                 'data_fpkus.undangan_dari',
+                'data_fpkus.no_surat_undangan',
                 'data_fpkus.nama_kegiatan',
                 'data_fpkus.tgl_kegiatan',
                 'status_laporan_fpkus.status_approval'

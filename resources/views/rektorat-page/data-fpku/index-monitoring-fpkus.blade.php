@@ -29,6 +29,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Undangan</th>
+                                <th>No FPKU</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
                                 <th>Ketua Pelaksana</th>
@@ -108,6 +109,7 @@
                     }
                 }, 
                 {data: 'undangan',name: 'undangan'},
+                {data: 'no_surat_undangan',name: 'no_surat_undangan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                 {data: 'tgl_kegiatan',name: 'tgl_kegiatan',
                     render: function ( data, type, row ){

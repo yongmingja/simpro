@@ -664,7 +664,7 @@ class LaporanProposalController extends Controller
 
     public function doneRevision(Request $request)
     {
-        $html = 'Ini adalah halaman Konfirmasi Selesai Revisi. Silakan klik pada check-box lalu ajukan kembali untuk mengkonfirmasi bahwa revisi laporan proposal yang anda buat telah selesai.<br><br>Sebagai catatan, setelah konfirmasi ajukan kembali maka status laporan anda kembali menjadi "Pengajuan".';
+        $html = 'Ini adalah halaman Konfirmasi Selesai Revisi. Silakan klik pada check-box lalu ajukan kembali untuk mengkonfirmasi bahwa revisi laporan proposal yang anda buat telah selesai.<br><br>Sebagai catatan, setelah konfirmasi ajukan kembali maka status laporan anda kembali menjadi "Menunggu validasi atasan".';
         return response()->json(['card' => $html]);
     }
 

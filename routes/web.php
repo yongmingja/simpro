@@ -71,16 +71,16 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::post('insert-proposal-baru','General\PengajuanProposalController@insertProposal')->name('insert-proposal');
     Route::get('list-faculties/{id}','General\PengajuanProposalController@faculties')->name('list-faculties');
     Route::get('check-status','General\PengajuanProposalController@checkstatus')->name('check-status-proposal');
-    Route::post('update-pegajuan-sarpras','General\PengajuanProposalController@updatepengajuan')->name('update-pegajuan-sarpras');
-    Route::delete('delete-item-sarpras','General\PengajuanProposalController@hapusItem')->name('delete-item-sarpras');
+    
+    
     Route::get('proposal-report/{id}','General\LaporanProposalController@indexlaporan')->name('index-laporan');
     Route::post('insert-laporan-proposal','General\LaporanProposalController@insertLaporanProposal')->name('insert-laporan-proposal');
     Route::get('my-report','General\LaporanProposalController@laporansaya')->name('my-report');
     Route::delete('delete-my-report','General\LaporanProposalController@hapuslaporan')->name('delete-my-report');
     Route::get('view-lampiran','General\PengajuanProposalController@viewlampiran')->name('view-lampiran-proposal');
     Route::get('check-anggaran','General\PengajuanProposalController@checkanggaran')->name('check-anggaran-proposal');
-    Route::post('update-anggaran-item','General\PengajuanProposalController@updateAnggaranItem')->name('update-anggaran-item');
-    Route::delete('delete-item-anggaran','General\PengajuanProposalController@hapusItemAnggaran')->name('delete-item-anggaran');
+    // Route::post('update-anggaran-item','General\PengajuanProposalController@updateAnggaranItem')->name('update-anggaran-item');
+    // Route::delete('delete-item-anggaran','General\PengajuanProposalController@hapusItemAnggaran')->name('delete-item-anggaran');
     Route::get('check-informasi','General\PengajuanProposalController@checkinformasi')->name('check-informasi-proposal');
     Route::post('update-nama-kegiatan','General\PengajuanProposalController@updateNamaKegiatan')->name('update-nama-kegiatan');
     Route::post('update-pendahuluan','General\PengajuanProposalController@updatePendahuluan')->name('update-pendahuluan');
@@ -124,6 +124,22 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
 
     Route::get('check-done-revision','General\LaporanProposalController@doneRevision')->name('check-done-revision');
     Route::post('confirm-done-revision','General\LaporanProposalController@confirmDoneRevision')->name('confirm-done-revision');
+
+    # Route update items
+    Route::get('index-update-sarpras/{id}','General\UpdateItemController@indexUpdateSarpras')->name('index-update-sarpras');
+    Route::get('page-update-sarpras/{id}','General\UpdateItemController@pageUpdateSarpras')->name('page-update-sarpras');
+    Route::post('page-update-sarpras','General\UpdateItemController@simpanSarpras')->name('update-sarpras-store');
+    Route::post('edit-item-sarpras','General\UpdateItemController@editItemSarpras')->name('edit-item-sarpras');
+    Route::delete('delete-item-sarpras','General\UpdateItemController@hapusItemSarpras')->name('delete-item-sarpras');
+
+    Route::get('index-update-anggaran/{id}','General\UpdateItemController@indexUpdateAnggaran')->name('index-update-anggaran');
+    Route::get('page-update-anggaran/{id}','General\UpdateItemController@pageUpdateAnggaran')->name('page-update-anggaran');
+    Route::post('page-update-anggaran','General\UpdateItemController@simpanAnggaran')->name('update-anggaran-store');
+    Route::post('edit-item-anggaran','General\UpdateItemController@editItemAnggaran')->name('edit-item-anggaran');
+    Route::delete('delete-item-anggaran','General\UpdateItemController@hapusItemAnggaran')->name('delete-item-anggaran');
+
+    Route::get('check-done-revision-proposal','General\PengajuanProposalController@doneRevision')->name('check-done-revision-proposal');
+    Route::post('confirm-done-revision-proposal','General\PengajuanProposalController@confirmSubmitUlang')->name('confirm-done-revision-proposal');
 
 });
 

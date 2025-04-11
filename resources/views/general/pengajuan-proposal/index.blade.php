@@ -155,56 +155,6 @@
                     </div>
                     {{-- Info detil keterangan --}}
 
-                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="pushedit-modal" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modal-judul-edit">Edit Sarpras</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="form-edit-sarpras" name="form-edit-sarpras" class="form-horizontal">
-                                        <input type="hidden" id="e_sarpras_id" name="e_sarpras_id" class="form-control">
-                                        <div class="col-sm-12">
-                                            <div class="col-sm-4 mb-2">
-                                                <label for="e_tgl_kegiatan" class="form-label">Tgl Kegiatan</label>
-                                                <input type="date" class="form-control" id="e_tgl_kegiatan" name="e_tgl_kegiatan" value="" placeholder="mm/dd/yyyy" />
-                                            </div>
-                                        </div>
-                                        <div class="mb-2">
-                                            <label for="e_sarpras_item" class="form-label">Item</label>
-                                            <textarea class="form-control" id="e_sarpras_item" name="e_sarpras_item" rows="4"></textarea>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <div class="col-sm-6 mb-2">
-                                                    <label for="e_jumlah" class="form-label">Jumlah</label>
-                                                    <input type="number" class="form-control" id="e_jumlah" name="e_jumlah" value="" />
-                                                </div>                                            
-                                                <div class="col-sm-6 mb-2">
-                                                    <label for="e_sumber" class="form-label">Sumber dana</label>
-                                                    <select class="select2 form-select" id="e_sumber" name="e_sumber" style="cursor:pointer;">
-                                                        <option value="1">Kampus</option>
-                                                        <option value="2">Mandiri</option>
-                                                      </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-offset-2 col-sm-12">
-                                            <hr class="mt-2">
-                                            <div class="float-sm-end">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update" value="create">Update</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Mulai modal lihat lampiran -->
                     <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
@@ -224,85 +174,6 @@
                     </div>
                     <!-- End of modal lihat lampiran-->
 
-                     <!-- Mulai modal lihat anggaran -->
-                     <div class="modal fade" tabindex="-1" role="dialog" id="show-anggaran" aria-hidden="true" data-bs-backdrop="static">
-                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title justify-content-center">Anggaran Proposal</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="table_show_anggaran" class="col-sm-12 table-responsive mb-3"></div>
-                                    <input type="hidden" id="edit_id2" name="edit_id2">
-                                    <div class="row mt-2">
-                                        <div class="col-sm-12">
-                                            <input type="checkbox" id="check_finish_anggaran" class="form-check-input"><small>&nbsp;&nbsp;<i>Jika anda telah melakukan revisi, silakan centang lalu submit ulang anggaran proposal anda.</i></small>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="mt-2">
-                                                <button type="button" class="btn btn-primary" id="submit-ulang-anggaran"><i class="bx bx-check-circle bx-tada-hover"></i> Submit ulang</button>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End of modal lihat anggaran-->
-                    
-                    <!-- modal edit anggaran-->
-                    <div class="modal fade mt-3" tabindex="-1" role="dialog" id="editanggaran-modal" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modal-judul-edit-anggaran">Edit Anggaran</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="form-edit-anggaran" name="form-edit-anggaran" class="form-horizontal">
-                                        <input type="hidden" id="props_id" name="props_id" class="form-control">  
-                                        <input type="hidden" id="e_anggaran_id" name="e_anggaran_id" class="form-control">  
-                                        <div class="mb-2">
-                                            <label for="e_anggaran_item" class="form-label">Item</label>
-                                            <input type="text" class="form-control" id="e_anggaran_item" name="e_anggaran_item" value="" />
-                                        </div>  
-                                        <div class="mb-2">
-                                            <label for="e_anggaran_biaya_satuan" class="form-label">Biaya Satuan</label>
-                                            <input type="number" min="0" class="form-control" id="e_anggaran_biaya_satuan" name="e_anggaran_biaya_satuan" value="" />
-                                        </div>
-                                        <div class="mb-2">
-                                            <label for="e_anggaran_quantity" class="form-label">Jumlah (Qty)</label>
-                                            <input type="number" min="0" class="form-control" id="e_anggaran_quantity" name="e_anggaran_quantity" value="" />
-                                        </div>   
-                                        <div class="mb-2">
-                                            <label for="e_anggaran_frequency" class="form-label">Frekuensi</label>
-                                            <input type="number" min="0" class="form-control" id="e_anggaran_frequency" name="e_anggaran_frequency" value="" />
-                                        </div>   
-                                        <div class="mb-2">
-                                            <label for="e_anggaran_sumber_dana" class="form-label">Sumber dana</label>
-                                            <select class="select2 form-select" id="e_anggaran_sumber_dana" name="e_anggaran_sumber_dana" style="cursor:pointer;">
-                                                <option value="1">Kampus</option>
-                                                <option value="2">Mandiri</option>
-                                              </select>
-                                        </div>
-                                        <div class="col-sm-offset-2 col-sm-12">
-                                            <hr class="mt-2">
-                                            <div class="float-sm-end">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary btn-block" id="btn-update-anggaran" value="create">Update</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end of modal edit anggaran-->
-
                     <!-- Mulai modal lihat informasi -->
                     <div class="modal fade" tabindex="-1" role="dialog" id="show-informasi" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
@@ -313,7 +184,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="table_show_informasi" class="col-sm-12 table-responsive mb-3"></div>
-                                    <input type="hidden" id="edit_id" name="edit_id">
+                                    {{-- <input type="hidden" id="edit_id" name="edit_id">
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <input type="checkbox" id="check_finish" class="form-check-input"><small>&nbsp;&nbsp;<i>Jika anda telah melakukan revisi, silakan centang lalu submit ulang proposal anda.</i></small>
@@ -324,7 +195,7 @@
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>                                        
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -583,6 +454,34 @@
                     </div>
                     <!-- End of modal show history delegasi -->
 
+                    <!-- Mulai modal informasi -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-done-revision" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Konfirmasi Selesai Revisi</h5>                                    
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_show_done_revision" class="col-sm-12 table-responsive mb-3"></div>
+                                    <input type="hidden" id="edit_id" name="edit_id">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <input type="checkbox" id="check_finish" class="form-check-input"><small>&nbsp;&nbsp;Selesai Revisi</small>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-primary btn-sm" id="submit-ulang">Ajukan kembali</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal informasi-->
+
                 </div>
             </div>
         </div>
@@ -675,67 +574,6 @@
         $('#detil_ket').val(data_ket);
     });
 
-    $('body').on('click','.edit-post', function(){
-        var dataId = $(this).data('id');
-        var dataTgl = $(this).attr('data-tgl');
-        var dataItem = $(this).attr('data-item');
-        var dataJumlah = $(this).attr('data-jumlah');
-        var dataSumber = $(this).attr('data-sumber');
-        $('#modal-judul-edit').html("Edit Sarpras");
-        $('#pushedit-modal').modal('show');
-        $('#e_sarpras_id').val(dataId);
-        $('#e_tgl_kegiatan').val(dataTgl);
-        $('#e_sarpras_item').val(dataItem);
-        $('#e_jumlah').val(dataJumlah);
-        $('#e_sumber').val(dataSumber);
-    });
-    if ($("#form-edit-sarpras").length > 0) {
-        $("#form-edit-sarpras").validate({
-            submitHandler: function (form) {
-                var actionType = $('#btn-update').val();
-                $('#btn-update').html('Updating..');
-
-                $.ajax({
-                    data: $('#form-edit-sarpras').serialize(),
-                    url: "{{ route('update-pegajuan-sarpras') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#form-edit-sarpras').trigger("reset");
-                        $('#pushedit-modal').modal('hide');
-                        $('#btn-update').html('Update');
-                        $('#table_proposal').DataTable().ajax.reload(null, true);
-                        Swal.fire({
-                            title: 'Good job!',
-                            text: 'Data updated successfully!',
-                            type: 'success',
-                            customClass: {
-                            confirmButton: 'btn btn-primary'
-                            },
-                            buttonsStyling: false,
-                            timer: 2000
-                        })
-                        location.reload();
-                    },
-                    error: function(response) {
-                        $('#btn-update').html('Update');
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Data failed to update!',
-                            type: 'error',
-                            customClass: {
-                            confirmButton: 'btn btn-primary'
-                            },
-                            buttonsStyling: false,
-                            timer: 2000
-                        })
-                    }
-                });
-            }
-        })
-    }
-
-
     // TOMBOL DELETE
     $(document).on('click', '.delete', function () {
         dataId = $(this).attr('id');
@@ -791,164 +629,6 @@
                 $("#table_lampiran").html(response.card)
             }
         })
-    });
-
-    // TOMBOL DELETE ITEM SARPRAS
-    $(document).on('click', '.delete-post', function () {
-        dataId = $(this).data('id');
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "It will be deleted permanently!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-            showLoaderOnConfirm: true,
-            preConfirm: function() {
-                return new Promise(function(resolve) {
-                    $.ajax({
-                        url: "{{route('delete-item-sarpras')}}",
-                        type: 'DELETE',
-                        data: {id:dataId},
-                        dataType: 'json'
-                    }).done(function(response) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'Your data has been deleted.',
-                            type: 'success',
-                            timer: 2000
-                        })
-                        location.reload();
-                    }).fail(function() {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: 'Something went wrong with ajax!',
-                            type: 'error',
-                            timer: 2000
-                        })
-                    });
-                });
-            },
-        });
-    });
-
-    $(document).on('click','.lihat-anggaran', function(){
-        dataId = $(this).data('id');
-        val_idProp = $('#edit_id2').val(dataId);
-        $.ajax({
-            url: "{{route('check-anggaran-proposal')}}",
-            method: "GET",
-            data: {proposal_id: dataId},
-            success: function(response, data){
-                $('#show-anggaran').modal('show');
-                $("#table_show_anggaran").html(response.card)
-            }
-        })
-    });
-
-    // Edit Anggaran
-    $('body').on('click','.edit-anggaran', function(){
-        var dataId = $(this).data('id');
-        var idProps = $(this).attr('data-id-proposal');
-        var dataItem = $(this).attr('data-item');
-        var dataBiayaSatuan = $(this).attr('data-biaya-satuan');
-        var dataQuantity = $(this).attr('data-quantity');
-        var dataFrequency = $(this).attr('data-frequency');
-        var dataSumberDana = $(this).attr('data-sumber-dana');
-        $('#modal-judul-edit-anggaran').html("Edit Anggaran");
-        $('#editanggaran-modal').modal('show');
-        $('#props_id').val(idProps);
-        $('#e_anggaran_id').val(dataId);
-        $('#e_anggaran_item').val(dataItem);
-        $('#e_anggaran_biaya_satuan').val(dataBiayaSatuan);
-        $('#e_anggaran_quantity').val(dataQuantity);
-        $('#e_anggaran_frequency').val(dataFrequency);
-        $('#e_anggaran_sumber_dana').val(dataSumberDana);
-    });
-    if ($("#form-edit-anggaran").length > 0) {
-        $("#form-edit-anggaran").validate({
-            submitHandler: function (form) {
-                var actionType = $('#btn-update-anggaran').val();
-                $('#btn-update-anggaran').html('Updating..');
-
-                $.ajax({
-                    data: $('#form-edit-anggaran').serialize(),
-                    url: "{{ route('update-anggaran-item') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#form-edit-anggaran').trigger("reset");
-                        $('#pushedit-modal').modal('hide');
-                        $('#btn-update-anggaran').html('Update');
-                        $('#table_proposal').DataTable().ajax.reload(null, true);
-                        Swal.fire({
-                            title: 'Good job!',
-                            text: 'Data updated successfully!',
-                            type: 'success',
-                            customClass: {
-                            confirmButton: 'btn btn-primary'
-                            },
-                            buttonsStyling: false,
-                            timer: 2000
-                        })
-                        location.reload();
-                    },
-                    error: function(response) {
-                        $('#btn-update-anggaran').html('Update');
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Data failed to update!',
-                            type: 'error',
-                            customClass: {
-                            confirmButton: 'btn btn-primary'
-                            },
-                            buttonsStyling: false,
-                            timer: 2000
-                        })
-                    }
-                });
-            }
-        })
-    }
-
-    $(document).on('click', '.delete-anggaran-post', function () {
-        dataId = $(this).data('id');
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "It will be deleted permanently!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-            showLoaderOnConfirm: true,
-            preConfirm: function() {
-                return new Promise(function(resolve) {
-                    $.ajax({
-                        url: "{{route('delete-item-anggaran')}}",
-                        type: 'DELETE',
-                        data: {id:dataId},
-                        dataType: 'json'
-                    }).done(function(response) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'Your data has been deleted.',
-                            type: 'success',
-                            timer: 2000
-                        })
-                        location.reload();
-                    }).fail(function() {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: 'Something went wrong with ajax!',
-                            type: 'error',
-                            timer: 2000
-                        })
-                    });
-                });
-            },
-        });
     });
 
     $(document).on('click','.lihat-informasi', function(){
@@ -1436,46 +1116,6 @@
         }
     });
 
-    $('#submit-ulang').click(function () {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Please check you have filled the whole documents. If you confirm to save permanently, you won't be able to change it anymore!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sure, confirm',
-            showLoaderOnConfirm: true,
-            preConfirm: function() {
-                return new Promise(function(resolve) {
-                    $.ajax({
-                        url: "{{route('re-submit-proposal')}}",
-                        type: 'POST',
-                        data: {
-                            id_proposal: $('#edit_id').val()
-                        },
-                        dataType: 'json'
-                    }).done(function(response) {
-                        Swal.fire({
-                            title: 'Saved!',
-                            text: 'Your data has been saved.',
-                            type: 'success',
-                            timer: 2000
-                        })
-                        location.reload();
-                    }).fail(function() {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: 'Something went wrong with ajax!',
-                            type: 'error',
-                            timer: 2000
-                        })
-                    });
-                });
-            },
-        });
-    });
-
     $('body').on('click','.arsip-proposal', function(){
         var dataId = $(this).data('id');
         Swal.fire({
@@ -1517,53 +1157,6 @@
         });
     })
 
-    $('#submit-ulang-anggaran').prop('disabled',true);
-    $('#check_finish_anggaran').on('change', function() {
-        if($("#check_finish_anggaran").prop('checked')){
-            $('#submit-ulang-anggaran').prop('disabled',false);
-        }else{
-            $('#submit-ulang-anggaran').prop('disabled',true);
-        }
-    });
-    $('#submit-ulang-anggaran').click(function () {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Please check you have filled the whole documents!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sure, confirm',
-            showLoaderOnConfirm: true,
-            preConfirm: function() {
-                return new Promise(function(resolve) {
-                    $.ajax({
-                        url: "{{route('re-submit-anggaran')}}",
-                        type: 'POST',
-                        data: {
-                            id_proposal: $('#edit_id2').val()
-                        },
-                        dataType: 'json'
-                    }).done(function(response) {
-                        Swal.fire({
-                            title: 'Saved!',
-                            text: 'Your data has been saved.',
-                            type: 'success',
-                            timer: 2000
-                        })
-                        location.reload();
-                    }).fail(function() {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: 'Something went wrong with ajax!',
-                            type: 'error',
-                            timer: 2000
-                        })
-                    });
-                });
-            },
-        });
-    });
 
     $('body').on('click','.lihat-delegasi', function(){
         var id_proposal = $(this).data('id');
@@ -1576,6 +1169,62 @@
                 $("#table_show_history").html(response.card)
             }
         })
+    });
+
+    $(document).on('click','.done-revision', function(){
+        dataId = $(this).data('id');
+        val_idProp = $('#edit_id').val(dataId);
+        $.ajax({
+            url: "{{route('check-done-revision-proposal')}}",
+            method: "GET",
+            data: {proposal_id: dataId},
+            success: function(response, data){
+                $('#show-done-revision').modal('show');
+                $("#table_show_done_revision").html(response.card)
+            }
+        })
+    });
+
+    $('#submit-ulang').prop('disabled',true);
+    $('#check_finish').on('change', function() {
+        if($("#check_finish").prop('checked')){
+            $('#submit-ulang').prop('disabled',false);
+        }else{
+            $('#submit-ulang').prop('disabled',true);
+        }
+    });
+
+    $('#submit-ulang').click(function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Silakan periksa kembali semua inputan anda sebelum konfirmasi untuk submit ulang!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sure, confirm',
+            preConfirm: () => {
+                return $.ajax({
+                    url: "{{route('confirm-done-revision-proposal')}}",
+                    type: 'POST',
+                    data: { id_proposal: $('#edit_id').val() },
+                    dataType: 'json',
+                }).done(() => {
+                    Swal.fire({
+                        title: 'Saved!',
+                        text: 'Your data has been saved.',
+                        icon: 'success',
+                        timer: 2000,
+                    });
+                    location.reload();
+                }).fail(() => {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: 'Something went wrong with ajax!',
+                        icon: 'error',
+                        timer: 2000,
+                    });
+                });
+            },
+        });
     });
 
 

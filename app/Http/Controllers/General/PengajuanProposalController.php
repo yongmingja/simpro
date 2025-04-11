@@ -95,22 +95,25 @@ class PengajuanProposalController extends Controller
                             switch ($get->status_approval) {
                                 case 1:
                                     $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
-                                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                                    <a class="dropdown-item" href="'.route('index-update-sarpras', encrypt(['id' => $get->id_proposal])).'" id="'.$get->id_proposal.'"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
+                                                    <a class="dropdown-item" href="'.route('index-update-anggaran', encrypt(['id' => $get->id_proposal])).'" id="'.$get->id_proposal.'"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
                                                     <a class="dropdown-item delete" id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-trash me-2 text-danger"></i>Hapus Proposal</a>';
                                     break;
                                 case 2:
                                     $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                                    <a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>
-                                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                                    <a class="dropdown-item" href="'.route('index-update-sarpras', encrypt(['id' => $get->id_proposal])).'" id="'.$get->id_proposal.'"><i class="bx bx-layer me-2 text-primary"></i>Revisi Sarpras</a>
+                                                    <a class="dropdown-item" href="'.route('index-update-anggaran', encrypt(['id' => $get->id_proposal])).'" id="'.$get->id_proposal.'"><i class="bx bx-money me-2 text-info"></i>Revisi Anggaran</a>
+                                                    <a class="dropdown-item done-revision text-danger" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-check-double me-2"></i>Selesai Revisi?</a>
                                                     <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-share me-2 text-warning"></i>Batalkan Proposal</a>';
                                     break;
                                 case 3:
-                                    $dropdownMenu .= '<a class="dropdown-item lihat-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-layer me-2 text-primary"></i>Lihat Sarpras</a>';
+                                    $dropdownMenu .= '<a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-share me-2 text-warning"></i>Batalkan Proposal</a>';
                                     break;
                                 case 4:
                                     $dropdownMenu .= '<a class="dropdown-item lihat-informasi" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-show me-2 text-success"></i>Lihat Isi Data Proposal</a>
-                                                    <a class="dropdown-item lihat-anggaran" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-money me-2 text-info"></i>Lihat Anggaran</a>
+                                                    <a class="dropdown-item" href="'.route('index-update-sarpras', encrypt(['id' => $get->id_proposal])).'" id="'.$get->id_proposal.'"><i class="bx bx-layer me-2 text-primary"></i>Revisi Sarpras</a>
+                                                    <a class="dropdown-item" href="'.route('index-update-anggaran', encrypt(['id' => $get->id_proposal])).'" id="'.$get->id_proposal.'"><i class="bx bx-money me-2 text-info"></i>Revisi Anggaran</a>
+                                                    <a class="dropdown-item done-revision text-danger" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-check-double me-2"></i>Selesai Revisi?</a>
                                                     <a class="dropdown-item arsip-proposal" data-id="'.$get->id_proposal.'" href="javascript:void(0);"><i class="bx bx-share me-2 text-warning"></i>Batalkan Proposal</a>';
                                     break;
                                 default:
@@ -523,23 +526,7 @@ class PengajuanProposalController extends Controller
         return response()->json(['card' => $html]);
     }
 
-    public function updatepengajuan(Request $request){
-        $post = DataPengajuanSarpras::where('id',$request->e_sarpras_id)->update([
-            'tgl_kegiatan'  => $request->e_tgl_kegiatan,
-            'sarpras_item'  => $request->e_sarpras_item,
-            'jumlah'        => $request->e_jumlah,
-            'sumber_dana'   => $request->e_sumber,
-            'status'        => 1,
-            'alasan'        => '',
-        ]);
-        return response()->json($post);
-    }
 
-    public function hapusItem(Request $request)
-    {
-        $post = DataPengajuanSarpras::where('id',$request->id)->delete(); 
-        return response()->json($post);
-    }
 
     public function previewproposal($id)
     {
@@ -699,88 +686,6 @@ class PengajuanProposalController extends Controller
         return response()->json(['card' => $html]);
     }
 
-    public function checkanggaran(Request $request)
-    {
-        $checkKeteranganDiTolak = DB::table('status_proposals')->where('id_proposal',$request->proposal_id)->select('keterangan_ditolak')->get();
-        $datas = DataRencanaAnggaran::where('id_proposal',$request->proposal_id)->get();
-        if($checkKeteranganDiTolak->count() > 0){
-            foreach($checkKeteranganDiTolak as $dataKet){
-                if($dataKet->keterangan_ditolak == ''){
-                    $html = '';
-                } else {
-                    $html = '<i class="bx bx-spa mb-1"></i> Keterangan pending:  <p style="color: #f3920b; font-size: 13px; font-style:italic;">'.$dataKet->keterangan_ditolak.'</p>
-                    <hr>';
-                }
-            }
-        } else {
-            $html .= '';
-        }
-
-        if($datas->count() > 0){
-        $html .= '<table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Item</th>
-                            <th>Biaya Satuan</th>
-                            <th>Jumlah</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-        
-            foreach($datas as $no => $item){
-                $html .= '<tr>
-                        <td>'.++$no.'</td>
-                        <td>'.$item->item.'</td>
-                        <td>'.currency_IDR($item->biaya_satuan).'</td>
-                        <td>'.$item->quantity.'</td>';
-                    if($item->status == '1'){
-                        $html .= '<td><a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id-proposal="'.$request->proposal_id.'" data-id="'.$item->id.'" data-item="'.$item->item.'" data-biaya-satuan="'.$item->biaya_satuan.'" data-quantity="'.$item->quantity.'" data-frequency="'.$item->frequency.'" data-sumber-dana="'.$item->sumber_dana.'" data-placement="bottom" title="Edit data ini" data-original-title="Edit data ini" class="edit-anggaran"><i class="bx bx-edit bx-xs"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$item->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-anggaran-post"><i class="bx bx-trash bx-xs"></i></a></td>';
-                    } else {
-                        $html .= '<td></td></tr>';
-                    }
-            }
-            $html .= '</tbody>
-                </table>';
-        } else {
-            $html = '<table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Item</th>
-                            <th>Biaya Satuan</th>
-                            <th>Jumlah</th>
-                            <th>Status</th>
-                            <th>Ket</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="6" style="text-align: center;">No data available in table</td>
-                        </tr>
-                    </tbody>';
-        }
-        return response()->json(['card' => $html]);
-    }
-
-    public function updateAnggaranItem(Request $request){
-        $post = DataRencanaAnggaran::where('id',$request->e_anggaran_id)->update([
-            'item'          => $request->e_anggaran_item,
-            'biaya_satuan'  => $request->e_anggaran_biaya_satuan,
-            'quantity'      => $request->e_anggaran_quantity,
-            'frequency'     => $request->e_anggaran_frequency,
-            'sumber_dana'   => $request->e_anggaran_sumber_dana
-        ]);
-        return response()->json($post);
-    }
-
-    public function hapusItemAnggaran(Request $request)
-    {
-        $post = DataRencanaAnggaran::where('id',$request->id)->delete(); 
-        return response()->json($post);
-    }
-
     public function checkinformasi(Request $request)
     {
         $datas = Proposal::where('id',$request->proposal_id)->get();
@@ -870,7 +775,13 @@ class PengajuanProposalController extends Controller
         return response()->json($post);
     }
 
-    public function submitUlangProposal(Request $request)
+    public function doneRevision(Request $request)
+    {
+        $html = 'Ini adalah halaman Konfirmasi Selesai Revisi. Silakan klik pada check-box lalu ajukan kembali untuk mengkonfirmasi bahwa revisi proposal yang anda buat telah selesai.<br><br>Sebagai catatan, setelah konfirmasi ajukan kembali maka status anda kembali menjadi "Menunggu validasi atasan".';
+        return response()->json(['card' => $html]);
+    }
+
+    public function confirmSubmitUlang(Request $request)
     {
         # Get Data Proposals
         $getDataProposal = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
@@ -883,24 +794,24 @@ class PengajuanProposalController extends Controller
             ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
             ->select('pegawais.email')
             ->first();
-        # get Email Admin Umum
-        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where('jabatans.kode_jabatan','=','ADU')
-            ->select('pegawais.email')
-            ->first();
-        $listEmail = [$emailADU->email,$emailDekanBiro->email];
+        $listEmail = strtolower(['bennyalfian@uvers.ac.id',$emailDekanBiro->email]);
+        $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
 
-        $isiData = [
-            'name' => 'Revisi Proposal Kegiatan oleh '.$getDataProposal->nama_pegawai.'',
-            'body' => 'Revisi Proposal Kegiatan: '.$getDataProposal->nama_kegiatan.' telah selesai dilakukan.',
-        ];
+        if (isset($listEmail) && count($listEmail) > 0){
+            $isiData = [
+                'name' => 'Revisi Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+                'body' => 'Revisi Proposal Kegiatan: '.$request->nama_kegiatan.' telah selesai dilakukan.',
+            ];
+            Mail::to($listEmail)->send(new KirimEmail($isiData));
+        } else {
+            return 'No valid email addresses found';
+        }  
 
         $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
             'status_approval' => 1,
             'keterangan_ditolak' => ''
         ]);
-        Mail::to($listEmail)->send(new KirimEmail($isiData));
+
         return response()->json($post);
     }
 
@@ -909,40 +820,6 @@ class PengajuanProposalController extends Controller
         $post = Proposal::where('id',$request->id_proposal)->update([
             'is_archived' => 1
         ]);
-        return response()->json($post);
-    }
-
-    public function submitUlangAnggaran(Request $request)
-    {
-        # Get Data Proposals
-        $getDataProposal = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->where('proposals.id',$request->id_proposal)
-            ->select('proposals.id_fakultas_biro','proposals.nama_kegiatan','pegawais.nama_pegawai')
-            ->first();
-        # get Email Dekan
-        $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
-            ->select('pegawais.email')
-            ->first();
-        # get Email Admin Umum
-        $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where('jabatans.kode_jabatan','=','ADU')
-            ->select('pegawais.email')
-            ->first();
-        $listEmail = [$emailADU->email,$emailDekanBiro->email];
-
-        $isiData = [
-            'name' => 'Revisi Anggaran Proposal Kegiatan oleh '.$getDataProposal->nama_pegawai.'',
-            'body' => 'Revisi Anggaran Proposal Kegiatan: '.$getDataProposal->nama_kegiatan.' telah selesai dilakukan.',
-        ];
-
-        $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
-            'status_approval' => 1,
-            'keterangan_ditolak' => ''
-        ]);
-        Mail::to($listEmail)->send(new KirimEmail($isiData));
         return response()->json($post);
     }
 }

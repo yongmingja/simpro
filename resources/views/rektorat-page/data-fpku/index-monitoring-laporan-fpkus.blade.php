@@ -30,6 +30,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Undangan</th>
+                                <th>No FPKU</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Ketua Pelaksana</th>
                                 <th>Detail Anggaran</th>
@@ -112,6 +113,7 @@
                     }
                 }, 
                 {data: 'undangan',name: 'undangan'},
+                {data: 'no_surat_undangan',name: 'no_surat_undangan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                 {data: 'ketua_pelaksana',name: 'ketua_pelaksana'},
                 {data: 'detail',name: 'detail'},
