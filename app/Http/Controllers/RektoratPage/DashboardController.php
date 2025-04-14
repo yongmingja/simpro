@@ -492,7 +492,7 @@ class DashboardController extends Controller
                         return '';
                 }                
             })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
             })->addColumn('history', function($data){
                 $isExist = DelegasiProposal::where('id_proposal',$data->id)->select('catatan_delegator','delegasi')->get();
                 if($isExist->count() > 0){
@@ -547,7 +547,7 @@ class DashboardController extends Controller
             ->addColumn('laporan', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-search bx-xs"></i> lihat</a>';
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><small><i class="bx bx-search bx-xs"></i> lihat</small></a>';
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada laporan</small>';
                 }
@@ -578,7 +578,7 @@ class DashboardController extends Controller
                 return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada laporan</small>';
 
             })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
             })
             ->rawColumns(['laporan','action','detail'])
             ->addIndexColumn(true)
@@ -1039,9 +1039,9 @@ class DashboardController extends Controller
             })->addColumn('lampirans', function($data){
                 $isExist = DB::table('lampiran_fpkus')->where('id_fpku',$data->id)->get();
                 if($isExist->count() > 0){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran" style="font-size: 10px;">lihat lampiran</a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran"><small class="text-info"><i class="bx bx-detail bx-tada-hover bx-xs"></i> Lihat</small></a>';
                 } else {
-                    return '<i class="bx bx-minus-circle text-secondary"></i>';
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i></small>';
                 }
             })->addColumn('lihatDelegasi', function($data){
                 $isExist = DelegasiFpku::where('id_fpku',$data->id)->select('catatan_delegator','delegasi')->get();

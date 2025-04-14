@@ -217,8 +217,8 @@
         @if($roleDefault == "SADM" || $roleDefault == "ADU")
         <li class="menu-item">
             <a href="{{route('data-proposal.index')}}" class="menu-link {{set_active('data-proposal.index')}}">
-            <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
-            <div data-i18n="Validasi Proposal">Validasi Proposal</div>
+            <i class="menu-icon tf-icons bx bx-badge-check bx-tada-hover"></i>
+            <div data-i18n="Validasi Sarpras">Validasi Sarpras</div>
             </a>
         </li>
         <li class="menu-item">
