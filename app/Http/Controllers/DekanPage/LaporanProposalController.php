@@ -78,17 +78,17 @@ class LaporanProposalController extends Controller
                 if($query->count() > 0){
                     return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat laporan</a>';
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return $this->statusLaporanProposal($data->id);
                 } else {
-                    return '<i class="text-secondary">Belum ada laporan</i>';
+                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
                 }
             })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
             })
             ->rawColumns(['laporan','action','detail'])
             ->addIndexColumn(true)

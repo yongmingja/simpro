@@ -439,7 +439,7 @@
         </li> 
             <li class="menu-item">
                 <a href="{{ route('index-monitoring-sarpras') }}" class="menu-link {{ set_active('index-monitoring-sarpras') }}">
-                <i class="menu-icon tf-icons bx bxs-purchase-tag bx-tada-hover"></i>
+                <i class="menu-icon tf-icons bx bx-search bx-tada-hover"></i>
                 <div data-i18n="Monitor Sarpras">Monitor Sarpras</div>
                 </a>
             </li>

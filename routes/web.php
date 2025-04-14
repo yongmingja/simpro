@@ -160,6 +160,7 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:PEG,UCC,RKT'])->group(fun
     Route::resource('page-laporan-proposal','DekanPage\LaporanProposalController');
     Route::post('dean-report-approval-y','DekanPage\LaporanProposalController@approvalDeanY')->name('dean-report-approval-y');
     Route::post('dean-report-approval-n','DekanPage\LaporanProposalController@approvalDeanN')->name('dean-report-approval-n');
+    Route::get('status-sarpras','DekanPage\DataProposalController@statusSarpras')->name('status-sarpras');
 });
 
 /* 

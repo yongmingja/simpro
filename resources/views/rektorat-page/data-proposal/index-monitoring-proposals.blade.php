@@ -62,7 +62,7 @@
                                     <th>Tgl Kegiatan</th>
                                     <th>Proposal Dibuat</th>
                                     <th>Detail Anggaran</th>
-                                    <th>Fakultas atau Unit</th>
+                                    <th>Unit Penyelenggara</th>
                                     <th>Status</th>
                                     <th>History Delegasi</th>
                                 </tr>

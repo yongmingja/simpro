@@ -45,8 +45,7 @@
                                   <th>Tgl Kegiatan</th>
                                   <th>Proposal Dibuat</th>
                                   <th>Detail Anggaran</th>
-                                  <th>Fakultas / Biro</th>
-                                  <th>Prodi / Biro</th>
+                                  <th>Unit Penyelenggara</th>
                                   <th width="12%;">Status (Validasi)</th>
                                   <th>Lampiran</th>
                                   <th>History Delegasi</th>
@@ -265,8 +264,11 @@
                         }
                     },
                     {data: 'detail',name: 'detail'},
-                    {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
-                    {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
+                    {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro',
+                        render: function(data, type, row){
+                            return row.nama_fakultas_biro + ' &bull; ' + row.nama_prodi_biro
+                        }
+                    },
                     {data: 'validasi',name: 'validasi'},
                     {data: 'vlampiran',name: 'vlampiran'},
                     {data: 'lihatDelegasi',name: 'lihatDelegasi'},

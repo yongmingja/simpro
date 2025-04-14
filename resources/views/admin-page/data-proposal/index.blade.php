@@ -33,8 +33,7 @@
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
                                   <th>Proposal Dibuat</th>
-                                  <th>Fakultas / Biro</th>
-                                  <th>Prodi / Biro</th>
+                                  <th>Unit Penyelenggara</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>
@@ -160,8 +159,15 @@
                         return moment(row.created_at).format("DD MMM YYYY")
                     }
                 },
-                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
-                {data: 'nama_prodi_biro',name: 'nama_prodi_biro'},
+                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro',
+                    render: function(data, type, row) {
+                        if(row.nama_fakultas_biro != null || row.nama_prodi_biro != null) {
+                            return row.nama_fakultas_biro +' &bull; '+ row.nama_prodi_biro
+                        } else {
+                            return '';
+                        }
+                    }
+                },
                 {data: 'action',name: 'action'},
             ]
         });

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\Proposal;
 use App\Models\General\DataRencanaAnggaran;
+use App\Models\General\DataPengajuanSarpras;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\FormRkat;
 use App\Models\Master\Pegawai;
@@ -81,9 +82,11 @@ class DataProposalController extends Controller
                     return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
                 }
             })->addColumn('detail', function($data){
-                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><i class="bx bx-detail bx-tada-hover"></i> Detail</a>';
+                return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
+            })->addColumn('detail_sarpras', function($data){
+                return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" class="status-sarpras"><small class="text-info"><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a></a>';
             })
-            ->rawColumns(['action','preview','detail'])
+            ->rawColumns(['action','preview','detail','detail_sarpras'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -310,5 +313,54 @@ class DataProposalController extends Controller
 
         return response()->json(['card' => $html]);
                 
+    }
+
+    public function statusSarpras(Request $request)
+    {
+        $datas = DataPengajuanSarpras::where('id_proposal',$request->proposal_id)->get();
+        
+            $html = '<div class="card">
+            <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tgl Kegiatan</th>
+                    <th>Sarpras Item</th>
+                    <th>Jumlah</th>
+                    <th width="25%;">Status</th>
+                </tr>
+                </thead>
+                <tbody>';
+                if($datas->count() > 0){
+                    foreach($datas as $no => $data){
+                        $html .= '<tr>
+                            <td>'.++$no.'</td>
+                            <td>'.tanggal_indonesia($data->tgl_kegiatan).'</td>
+                            <td>'.$data->sarpras_item.'</td>
+                            <td>'.$data->jumlah.'</td>
+                            <td style="text-align: center;">';
+                            if($data->status == '1'){
+                                $html .= '<small class="text-warning"><i>Belum divalidasi</i></small>';
+                            } else if($data->status == '2'){
+                                $html .= '<small class="text-success"><i>ACC Admin Umum</i></small>';
+                            } else if($data->status == '3'){
+                                $html .= '<small class="text-danger"><i>Ditolak</i></small>';
+                            } else {
+                                $html .= '<small class="text-success"><i>ACC Admin Umum</i></small>';
+                            }
+                            $html .= '</td>   
+                        </tr>';
+                    }
+                } else {
+                    $html .= '<tr>
+                        <td colspan="5" style="text-align: center;">No data available in table</td>                    
+                    </tr>';
+                }
+            $html .= '</tbody>
+                </table> 
+                </div>            
+            </div>';
+        return response()->json(['card' => $html]);
     }
 }
