@@ -160,14 +160,18 @@
                     }
                 },
                 {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro',
-                    render: function(data, type, row) {
-                        if(row.nama_fakultas_biro != null || row.nama_prodi_biro != null) {
-                            return row.nama_fakultas_biro +' &bull; '+ row.nama_prodi_biro
-                        } else {
-                            return '';
+                        render: function(data, type, row) {
+                            if(row.nama_fakultas_biro != null || row.nama_prodi_biro != null) {                                
+                                if(row.nama_fakultas_biro === row.nama_prodi_biro){
+                                    return row.nama_fakultas_biro
+                                } else {
+                                    return row.nama_fakultas_biro +' &bull; '+ row.nama_prodi_biro
+                                }
+                            } else {
+                                return '';
+                            }
                         }
-                    }
-                },
+                    },
                 {data: 'action',name: 'action'},
             ]
         });
