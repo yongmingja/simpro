@@ -58,6 +58,8 @@
                                     <th>#</th>
                                     <th>Preview</th>
                                     <th>Kategori</th>
+                                    <th>Kode Renstra</th>
+                                    <th>Kode Pagu</th>
                                     <th>Nama Kegiatan</th>
                                     <th>Tgl Kegiatan</th>
                                     <th>Proposal Dibuat</th>
@@ -147,6 +149,8 @@
                     }, 
                     {data: 'preview',name: 'preview'},
                     {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                    {data: 'kode_renstra',name: 'kode_renstra'},
+                    {data: 'kode_pagu',name: 'kode_pagu'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'tgl_event',name: 'tgl_event',
                         render: function ( data, type, row ){

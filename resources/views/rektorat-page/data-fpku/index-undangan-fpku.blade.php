@@ -251,6 +251,7 @@
                             buttonsStyling: false,
                             timer: 2000
                         })
+                        location.reload();
                     },
                     error: function(response) {
                         $('#tombol-simpan').html('Kirim');
@@ -265,6 +266,7 @@
                             buttonsStyling: false,
                             timer: 2000
                         })
+                        location.reload();
                     }
                 });
             }

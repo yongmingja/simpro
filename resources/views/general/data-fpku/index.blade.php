@@ -61,7 +61,7 @@
                                         <div class="row p-3">
                                             <input type="hidden" id="id" name="id">
                                             <div style="text-align: center;">
-                                                <label for="cek_tanggal" class="form-label mb-2">Apakah perlu pengecekan tanggal kegiatan ?</label>
+                                                <label for="cek_tanggal" class="form-label mb-2">Apakah perlu pengecekan tanggal kegiatan (14 Hari Sebelum acara) ?</label>
                                                 <div class="mb-2">
                                                     <label class="switch switch-warning">
                                                         <span class="switch-label">Tidak</span>
@@ -79,7 +79,7 @@
                                                 </div>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="no_surat_undangan" class="form-label">No Surat Undangan <small class="text-warning"><i>(terakhir: {{$latestFpkuNumber}})</i></small></label>
+                                                <label for="no_surat_undangan" class="form-label">No FPKU</label> <small class="text-info"><i>(No terakhir: {{$latestFpkuNumber}})</i></small>
                                                 <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" value="" autofocus />
                                                 <span class="text-danger" id="noUndanganErrorMsg" style="font-size: 10px;"></span>
                                             </div>
@@ -146,7 +146,7 @@
                                                     <table class="table table-borderless">
                                                         <tr>
                                                             <td><button type="button" class="btn btn-warning btn-block addField mt-2"><i class="bx bx-plus-circle bx-xs"></i></button></td>
-                                                            <td><input type="text" name="nama_berkas[]" class="w-100 form-control" placeholder="input nama berkas"></td>
+                                                            <td><input type="text" name="nama_berkas[]" class="w-100 form-control" placeholder="e.g: Hasil Scan Undangan"></td>
                                                             <td><input type="file" name="berkas[]" class="w-100 form-control" accept=".pdf, .docs, .docx"></td>
                                                         </tr>
                                                     </table>

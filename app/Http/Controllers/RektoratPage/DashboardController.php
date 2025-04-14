@@ -8,6 +8,7 @@ use App\Models\General\Proposal;
 use App\Models\General\DataFpku;
 use App\Models\Master\Pegawai;
 use App\Models\Master\HandleProposal;
+use App\Models\Master\MasterFormRkat;
 use App\Models\General\LaporanFpku;
 use App\Models\General\DelegasiFpku;
 use App\Models\General\DelegasiProposal;
@@ -448,7 +449,8 @@ class DashboardController extends Controller
             ->leftJoin('jenis_kegiatans', 'jenis_kegiatans.id', '=', 'proposals.id_jenis_kegiatan')
             ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
             ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-            ->select('proposals.id AS id', 'proposals.*', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'jenis_kegiatans.nama_jenis_kegiatan', 'status_proposals.status_approval');
+            ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+            ->select('proposals.id AS id', 'proposals.*', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'jenis_kegiatans.nama_jenis_kegiatan', 'status_proposals.status_approval','form_rkats.kode_renstra','form_rkats.kode_pagu');
 
         // Filter berdasarkan tahun akademik
         if ($tahun_akademik && $tahun_akademik != 'all') {
@@ -523,7 +525,8 @@ class DashboardController extends Controller
             ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
             ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
             ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai', 'status_laporan_proposals.keterangan_ditolak', 'status_laporan_proposals.created_at AS tgl_proposal');
+            ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
+            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai', 'status_laporan_proposals.keterangan_ditolak', 'status_laporan_proposals.created_at AS tgl_proposal','form_rkats.kode_renstra','form_rkats.kode_pagu');
 
         // Filter Tahun Akademik
         if ($tahun_akademik && $tahun_akademik != 'all') {

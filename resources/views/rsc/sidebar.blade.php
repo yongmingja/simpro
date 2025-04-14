@@ -349,12 +349,14 @@
             @endforeach        
         @endif
 
+        @if($roleDefault == "WAREK" || $roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('form-rkat.index')}}" class="menu-link {{set_active('form-rkat.index')}}">
             <i class="menu-icon tf-icons bx bx-list-plus bx-tada-hover"></i>
             <div data-i18n="Buat RKAT">Buat RKAT</div>
             </a>
         </li> 
+        @endif
 
         @if($checkIDValidatorDiketahui->count() > 0)
             @foreach($checkIDValidatorDiketahui as $idvalidator)
@@ -437,12 +439,7 @@
         <li class="menu-header small fw-medium">
             <div data-i18n="MENU LAINNYA">MENU LAINNYA</div>
         </li> 
-            <li class="menu-item">
-                <a href="{{ route('index-monitoring-sarpras') }}" class="menu-link {{ set_active('index-monitoring-sarpras') }}">
-                <i class="menu-icon tf-icons bx bx-search bx-tada-hover"></i>
-                <div data-i18n="Monitor Sarpras">Monitor Sarpras</div>
-                </a>
-            </li>
+            
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('index-monitoring-proposals')}} OR {{set_active('index-monitoring-laporan-proposals')}}">
                 <i class="menu-icon tf-icons bx bx-search bx-tada-hover"></i>
@@ -457,6 +454,11 @@
                     <li class="menu-item">
                         <a href="{{route('index-monitoring-laporan-proposals')}}" class="menu-link {{set_active('index-monitoring-laporan-proposals')}}">
                         <div data-i18n="Laporan PJK">Laporan PJK</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('index-monitoring-sarpras') }}" class="menu-link {{ set_active('index-monitoring-sarpras') }}">
+                        <div data-i18n="Monitor Sarpras">Monitor Sarpras</div>
                         </a>
                     </li>
                 </ul>

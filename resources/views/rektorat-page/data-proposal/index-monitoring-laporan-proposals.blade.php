@@ -59,6 +59,8 @@
                                     <th>#</th>
                                     <th>Laporan</th>
                                     <th>Kategori</th>
+                                    <th>Kode Renstra</th>
+                                    <th>Kode Pagu</th>
                                     <th>Nama Kegiatan</th>
                                     <th>Detail Anggaran</th>
                                     <th>Ketua Pelaksana</th>
@@ -127,6 +129,8 @@
                     }, 
                     {data: 'laporan',name: 'laporan'},
                     {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
+                    {data: 'kode_renstra',name: 'kode_renstra'},
+                    {data: 'kode_pagu',name: 'kode_pagu'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'detail',name: 'detail'},
                     {data: 'nama_pegawai',name: 'nama_pegawai'},

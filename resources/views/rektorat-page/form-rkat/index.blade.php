@@ -29,6 +29,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
+                                  <th>Fakultas / Biro</th>
                                   <th>Sasaran Strategi</th>
                                   <th>Program Strategis</th>
                                   <th>Kode Renstra</th>
@@ -72,6 +73,7 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
+                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
                 {data: 'sasaran_strategi',name: 'sasaran_strategi'},
                 {data: 'program_strategis',name: 'program_strategis'},
                 {data: 'kode_renstra',name: 'kode_renstra'},
