@@ -4,6 +4,7 @@
     <title>Data dan Laporan FPKU</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid p-3">
@@ -48,7 +49,12 @@
                             }
                             @endphp
                             <td style="vertical-align: middle; ">{!! implode(", <br>",$pegawai) !!}</td>
-                            <td style="vertical-align: middle; text-align: center;"><a href="{{$data->link_gdrive}}">{{$data->link_gdrive}}</a></td>
+                            <td style="vertical-align: middle; text-align: center;">
+                                @if($data->berkas != '') <a href="{{''.URL::to('/').'/'.$data->berkas}}" target="_blank">Lihat Undangan <i class="bx bx-link bx-xs"></i></a> 
+                                @else 
+                                <a href="{{$data->link_gdrive}}" target="_blank">Lihat Undangan <i class="bx bx-link bx-xs"></i></a> 
+                                @endif
+                            </td>
                             <td style="vertical-align: middle; text-align: center;">
                             @if(!empty($data->status_approval))
                                 @switch($data->status_approval)
@@ -69,7 +75,7 @@
                             @if(!empty($data->status_approval))
                                 @switch($data->status_approval)
                                     @case(3)
-                                        <a href="{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}" target="_blank">{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}</a>
+                                        <a href="{{''.URL::to('/').'/preview-laporan-fpku'.'/'.encrypt($data->id_laporan)}}" target="_blank">Lihat laporan <i class="bx bx-link bx-xs"></i></a>
                                         @break
                                     @case(2)
                                         Ditolak Rektorat

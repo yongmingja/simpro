@@ -429,6 +429,7 @@ class LaporanFpkuController extends Controller
                 'data_fpkus.tgl_kegiatan',
                 'data_fpkus.peserta_kegiatan',
                 'pegawais.nama_pegawai as ketua',
+                'lampiran_fpkus.berkas',
                 'lampiran_fpkus.link_gdrive',
                 'status_laporan_fpkus.status_approval',
                 'laporan_fpkus.id AS id_laporan',
