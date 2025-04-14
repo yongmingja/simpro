@@ -79,8 +79,8 @@
                                                 </div>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="no_surat_undangan" class="form-label">No Surat Undangan <small class="text-warning"><i>(terakhir: {{$latestFpkuNumber->no_surat_undangan}})</i></small></label>
-                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="Input {{$latestFpkuNumber->no_surat_undangan}}" value="" autofocus />
+                                                <label for="no_surat_undangan" class="form-label">No Surat Undangan <small class="text-warning"><i>(terakhir: {{$latestFpkuNumber}})</i></small></label>
+                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" value="" autofocus />
                                                 <span class="text-danger" id="noUndanganErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                                                                       

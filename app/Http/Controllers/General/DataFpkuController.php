@@ -47,7 +47,12 @@ class DataFpkuController extends Controller
         }
         $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
         $getTahunAkademik = TahunAkademik::select('id','year','is_active')->where('is_active',1)->get();
-        $latestFpkuNumber = DataFpku::select('no_surat_undangan')->latest()->first();
+        $checkNumber = DataFpku::select('no_surat_undangan')->latest()->first();
+        if($checkNumber == ''){
+            $latestFpkuNumber = 'Belum ada data!';
+        } else {
+            $latestFpkuNumber = $checkNumber->no_surat_undangan;
+        }
         return view('general.data-fpku.index', compact('getDataPegawai','getTahunAkademik','latestFpkuNumber'));
     }
 
