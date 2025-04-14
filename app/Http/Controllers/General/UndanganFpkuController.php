@@ -39,7 +39,11 @@ class UndanganFpkuController extends Controller
     public function previewUndangan($id)
     {
         $ID = decrypt($id);
-        $dataUndangan = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.dibuat_oleh')->where('data_fpkus.id',$ID)->select('data_fpkus.id AS id','data_fpkus.*','pegawais.nama_pegawai')->get();
+        $dataUndangan = DataFpku::leftJoin('pegawais','pegawais.id','=','data_fpkus.dibuat_oleh')
+            ->leftJoin('pegawais AS peg','peg.id','=','data_fpkus.ketua')
+            ->where('data_fpkus.id',$ID)
+            ->select('data_fpkus.id AS id','data_fpkus.*','pegawais.nama_pegawai','peg.nama_pegawai AS ketua')
+            ->get();
         $dataKeperluan = DB::table('fpku_keperluans')->where('id_fpku',$ID)->get();
         $verifiedQrCode = DB::table('status_fpkus')->where([['id_fpku',$ID],['status_approval',2]])->get();
 

@@ -36,8 +36,10 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Tahun Akademik</th>
+                                  <th>No FPKU</th>
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
+                                  <th>Ketua Pelaksana</th>
                                   <th>Peserta Kegiatan</th>
                                   <th>Aksi</th>
                                 </tr>
@@ -77,19 +79,19 @@
                                                 </div>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="no_surat_undangan" class="form-label">No Surat Undangan</label>
-                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="e.g: No. 001/UVERS/III/2025" value="" autofocus />
+                                                <label for="no_surat_undangan" class="form-label">No Surat Undangan <small class="text-warning"><i>(terakhir: {{$latestFpkuNumber->no_surat_undangan}})</i></small></label>
+                                                <input type="text" class="form-control" id="no_surat_undangan" name="no_surat_undangan" placeholder="Input {{$latestFpkuNumber->no_surat_undangan}}" value="" autofocus />
                                                 <span class="text-danger" id="noUndanganErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                                                                       
                                             <div class="mb-3">
                                                 <label for="undangan_dari" class="form-label">Undangan Dari</label>
-                                                <input type="text" class="form-control" id="undangan_dari" name="undangan_dari" value="" />
+                                                <input type="text" class="form-control" id="undangan_dari" name="undangan_dari" value="" placeholder="Input undangan dari" />
                                                 <span class="text-danger" id="undanganDariErrorMsg" style="font-size: 10px;"></span>
                                             </div>                                          
                                             <div class="mb-3">
                                                 <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
-                                                <input type="text" class="form-control" id="nama_kegiatan" name="nama_kegiatan" value="" />
+                                                <input type="text" class="form-control" id="nama_kegiatan" name="nama_kegiatan" value="" placeholder="Input nama kegiatan" />
                                                 <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
                                             </div>  
                                             <div class="mb-3">
@@ -99,17 +101,18 @@
                                                 <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="ketua" class="form-label">PIC Pembuat Laporan</label>
+                                                <label for="ketua" class="form-label">Ketua Pelaksana</label>
                                                 <select class="form-select select2" id="ketua" name="ketua" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_ketua">- Pilih -</option>
                                                     @foreach($getDataPegawai as $pegawai)
                                                     <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
                                                     @endforeach
                                                 </select>
+                                                <div class="mt-2 text-info" style="font-size: 11px;">**Ketua Pelaksana sebagai PIC yang membuat laporan</div>
                                                 <span class="text-danger" id="ketuaErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             <div class="mb-3">
-                                                <label for="id_pegawai" class="form-label">Peserta Kegiatan (Include PIC Pembuat Laporan)</label>
+                                                <label for="id_pegawai" class="form-label">Peserta Kegiatan (Include Ketua Pelaksana)</label>
                                                 <select class="form-select select2" multiple id="id_pegawai" name="id_pegawais[]" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_pegawai">- Pilih -</option>
                                                     @foreach($getDataPegawai as $pegawai)
@@ -199,12 +202,14 @@
                     }
                 }, 
                 {data: 'year',name: 'year'},
+                {data: 'no_surat_undangan',name: 'no_surat_undangan'},
                 {data: 'preview_undangan',name: 'preview_undangan'},
                 {data: 'tgl_kegiatan',name: 'tgl_kegiatan',
                     render: function (data, type, row) {
                         return moment(row.tgl_kegiatan).format("DD MMM YYYY")
                     }
                 },
+                {data: 'ketua',name: 'ketua'},
                 {data: 'nama_pegawai',name: 'nama_pegawai'},
                 {data: 'action',name: 'action'},
             ]

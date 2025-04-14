@@ -71,6 +71,11 @@
                 <td class="td_isi_undangan">@foreach($dataUndangan as $tglKegiatan) {{tanggal_indonesia($tglKegiatan->tgl_kegiatan)}} @endforeach</td>
             </tr>
             <tr>
+                <td style="vertical-align: top;">Ketua Pelaksana</td>
+                <td style="vertical-align: top;" class="td_titik">:</td>
+                <td class="td_isi_undangan">@foreach($dataUndangan as $namaKetua) {{$namaKetua->ketua}} @endforeach</td>
+            </tr>
+            <tr>
                 <td style="vertical-align: top;">Peserta Kegiatan</td>
                 <td class="td_titik" style="vertical-align: top;">:</td>
                 <td class="td_isi_undangan">@foreach($dataUndangan as $peserta) @php $dataPegawai = \App\Models\Master\Pegawai::whereIn('id',$peserta->peserta_kegiatan)->select('nama_pegawai')->get(); 

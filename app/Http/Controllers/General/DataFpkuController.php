@@ -17,7 +17,8 @@ class DataFpkuController extends Controller
     public function index(Request $request)
     {
         $datas = DataFpku::leftJoin('tahun_akademiks','tahun_akademiks.id','=','data_fpkus.id_tahun_akademik')
-            ->select('data_fpkus.id AS id','data_fpkus.*','tahun_akademiks.year')
+            ->leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
+            ->select('data_fpkus.id AS id','data_fpkus.*','tahun_akademiks.year','pegawais.nama_pegawai AS ketua')
             ->where('tahun_akademiks.is_active',1)
             ->orderBy('data_fpkus.id','DESC')
             ->get();
@@ -46,7 +47,8 @@ class DataFpkuController extends Controller
         }
         $getDataPegawai = Pegawai::select('id','nama_pegawai')->get();
         $getTahunAkademik = TahunAkademik::select('id','year','is_active')->where('is_active',1)->get();
-        return view('general.data-fpku.index', compact('getDataPegawai','getTahunAkademik'));
+        $latestFpkuNumber = DataFpku::select('no_surat_undangan')->latest()->first();
+        return view('general.data-fpku.index', compact('getDataPegawai','getTahunAkademik','latestFpkuNumber'));
     }
 
     public function store(Request $request)
