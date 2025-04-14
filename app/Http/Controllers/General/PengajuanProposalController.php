@@ -37,9 +37,9 @@ class PengajuanProposalController extends Controller
         $statusMapping = [
             '' => [],
             'all' => [],
-            'pending' => [['status_proposals.status_approval', 1]],
+            'pending' => [['status_proposals.status_approval','<=', 3]],
             'accepted' => [['status_proposals.status_approval', 5]],
-            'denied' => [['status_proposals.status_approval', 4]],
+            'denied' => [['status_proposals.status_approval','=', [2,4]]],
         ];
         
         // Cek apakah status yang diminta ada di mapping

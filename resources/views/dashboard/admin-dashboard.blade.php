@@ -160,7 +160,7 @@
         </div>
         @endif
 
-        @if($recentRole == 'WAREK' || $recentRole == 'RKT')
+        @if($recentRole == 'WAREK')
           <div class="row">
             <div class="col-md-4 col-lg-4 col-xl-4 mb-4 mb-xl-0">
               <div class="card h-100">
@@ -276,7 +276,7 @@
           
         @endif
 
-        @if($recentRole == 'PEG')
+        @if($recentRole == 'PEG' || $recentRole == 'RKT')
           <div class="row">
             <div class="col-md-6 col-lg-6 col-xl-6 mb-4 mb-xl-0">
               <div class="card h-100">

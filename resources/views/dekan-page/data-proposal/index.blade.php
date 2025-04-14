@@ -45,7 +45,7 @@
                                 <th>Proposal Dibuat</th>
                                 <th>Total Anggaran</th>
                                 <th>Detail Sarpras</th>
-                                <th>Fakultas / Biro</th>
+                                <th>Unit Penyelenggara</th>
                                 <th>Aksi</th>
                             </tr>
                             </thead>
