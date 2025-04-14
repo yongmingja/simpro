@@ -59,8 +59,8 @@
                                     <th>Nama Kegiatan</th>
                                     <th>Tgl Kegiatan</th>
                                     <th>Proposal Dibuat</th>
+                                    <th>Sarpras</th>
                                     <th>Unit Penyelenggara</th>
-                                    <th>Detail</th>
                                 </tr>
                               </thead>
                             </table>
@@ -68,7 +68,7 @@
                     </div>
 
                     <!-- Modal status sarpras -->
-                    <div class="modal fade" tabindex="-1" role="dialog" id="status-sarpras" aria-hidden="true" data-bs-backdrop="static">
+                    <div class="modal fade" tabindex="-1" role="dialog" id="status-sarpras" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -76,14 +76,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    
-                                    <div id="table" class="col-sm-12 table-responsive mb-3">
-                                    </div>
-                                    
-                                    <div class="modal-footer">
-                                        <button class="btn btn-success d-none" id="acceptAll"> Terima semua</button>
-                                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
+                                    <div id="table" class="col-sm-12 table-responsive mb-3"></div>
                                 </div>
                             </div>
                         </div>
@@ -140,6 +133,7 @@
                             return moment(row.created_at).format("DD MMM YYYY")
                         }
                     },
+                    {data: 'action',name: 'action'},
                     {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro',
                         render: function(data, type, row) {
                             if(row.nama_fakultas_biro != null || row.nama_prodi_biro != null) {                                
@@ -152,8 +146,7 @@
                                 return '';
                             }
                         }
-                    },
-                    {data: 'action',name: 'action'},
+                    },                    
                 ]
             });
         }

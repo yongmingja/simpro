@@ -83,8 +83,8 @@
                             <td>:&nbsp;{{date('d M Y',strtotime($data->tanggal_lahir))}}</td>
                           </tr>
                           <tr>
-                            <td width="13%;">Agama</td>
-                            <td>:&nbsp;{{$data->agama}}</td>
+                            <td width="13%;">Status Kepegawaian</td>
+                            <td>:&nbsp;{{$data->keterangan}}</td>
                           </tr>
                           @endforeach
                         @else

@@ -56,7 +56,7 @@ class DataPegawaiController extends Controller
                     'email'             => $request->email,
                     'password'          => Hash::make($request['password']),
                     'jenis_kelamin'     => $request->jenis_kelamin,
-                    'agama'             => $request->agama,
+                    // 'agama'             => $request->agama,
                     'id_status_pegawai' => 1,
                 ]); 
 
@@ -102,7 +102,10 @@ class DataPegawaiController extends Controller
     public function profile()
     {
         if(Auth::guard('pegawai')->check()){
-            $datas = Pegawai::where('user_id',Auth::user()->user_id)->get();
+            $datas = Pegawai::leftJoin('status_pegawais','status_pegawais.id','=','pegawais.id_status_pegawai')
+                ->select('pegawais.user_id','pegawais.id AS id','pegawais.nama_pegawai','pegawais.email','pegawais.tanggal_lahir','status_pegawais.keterangan')
+                ->where('pegawais.user_id',Auth::user()->user_id)
+                ->get();
         }
         return view('admin-page.data-user.profile', compact('datas'));
     }

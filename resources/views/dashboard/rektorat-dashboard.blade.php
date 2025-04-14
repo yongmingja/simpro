@@ -45,6 +45,7 @@
                                   <th>Tgl Kegiatan</th>
                                   <th>Proposal Dibuat</th>
                                   <th>Detail Anggaran</th>
+                                  <th>Detail Sarpras</th>
                                   <th>Unit Penyelenggara</th>
                                   <th width="12%;">Status (Validasi)</th>
                                   <th>Lampiran</th>
@@ -209,6 +210,22 @@
                 </div>
                 <!-- End of modal show history delegasi -->
 
+                <!-- Modal status sarpras -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="status-sarpras" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title justify-content-center">Status Sarana Prasarana</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">                                
+                                <div id="table_sarpras" class="col-sm-12 table-responsive mb-3"></div>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of status sarpras-->
+
                 </div>
             </div>
         </div>
@@ -264,9 +281,18 @@
                         }
                     },
                     {data: 'detail',name: 'detail'},
+                    {data: 'detail_sarpras',name: 'detail_sarpras'},
                     {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro',
                         render: function(data, type, row){
-                            return row.nama_fakultas_biro + ' &bull; ' + row.nama_prodi_biro
+                            if(row.nama_fakultas_biro != null || row.nama_prodi_biro != null) {                                
+                                if(row.nama_fakultas_biro === row.nama_prodi_biro){
+                                    return row.nama_fakultas_biro
+                                } else {
+                                    return row.nama_fakultas_biro +' &bull; '+ row.nama_prodi_biro
+                                }
+                            } else {
+                                return '';
+                            }
                         }
                     },
                     {data: 'validasi',name: 'validasi'},
@@ -495,6 +521,19 @@
             success: function(response, data){
                 $('#show-history').modal('show');
                 $("#table_show_history").html(response.card)
+            }
+        })
+    });
+
+    $(document).on('click','.status-mon-sarpras', function(){
+        dataId = $(this).data('id');
+        $.ajax({
+            url: "{{route('status-monitoring-sarpras')}}",
+            method: "GET",
+            data: {proposal_id: dataId},
+            success: function(response, data){
+                $('#status-sarpras').modal('show');
+                $("#table_sarpras").html(response.card)
             }
         })
     });

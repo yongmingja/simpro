@@ -125,7 +125,7 @@
                     <!-- End of modal lihat detail anggaran-->
 
                     <!-- Modal status sarpras -->
-                    <div class="modal fade" tabindex="-1" role="dialog" id="status-sarpras" aria-hidden="true" data-bs-backdrop="static">
+                    <div class="modal fade" tabindex="-1" role="dialog" id="status-sarpras" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -133,14 +133,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    
-                                    <div id="table" class="col-sm-12 table-responsive mb-3">
-                                    </div>
-                                    
-                                    <div class="modal-footer">
-                                        <button class="btn btn-success d-none" id="acceptAll"> Terima semua</button>
-                                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
+                                    <div id="table" class="col-sm-12 table-responsive mb-3"></div>
                                 </div>
                             </div>
                         </div>

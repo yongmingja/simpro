@@ -138,8 +138,10 @@ class DashboardController extends Controller
                         return '';
                     }
                 }
+            })->addColumn('detail_sarpras', function($data){
+                return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" class="status-mon-sarpras"><small class="text-info"><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a></a>';
             })
-            ->rawColumns(['action','validasi','vlampiran','detail','lihatDelegasi'])
+            ->rawColumns(['action','validasi','vlampiran','detail','lihatDelegasi','detail_sarpras'])
             ->addIndexColumn(true)
             ->make(true);
         }

@@ -92,7 +92,7 @@
                                                 <span class="text-danger" id="jenisKelaminErrorMsg" style="font-size: 10px;"></span>
                                             </div>
 
-                                            <div class="mb-3">
+                                            {{-- <div class="mb-3">
                                                 <label class="form-label" for="agama">Agama</label>
                                                 <select class="select2 form-control border border-primary" id="agama" name="agama" aria-label="Default select example" style="cursor:pointer;">
                                                     <option option value="" id="choose_agama" readonly>- Select -</option>
@@ -106,7 +106,7 @@
                                                     <option value="Lainnya">Lainnya</option>
                                                 </select>
                                                 <span class="text-danger" id="agamaErrorMsg" style="font-size: 10px;"></span>
-                                            </div>
+                                            </div> --}}
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
