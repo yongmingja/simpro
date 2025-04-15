@@ -184,18 +184,6 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="table_show_informasi" class="col-sm-12 table-responsive mb-3"></div>
-                                    {{-- <input type="hidden" id="edit_id" name="edit_id">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <input type="checkbox" id="check_finish" class="form-check-input"><small>&nbsp;&nbsp;<i>Jika anda telah melakukan revisi, silakan centang lalu submit ulang proposal anda.</i></small>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <div class="mt-2">
-                                                <button type="button" class="btn btn-primary" id="submit-ulang"><i class="bx bx-check-circle bx-tada-hover"></i> Submit ulang</button>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>                                        
-                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -1105,15 +1093,6 @@
     $('body').on('click','.info-ditolakdekan',function(){
     var dataKet = $(this).attr('data-keteranganditolak');
     alert(dataKet);
-    });
-
-    $('#submit-ulang').prop('disabled',true);
-    $('#check_finish').on('change', function() {
-        if($("#check_finish").prop('checked')){
-            $('#submit-ulang').prop('disabled',false);
-        }else{
-            $('#submit-ulang').prop('disabled',true);
-        }
     });
 
     $('body').on('click','.arsip-proposal', function(){

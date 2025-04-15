@@ -433,12 +433,6 @@ class PengajuanProposalController extends Controller
             ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]])
             ->select('pegawais.email')
             ->first();
-        # get Email Admin Umum
-        // $emailADU = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-        //     ->where('jabatans.kode_jabatan','=','ADU')
-        //     ->select('pegawais.email')
-        //     ->first();
         $listEmail = strtolower(['bennyalfian@uvers.ac.id',$emailDekanBiro->email]);
         $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
 
@@ -783,29 +777,30 @@ class PengajuanProposalController extends Controller
 
     public function confirmSubmitUlang(Request $request)
     {
-        # Get Data Proposals
-        $getDataProposal = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-            ->where('proposals.id',$request->id_proposal)
-            ->select('proposals.id_fakultas_biro','proposals.nama_kegiatan','pegawais.nama_pegawai')
-            ->first();
-        # get Email Dekan
-        $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
-            ->select('pegawais.email')
-            ->first();
-        $listEmail = strtolower(['bennyalfian@uvers.ac.id',$emailDekanBiro->email]);
-        $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
+        # Error sending email, please make sure id fakultas biro is not null
+        // # Get Data Proposals
+        // $getDataProposal = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+        //     ->where('proposals.id',$request->id_proposal)
+        //     ->select('proposals.id_fakultas_biro','proposals.nama_kegiatan','pegawais.nama_pegawai')
+        //     ->first();
+        // # get Email Dekan
+        // $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //     ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$getDataProposal->id_fakultas_biro]])
+        //     ->select('pegawais.email')
+        //     ->first();
+        // // $listEmail = strtolower();
+        // $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
 
-        if (isset($listEmail) && count($listEmail) > 0){
-            $isiData = [
-                'name' => 'Revisi Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
-                'body' => 'Revisi Proposal Kegiatan: '.$request->nama_kegiatan.' telah selesai dilakukan.',
-            ];
-            Mail::to($listEmail)->send(new KirimEmail($isiData));
-        } else {
-            return 'No valid email addresses found';
-        }  
+        // if (isset($listEmail) && count($listEmail) > 0){
+        //     $isiData = [
+        //         'name' => 'Revisi Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+        //         'body' => 'Revisi Proposal Kegiatan: '.$request->nama_kegiatan.' telah selesai dilakukan.',
+        //     ];
+        //     Mail::to(['bennyalfian@uvers.ac.id',$emailDekanBiro->email])->send(new KirimEmail($isiData));
+        // } else {
+        //     return 'No valid email addresses found';
+        // } 
 
         $post = DB::table('status_proposals')->where('id_proposal',$request->id_proposal)->update([
             'status_approval' => 1,
