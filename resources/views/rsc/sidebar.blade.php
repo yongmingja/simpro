@@ -456,11 +456,6 @@
                         <div data-i18n="Laporan PJK">Laporan PJK</div>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="{{ route('index-monitoring-sarpras') }}" class="menu-link {{ set_active('index-monitoring-sarpras') }}">
-                        <div data-i18n="Monitor Sarpras">Monitor Sarpras</div>
-                        </a>
-                    </li>
                 </ul>
             </li> 
             <li class="menu-item">

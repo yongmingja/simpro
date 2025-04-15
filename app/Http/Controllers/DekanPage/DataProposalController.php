@@ -213,8 +213,8 @@ class DataProposalController extends Controller
         if ($proposal->is_archived != 1) { // Kondisi jika tidak diarsip
             switch ($data->status_approval) {
                 case 1:
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;'
-                        . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Ditolak" class="tombol-no btn btn-xs btn-danger"><small"><i class="bx bx-xs bx-x"></i></small></a>&nbsp;&nbsp;'
+                        . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="tombol-yes btn btn-xs btn-success"><small><i class="bx bx-xs bx-check-double"></i></small></a>';
                 case 2:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
                         . '<span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>

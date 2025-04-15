@@ -76,16 +76,16 @@ class LaporanProposalController extends Controller
             ->addColumn('laporan', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i> lihat laporan</a>';
+                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal"><small class="text-success"><i class="bx bx-file bx-xs"></i> lihat</small></a>';
                 } else {
-                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                    return '<small><i class="text-secondary">Belum ada</i></small>';
                 }
             })->addColumn('action', function($data){
                 $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                 if($query->count() > 0){
                     return $this->statusLaporanProposal($data->id);
                 } else {
-                    return '<small><i class="text-secondary">Belum ada laporan</i></small>';
+                    return '<small><i class="text-secondary">Belum ada</i></small>';
                 }
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
@@ -109,8 +109,8 @@ class LaporanProposalController extends Controller
 
             switch ($data->status_approval) {
                 case 1:
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;'
-                        . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Ditolak" class="tombol-no btn btn-xs btn-danger"><small><i class="bx bx-xs bx-x"></i></small></a>&nbsp;&nbsp;'
+                        . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="tombol-yes btn btn-xs btn-success"><small><i class="bx bx-xs bx-check-double"></i></small></a>';
                 case 2:
                     return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
                         . '<small class="text-danger">Ditolak Atasan</small><span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';

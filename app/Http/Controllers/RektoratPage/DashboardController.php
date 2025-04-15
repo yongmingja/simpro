@@ -504,8 +504,10 @@ class DashboardController extends Controller
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }
+            })->addColumn('detail_sarpras', function($data){
+                return '<a href="javascript:void()" class="status-mon-sarpras text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
             })
-            ->rawColumns(['preview','status','detail','history'])
+            ->rawColumns(['preview','status','detail','history','detail_sarpras'])
             ->addIndexColumn(true)
             ->make(true);
         }

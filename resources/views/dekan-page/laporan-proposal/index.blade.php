@@ -35,7 +35,7 @@
                                 </select>
                             </fieldset>
                         </div>
-                        <table class="table table-hover table-responsive" id="table_proposal">
+                        <table class="table table-hover table-responsive table-sm" id="table_proposal">
                             <thead>
                             <tr>
                                 <th>#</th>
