@@ -138,14 +138,14 @@ class PengajuanProposalController extends Controller
             })->addColumn('lampiran', function($data){
                 $ifExist = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
                 if($ifExist > 0){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><small class="text-info"><i class="bx bx-xs bx-paperclip"></i> Lihat</small></a>';
                 } else {
                     return '<i class="bx bx-minus-circle text-secondary"></i>';
                 }
             })->addColumn('delegasi', function($data){
                 $isExist = DelegasiProposal::where('id_proposal',$data->id)->select('catatan_delegator','delegasi')->get();
                 if($isExist->count() > 0){
-                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small><i class="bx bx-paperclip bx-xs"></i> lihat</small></a>';
+                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small class="text-info"><i class="bx bx-show bx-xs"></i> Lihat</small></a>';
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }

@@ -620,9 +620,9 @@ class DashboardController extends Controller
             ->addColumn('action', function($data){
                 $checkState = DB::table('status_fpkus')->where('id_fpku',$data->id)->select('status_approval')->first();
                 if($checkState->status_approval == 1){
-                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi FPKU" data-placement="bottom" data-original-title="Validasi FPKU" class="text-warning tombol-yes"><i class="bx bx-sm bx-check-shield"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
+                    return '<a href="javascript:void(0)" name="validasi" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Validasi FPKU" data-placement="bottom" data-original-title="Validasi FPKU" class="text-warning tombol-yes"><small class="text-warning">Validasi FPKU</small></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span></div>';
                 } else {
-                    return '<a href="javascript:void(0)" class="btn btn-success btn-xs disabled"><i class="bx bx-xs bx-check-double"></i></a>';
+                    return '<small class="text-muted">Sudah divalidasi</small>';
                 }
                 // return '';
             })->addColumn('ketua_pelaksana', function($data){
@@ -725,11 +725,13 @@ class DashboardController extends Controller
     {
         // Query
         $query = DataFpku::leftJoin('laporan_fpkus', 'laporan_fpkus.id_fpku', '=', 'data_fpkus.id')
+            ->leftJoin('pegawais','pegawais.id','=','data_fpkus.ketua')
             ->leftJoin('status_laporan_fpkus', 'status_laporan_fpkus.id_laporan_fpku', '=', 'laporan_fpkus.id')
             ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'data_fpkus.id_tahun_akademik')
             ->select(
                 'laporan_fpkus.id_fpku AS id',
                 'laporan_fpkus.id AS id_laporan',
+                'pegawais.nama_pegawai AS ketua_pelaksana',
                 'data_fpkus.peserta_kegiatan',
                 'data_fpkus.ketua',
                 'data_fpkus.undangan_dari',
@@ -785,13 +787,10 @@ class DashboardController extends Controller
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i></small>';
                 }
-            })->addColumn('ketua_pelaksana', function($data){
-                $name = Pegawai::where('id','=',$data->ketua)->select('nama_pegawai')->first();
-                return $name->nama_pegawai;
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id_laporan.'"><small><i class="bx bx-detail bx-tada-hover"></i> Detail</small></a>';
             })
-            ->rawColumns(['action','undangan','lampirans','ketua_pelaksana','detail'])
+            ->rawColumns(['action','undangan','lampirans','detail'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -1055,7 +1054,7 @@ class DashboardController extends Controller
             })->addColumn('lihatDelegasi', function($data){
                 $isExist = DelegasiFpku::where('id_fpku',$data->id)->select('catatan_delegator','delegasi')->get();
                 if($isExist->count() > 0){
-                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small><i class="bx bx-paperclip bx-xs"></i> lihat</small></a>';
+                    return '<a href="javascript:void(0)" class="lihat-delegasi" data-id="'.$data->id.'"><small class="text-info"><i class="bx bx-paperclip bx-xs"></i> lihat</small></a>';
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }

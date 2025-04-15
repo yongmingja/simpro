@@ -30,26 +30,26 @@ class DataProposalController extends Controller
                     foreach($countVal as $result){
                         $totalData = $countVal->count();
                         if($result->status == '1'){
-                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Validasi Sarpras" data-original-title="Validasi Sarpras" class="validasi-proposal"><span class="badge bg-label-primary badge-sm">Validasi sarpras</span><span class="badge bg-danger badge-notifications">'.$totalData.'</span></a>';
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Validasi Sarpras" data-original-title="Validasi Sarpras" class="validasi-proposal"><small class="text-info">Validasi Sarpras</small><span class="badge bg-danger badge-notifications">'.$totalData.'</span></a>';
                         } else {
-                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Validasi Sarpras" data-original-title="Validasi Sarpras" class="validasi-proposal"><span class="badge bg-label-primary badge-sm">Validasi sarpras</span></a>';
+                            return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Validasi Sarpras" data-original-title="Validasi Sarpras" class="validasi-proposal"><small class="text-info">Validasi Sarpras</small></a>';
                         }
                     }
                 } else {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Validasi Sarpras" data-original-title="Validasi Sarpras" class="validasi-proposal"><span class="badge bg-label-primary badge-sm">Validasi sarpras</span></a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="bottom" title="Validasi Sarpras" data-original-title="Validasi Sarpras" class="validasi-proposal"><small class="text-info">Validasi Sarpras</small></a>';
                 }
                 
             })->addColumn('preview', function($data){
-                # check any attachment
-                $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
-                if($q > 0){
-                    $button = '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="btn btn-outline-info btn-sm v-lampiran"><i class="bx bx-xs bx-file"></i></a>';
-                    return $button;
+                return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal">'.$data->nama_kegiatan.'</a>';
+            })->addColumn('lampiran', function($data){
+                $query = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
+                if($query > 0 ){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><small class="text-info"><i class="bx bx-xs bx-paperclip"></i> Lihat</small></a>';
                 } else {
-                    return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-food-menu bx-xs"></i></a>';
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i></small>';
                 }
             })
-            ->rawColumns(['action','preview'])
+            ->rawColumns(['action','preview','lampiran'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -84,7 +84,7 @@ class DataProposalController extends Controller
                             <td>'.$data->jumlah.'</td>
                             <td style="text-align: center;">';
                             if($data->status == '1'){
-                                $html .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
+                                $html .= '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Ditolak" data-original-title="Ditolak" class="btn btn-danger btn-xs tombol-no"><i class="bx bx-xs bx-x"></i></a>&nbsp;&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju atau di ACC" data-placement="bottom" data-original-title="Setuju atau di ACC" class="btn btn-success btn-xs tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
                             } else if($data->status == '2'){
                                 $html .= '<span class="badge bg-label-success">Diterima</span>';
                             } else if($data->status == '3'){
@@ -102,7 +102,7 @@ class DataProposalController extends Controller
                 }
             $html .= '</tbody>
                 </table> 
-                <div style="font-size: 12px;"><p class="mt-2 text-warning"><i>*Silahkan gunakan centang untuk validasi semua sarpras</i></p>   </div>        
+                <div style="font-size: 12px;"><p class="mt-2 text-info">**Silahkan gunakan centang untuk validasi semua sarpras</p>   </div>        
                 </div>            
             </div>';
         return response()->json(['card' => $html]);

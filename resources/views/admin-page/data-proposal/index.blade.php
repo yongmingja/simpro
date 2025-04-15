@@ -29,11 +29,12 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Preview</th>
+                                  <th>Kategori Proposal</th>
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
                                   <th>Proposal Dibuat</th>
                                   <th>Unit Penyelenggara</th>
+                                  <th>Lampiran</th>
                                   <th>Aksi</th>
                                 </tr>
                               </thead>
@@ -147,8 +148,8 @@
                     return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, 
+                {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'preview',name: 'preview'},
-                {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                 {data: 'tgl_event',name: 'tgl_event',
                     render: function ( data, type, row ){
                         return moment(row.tgl_event).format("DD MMM YYYY")
@@ -172,6 +173,7 @@
                             }
                         }
                     },
+                {data: 'lampiran',name: 'lampiran'},
                 {data: 'action',name: 'action'},
             ]
         });

@@ -40,7 +40,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Laporan</th>
-                                <th>Proposal</th>
+                                <th>Kategori</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Detail Anggaran</th>
                                 <th>Nama Pengaju</th>

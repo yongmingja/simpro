@@ -35,7 +35,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Tahun Akademik</th>
+                                  <th>Tahun</th>
                                   <th>No FPKU</th>
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>

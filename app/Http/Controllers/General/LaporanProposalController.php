@@ -155,7 +155,7 @@ class LaporanProposalController extends Controller
                 if($checkStatusProposal->count() > 0){
                     $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
                     if($query->count() > 0){
-                        return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal btn btn-outline-success btn-sm"><i class="bx bx-file bx-xs"></i></a>';
+                        return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal"><small class="text-info"><i class="bx bx-file bx-xs"></i> Lihat</small></a>';
                     } else {
                         return '<a href="'.Route('index-laporan',encrypt(['id' => $data->id])).'" class="text-primary"><i class="bx bx-plus-circle bx-tada-hover bx-xs"></i> <small>Buat Laporan</small></a>';
                     }

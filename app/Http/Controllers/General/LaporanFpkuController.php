@@ -52,7 +52,7 @@ class LaporanFpkuController extends Controller
             ->addColumn('action', function($data){
                 $checkStatus = LaporanFpku::where('id_fpku',$data->id)->get();
                 if($checkStatus->count() > 0){                    
-                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><i class="bx bx-book-open bx-sm text-primary"></i></a>';                    
+                    return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><small class="text-info"><i class="bx bx-book-open bx-xs"></i> Lihat</small></a>';                    
                 } else {
                     if($data->ketua == Auth::user()->id){
                         return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';
@@ -80,7 +80,7 @@ class LaporanFpkuController extends Controller
             })->addColumn('lampirans', function($data){
                 $checkLampiran = DB::table('lampiran_laporan_fpkus')->where('id_laporan_fpku',$data->id)->get();
                 if($checkLampiran->count() > 0){                   
-                    return '<a href="javascript:void(0)" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="v-lampiran"><small><i class="bx bx-paperclip bx-xs"></i> Lihat</small></a>';
+                    return '<a href="javascript:void(0)" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="v-lampiran"><small class="text-info"><i class="bx bx-paperclip bx-xs"></i> Lihat</small></a>';
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }

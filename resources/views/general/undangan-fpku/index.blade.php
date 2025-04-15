@@ -33,7 +33,7 @@
                                 <th>Nama Kegiatan</th>
                                 <th>Tgl Kegiatan</th>
                                 <th>Lampiran</th>
-                                <th>Aksi</th>
+                                <th>Lihat FPKU</th>
                             </tr>
                             </thead>
                         </table>
