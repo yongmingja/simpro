@@ -24,7 +24,6 @@
         $getModelValidator = \App\Models\Master\ValidatorProposal::Class;
         $getModelJabatanPegawai = \App\Models\Master\JabatanPegawai::Class;
         $getModelHandleProposal = \App\Models\Master\HandleProposal::Class;
-        $getModelFormRkat = \App\Models\Master\FormRkat::Class;
         
         $getPeran = $getModelJabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
             ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
@@ -46,8 +45,6 @@
             ->select('jabatans.kode_jabatan')
             ->where('jabatans.kode_jabatan',$recentPeranIs)
             ->get();
-
-        $totalData = $getModelFormRkat::where('status_validasi',0)->count();
 
     @endphp
 @elseif(Auth::guard('mahasiswa')->user())
@@ -428,7 +425,6 @@
                     <a href="{{route('index-form-rkat')}}" class="menu-link {{set_active('index-form-rkat')}}">
                     <i class="menu-icon tf-icons bx bx-spreadsheet bx-tada-hover"></i>
                     <div data-i18n="Validasi Form RKAT">Validasi Form RKAT</div>
-                    <div class="badge @if($totalData == 0) bg-success @else bg-danger @endif rounded-pills ms-auto" style="border-radius: 15px;">{{$totalData}}</div>
                     </a>
                     
                 </li> 

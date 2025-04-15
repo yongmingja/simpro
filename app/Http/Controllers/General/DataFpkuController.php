@@ -39,7 +39,7 @@ class DataFpkuController extends Controller
                 }
                 return implode(", <br>", $pegawai);
             })->addColumn('preview_undangan', function($data){
-                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Preview Undangan" data-original-title="Preview Undangan" class="preview-undangan">'.$data->nama_kegiatan.'</a>';
+                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Preview FPKU" data-original-title="Preview FPKU" class="preview-undangan">'.$data->nama_kegiatan.'</a>';
             })
             ->rawColumns(['action','nama_pegawai','preview_undangan'])
             ->addIndexColumn(true)

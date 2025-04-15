@@ -25,7 +25,10 @@ class FormRkatController extends Controller
                 } elseif($data->status_validasi == 2){
                     return '<small><i class="text-danger">Ditolak</i></small>';
                 } else {
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes"><i class="bx bx-sm bx-check-shield text-success"></i></a>';
+                    $button = '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no btn btn-xs btn-danger"><i class="bx bx-x bx-xs"></i></a>';
+                    $button .= '&nbsp;&nbsp;';
+                    $button .= '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes btn btn-xs btn-success"><i class="bx bx-xs bx-check-double"></i></a>';
+                    return $button;
                 }
             })
             ->rawColumns(['action'])

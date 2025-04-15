@@ -20,13 +20,13 @@ class UndanganFpkuController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Undangan" data-original-title="Preview Undangan" class="preview-undangan btn btn-outline-info btn-sm"><i class="bx bx-show bx-xs"></i></a>';
+                return '<a href="'.Route('preview-undangan',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview FPKU" data-original-title="Preview FPKU" class="preview-undangan"><small class="text-info"><i class="bx bx-show bx-xs"></i> Lihat</small></a>';
             })->addColumn('lampirans', function($data){
                 $isExist = DB::table('lampiran_fpkus')->where('id_fpku',$data->id)->get();
                 if($isExist->count() > 0){
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran"><small><i class="bx bx-paperclip bx-xs"></i> Lihat</small></a>';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="lihat lampiran" data-placement="bottom" data-original-title="lihat lampiran" class="lihat-lampiran"><small class="text-info"><i class="bx bx-paperclip bx-xs"></i> Lihat</small></a>';
                 } else {
-                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
+                    return '<small class="text-info"><i class="bx bx-minus-circle bx-xs"></i> Tidak ada</small>';
                 }
             })
             ->rawColumns(['action','lampirans'])

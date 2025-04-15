@@ -74,6 +74,25 @@
                         </div>
                     </div>
 
+                    <!-- Mulai modal lampiran proposal -->
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-detail" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Lampiran Proposal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_l" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal lampiran proposal -->
+
                     <!-- Mulai modal lihat detail anggaran -->
                     <div class="modal fade mt-3" tabindex="-1" role="dialog" id="show-detail-anggaran" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
@@ -200,6 +219,19 @@
                 fill_datatable();
             }
         });
+    });
+
+    $('body').on('click','.v-lampiran', function(){
+        var data_id = $(this).data('id');
+        $.ajax({
+            url: "{{route('view-lampiran-proposal')}}",
+            method: "GET",
+            data: {proposal_id: data_id},
+            success: function(response, data){
+                $('#show-detail').modal('show');
+                $("#table_l").html(response.card)
+            }
+        })
     });
 
     $('body').on('click','.lihat-detail', function(){
