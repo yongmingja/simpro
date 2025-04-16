@@ -118,9 +118,11 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::post('update-penutup-laporan-proposal','General\LaporanProposalController@updatePenutup')->name('update-penutup-laporan-proposal');
 
     # Route Revisi Realisasi Anggaran Laporan Proposal
-    Route::get('check-realisasi-anggaran','General\LaporanProposalController@checkRealisasiAnggaran')->name('check-realisasi-anggaran-proposal');
-    Route::post('update-realisasi-anggaran-item','General\LaporanProposalController@updateRealisasiAnggaranItem')->name('update-realisasi-anggaran-item');
-    Route::delete('delete-item-realisasi-anggaran','General\LaporanProposalController@hapusItemRealisasiAnggaran')->name('delete-item-realisasi-anggaran');
+    Route::get('index-revisi-anggaran-laporan-proposal/{id}','General\UpdateItemController@indexRevisiAnggaranLaporanProposal')->name('index-revisi-anggaran-laporan-proposal');
+    Route::get('page-revisi-anggaran-laporan-proposal/{id}','General\UpdateItemController@pageRevisiAnggaranLaporanProposal')->name('page-revisi-anggaran-laporan-proposal');
+    Route::post('page-revisi-anggaran-laporan-proposal','General\UpdateItemController@simpanAnggaranLaporanProposal')->name('revisi-anggaran-laporan-proposal-store');
+    Route::post('edit-item-anggaran-laporan-proposal','General\UpdateItemController@editItemAnggaranLaporanProposal')->name('edit-item-anggaran-laporan-proposal');
+    Route::delete('delete-item-anggaran-laporan-proposal','General\UpdateItemController@hapusItemAnggaranLaporanProposal')->name('delete-item-anggaran-laporan-proposal');
 
     Route::get('check-done-revision','General\LaporanProposalController@doneRevision')->name('check-done-revision');
     Route::post('confirm-done-revision','General\LaporanProposalController@confirmDoneRevision')->name('confirm-done-revision');

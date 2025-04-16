@@ -29,7 +29,7 @@
                               <thead>
                                 <tr>
                                   <th>#</th>
-                                  <th>Kategori Proposal</th>
+                                  <th>Kategori</th>
                                   <th>Nama Kegiatan</th>
                                   <th>Tgl Kegiatan</th>
                                   <th>Proposal Dibuat</th>

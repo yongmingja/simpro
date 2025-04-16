@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\DataPengajuanSarpras;
 use App\Models\General\DataRencanaAnggaran;
+use App\Models\General\DataRealisasiAnggaran;
 use DB;
 
 class UpdateItemController extends Controller
@@ -155,6 +156,80 @@ class UpdateItemController extends Controller
     public function hapusItemAnggaran(Request $request)
     {
         $post = DataRencanaAnggaran::where('id',$request->id)->delete(); 
+        return response()->json($post);
+    }
+
+    # Page Untuk Revisi Anggaran Laporan Proposal
+    public function indexRevisiAnggaranLaporanProposal(Request $request, $id)
+    {
+        $ID = decrypt($id);
+        return view('general.laporan-proposal.update-items.update-anggaran', ['id' => $id]);
+    }
+
+    public function pageRevisiAnggaranLaporanProposal(Request $request, $id)
+    {
+        $getID = decrypt($id);
+        $datas = DataRealisasiAnggaran::where('id_proposal',$getID)->get();
+        if($request->ajax()){
+            return datatables()->of($datas)
+            ->addColumn('action', function($data){
+                return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-item="'.$data->item.'" data-biaya-satuan="'.$data->biaya_satuan.'" data-quantity="'.$data->quantity.'" data-frequency="'.$data->frequency.'" data-sumber-dana="'.$data->sumber_dana.'" data-placement="bottom" title="Edit data sarpras" data-original-title="Edit data sarpras" class="edit-post"><i class="bx bx-edit bx-xs text-success"></i></a>&nbsp;&nbsp;
+                <a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Hapus item ini?" data-original-title="Hapus item ini?" class="delete-post"><i class="bx bx-trash bx-xs text-danger"></i></a>';
+            })->addColumn('status', function($data){
+                if($data->status == 1){
+                    return '<small class="text-warning"><i class="bx bx-minus-circle bx-xs"></i> Belum divalidasi</small>';
+                } elseif($data->status = 2){
+                    return '<small class="text-danger"><i class="bx bx-x-circle bx-xs"></i> Ditolak</small>';
+                } else {
+                    return '<small class="text-success"><i class="bx bx-check-circle bx-xs"></i> Diterima</small>';
+                }
+            })->addColumn('sumber_dana', function($data){
+                if($data->sumber_dana == 1){
+                    return 'Kampus';
+                } else {
+                    return 'Mandiri';
+                }
+            })
+            ->rawColumns(['action','status','sumber_dana'])
+            ->addIndexColumn(true)
+            ->make(true);
+        }
+        return view('general.laporan-proposal.update-items.update-anggaran',['proposal_id' => $getID]);
+    }
+
+    public function simpanAnggaranLaporanProposal(Request $request)
+    {
+        $getId = decrypt($request->id_proposal);
+        $post = DataRealisasiAnggaran::updateOrCreate([
+            'id_proposal'   => $getId['id'],
+            'item'          => $request->item,
+            'biaya_satuan'  => $request->biaya_satuan,
+            'quantity'      => $request->quantity,
+            'frequency'     => $request->frequency,
+            'sumber_dana'   => $request->sumber_dana,
+            'status'        => 1,
+            'created_at'    => now(),
+            'updated_at'    => now()
+        ]);
+        return response()->json($post);
+    }
+
+    public function editItemAnggaranLaporanProposal(Request $request){
+        $post = DataRealisasiAnggaran::where('id',$request->e_anggaran_id)->update([
+            'item'          => $request->e_item,
+            'biaya_satuan'  => $request->e_biaya_satuan,
+            'quantity'      => $request->e_quantity,
+            'frequency'     => $request->e_frequency,
+            'sumber_dana'   => $request->e_sumber_dana,
+            'status'        => 1,
+            'updated_at'    => now()
+        ]);
+        return response()->json($post);
+    }
+
+    public function hapusItemAnggaranLaporanProposal(Request $request)
+    {
+        $post = DataRealisasiAnggaran::where('id',$request->id)->delete(); 
         return response()->json($post);
     }
 }
