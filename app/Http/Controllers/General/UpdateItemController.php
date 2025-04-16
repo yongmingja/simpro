@@ -29,11 +29,11 @@ class UpdateItemController extends Controller
             })->addColumn('status', function($data){
                 if($data->status == 1){
                     return '<small class="text-warning"><i class="bx bx-minus-circle bx-xs"></i> Belum divalidasi</small>';
-                } elseif($data->status = 2){
-                    return '<small class="text-danger"><i class="bx bx-x-circle bx-xs"></i> Ditolak</small>';
+                } elseif($data->status == 2){
+                    return '<small class="text-success"><i class="bx bx-check-circle bx-xs"></i> ACC Admin Umum</small>';
                 } else {
-                    return '<small class="text-success"><i class="bx bx-check-circle bx-xs"></i> Diterima</small>';
-                }
+                    return '<small class="text-danger"><i class="bx bx-x-circle bx-xs"></i> Ditolak</small>';
+                } 
             })->addColumn('sumber_dana', function($data){
                 if($data->sumber_dana == 1){
                     return 'Kampus';

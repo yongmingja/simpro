@@ -14,8 +14,7 @@ class JenisProposalTableSeeder extends Seeder
     {
         $records = [
             ['id' => '1','nama_jenis_kegiatan' => 'RKAT','created_at' => now(), 'updated_at' => now()],
-            ['id' => '2','nama_jenis_kegiatan' => 'Non-RKAT','created_at' => now(), 'updated_at' => now()],
-            ['id' => '3','nama_jenis_kegiatan' => 'FKPU','created_at' => now(), 'updated_at' => now()]
+            ['id' => '2','nama_jenis_kegiatan' => 'Non-RKAT','created_at' => now(), 'updated_at' => now()]
        ];
        JenisKegiatan::insert($records);
     }
