@@ -124,7 +124,7 @@
         dataId = $(this).attr('id');
         Swal.fire({
             title: 'Are you sure?',
-            text: "It will be deleted permanently!",
+            text: "Recreate feature means you will delete this document and recreate the report!",
             type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

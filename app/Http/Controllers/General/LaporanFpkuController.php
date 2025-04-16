@@ -55,7 +55,7 @@ class LaporanFpkuController extends Controller
                     return '<a href="'.Route('preview-laporan-fpku',encrypt(['id' => $data->id])).'" target="_blank" data-bs-toggle="tooltip" data-id="'.$data->id.'" data-bs-placement="bottom" title="Preview Laporan FPKU" data-original-title="Preview Laporan FPKU" class="preview-laporan-fpku"><small class="text-info"><i class="bx bx-book-open bx-xs"></i> Lihat</small></a>';                    
                 } else {
                     if($data->ketua == Auth::user()->id){
-                        return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><i class="bx bx-plus-circle bx-tada-hover bx-sm text-primary"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';
+                        return '<a href="'.Route('buat-laporan-fpku',encrypt(['id' => $data->id])).'" class="getIdFpku" data-toggle="tooltip" data-placement="bottom" title="Buat Laporan Pertanggungjawaban" data-original-title="Buat Laporan Pertanggungjawaban"><small><i class="bx bx-plus-circle bx-tada-hover bx-xs text-primary"></i> Buat laporan</small></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-primary" role="status"><span class="visually-hidden"></span>';
                     } else {
                         return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
                     }
@@ -69,9 +69,9 @@ class LaporanFpkuController extends Controller
                             return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
                         }
                     case 2:
-                        return '<a href="javascript:void()" class="delete" id="' . $data->id_laporan . '"><i class="bx bx-refresh"></i> Recreate</a>'
+                        return '<a href="javascript:void()" class="delete" id="' . $data->id_laporan . '"><small><i class="bx bx-refresh bx-xs"></i> Recreate</small></a>'
                             . '&nbsp;|&nbsp;'
-                            . '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="' . $data->keterangan_ditolak . '"><i class="bx bx-shield-x"></i> denied <span class="badge bg-danger badge-notifications">Cek ket. ditolak</span></a>';
+                            . '<a href="javascript:void(0)" class="text-danger info-ditolak" data-keteranganditolak="' . $data->keterangan_ditolak . '"> <small>Ditolak</small> <span class="badge bg-danger badge-notifications">?</span></a>';
                     case 3:
                         return '<a href="javascript:void(0)" class="text-success"><i class="bx bx-check-shield"></i> ACC Rektorat</a>';
                     default:

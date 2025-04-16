@@ -773,7 +773,12 @@ class DashboardController extends Controller
                     } elseif($data->status_approval == 2){
                         return '<a href="javascript:void(0)" class="text-danger"><i class="bx bx-xs bx-shield-x"></i> Ditolak Rektorat</a>';
                     } else {
-                        return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan"><i class="bx bx-sm bx-shield-x text-danger"></i></a>&nbsp;|&nbsp;<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan"><i class="bx bx-sm bx-check-shield text-success"></i></a>&nbsp;<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';                   
+                        $button = '<a href="javascript:void(0)" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Tolak" data-original-title="Tolak" class="tombol-no-laporan btn btn-xs btn-danger"><small><i class="bx bx-xs bx-x"></i></small></a>';
+                        $button .= '&nbsp;&nbsp;';
+                        $button .= '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="'.$data->id_laporan.'" data-placement="bottom" title="Setuju" data-placement="bottom" data-original-title="Setuju" class="tombol-yes-laporan btn btn-xs btn-success"><small><i class="bx bx-xs bx-check-double"></i></small></a>';
+                        $button .= '&nbsp;';
+                        $button .= '<div class="spinner-grow spinner-grow-sm text-warning" role="status"><span class="visually-hidden"></span>';
+                        return $button;                  
                     }
                 } else {
                     return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada laporan</small>';
