@@ -273,6 +273,15 @@
               </div>
             </div>
           </div>
+
+          <div class="divider text-start">
+            <div class="divider-text">Grafik Realisasi Anggaran Proposal Kegiatan</div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-sm-12">
+              <div id="chart"></div>
+            </div>
+          </div>
           
         @endif
 
@@ -474,5 +483,89 @@
             }
         })
     }
+
+    function formatRupiah(value) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(value);
+    }
+
+
+    // Chart
+    var options = {
+      series: [
+          {
+              name: 'Realisasi Anggaran',
+              data: {!! json_encode($mergedData) !!}
+          }
+      ],
+      xaxis: {
+        categories: {!! json_encode($mergedData->pluck('x')) !!}, // Nama kode fakultas/biro
+        labels: {
+            style: {
+                colors: '#0a8fd1', // Warna untuk setiap label
+                fontSize: '12px', // Ukuran font
+                fontWeight: 'bold' // Ketebalan font
+            }
+        }
+      },
+      yaxis: {
+        categories: {!! json_encode($mergedData->pluck('y')) !!},
+        labels: {
+            style: {
+                colors: '#0a8fd1', // Warna untuk label y-axis
+                fontSize: '12px', // Ukuran font untuk label y-axis
+                fontWeight: 'bold' // Ketebalan font label y-axis
+            },
+            formatter: function(value) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(value); // Format angka dalam Rupiah
+            }
+        }
+      },
+      chart: {
+          height: 350,
+          type: 'bar'
+      },
+      plotOptions: {
+          bar: {
+              columnWidth: '60%'
+          }
+      },
+      tooltip: {
+          y: {
+              formatter: function(value) {
+                  return formatRupiah(value);
+              }
+          }
+      },
+      colors: ['#007BFF'],
+      dataLabels: {
+          enabled: true,
+          formatter: function(value) {
+              return formatRupiah(value);
+          }
+      },
+      legend: {
+          show: true,
+          showForSingleSeries: true,
+          customLegendItems: ['Realisasi Anggaran', 'Total RKAT'],
+          markers: {
+              fillColors: ['#007BFF', '#fce626']
+          },
+          labels: {
+            colors: '#0a8fd1',
+          }
+      }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
 </script>
 @endsection
