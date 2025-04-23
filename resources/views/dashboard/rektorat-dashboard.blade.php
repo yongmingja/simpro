@@ -31,6 +31,7 @@
                             <fieldset class="form-group">
                                 <select style="cursor:pointer;" class="select2 form-control" id="status" name="status" required>
                                     <option value="all" selected>Semua Proposal (default)</option>
+                                    <option value="batal">Dibatalkan oleh user</option>
                                     <option value="pending">Pending</option>
                                     <option value="accepted">Diterima</option>
                                     <option value="denied">Ditolak</option>

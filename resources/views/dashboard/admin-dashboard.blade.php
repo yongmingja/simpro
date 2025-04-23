@@ -275,11 +275,12 @@
           </div>
 
           <div class="divider text-start">
-            <div class="divider-text">Grafik Realisasi Anggaran Proposal Kegiatan</div>
+            <div class="divider-text">Grafik Realisasi Anggaran Proposal Kegiatan*</div>
           </div>
           <div class="row mt-3">
             <div class="col-sm-12">
               <div id="chart"></div>
+              <div><p style="font-size: 10px;">*Kategori Sumber Dana: Kampus</p></div>
             </div>
           </div>
           
@@ -520,11 +521,7 @@
                 fontWeight: 'bold' // Ketebalan font label y-axis
             },
             formatter: function(value) {
-                return new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0
-                }).format(value); // Format angka dalam Rupiah
+              return formatRupiah(value);
             }
         }
       },
@@ -556,7 +553,7 @@
           showForSingleSeries: true,
           customLegendItems: ['Realisasi Anggaran', 'Total RKAT'],
           markers: {
-              fillColors: ['#007BFF', '#fce626']
+              fillColors: ['#007BFF', '#ed2da7']
           },
           labels: {
             colors: '#0a8fd1',

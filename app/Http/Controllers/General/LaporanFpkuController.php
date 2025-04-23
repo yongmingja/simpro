@@ -215,16 +215,21 @@ class LaporanFpkuController extends Controller
 
                 $insertData = [];
                 for($x = 0; $x < count($request->nama_berkas);$x++){
-                    if(!empty($request->nama_berkas[$x]) && !empty($fileNames[$x]) && !empty($request->keterangan[$x])){
+
+                    if(!empty($fileNames[$x])) {
+                        $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
+                        $default_keterangan  = !empty($request->keterangan[$x]) ? $request->keterangan[$x] : '-';
+    
                         $insertData[] = [
                             'id_laporan_fpku' => $latest,
-                            'nama_berkas'     => $request->nama_berkas[$x],
+                            'nama_berkas'     => $default_nama_berkas,
                             'berkas'          => $fileNames[$x],
-                            'keterangan'      => $request->keterangan[$x],
+                            'keterangan'      => $default_keterangan,
                             'created_at'      => now(),
                             'updated_at'      => now()
                         ];
                     }
+
                 }
                 if (!empty($insertData)){
                     $post = DB::table('lampiran_laporan_fpkus')->insert($insertData);
@@ -232,17 +237,22 @@ class LaporanFpkuController extends Controller
             } else {
                 $insertData = [];
                 for($x = 0; $x < count($request->nama_berkas);$x++){
-                    if(!empty($request->nama_berkas[$x]) && !empty($request->link_gdrive[$x]) && !empty($request->keterangan[$x])){
+
+                    if(!empty($request->link_gdrive[$x])) {
+                        $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
+                        $default_keterangan  = !empty($request->keterangan[$x]) ? $request->keterangan[$x] : '-';
+    
                         $insertData[] = [
                             'id_laporan_fpku' => $latest,
-                            'nama_berkas'     => $request->nama_berkas[$x],
+                            'nama_berkas'     => $default_nama_berkas,
                             'berkas'          => '',
                             'link_gdrive'     => $request->link_gdrive[$x],
-                            'keterangan'      => $request->keterangan[$x],
+                            'keterangan'      => $default_keterangan,
                             'created_at'      => now(),
                             'updated_at'      => now()
                         ];
                     }
+
                 }
                 if (!empty($insertData)){
                     $post = DB::table('lampiran_laporan_fpkus')->insert($insertData);

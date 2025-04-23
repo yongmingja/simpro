@@ -68,6 +68,7 @@
                             <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->anggaran_proposal)}}</td>
                             <td style="vertical-align: middle; text-align: right;">{{currency_IDR($data->realisasi_anggaran)}}</td>
                             <td style="vertical-align: middle; text-align: center;">
+                            @if($data->is_archived != 1)
                                 @if(!empty($data->status_approval))
                                     @switch($data->status_approval)
                                         @case(5)
@@ -88,8 +89,12 @@
                                 @else
                                     Belum ada laporan
                                 @endif
+                            @else
+                                Dibatalkan oleh user
+                            @endif
                             </td>
                             <td style="vertical-align: middle;">
+                            @if($data->is_archived != 1)
                                 @if(!empty($data->status_approval))
                                     @switch($data->status_approval)
                                         @case(5)
@@ -110,6 +115,9 @@
                                 @else
                                     Belum ada laporan
                                 @endif
+                            @else
+                                Dibatalkan oleh user
+                            @endif
                             </td> 
                             <td><a href="{{''.URL::to('/').'/preview-proposal'.'/'.encrypt($data->id)}}" target="_blank">Lihat proposal <i class="bx bx-link bx-xs"></i></a></td>                           
                         </tr>

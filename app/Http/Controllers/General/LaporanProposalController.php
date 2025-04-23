@@ -96,12 +96,16 @@ class LaporanProposalController extends Controller
 
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                if(!empty($request->nama_berkas[$x]) && !empty($fileNames[$x]) && !empty($request->keterangan[$x])) {
+
+                if(!empty($fileNames[$x])) {
+                    $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
+                    $default_keterangan  = !empty($request->keterangan[$x]) ? $request->keterangan[$x] : '-';
+    
                     $insertData[] = [
                         'id_proposal'   => $getId,
-                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'nama_berkas'   => $default_nama_berkas,
                         'berkas'        => $fileNames[$x],
-                        'keterangan'    => $request->keterangan[$x],
+                        'keterangan'    => $default_keterangan,
                         'created_at'    => now(),
                         'updated_at'    => now()
                     ];
@@ -113,13 +117,17 @@ class LaporanProposalController extends Controller
         } else {
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                if(!empty($request->nama_berkas[$x]) && !empty($request->link_gdrive[$x]) && !empty($request->keterangan[$x])) {
+
+                if(!empty($request->link_gdrive[$x])) {
+                    $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
+                    $default_keterangan  = !empty($request->keterangan[$x]) ? $request->keterangan[$x] : '-';
+    
                     $insertData[] = [
                         'id_proposal'   => $getId,
-                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'nama_berkas'   => $default_nama_berkas,
                         'berkas'        => '',
                         'link_gdrive'   => $request->link_gdrive[$x],
-                        'keterangan'    => $request->keterangan[$x],
+                        'keterangan'    => $default_keterangan,
                         'created_at'    => now(),
                         'updated_at'    => now()
                     ];
@@ -384,14 +392,14 @@ class LaporanProposalController extends Controller
             $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
+                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.is_archived','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
         } else {
             $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
                 ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
+                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.is_archived','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
                 ->where('proposals.id_tahun_akademik',$request->tahun_proposal)
                 ->orderBy('proposals.tgl_event','DESC')
                 ->get();
@@ -400,24 +408,22 @@ class LaporanProposalController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('status', function($data){
-                if(!empty($data->status_approval)) {
-                    switch ($data->status_approval) {
-                        case 1:
-                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
-                        case 2:
-                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                        case 3:
-                            return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
-                        case 4:
-                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                        case 5:
-                            return '<small><i class="text-success">ACC Rektorat</i></small>';
-                        default:
-                        return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
-                    }
-                } else {
-                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
-                }
+                $statusLabels = [
+                    1 => '<small><i class="text-warning">Menunggu validasi atasan</i></small>',
+                    2 => '<small><i class="text-danger">Ditolak Atasan</i></small>',
+                    3 => '<small><i class="text-warning">Menunggu validasi rektorat</i></small>',
+                    4 => '<small><i class="text-danger">Ditolak Rektorat</i></small>',
+                    5 => '<small><i class="text-success">ACC Rektorat</i></small>',
+                ];
+                
+                if ($data->is_archived == 1) {
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Status terakhir: ' 
+                        . strip_tags($statusLabels[$data->status_approval] ?? 'Proposal dibatalkan') . '">
+                        <small class="text-warning">Dibatalkan oleh user</small>&nbsp;&nbsp;
+                        <span class="badge bg-danger badge-notifications">?</span></a>';
+                } 
+                
+                return $statusLabels[$data->status_approval] ?? '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
             })
             ->rawColumns(['status'])
             ->addIndexColumn(true)
@@ -439,6 +445,7 @@ class LaporanProposalController extends Controller
                     'proposals.id AS id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.id_laporan_proposal',
@@ -453,6 +460,7 @@ class LaporanProposalController extends Controller
                     'proposals.id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.id_laporan_proposal',
@@ -476,6 +484,7 @@ class LaporanProposalController extends Controller
                     'proposals.id AS id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.id_laporan_proposal',
@@ -490,6 +499,7 @@ class LaporanProposalController extends Controller
                     'proposals.id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.id_laporan_proposal',

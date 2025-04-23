@@ -52,6 +52,7 @@ class DashboardController extends Controller
         $statusMapping = [
             '' => null,
             'all' => null,
+            'batal' => ['proposals.is_archived', '=', 1],
             'pending' => ['status_proposals.status_approval', '<=', 3],
             'accepted' => ['status_proposals.status_approval', '=', 5],
             'denied' => ['status_proposals.status_approval', '=', [2,4]],
@@ -81,37 +82,26 @@ class DashboardController extends Controller
                     return ''; // Jika tidak ada data
                 }
 
+                $statusLabels = [
+                    2 => ['text' => '<small><i class="text-danger">Ditolak Atasan</i></small>', 'tooltip' => 'Status terakhir: ditolak atasan'],
+                    3 => ['text' => '<small><i class="text-warning">Menunggu validasi rektorat</i></small>', 'tooltip' => 'Status terakhir: menunggu validasi rektorat'],
+                    4 => ['text' => '<small><i class="text-danger">Ditolak Rektorat</i></small>', 'tooltip' => 'Status terakhir: ditolak rektorat'],
+                    5 => ['text' => '<small><i class="text-success">ACC Rektorat</i></small>', 'tooltip' => 'Status terakhir: diterima rektorat'],
+                ];
+                
                 foreach ($checkState as $state) {
-                    if ($data->is_archived != 1) { // Jika proposal tidak diarsipkan
+                    if ($data->is_archived != 1) { // Proposal tidak diarsipkan
                         if ($state->status_approval == 3) {
-                            // Tombol untuk ACC
-                            $button = '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $data->id . '" data-placement="bottom" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>';
-                            $button .= '&nbsp;';
-                            $button .= '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $data->id . '" data-placement="bottom" title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';
-                            return $button;
-                        } elseif ($state->status_approval == 2) {
-                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                        } elseif ($state->status_approval == 4) {
-                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                        } elseif ($state->status_approval == 5) {
-                            return '<small><i class="text-success">ACC Rektorat</i></small>';
-                        } else {
-                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
+                            return '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $data->id . '" title="Setuju atau di ACC" class="btn btn-success btn-sm tombol-yes"><i class="bx bx-xs bx-check-double"></i></a>'
+                                . '&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $data->id . '" title="Ditolak" class="btn btn-danger btn-sm tombol-no"><i class="bx bx-xs bx-x"></i></a>';
                         }
-                    } else { // Jika proposal diarsipkan
-                        if ($state->status_approval == 2) {
-                            return '<small><i class="text-danger">Ditolak Atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                        } elseif ($state->status_approval == 3) {
-                            return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                        } elseif ($state->status_approval == 4) {
-                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                        } elseif ($state->status_approval == 5) {
-                            return '<small><i class="text-success">ACC Rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                        } else {
-                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                        }
+                        return $statusLabels[$state->status_approval]['text'] ?? '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
+                    } else { // Proposal diarsipkan
+                        $statusText = $statusLabels[$state->status_approval]['text'] ?? '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
+                        $tooltipText = $statusLabels[$state->status_approval]['tooltip'] ?? 'Status terakhir: menunggu validasi atasan';
+                        return '<small class="text-warning">Dibatalkan oleh user</small>&nbsp;&nbsp;<a href="javascript:void(0)" data-toggle="tooltip" title="' . $tooltipText . '"><span class="badge bg-danger badge-notifications">?</span></a>';
                     }
-                }
+                }                
 
             })->addColumn('vlampiran', function($data){
                 # check any attachment
@@ -443,6 +433,7 @@ class DashboardController extends Controller
     {
         $tahun_akademik = $request->tahun_akademik;
         $lembaga = $request->lembaga;
+        $status = $request->status;
 
         $query = Proposal::leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
             ->leftJoin('data_prodi_biros', 'data_prodi_biros.id', '=', 'proposals.id_prodi_biro')
@@ -466,6 +457,22 @@ class DashboardController extends Controller
             }
         }
 
+        // Filter berdasarkan status
+        if ($status && $status != 'all') {
+            if ($status == 'batal') {
+                $query->where('proposals.is_archived', 1);
+            } elseif ($status == 'ditolakatasan') {
+                $query->where('status_proposals.status_approval', 2);
+            } elseif ($status == 'diterimaatasan') {
+                $query->where('status_proposals.status_approval', 3);
+            } elseif ($status == 'ditolakrektorat') {
+                $query->where('status_proposals.status_approval', 4);
+            } elseif ($status == 'diterimarektorat') {
+                $query->where('status_proposals.status_approval', 5);
+            }
+        }
+
+
         $datas = $query->orderBy('proposals.tgl_event', 'DESC')->get();
 
 
@@ -483,20 +490,24 @@ class DashboardController extends Controller
                     return '<a href="'.Route('preview-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Proposal" data-original-title="Preview Proposal" class="preview-proposal"><small class="text-info"><i class="bx bx-food-menu bx-xs"></i></small></a>';
                 }
             })->addColumn('status', function($data){
-                switch ($data->status_approval) {
-                    case 1:
-                        return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
-                    case 2:
-                        return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                    case 3:
-                        return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
-                    case 4:
-                        return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                    case 5:
-                        return '<small><i class="text-success">ACC Rektorat</i></small>';
-                    default:
-                        return '';
-                }                
+                
+                $statusLabels = [
+                    1 => '<small><i class="text-warning">Menunggu validasi atasan</i></small>',
+                    2 => '<small><i class="text-danger">Ditolak Atasan</i></small>',
+                    3 => '<small><i class="text-warning">Menunggu validasi rektorat</i></small>',
+                    4 => '<small><i class="text-danger">Ditolak Rektorat</i></small>',
+                    5 => '<small><i class="text-success">ACC Rektorat</i></small>',
+                ];
+                
+                if ($data->is_archived == 1) {
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Status terakhir: ' 
+                        . strip_tags($statusLabels[$data->status_approval] ?? 'Menunggu validasi atasan') . '">
+                        <small class="text-warning">Dibatalkan oleh user</small>&nbsp;&nbsp;
+                        <span class="badge bg-danger badge-notifications">?</span></a>';
+                } 
+                
+                return $statusLabels[$data->status_approval] ?? '';
+                   
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';
             })->addColumn('history', function($data){
@@ -530,7 +541,7 @@ class DashboardController extends Controller
             ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
             ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
             ->leftJoin('form_rkats','form_rkats.id','=','proposals.id_form_rkat')
-            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai', 'status_laporan_proposals.keterangan_ditolak', 'status_laporan_proposals.created_at AS tgl_proposal','form_rkats.kode_renstra','form_rkats.kode_pagu');
+            ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai','status_laporan_proposals.status_approval AS status_approval_laporan', 'status_laporan_proposals.keterangan_ditolak', 'status_laporan_proposals.created_at AS tgl_proposal','form_rkats.kode_renstra','form_rkats.kode_pagu');
 
         // Filter Tahun Akademik
         if ($tahun_akademik && $tahun_akademik != 'all') {
@@ -554,37 +565,34 @@ class DashboardController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('laporan', function($data){
-                $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
-                if($query->count() > 0){
-                    return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal"><small class="text-info"><i class="bx bx-search bx-xs"></i> Lihat</small></a>';
+                if ($data->is_archived != 1) {
+                    $query = DB::table('status_laporan_proposals')->where('id_laporan_proposal',$data->id)->select('status_approval')->get();
+                    if($query->count() > 0){
+                        return '<a href="'.Route('preview-laporan-proposal',encrypt(['id' => $data->id])).'" target="_blank" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Preview Laporan Proposal" data-original-title="Preview Laporan Proposal" class="preview-proposal"><small class="text-info"><i class="bx bx-search bx-xs"></i> Lihat</small></a>';
+                    } else {
+                        return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada laporan</small>';
+                    }
                 } else {
-                    return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada laporan</small>';
+                    return '<small class="text-warning"><i class="bx bx-minus-circle bx-xs"></i> Proposal dibatalkan</small>';
                 }
             })->addColumn('action', function($data){
-                $query = DB::table('status_laporan_proposals')
-                    ->where('id_laporan_proposal', $data->id)
-                    ->select('status_approval')
-                    ->get();
 
-                if ($query->isNotEmpty()) {
-                    $statusApproval = $query->first()->status_approval; 
-
-                    switch ($statusApproval) {
-                        case 1:
-                            return '<small><i class="text-warning">Menunggu validasi atasan</i></small>';
-                        case 2:
-                            return '<small><i class="text-danger">Ditolak Atasan</i></small>';
-                        case 3:
-                            return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
-                        case 4:
-                            return '<small><i class="text-danger">Ditolak Rektorat</i></small>';
-                        case 5:
-                            return '<small><i class="text-success">ACC Rektorat</i></small>';
-                        default:
-                            return '';
-                    }
+                $statusLabels = [
+                    1 => '<small><i class="text-warning">Menunggu validasi atasan</i></small>',
+                    2 => '<small><i class="text-danger">Ditolak Atasan</i></small>',
+                    3 => '<small><i class="text-warning">Menunggu validasi rektorat</i></small>',
+                    4 => '<small><i class="text-danger">Ditolak Rektorat</i></small>',
+                    5 => '<small><i class="text-success">ACC Rektorat</i></small>',
+                ];
+                
+                if ($data->is_archived == 1) {
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Status terakhir: ' 
+                        . strip_tags($statusLabels[$data->status_approval_laporan] ?? 'Menunggu validasi atasan') . '">
+                        <small class="text-warning">Dibatalkan oleh user</small>&nbsp;&nbsp;
+                        <span class="badge bg-danger badge-notifications">?</span></a>';
                 } 
-                return '<small><i class="bx bx-minus-circle bx-xs"></i> Belum ada laporan</small>';
+                
+                return $statusLabels[$data->status_approval_laporan] ?? '<small class="text-secondary"><i class="bx bx-minus-circle bx-xs"></i> Belum ada</small>';
 
             })->addColumn('detail', function($data){
                 return '<a href="javascript:void()" class="lihat-detail text-info" data-id="'.$data->id.'"><small><i class="bx bx-detail bx-tada-hover bx-xs"></i> Detail</small></a>';

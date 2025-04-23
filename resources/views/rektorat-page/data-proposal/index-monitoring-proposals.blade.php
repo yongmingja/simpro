@@ -49,6 +49,18 @@
                                                 </select>
                                             </fieldset>
                                         </div>
+                                        <div class="col-sm-2 mb-3">
+                                            <fieldset class="form-group">
+                                                <select style="cursor:pointer;" class="select2 form-control border" id="status" name="status" required>
+                                                    <option value="all" selected>Semua Status (default)</option>
+                                                    <option value="batal">Dibatalkan oleh user</option>
+                                                    <option value="ditolakatasan">Ditolak Atasan</option>
+                                                    <option value="diterimaatasan">Diterima Atasan</option>
+                                                    <option value="ditolakrektorat">Ditolak Rektorat</option>
+                                                    <option value="diterimarektorat">Diterima Rektorat</option>
+                                                </select>
+                                            </fieldset>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +71,6 @@
                                     <th>Preview</th>
                                     <th>Kategori</th>
                                     <th>Kode Renstra</th>
-                                    <th>Kode Pagu</th>
                                     <th>Nama Kegiatan</th>
                                     <th>Tgl Kegiatan</th>
                                     <th>Proposal Dibuat</th>
@@ -165,7 +176,7 @@
     // DATATABLE
     $(document).ready(function () {
         fill_datatable();
-        function fill_datatable(lembaga = 'all', tahun_akademik = 'all'){
+        function fill_datatable(lembaga = 'all', tahun_akademik = 'all', status = 'all'){
             var table = $('#table_proposal').DataTable({
                 processing: true,
                 serverSide: true,
@@ -175,6 +186,7 @@
                     "data": function(data){
                         data.lembaga = $('#lembaga').val();
                         data.tahun_akademik = $('#tahun_akademik').val();
+                        data.status = $('#status').val();
                     }
                 },
                 columns: [
@@ -186,7 +198,6 @@
                     {data: 'preview',name: 'preview'},
                     {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                     {data: 'kode_renstra',name: 'kode_renstra'},
-                    {data: 'kode_pagu',name: 'kode_pagu'},
                     {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'tgl_event',name: 'tgl_event',
                         render: function ( data, type, row ){
@@ -206,13 +217,14 @@
                 ]
             });
         }
-        $('#tahun_akademik, #lembaga').on('change', function(e){
+        $('#tahun_akademik, #lembaga, #status').on('change', function(e){
             var selectTahun = this.value;
             var selectLembaga = this.value;
+            var selectStatus = this.value;
 
-            if(selectTahun != '' || selectLembaga != ''){
+            if(selectTahun != '' || selectLembaga != '' || selectStatus != ''){
                 $('#table_proposal').DataTable().destroy();
-                fill_datatable(selectTahun, selectLembaga);
+                fill_datatable(selectTahun, selectLembaga, selectStatus);
             } else {
                 alert('Anda belum memilih filter.');
                 $('#table_proposal').DataTable().destroy();

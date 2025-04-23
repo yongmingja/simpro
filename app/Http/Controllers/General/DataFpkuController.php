@@ -127,10 +127,13 @@ class DataFpkuController extends Controller
 
             $insertData = [];
             for($x = 0; $x < count($request->nama_berkas);$x++){
-                if(!empty($request->nama_berkas[$x]) && !empty($fileNames[$x])){
+
+                if(!empty($fileNames[$x])) {
+                    $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
+                    
                     $insertData[] = [
                         'id_fpku'       => $latest,
-                        'nama_berkas'   => $request->nama_berkas[$x],
+                        'nama_berkas'   => $default_nama_berkas,
                         'berkas'        => $fileNames[$x],
                         'link_gdrive'   => '',
                         'keterangan'    => '-',
@@ -138,6 +141,7 @@ class DataFpkuController extends Controller
                         'updated_at'    => now()
                     ];
                 }
+
             }
             if (!empty($insertData)){
                 $post = DB::table('lampiran_fpkus')->insert($insertData);

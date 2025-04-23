@@ -175,7 +175,7 @@ class HomeController extends Controller
                             'name' => 'Total RKAT',
                             'value' => $expected->expected ?? 0,
                             'strokeHeight' => 5,
-                            'strokeColor' => '#fce626'
+                            'strokeColor' => '#ed2da7' # fce626
                         ]
                     ]
                 ];

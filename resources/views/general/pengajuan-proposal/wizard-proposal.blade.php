@@ -43,6 +43,7 @@
                     <a href="{{route('submission-of-proposal.index')}}"><button type="button" class="btn btn-outline-secondary"><i class="bx bx-chevron-left"></i>Back</button></a> 
                 </div>  
 
+                <input type="hidden" name="recentRole" id="recentRole">
                 <input type="hidden" name="catchIDFakultasBiro" id="catchIDFakultasBiro">
                 <!-- AKHIR TOMBOL -->
                 <div class="bs-stepper wizard-vertical horizontal">
@@ -105,23 +106,7 @@
                         <div class="container">
                             <div id="page-1" class="content">
                                 <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
-                                        <select class="select2 form-control border border-primary" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
-                                            <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
-                                            @foreach($getFakultasBiro as $facultyBiro)
-                                                <option value="{{$facultyBiro->id}}">{{$facultyBiro->nama_fakultas_biro}}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger" id="fakultasBiroErrorMsg" style="font-size: 10px;"></span>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="id_prodi_biro">Prodi atau Biro</label>
-                                        <select class="select2 form-control border border-primary" id="id_prodi_biro" name="id_prodi_biro" aria-label="Default select example" style="cursor:pointer;">
-                                            <option value="" class="d-none">- Pilih prodi -</option>
-                                        </select>
-                                        <span class="text-danger" id="prodiBiroErrorMsg" style="font-size: 10px;"></span>
-                                    </div>
+                                   
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-sm-4">
@@ -135,13 +120,32 @@
                                                 <span class="text-danger" id="kategoriErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div id="showForm" name="showForm" class="col-sm-8 d-none"></div>
-                                        </div>
-                                        
+                                        </div>                                        
                                     </div>
+
                                     <div class="col-md-6">
                                         <label for="tgl_event" class="form-label">Tanggal Kegiatan</label>
                                         <input type="date" class="form-control" id="tgl_event" name="tgl_event" value="" placeholder="mm/dd/yyyy" />
                                         <span class="text-danger" id="tglKegiatanErrorMsg" style="font-size: 10px;"></span>
+                                    </div>
+
+                                     <div class="col-md-6">
+                                        <label class="form-label" for="id_fakultas_biro">Fakultas atau Unit</label>
+                                        <select class="select2 form-control border border-primary" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
+                                            <option value="" id="choose_faculty" readonly>- Select faculty or unit -</option>
+                                            @foreach($getFakultasBiro as $facultyBiro)
+                                                <option value="{{$facultyBiro->id}}">{{$facultyBiro->nama_fakultas_biro}}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="text-danger" id="fakultasBiroErrorMsg" style="font-size: 10px;"></span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="id_prodi_biro">Prodi atau Biro</label>
+                                        <select class="select2 form-control border border-primary" id="id_prodi_biro" name="id_prodi_biro" aria-label="Default select example" style="cursor:pointer;">
+                                            <option value="" class="d-none">- Pilih prodi -</option>
+                                        </select>
+                                        <span class="text-danger" id="prodiBiroErrorMsg" style="font-size: 10px;"></span>
                                     </div>
 
                                     <div class="col-md-6">
@@ -149,17 +153,20 @@
                                         <input type="text" id="nama_kegiatan" name="nama_kegiatan" class="form-control">
                                         <span class="text-danger" id="namaKegiatanErrorMsg" style="font-size: 10px;"></span>
                                     </div>
+
                                     <div class="col-md-6">
                                         <label for="lokasi_tempat" class="form-label">Tempat atau Lokasi Kegiatan</label>
                                         <input type="text" id="lokasi_tempat" name="lokasi_tempat" class="form-control">
                                         <span class="text-danger" id="lokasiErrorMsg" style="font-size: 10px;"></span>
                                     </div>
+
                                     <div class="col-md-6">
                                         <label for="pendahuluan" class="form-label">Pendahuluan</label>
                                         <div id="editor-pendahuluan" class="mb-3" style="height: 300px;"></div>
                                         <textarea rows="3" class="mb-3 d-none" name="pendahuluan" id="pendahuluan"></textarea>
                                         <span class="text-danger" id="pendahuluanErrorMsg" style="font-size: 10px;"></span>
                                     </div>
+
                                     <div class="col-md-6">
                                         <label for="tujuan_manfaat" class="form-label">Tujuan dan Manfaat</label>
                                         <div id="editor-tujuan-manfaat" class="mb-3" style="height: 300px;"></div>
@@ -173,12 +180,14 @@
                                         <textarea class="mb-3 d-none" id="peserta" name="peserta" rows="5"></textarea>
                                         <span class="text-danger" id="pesertaErrorMsg" style="font-size: 10px;"></span>
                                     </div>
+
                                     <div class="col-md-6">
                                         <label for="detil_kegiatan" class="form-label">Detil Kegiatan</label>
                                         <div id="editor-detil-kegiatan" class="mb-3" style="height: 300px;"></div>
                                         <textarea class="mb-3 d-none" id="detil_kegiatan" name="detil_kegiatan" rows="5"></textarea>
                                         <span class="text-danger" id="detilKegiatanErrorMsg" style="font-size: 10px;"></span>
                                     </div>
+
                                     <div class="col-12 d-flex justify-content-between">
                                         <button class="btn btn-label-secondary btn-prev" disabled> <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                             <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -382,6 +391,7 @@
             .then(data => {
                 const recentPeranIs = data.recentPeranIs;
                 const unitIs = data.unitIs;
+                $('#recentRole').val(recentPeranIs);
                 $('#catchIDFakultasBiro').val(unitIs); // Throw nilai ini ke inputan untuk kemudian di ambil saat kategori RKAT
 
                 // Ambil elemen form
@@ -523,6 +533,7 @@
 
     function getFormRkat() {
         var categorySelected = $('#id_jenis_kegiatan').val();
+        var getRecentRole = $('#recentRole').val();
         if (categorySelected == 1) {
             $.ajax({
                 url: "{{route('data-form-rkat')}}", 
@@ -530,33 +541,41 @@
                 dataType: 'json',
                 success: function(data) {
                     $('#showForm').removeClass('d-none');
-                    var idFakultasBiro = $('#catchIDFakultasBiro').val();
-
-                    // Tambahkan pemeriksaan untuk idFakultasBiro
-                    if (!idFakultasBiro || idFakultasBiro.trim() == "") {
-                        var options = `<div><label for="pilihan_rkat" class="form-label">Pilihan RKAT</label>
-                                        <select class="select2 form-control" id="pilihan_rkat" name="pilihan_rkat" aria-label="Default select example" style="cursor:pointer;">
-                                            <option value="" id="choose_pilihan_rkat" readonly>- Pilih -</option>
-                                            <option value="" disabled>Data RKAT tidak ditemukan atau Anda tidak terdaftar pada fakultas atau biro manapun.</option>
-                                        </select></div>`;
-                        document.getElementById("showForm").innerHTML = options;
-                        return; // Hentikan proses lebih lanjut
-                    }
-
-                    var filteredData = data.filter(function(item) {
-                        return item.id_fakultas_biro == idFakultasBiro; 
-                    });
 
                     var options = `<div><label for="pilihan_rkat" class="form-label">Pilihan RKAT</label>
                                     <select class="select2 form-control" id="pilihan_rkat" name="pilihan_rkat" aria-label="Default select example" style="cursor:pointer;">
                                         <option value="" id="choose_pilihan_rkat" readonly>- Pilih -</option>`;
-                    if (filteredData.length > 0) {
-                        filteredData.forEach(function(item) {
-                            options += `<option value="${item.id}" data-nama-kegiatan="${item.nama_kegiatan}" data-total-rkat="${item.total}">${item.nama_kegiatan}</option>`;
-                        });
+
+                    if (getRecentRole === 'WAREK' || getRecentRole === 'SADM') {
+                        // Tampilkan semua RKAT tanpa filter
+                        if (data.length > 0) {
+                            data.forEach(function(item) {
+                                options += `<option value="${item.id}" data-nama-kegiatan="${item.nama_kegiatan}" data-total-rkat="${item.total}">${item.nama_kegiatan}</option>`;
+                            });
+                        } else {
+                            options += `<option value="" disabled>Data RKAT tidak ditemukan.</option>`;
+                        }
                     } else {
-                        options += `<option value="" disabled>Data RKAT tidak ditemukan atau Anda tidak terdaftar pada fakultas atau biro manapun.</option>`;
+                        // Filter RKAT berdasarkan idFakultasBiro
+                        var idFakultasBiro = $('#catchIDFakultasBiro').val();
+
+                        if (!idFakultasBiro || idFakultasBiro.trim() == "") {
+                            options += `<option value="" disabled>Data RKAT tidak ditemukan.</option>`;
+                        } else {
+                            var filteredData = data.filter(function(item) {
+                                return item.id_fakultas_biro == idFakultasBiro;
+                            });
+
+                            if (filteredData.length > 0) {
+                                filteredData.forEach(function(item) {
+                                    options += `<option value="${item.id}" data-nama-kegiatan="${item.nama_kegiatan}" data-total-rkat="${item.total}">${item.nama_kegiatan}</option>`;
+                                });
+                            } else {
+                                options += `<option value="" disabled>Data RKAT tidak ditemukan.</option>`;
+                            }
+                        }
                     }
+                    
                     options += `</select></div>`;
                     document.getElementById("showForm").innerHTML = options;
 

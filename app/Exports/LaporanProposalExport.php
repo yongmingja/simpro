@@ -59,6 +59,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'proposals.id AS id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.status_approval',
@@ -73,6 +74,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'proposals.id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.status_approval',
@@ -96,6 +98,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'proposals.id AS id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.status_approval',
@@ -110,6 +113,7 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                     'proposals.id',
                     'proposals.nama_kegiatan',
                     'proposals.tgl_event',
+                    'proposals.is_archived',
                     'proposals.created_at',
                     'pegawais.nama_pegawai',
                     'status_laporan_proposals.status_approval',
@@ -131,14 +135,20 @@ class LaporanProposalExport implements FromCollection, WithHeadings, WithEvents,
                 2 => ['status' => 'Ditolak Atasan', 'link' => 'Ditolak Atasan'],
                 1 => ['status' => 'Menunggu validasi atasan', 'link' => 'Menunggu validasi atasan'],
             ];
-            
-            if (isset($statuses[$value->status_approval])) {
-                $statusLaporan = $statuses[$value->status_approval]['status'];
-                $linkLaporan = $statuses[$value->status_approval]['link'];
+
+            if ($value->is_archived != 1) {
+                if (isset($statuses[$value->status_approval])) {
+                    $statusLaporan = $statuses[$value->status_approval]['status'];
+                    $linkLaporan = $statuses[$value->status_approval]['link'];
+                } else {
+                    $statusLaporan = 'Belum ada laporan';
+                    $linkLaporan = 'Belum ada laporan';
+                }            
             } else {
-                $statusLaporan = 'Belum ada laporan';
-                $linkLaporan = 'Belum ada laporan';
-            }            
+                $statusLaporan = 'Dibatalkan oleh user';
+                $linkLaporan = 'Dibatalkan oleh user';
+            }
+            
 
             static $no = 1;
             

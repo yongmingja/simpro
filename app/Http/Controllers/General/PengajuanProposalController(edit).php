@@ -164,55 +164,42 @@ class PengajuanProposalController extends Controller
 
     protected function canAddProposal()
     {
-        $userId = Auth::user()->user_id;
-
-        // Ambil data proposal gabungan
-        $datas = Proposal::leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
-            ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-            ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
-            ->select(
-                'proposals.id AS id_proposal',
-                'proposals.is_archived',
-                'status_proposals.status_approval AS status_proposal',
-                'status_laporan_proposals.status_approval AS status_laporan_proposal',
-                'tahun_akademiks.year'
-            )
-            ->where('proposals.user_id', '=', $userId)
-            ->orderBy('proposals.id', 'ASC')
+        $datas = Proposal::join('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
+            ->select('proposals.id AS id_proposal', 'proposals.is_archived', 'status_proposals.status_approval')
+            ->where('proposals.user_id', '=', Auth::user()->user_id)
             ->get();
 
-        // Kondisi 1: Jika user belum pernah membuat proposal
         if ($datas->isEmpty()) {
-            return true; // User dapat membuat proposal baru
+            return true; // Jika data proposal kosong
         }
 
         foreach ($datas as $data) {
-            // Kondisi 2: Jika proposal diarsip
+            if ($data->status_approval == 5) {
+                $cekLaporan = DB::table('laporan_proposals')
+                    ->join('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'laporan_proposals.id_proposal')
+                    ->select('laporan_proposals.id AS id_laporan', 'status_laporan_proposals.status_approval AS status_approval_laporan')
+                    ->where('id_proposal', $data->id_proposal)
+                    ->get();
+
+                if ($cekLaporan->isNotEmpty()) { // Jika laporan proposal ada
+                    foreach ($cekLaporan as $laporan) {
+                        if ($laporan->status_approval_laporan == 5) {
+                            return true;
+                        }
+                    }
+                    return false; // Jika tidak ada laporan dengan status 5
+                }
+
+                return false; // Jika laporan proposal tidak ada
+            }
+
+            // Jika proposal diarsip
             if ($data->is_archived == 1) {
-                return true; // User dapat membuat proposal baru
+                return true;
             }
 
-            // Kondisi 3: Jika status proposal sudah bernilai 5
-            if ($data->status_proposal == 5) {
-                if (is_null($data->status_laporan_proposal)) {
-                    return false; // Laporan tidak ada, user tidak dapat membuat proposal baru
-                }
-
-                if ($data->status_laporan_proposal != 5) {
-                    return false; // Laporan belum selesai, user tidak dapat membuat proposal baru
-                }
-
-                continue; // Laporan selesai, lanjut ke proposal berikutnya
-            }
-
-            // Kondisi 4: Jika status proposal belum bernilai 5
-            if ($data->status_proposal < 5) {
-                return false; // User tidak dapat membuat proposal baru
-            }
+            return false;
         }
-
-        // Default: Jika semua kondisi terpenuhi
-        return true;
     }
 
     protected function statusProposal($id)
@@ -346,7 +333,6 @@ class PengajuanProposalController extends Controller
                     'jumlah'        => $sarpras['jumlah'],
                     'sumber_dana'   => $sumber_dana,
                     'status'        => 1,
-                    'keterangan'    => $sarpras['keterangan'] ?? '-',
                     'created_at'    => now(),
                     'updated_at'    => now(),
                 ];
@@ -395,79 +381,53 @@ class PengajuanProposalController extends Controller
             ]);
 
         # Insert data into lampiran_proposals
-        if($request->berkas != ''){
-            $fileNames = [];
-            foreach($request->berkas as $file){
-                $fileName = md5(time().'_'.Auth::user()->user_id).$file->getClientOriginalName();
-                $file->move(public_path('uploads-lampiran/lampiran-proposal'),$fileName);
-                $fileNames[] = 'uploads-lampiran/lampiran-proposal/'.$fileName;
-            }
+        $fileNames = [];
 
-            $insertData = [];
-            for($x = 0; $x < count($request->nama_berkas);$x++){
-                if(!empty($fileNames[$x])) {
-                    $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
-                    $default_keterangan  = !empty($request->keterangan[$x]) ? $request->keterangan[$x] : '-';
-    
-                    $insertData[] = [
-                        'id_proposal'   => $latest,
-                        'nama_berkas'   => $default_nama_berkas,
-                        'berkas'        => $fileNames[$x],
-                        'link_gdrive'   => '',
-                        'keterangan'    => $default_keterangan,
-                        'created_at'    => now(),
-                        'updated_at'    => now()
-                    ];
+        if (!empty($request->berkas)) {
+            foreach ($request->berkas as $file) {
+                $fileName = md5(time() . '_' . Auth::id()) . '.' . $file->getClientOriginalExtension();
+                if ($file->move(public_path('uploads-lampiran/lampiran-proposal'), $fileName)) {
+                    $fileNames[] = 'uploads-lampiran/lampiran-proposal/' . $fileName;
                 }
-
             }
-            if (!empty($insertData)) {
-                $post = DB::table('lampiran_proposals')->insert($insertData);
-            }
-        } else {
-            $insertData = [];
-            for($x = 0; $x < count($request->nama_berkas);$x++){
-
-                if(!empty($request->link_gdrive[$x])) {
-                    $default_nama_berkas = !empty($request->nama_berkas[$x]) ? $request->nama_berkas[$x] : time().'-default';
-                    $default_keterangan  = !empty($request->keterangan[$x]) ? $request->keterangan[$x] : '-';
-    
-                    $insertData[] = [
-                        'id_proposal'   => $latest,
-                        'nama_berkas'   => $default_nama_berkas,
-                        'berkas'        => '',
-                        'link_gdrive'   => $request->link_gdrive[$x],
-                        'keterangan'    => $default_keterangan,
-                        'created_at'    => now(),
-                        'updated_at'    => now()
-                    ];
-                }
-
-            }
-            if (!empty($insertData)) {
-                DB::table('lampiran_proposals')->insert($insertData);
-            }
-            // return redirect()->route('submission-of-proposal.index');
         }
 
-        # get Email Dekan
-        $emailDekanBiro = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-            ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
-            ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]])
-            ->select('pegawais.email')
-            ->first();
-
-        // Validasi jika $getEmail tidak null dan email valid
-        if ($emailDekanBiro && filter_var($emailDekanBiro->email, FILTER_VALIDATE_EMAIL)) {
-            $emailAddress = strtolower($emailDekanBiro->email);
-            $isiData = [
-                'name' => 'Pengajuan Proposal Kegiatan',
-                'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
+        $insertData = array_map(function ($index) use ($request, $fileNames, $latest) {
+            return [
+                'id_proposal'   => $latest,
+                'nama_berkas'   => $request->nama_berkas[$index] ?? time() . '-default',
+                'berkas'        => $fileNames[$index] ?? '',
+                'link_gdrive'   => $request->link_gdrive[$index] ?? '',
+                'keterangan'    => $request->keterangan[$index] ?? '-',
+                'created_at'    => now(),
+                'updated_at'    => now(),
             ];
-            Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new KirimEmail($isiData));
-        } else {
-            return 'No valid email addresses found';
-        } 
+        }, array_keys($request->nama_berkas));
+
+        if (!empty($insertData)) {
+            DB::table('lampiran_proposals')->insert($insertData);
+        }
+        // return redirect()->route('submission-of-proposal.index');
+
+        # get Email Dekan
+        // $getEmail = JabatanPegawai::rightJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //     ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
+        //     ->where([['jabatans.kode_jabatan','=','PEG'],['jabatan_pegawais.id_fakultas_biro',$request->id_fakultas_biro]])
+        //     ->select('pegawais.email')
+        //     ->first();
+        // $getPegawaiName = Pegawai::select('nama_pegawai')->where('user_id',Auth::user()->user_id)->first();
+
+        // // Validasi jika $getEmail tidak null dan email valid
+        // if ($getEmail && filter_var($getEmail->email, FILTER_VALIDATE_EMAIL)) {
+        //     $emailAddress = strtolower($getEmail->email);
+        //     $content = [
+        //         'name' => 'Pengajuan Proposal Kegiatan oleh '.$getPegawaiName->nama_pegawai.'',
+        //         'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
+        //     ];
+        //     $post = Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new KirimEmail($content));
+        // } else {
+        //     return 'No valid email addresses found';
+        // }
         
         return response()->json($post);
     }
