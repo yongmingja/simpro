@@ -53,7 +53,7 @@
 
     @media (max-width: 768px) {
         #wizard-container {
-            max-height: 45vh; 
+            max-height: 30vh; 
             overflow-y: auto;
             padding: 0.8rem; 
         }
