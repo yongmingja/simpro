@@ -415,6 +415,51 @@
       }
       if (wizardVerticalBtnSubmit) {
           wizardVerticalBtnSubmit.addEventListener('click', event => {
+                // Validasi semua input file yang dinamis
+                const fileInputs = document.querySelectorAll('input[name^="berkas"]'); 
+                const maxSize = 2 * 1024 * 1024; 
+                let isValid = true;
+
+                fileInputs.forEach((fileInput, index) => {
+                    const errorMsgId = `berkasErrorMsg_${index}`; // ID unik untuk setiap pesan error
+                    let errorMsg = document.getElementById(errorMsgId);
+
+                    // Jika elemen pesan error tidak ada, buat elemen baru
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('span');
+                        errorMsg.id = errorMsgId;
+                        errorMsg.className = 'text-danger';
+                        errorMsg.style.fontSize = '10px';
+                        fileInput.parentNode.appendChild(errorMsg); // Tambahkan ke DOM
+                    }
+
+                    const files = fileInput.files;
+                    if (files.length > 0) {
+                        const file = files[0]; // Ambil file pertama di input
+                        if (file.size > maxSize) {
+                            errorMsg.innerHTML = 'Ukuran berkas tidak boleh melebihi 2MB.';
+                            fileInput.value = ''; // Reset input file
+                            Swal.fire({
+                                title: 'Error!',
+                                text: `Terdapat ukuran berkas lebih dari 2MB. Silakan unggah file dengan ukuran maksimal 2MB.`,
+                                icon: 'error',
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                            });
+                            isValid = false; // Tandai validasi gagal
+                        } else {
+                            errorMsg.innerHTML = ''; // Hapus pesan error jika valid
+                        }
+                    }
+                });
+
+                if (!isValid) {
+                    return; // Hentikan proses submit jika ada file yang tidak valid
+                }  }
+            }
+
             if ($("#form-laporan-proposal").length > 0) {
             $("#form-laporan-proposal").validate({
                     submitHandler: function (form) {
@@ -467,7 +512,7 @@
                                     },
                                     buttonsStyling: false,
                                     timer: 2000
-                                })
+                                });
                             }
                         });
                     }

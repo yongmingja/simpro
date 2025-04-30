@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 @section('title','Dashboard')
-
+<link rel="stylesheet" href="{{asset('assets/vendor/libs/apex-charts/apex-charts.css')}}" />
 @section('content')
     <!-- Content -->
     <div class="container-fluid flex-grow-1 container-p-y">
@@ -274,13 +274,18 @@
             </div>
           </div>
 
-          <div class="divider text-start">
+          
+          <div class="divider text-center">
             <div class="divider-text">Grafik Realisasi Anggaran Proposal Kegiatan*</div>
           </div>
           <div class="row mt-3">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
               <div id="chart"></div>
-              <div><p style="font-size: 10px;">*Kategori Sumber Dana: Kampus</p></div>
+              <div><small><i>*Kategori RKAT & Sumber Dana: Kampus</i></small></div>
+            </div>
+            <div class="col-sm-6">
+              <div id="chart2"></div>
+              <div><small><i>*Kategori Non RKAT & Sumber Dana: Kampus</i></small></div>
             </div>
           </div>
           
@@ -369,6 +374,7 @@
 
 @endsection
 @section('script')
+<script src="{{asset('assets/vendor/libs/apex-charts/apexcharts.js')}}"></script>
 <script>
     $(document).ready(function () {
         $.ajaxSetup({
@@ -563,6 +569,76 @@
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
+
+
+    var options2 = {
+      series: [
+          {
+              name: 'Realisasi Anggaran',
+              data: {!! json_encode($mergedData2) !!}
+          }
+      ],
+      xaxis: {
+        categories: {!! json_encode($mergedData2->pluck('x')) !!}, // Nama kode fakultas/biro
+        labels: {
+            style: {
+                colors: '#0a8fd1', // Warna untuk setiap label
+                fontSize: '12px', // Ukuran font
+                fontWeight: 'bold' // Ketebalan font
+            }
+        }
+      },
+      yaxis: {
+        categories: {!! json_encode($mergedData2->pluck('y')) !!},
+        labels: {
+            style: {
+                colors: '#0a8fd1', // Warna untuk label y-axis
+                fontSize: '12px', // Ukuran font untuk label y-axis
+                fontWeight: 'bold' // Ketebalan font label y-axis
+            },
+            formatter: function(value) {
+              return formatRupiah(value);
+            }
+        }
+      },
+      chart: {
+          height: 350,
+          type: 'bar'
+      },
+      plotOptions: {
+          bar: {
+              columnWidth: '60%'
+          }
+      },
+      tooltip: {
+          y: {
+              formatter: function(value) {
+                  return formatRupiah(value);
+              }
+          }
+      },
+      colors: ['#007BFF'],
+      dataLabels: {
+          enabled: true,
+          formatter: function(value) {
+              return formatRupiah(value);
+          }
+      },
+      legend: {
+          show: true,
+          showForSingleSeries: true,
+          customLegendItems: ['Realisasi Anggaran'],
+          markers: {
+              fillColors: ['#007BFF']
+          },
+          labels: {
+            colors: '#0a8fd1',
+          }
+      }
+    };
+
+    var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
+    chart2.render();
 
 </script>
 @endsection

@@ -163,21 +163,13 @@ class LaporanProposalController extends Controller
             ->value('pegawais.email'); // Mengambil langsung nilai email, bukan seluruh objek
 
         // Pastikan $getEmail tidak null dan email valid
-        if ($getEmail) {
+        if (filter_var($getEmail, FILTER_VALIDATE_EMAIL)) {
             $emailAddress = strtolower($getEmail);
-
-            // Validasi email untuk mencegah error jika format tidak valid
-            if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-                $content = [
-                    'name' => 'Update Status Laporan Proposal Anda',
-                    'body' => 'Mohon maaf, laporan proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
-                ];
-                Mail::to($emailAddress)->send(new EmailDitolakDekan($content));
-            } else {
-                return response()->json(['message' => 'Invalid email format.'], 400);
-            }
-        } else {
-            return response()->json(['message' => 'No valid email addresses found.'], 404);
+            $content = [
+                'name' => 'Update Status Laporan Proposal Anda',
+                'body' => 'Mohon maaf, laporan proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
+            ];
+            Mail::to($emailAddress)->send(new EmailDitolakDekan($content));
         }
 
         // Update status laporan proposal dengan validasi request
@@ -188,12 +180,7 @@ class LaporanProposalController extends Controller
                 'keterangan_ditolak' => $request->keterangan_ditolak,
             ]);
 
-        // Pastikan hasil update berhasil
-        if ($post) {
-            return response()->json(['message' => 'Status updated successfully.']);
-        } else {
-            return response()->json(['message' => 'Failed to update status.'], 500);
-        }
+        return response()->json($post);
 
     }
 

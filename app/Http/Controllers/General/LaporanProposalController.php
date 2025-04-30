@@ -5,6 +5,7 @@ namespace App\Http\Controllers\General;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\General\DataRencanaAnggaran;
+use App\Models\General\DataFakultasBiro;
 use App\Models\General\LaporanProposal;
 use App\Models\General\DataRealisasiAnggaran;
 use App\Models\General\Proposal;
@@ -170,6 +171,13 @@ class LaporanProposalController extends Controller
                 } else {
                     return '<small><i class="text-secondary">Pending</i></small>';
                 }
+            })->addColumn('lampiran', function($data){
+                $ifExist = DB::table('lampiran_laporan_proposals')->where('id_proposal',$data->id)->count();
+                if($ifExist > 0){
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-toggle="tooltip" data-id="'.$data->id.'" data-placement="bottom" title="Lihat Lampiran" data-original-title="Lihat Lampiran" class="v-lampiran"><small class="text-info"><i class="bx bx-xs bx-paperclip"></i> Lihat</small></a>';
+                } else {
+                    return '<small><i class="bx bx-minus-circle bx-xs"></i></small>';
+                }
             })->addColumn('status', function($data){
                 if (DB::table('status_laporan_proposals')->where('id_laporan_proposal', $data->id)->exists()) {
                     return $this->statusLaporanProposal($data->id);
@@ -203,7 +211,7 @@ class LaporanProposalController extends Controller
                     return '<small><i class="bx bx-minus-circle"></i></small>';
                 }
             })
-            ->rawColumns(['laporan','status','action'])
+            ->rawColumns(['laporan','lampiran','status','action'])
             ->addIndexColumn(true)
             ->make(true);
         }
@@ -246,7 +254,7 @@ class LaporanProposalController extends Controller
             ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
             ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
             ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-            ->where('proposals.id','=',$ID)
+            ->where([['proposals.id','=',$ID],['jabatans.kode_jabatan','=','PEGS']])
             ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
             ->first();
 
@@ -272,6 +280,7 @@ class LaporanProposalController extends Controller
                 ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                 ->leftJoin('handle_proposals','handle_proposals.id_pegawai','=','pegawais.id')
                 ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->where('jabatans.kode_jabatan','!=','PEGS')
                 ->select('jabatans.kode_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
         }
@@ -294,6 +303,40 @@ class LaporanProposalController extends Controller
         $pdf->output();
         $canvas = $pdf->getDomPDF()->getCanvas();
         return $pdf->stream($fileName);
+    }
+
+    public function viewlampiran(Request $request)
+    {
+        $datas = DB::table('lampiran_laporan_proposals')->where('id_proposal',$request->proposal_id)->select('id','nama_berkas','berkas','link_gdrive','keterangan')->get();
+        $html = '<table class="table table-bordered table-hover table-sm">
+                    <thead class="bg-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Berkas</th>
+                            <th>Ket</th>
+                            <th>Lihat</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    foreach($datas as $no => $data){
+                        $html .= 
+                            '<tr>
+                                <td>'.++$no.'</td>
+                                <td>'.$data->nama_berkas.'</td>
+                                <td>'.$data->keterangan.'</td>
+                                <td>';
+                                if($data->berkas != ''){
+                                    $html .= '<button type="button" name="view" id="'.$data->id.'" class="view btn btn-outline-primary btn-sm"><a href="'.asset('/'.$data->berkas).'" target="_blank"><i class="bx bx-show"></i></a></button>';
+                                } else {
+                                    $html .= '<a href="'.$data->link_gdrive.'" target="_blank">'.$data->link_gdrive.'</a>';
+                                }
+                                
+                                $html .= '</td>
+                            </tr>';
+                    }
+            $html .= '</tbody>
+                </table>';
+        return response()->json(['card' => $html]);
     }
 
     protected function statusLaporanProposal($id)
@@ -352,7 +395,7 @@ class LaporanProposalController extends Controller
                 ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
                 ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
                 ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-                ->where('proposals.id','=',$r->id_proposal)
+                ->where([['proposals.id','=',$r->id_proposal],['jabatans.kode_jabatan','=','PEGS']])
                 ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();            
 
@@ -377,6 +420,7 @@ class LaporanProposalController extends Controller
                 ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                 ->leftJoin('handle_proposals','handle_proposals.id_pegawai','=','pegawais.id')
                 ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->where('jabatans.kode_jabatan','!=','PEGS')
                 ->select('jabatans.kode_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
         }
@@ -387,23 +431,30 @@ class LaporanProposalController extends Controller
     public function indexExportProposal(Request $request)
     {
         $checkYear = TahunAkademik::select('year','id')->get();
+        $getLembaga = Proposal::leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','proposals.id_fakultas_biro')->distinct()->get(['data_fakultas_biros.nama_fakultas_biro','data_fakultas_biros.id']);
 
-        if($request->tahun_proposal == null || $request->tahun_proposal == '[semua]'){
-            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.is_archived','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
-                ->orderBy('proposals.tgl_event','DESC')
-                ->get();
-        } else {
-            $datas = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
-                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
-                ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
-                ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.is_archived','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year')
-                ->where('proposals.id_tahun_akademik',$request->tahun_proposal)
-                ->orderBy('proposals.tgl_event','DESC')
-                ->get();
+        $tahun_akademik = $request->tahun_proposal;
+        $lembaga = $request->filter_lembaga;
+
+        $query = Proposal::leftJoin('pegawais','pegawais.user_id','=','proposals.user_id')
+            ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','proposals.id_tahun_akademik')
+            ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
+            ->select('proposals.id AS id','proposals.nama_kegiatan','proposals.id_tahun_akademik','proposals.tgl_event','proposals.is_archived','proposals.created_at','pegawais.nama_pegawai','status_laporan_proposals.status_approval','tahun_akademiks.year');       
+
+        if ($tahun_akademik && $tahun_akademik != '[semua]') {
+            $query->where('proposals.id_tahun_akademik', $tahun_akademik);
         }
+
+        // Filter berdasarkan lembaga
+        if ($lembaga && $lembaga != 'all') {
+            if ($lembaga == 'others') {
+                $query->whereNull('proposals.id_fakultas_biro');
+            } else {
+                $query->where('proposals.id_fakultas_biro', $lembaga);
+            }
+        }
+
+        $datas = $query->orderBy('proposals.tgl_event', 'DESC')->get();
 
         if($request->ajax()){
             return datatables()->of($datas)
@@ -429,110 +480,84 @@ class LaporanProposalController extends Controller
             ->addIndexColumn(true)
             ->make(true);
         }
-        return view('general.laporan-proposal.export-data', compact('checkYear'));
+        return view('general.laporan-proposal.export-data', compact('checkYear','getLembaga'));
     }
 
-    public function showDataProposalHtml($year)
+    public function showDataProposalHtml($year, $lembaga)
     {
-        if($year == null || $year == '[semua]'){
-            $datas = Proposal::leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
-                ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
-                ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
-                ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
-                ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
-                ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
-                ->select(
-                    'proposals.id AS id',
-                    'proposals.nama_kegiatan',
-                    'proposals.tgl_event',
-                    'proposals.is_archived',
-                    'proposals.created_at',
-                    'pegawais.nama_pegawai',
-                    'status_laporan_proposals.id_laporan_proposal',
-                    'status_laporan_proposals.status_approval',
-                    'data_fakultas_biros.nama_fakultas_biro',
-                    'form_rkats.kode_renstra',
-                    'form_rkats.total',
-                    DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
-                    DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
-                )
-                ->groupBy(
-                    'proposals.id',
-                    'proposals.nama_kegiatan',
-                    'proposals.tgl_event',
-                    'proposals.is_archived',
-                    'proposals.created_at',
-                    'pegawais.nama_pegawai',
-                    'status_laporan_proposals.id_laporan_proposal',
-                    'status_laporan_proposals.status_approval',
-                    'data_fakultas_biros.nama_fakultas_biro',
-                    'form_rkats.kode_renstra',
-                    'form_rkats.total'
-                )
-                ->orderBy('proposals.tgl_event','DESC')
-                ->get();
+        $query = Proposal::leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
+            ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
+            ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+            ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
+            ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
+            ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
+            ->select(
+                'proposals.id AS id',
+                'proposals.nama_kegiatan',
+                'proposals.tgl_event',
+                'proposals.is_archived',
+                'proposals.created_at',
+                'pegawais.nama_pegawai',
+                'status_laporan_proposals.id_laporan_proposal',
+                'status_laporan_proposals.status_approval',
+                'data_fakultas_biros.nama_fakultas_biro',
+                'form_rkats.kode_renstra',
+                'form_rkats.total',
+                DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
+                DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
+            )
+            ->groupBy(
+                'proposals.id',
+                'proposals.nama_kegiatan',
+                'proposals.tgl_event',
+                'proposals.is_archived',
+                'proposals.created_at',
+                'pegawais.nama_pegawai',
+                'status_laporan_proposals.id_laporan_proposal',
+                'status_laporan_proposals.status_approval',
+                'data_fakultas_biros.nama_fakultas_biro',
+                'form_rkats.kode_renstra',
+                'form_rkats.total'
+            );
 
+        if ($year && $year != '[semua]') {
+            $query->where('proposals.id_tahun_akademik', $year);
+        }
 
-        } else {
-            $datas = Proposal::leftJoin('pegawais', 'pegawais.user_id', '=', 'proposals.user_id')
-                ->leftJoin('status_laporan_proposals', 'status_laporan_proposals.id_laporan_proposal', '=', 'proposals.id')
-                ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
-                ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
-                ->leftJoin('data_rencana_anggarans', 'data_rencana_anggarans.id_proposal', '=', 'proposals.id')
-                ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
-                ->select(
-                    'proposals.id AS id',
-                    'proposals.nama_kegiatan',
-                    'proposals.tgl_event',
-                    'proposals.is_archived',
-                    'proposals.created_at',
-                    'pegawais.nama_pegawai',
-                    'status_laporan_proposals.id_laporan_proposal',
-                    'status_laporan_proposals.status_approval',
-                    'data_fakultas_biros.nama_fakultas_biro',
-                    'form_rkats.kode_renstra',
-                    'form_rkats.total',
-                    DB::raw('(SELECT SUM(data_rencana_anggarans.biaya_satuan * data_rencana_anggarans.quantity * data_rencana_anggarans.frequency) FROM data_rencana_anggarans WHERE data_rencana_anggarans.id_proposal = proposals.id) as anggaran_proposal'),
-                    DB::raw('(SELECT SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) FROM data_realisasi_anggarans WHERE data_realisasi_anggarans.id_proposal = proposals.id) as realisasi_anggaran')
-                )
-                ->groupBy(
-                    'proposals.id',
-                    'proposals.nama_kegiatan',
-                    'proposals.tgl_event',
-                    'proposals.is_archived',
-                    'proposals.created_at',
-                    'pegawais.nama_pegawai',
-                    'status_laporan_proposals.id_laporan_proposal',
-                    'status_laporan_proposals.status_approval',
-                    'data_fakultas_biros.nama_fakultas_biro',
-                    'form_rkats.kode_renstra',
-                    'form_rkats.total'
-                )
-                ->where('proposals.id_tahun_akademik',$year)
-                ->orderBy('proposals.tgl_event','DESC')
-                ->get();
+        // Filter berdasarkan lembaga
+        if ($lembaga && $lembaga != 'all') {
+            if ($lembaga == 'others') {
+                $query->whereNull('proposals.id_fakultas_biro');
+            } else {
+                $query->where('proposals.id_fakultas_biro', $lembaga);
+            }
         }
-        $getYear = TahunAkademik::where('id',$year)->select('year')->first();
-        if($getYear){
-            $getYear = $getYear->year;
-        } else {
-            $getYear = '[Semua]';
-        }
-        return view('general.laporan-proposal.show-in-html', ['datas' => $datas, 'getYear' => $getYear]);
+
+        $datas = $query->orderBy('proposals.tgl_event', 'DESC')->get();
+        
+        # Show year in html
+        $getYear = TahunAkademik::find($year);
+        $getYear = $getYear ? $getYear->year : '[Semua]';
+
+        # Show Lembaga in html
+        $getFacBiro = DataFakultasBiro::find($lembaga);
+        $getFacBiro = $getFacBiro ? $getFacBiro->nama_fakultas_biro : 'Semua Lembaga';
+
+        return view('general.laporan-proposal.show-in-html', ['datas' => $datas, 'getYear' => $getYear, 'getFacBiro' => $getFacBiro]);
     }
 
-    public function downloadProposalExcel($year)
+    public function downloadProposalExcel($year, $lembaga)
     {
-        $getYear = TahunAkademik::where('id',$year)->select('year')->first();
-        if($getYear){
-            $getYear = $getYear->year;
-        } else {
-            $getYear = '[Semua]';
-        }
-        $fileName = 'data_proposal_dan_laporan_proposal_'.$getYear.'.xlsx';
+        $getYear = TahunAkademik::find($year);
+        $getYear = $getYear ? $getYear->year : '[Semua]';
+
+        $getFacBiro = DataFakultasBiro::find($lembaga);
+        $getFacBiro = $getFacBiro ? $getFacBiro->nama_fakultas_biro : 'Semua Lembaga';
+
+        $fileName = 'data_proposal_dan_laporan_proposal_'.$getFacBiro.'_'.$getYear.'.xlsx';
 
         // Simpan file Excel ke penyimpanan sementara
-        Excel::store(new LaporanProposalExport($year), $fileName, 'local');
+        Excel::store(new LaporanProposalExport($year,$lembaga), $fileName, 'local');
 
         return Response::stream(function() use ($fileName) {
             // Buka file dari penyimpanan sementara dan kirim sebagai stream

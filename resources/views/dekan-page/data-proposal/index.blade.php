@@ -90,7 +90,7 @@
                     <!-- End of validasi proposal-->
 
                      <!-- Mulai modal lihat lampiran -->
-                     <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true" data-bs-backdrop="static">
+                     <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -99,9 +99,6 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="table_lampiran" class="col-sm-12 table-responsive mb-3"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>

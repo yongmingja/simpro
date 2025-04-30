@@ -175,9 +175,7 @@ class DashboardController extends Controller
                 'body' => 'Proposal telah di ACC oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
             $post = Mail::to([$emailAddress,'bennyalfian@uvers.ac.id'])->send(new EmailDiterimaRektorat($content));        
-        } else {
-            return 'No valid email addresses found';
-        }
+        } 
 
         return response()->json($post);
     }
@@ -203,8 +201,6 @@ class DashboardController extends Controller
                 'body' => 'Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
             $post = Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new EmailDitolakRektorat($content));
-        } else {
-            return 'No valid email addresses found';
         }
 
         return response()->json($post);
@@ -233,9 +229,7 @@ class DashboardController extends Controller
                 'link' => ''.URL::to('preview-proposal').'/'.encrypt($request->proposal_id).'',
             ];
             Mail::to($delemails)->send(new EmailDelegasiProposal($content));        
-        } else {
-            return 'No valid email addresses found';
-        }
+        } 
 
         return response()->json($post);
     }
@@ -374,8 +368,6 @@ class DashboardController extends Controller
                 'body' => 'Laporan Proposal ditolak oleh Rektorat. Anda bisa melihat status pada halaman proposal di SIMPRO',
             ];
             Mail::to($emailAddress)->send(new EmailDitolakRektorat($content));
-        } else {
-            return 'No valid email addresses found';
         }
 
         return response()->json($post);
@@ -682,18 +674,15 @@ class DashboardController extends Controller
                     }                
                 }
             }
-        } else {
-            return 'Nothing data in the table';
-        }
+        } 
+
         if (isset($pegawai) && count($pegawai) > 0) {
             $isiData = [
                 'name' => 'Form Partisipasi Kegiatan Undangan',
                 'body' => 'Anda memiliki undangan kegiatan, untuk info lebih detail, silakan login di akun SIMPRO anda. Pada menu Undangan FPKU - Undangan.',
             ];
             Mail::to($pegawai)->send(new UndanganFpku($isiData));
-        } else {
-            return 'No valid email addresses found';
-        }
+        } 
 
         $post = DB::table('status_fpkus')->where('id_fpku',$request->fpku_id)->update([
             'status_approval' => 2,
@@ -722,8 +711,6 @@ class DashboardController extends Controller
                 'link' => ''.URL::to('preview-undangan-fpku').'/'.encrypt($request->fpku_id).'',
             ];
             Mail::to($delemails)->send(new EmailDelegasiFpku($content));        
-        } else {
-            return 'No valid email addresses found';
         }
 
         return response()->json($post);

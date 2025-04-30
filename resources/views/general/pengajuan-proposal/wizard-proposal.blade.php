@@ -33,6 +33,32 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
     }
 
+    .bs-stepper-header {
+        display: flex;
+        gap: 0.5rem; /* Tambahkan jarak antar-tab */
+        width: 100%; /* Pastikan ukuran penuh dalam container */
+        max-width: 100%; /* Tab tetap berada di card */
+        overflow: hidden;
+    }
+
+    @media (max-width: 1024px) {
+        .bs-stepper-header {
+            display: flex;
+            gap: 0.5rem; /* Tambahkan jarak antar-tab */
+            width: 100%; /* Pastikan ukuran penuh dalam container */
+            max-width: 100%; /* Tab tetap berada di card */
+            overflow: hidden;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #wizard-container {
+            max-height: 45vh; 
+            overflow-y: auto;
+            padding: 0.8rem; 
+        }
+    }
+
 </style>
 <div class="container-fluid flex-grow-1">
     <section id="basic-datatable">
@@ -437,98 +463,145 @@
 
     const wizardVertical = document.querySelector(".wizard-vertical");
 
-      if (typeof wizardVertical !== undefined && wizardVertical !== null) {
-      const wizardVerticalBtnNextList = [].slice.call(wizardVertical.querySelectorAll('.btn-next')),
-          wizardVerticalBtnPrevList = [].slice.call(wizardVertical.querySelectorAll('.btn-prev')),
-          wizardVerticalBtnSubmit = wizardVertical.querySelector('.btn-submit');
+    if (typeof wizardVertical !== undefined && wizardVertical !== null) {
+        const wizardVerticalBtnNextList = [].slice.call(wizardVertical.querySelectorAll('.btn-next')),
+            wizardVerticalBtnPrevList = [].slice.call(wizardVertical.querySelectorAll('.btn-prev')),
+            wizardVerticalBtnSubmit = wizardVertical.querySelector('.btn-submit');
 
-      const numberedVerticalStepper = new Stepper(wizardVertical, {
-          linear: false
-      });
-      if (wizardVerticalBtnNextList) {
-          wizardVerticalBtnNextList.forEach(wizardVerticalBtnNext => {
-          wizardVerticalBtnNext.addEventListener('click', event => {
-              numberedVerticalStepper.next();
-          });
-          });
-      }
-      if (wizardVerticalBtnPrevList) {
-          wizardVerticalBtnPrevList.forEach(wizardVerticalBtnPrev => {
-          wizardVerticalBtnPrev.addEventListener('click', event => {
-              numberedVerticalStepper.previous();
-          });
-          });
-      }
-      if (wizardVerticalBtnSubmit) {
-          wizardVerticalBtnSubmit.addEventListener('click', event => {
-            if ($("#form-proposal").length > 0) {
-            $("#form-proposal").validate({
-                    submitHandler: function (form) {
-                        var actionType = $('#tombol-simpan').val();
-                        var formData = new FormData($("#form-proposal")[0]);
-                        $('#tombol-simpan').html('');
-                        $('#tombol-simpan').prop("disabled", true);
+        const numberedVerticalStepper = new Stepper(wizardVertical, {
+            linear: false
+        });
+        if (wizardVerticalBtnNextList) {
+            wizardVerticalBtnNextList.forEach(wizardVerticalBtnNext => {
+                wizardVerticalBtnNext.addEventListener('click', event => {
+                    numberedVerticalStepper.next();
+                });
+            });
+        }
+        if (wizardVerticalBtnPrevList) {
+            wizardVerticalBtnPrevList.forEach(wizardVerticalBtnPrev => {
+                wizardVerticalBtnPrev.addEventListener('click', event => {
+                    numberedVerticalStepper.previous();
+                });
+            });
+        }
 
-                        $.ajax({
-                            data: formData,
-                            contentType: false,
-                            processData: false,
-                            url: "{{ route('insert-proposal') }}",
-                            type: "POST",
-                            dataType: 'json',
-                            beforeSend: function(){
-                                $("#tombol-simpan").append(
-                                    '<i class="bx bx-loader-circle bx-spin text-warning"></i>'+
-                                    ' Mohon tunggu ...');
-                            },
-                            success: function (data) {
-                                $('#form-proposal').trigger("reset");
-                                $('#tombol-simpan').html('Submit');
-                                $('#tombol-simpan').prop("disabled", true);
-                                Swal.fire({
-                                    title: 'Good job!',
-                                    text: 'Proposal submitted successfully!',
-                                    type: 'success',
-                                    customClass: {
-                                        confirmButton: 'btn btn-primary'
-                                    },
-                                    buttonsStyling: false,
-                                    timer: 2000
-                                }),
-                                window.location = '{{ route("submission-of-proposal.index") }}';
-                            },
-                            error: function (response) {
-                                $('#kategoriErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
-                                $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
-                                $('#fakultasBiroErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);
-                                $('#prodiBiroErrorMsg').text(response.responseJSON.errors.id_prodi_biro);
-                                $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
-                                $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
-                                $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
-                                $('#lokasiErrorMsg').text(response.responseJSON.errors.lokasi_tempat);
-                                $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
-                                $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
-                                $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
-                                $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
-                                $('#tombol-simpan').html('Submit');
-                                $('#tombol-simpan').prop("disabled", false);
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: ' Proposal failed to submit!',
-                                    type: 'error',
-                                    customClass: {
-                                        confirmButton: 'btn btn-primary'
-                                    },
-                                    buttonsStyling: false,
-                                    timer: 2000
-                                })
-                            }
-                        });
+        if (wizardVerticalBtnSubmit) {
+            wizardVerticalBtnSubmit.addEventListener('click', event => {
+                // Validasi semua input file yang dinamis
+                const fileInputs = document.querySelectorAll('input[name^="berkas"]'); // Pilih semua input file dengan nama "berkas[...]"
+                const maxSize = 2 * 1024 * 1024; // Maksimal ukuran file 2MB
+                let isValid = true; // Flag validasi untuk semua file
+
+                fileInputs.forEach((fileInput, index) => {
+                    const errorMsgId = `berkasErrorMsg_${index}`; // ID unik untuk setiap pesan error
+                    let errorMsg = document.getElementById(errorMsgId);
+
+                    // Jika elemen pesan error tidak ada, buat elemen baru
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('span');
+                        errorMsg.id = errorMsgId;
+                        errorMsg.className = 'text-danger';
+                        errorMsg.style.fontSize = '10px';
+                        fileInput.parentNode.appendChild(errorMsg); // Tambahkan ke DOM
                     }
-                })
-            }
-          });
-      }
+
+                    const files = fileInput.files;
+                    if (files.length > 0) {
+                        const file = files[0]; // Ambil file pertama di input
+                        if (file.size > maxSize) {
+                            errorMsg.innerHTML = 'Ukuran berkas tidak boleh melebihi 2MB.';
+                            fileInput.value = ''; // Reset input file
+                            Swal.fire({
+                                title: 'Error!',
+                                text: `Terdapat ukuran berkas lebih dari 2MB. Silakan unggah file dengan ukuran maksimal 2MB.`,
+                                icon: 'error',
+                                customClass: {
+                                    confirmButton: 'btn btn-primary'
+                                },
+                                buttonsStyling: false,
+                            });
+                            isValid = false; // Tandai validasi gagal
+                        } else {
+                            errorMsg.innerHTML = ''; // Hapus pesan error jika valid
+                        }
+                    }
+                });
+
+                if (!isValid) {
+                    return; // Hentikan proses submit jika ada file yang tidak valid
+                }
+
+                // Melanjutkan validasi form jika semua file valid
+                if ($("#form-proposal").length > 0) {
+                    $("#form-proposal").validate({
+                        submitHandler: function (form) {
+                            var actionType = $('#tombol-simpan').val();
+                            var formData = new FormData($("#form-proposal")[0]);
+                            $('#tombol-simpan').html('');
+                            $('#tombol-simpan').prop("disabled", true);
+
+                            $.ajax({
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                url: "{{ route('insert-proposal') }}",
+                                type: "POST",
+                                dataType: 'json',
+                                beforeSend: function () {
+                                    $("#tombol-simpan").append(
+                                        '<i class="bx bx-loader-circle bx-spin text-warning"></i>' +
+                                        ' Mohon tunggu ...');
+                                },
+                                success: function (data) {
+                                    $('#form-proposal').trigger("reset");
+                                    $('#tombol-simpan').html('Submit');
+                                    $('#tombol-simpan').prop("disabled", true);
+                                    Swal.fire({
+                                        title: 'Good job!',
+                                        text: 'Proposal submitted successfully!',
+                                        type: 'success',
+                                        customClass: {
+                                            confirmButton: 'btn btn-primary'
+                                        },
+                                        buttonsStyling: false,
+                                        timer: 2000
+                                    }),
+                                    window.location = '{{ route("submission-of-proposal.index") }}';
+                                },
+                                error: function (response) {
+                                    $('#kategoriErrorMsg').text(response.responseJSON.errors.id_jenis_kegiatan);
+                                    $('#tglKegiatanErrorMsg').text(response.responseJSON.errors.tgl_event);
+                                    $('#fakultasBiroErrorMsg').text(response.responseJSON.errors.id_fakultas_biro);
+                                    $('#prodiBiroErrorMsg').text(response.responseJSON.errors.id_prodi_biro);
+                                    $('#namaKegiatanErrorMsg').text(response.responseJSON.errors.nama_kegiatan);
+                                    $('#pendahuluanErrorMsg').text(response.responseJSON.errors.pendahuluan);
+                                    $('#tujuanManfaatErrorMsg').text(response.responseJSON.errors.tujuan_manfaat);
+                                    $('#lokasiErrorMsg').text(response.responseJSON.errors.lokasi_tempat);
+                                    $('#pesertaErrorMsg').text(response.responseJSON.errors.peserta);
+                                    $('#detilKegiatanErrorMsg').text(response.responseJSON.errors.detil_kegiatan);
+                                    $('#penutupErrorMsg').text(response.responseJSON.errors.penutup);
+                                    $('#berkasErrorMsg').text(response.responseJSON.errors.berkas);
+                                    $('#tombol-simpan').html('Submit');
+                                    $('#tombol-simpan').prop("disabled", false);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: ' Proposal failed to submit!',
+                                        type: 'error',
+                                        customClass: {
+                                            confirmButton: 'btn btn-primary'
+                                        },
+                                        buttonsStyling: false,
+                                        timer: 2000
+                                    });
+                                }
+                            });
+                        }
+                    })
+                }
+            });
+        }
+
     }
 
     function getFormRkat() {
@@ -550,7 +623,7 @@
                         // Tampilkan semua RKAT tanpa filter
                         if (data.length > 0) {
                             data.forEach(function(item) {
-                                options += `<option value="${item.id}" data-nama-kegiatan="${item.nama_kegiatan}" data-total-rkat="${item.total}">${item.nama_kegiatan}</option>`;
+                                options += `<option value="${item.id}" data-nama-kegiatan="${item.nama_kegiatan}" data-total-rkat="${item.total}">[${item.kode_fakultas_biro}] ${item.nama_kegiatan}</option>`;
                             });
                         } else {
                             options += `<option value="" disabled>Data RKAT tidak ditemukan.</option>`;

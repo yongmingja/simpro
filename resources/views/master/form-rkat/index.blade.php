@@ -27,7 +27,8 @@
                     <div class="card-body">
                         <!-- MULAI TOMBOL TAMBAH -->
                         <div class="mb-3">
-                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="tombol-tambah"><button type="button" class="btn btn-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> New data</button></a>
+                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="tombol-tambah"><button type="button" class="btn btn-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> New data</button></a>&nbsp;
+                            <a href="javascript:void(0)" class="dropdown-shortcuts-add text-body" id="click-csv"><button type="button" class="btn btn-secondary"><i class="bx bx-xs bx-import bx-tada-hover"></i> Import CSV</button></a>
                         </div>
                         
                         <!-- AKHIR TOMBOL -->
@@ -36,6 +37,7 @@
                                 <tr>
                                   <th>#</th>
                                   <th>Tahun Akademik</th>
+                                  <th>Fakultas / Biro</th>
                                   <th>Sasaran Strategi</th>
                                   <th>Program Strategis</th>
                                   <th>Kode Renstra</th>
@@ -64,7 +66,7 @@
                                             <input type="hidden" id="id" name="id">
                                             <div class="mb-3">
                                                 <label for="id_fakultas_biro" class="form-label">Fakultas / Biro</label>
-                                                <select class="form-select" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
+                                                <select class="select2 form-select" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
                                                     <option value="" id="pilih_fakultas">- Pilih -</option>
                                                     @foreach($getFakultasBiro as $fakultas_biro)
                                                     <option value="{{$fakultas_biro->id}}">{{$fakultas_biro->nama_fakultas_biro}}</option>
@@ -129,6 +131,61 @@
                         </div>
                     </div>
                     <!-- AKHIR MODAL -->
+
+                    <!-- Modal Import data RKAT -->
+                    <div class="modal fade" id="import-data-rkat" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal-judul-import"></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card border">
+                                        <div class="card-body">
+                                            <p><i class="bx bx-spa"></i> Sebelum anda import data RKAT berikut sedikit petunjuk:<br>
+                                            <li>Anda bisa mengunduh terlebih dahulu format berkas CSV <a href="{{ asset('template/data-rkat-upt-si.csv')}}" target="_blank">di sini</a>.<br>
+                                            <li>Pilihlah Fakultas, unit atau biro yang ingin anda import.<br>
+                                            <li>Pilihlah file berekstensi .csv pada komputer anda.<br>
+                                            <li>Langkah terakhir adalah klik tombol Import. Selesai!
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <form id="form-import-csv" name="form-import-csv" enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="row mt-3">
+                                            <div class="mb-3">
+                                                <label for="pilih_fakultas_biro" class="form-label">Fakultas / Biro</label>
+                                                <select class="select2 form-select" id="pilih_fakultas_biro" name="pilih_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
+                                                    <option value="" id="pilih_fakultas_biro">- Pilih -</option>
+                                                    @foreach($getFakultasBiro as $fakultas_biro)
+                                                    <option value="{{$fakultas_biro->id}}">{{$fakultas_biro->nama_fakultas_biro}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger" id="pilihFakultasBiroErrorMsg" style="font-size: 10px;"></span>
+                                            </div> 
+                                            <div class="mb-3">
+                                                <label for="file_csv" class="form-label">File Excel/CSV</label>
+                                                <div class="form-group mt-1 mb-1">
+                                                    <input id="file_csv" type="file" name="file_csv" accept=".csv" data-preview-file-type="any" class="file form-control" required data-upload-url="#">
+                                                </div>
+                                                <span class="text-danger" id="fileErrorMsg"></span>
+                                            </div>                                          
+                                            
+                                            <div class="col-sm-offset-2 col-sm-12">
+                                                <hr class="mt-2">
+                                                <div class="float-sm-end">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary btn-block" id="tombol-import" value="import">Import</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End import data rkat -->
                     
                 </div>
             </div>
@@ -161,6 +218,7 @@
                     }
                 }, 
                 {data: 'year',name: 'year'},
+                {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
                 {data: 'sasaran_strategi',name: 'sasaran_strategi'},
                 {data: 'program_strategis',name: 'program_strategis'},
                 {data: 'kode_renstra',name: 'kode_renstra'},
@@ -316,6 +374,62 @@
 
         rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
         return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+
+    $('#click-csv').click(function(){
+        $('#button-simpan').val("create-post");
+        $('#form-import-csv').trigger("reset");
+        $('#modal-judul-import').html("Import Data RKAT");
+        $('#import-data-rkat').modal('show');
+    });
+
+    if ($("#form-import-csv").length > 0) {
+        $("#form-import-csv").validate({
+            submitHandler: function (form) {
+                var actionType = $('#tombol-import').val();
+                var formData = new FormData($("#form-import-csv")[0]);
+                $('#tombol-import').html('Importing..');
+
+                $.ajax({
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    url: "{{ route('import-data-rkat') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#form-import-csv').trigger("reset");
+                        $('#import-data-rkat').modal('hide');
+                        $('#tombol-import').html('Import');
+                        $('#table_rkat').DataTable().ajax.reload(null, true);
+                        Swal.fire({
+                            title: 'Good job!',
+                            text: 'Data imported successfully!',
+                            type: 'success',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    },
+                    error: function(response) {
+                        $('#fileErrorMsg').text(response.responseJSON.errors.file_csv);
+                        $('#tombol-import').html('Import');
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Data failed to import!',
+                            type: 'error',
+                            customClass: {
+                            confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                            timer: 2000
+                        })
+                    }
+                });
+            }
+        })
     }
 
 </script>

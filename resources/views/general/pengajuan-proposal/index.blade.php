@@ -16,50 +16,6 @@
 </nav>
 </div>
 @endsection
-<style>
-    .horizontal-timeline .items {
-    border-top: 3px solid #e9ecef;
-    }
-
-    .horizontal-timeline .items .items-list {
-    display: block;
-    position: relative;
-    text-align: center;
-    padding-top: 70px;
-    margin-right: 0;
-    }
-
-    .horizontal-timeline .items .items-list:before {
-    content: "";
-    position: absolute;
-    height: 36px;
-    border-right: 2px dashed #dee2e6;
-    top: 0;
-    }
-
-    .horizontal-timeline .items .items-list .event-date {
-    position: absolute;
-    top: 36px;
-    left: 0;
-    right: 0;
-    width: 90px;
-    margin: 0 auto;
-    font-size: 0.7rem;
-    padding-top: 8px;
-    }
-
-    @media (min-width: 1140px) {
-    .horizontal-timeline .items .items-list {
-        display: inline-block;
-        width: 24%;
-        padding-top: 45px;
-    }
-
-    .horizontal-timeline .items .items-list .event-date {
-        top: -40px;
-    }
-    }
-</style>
 
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/quill/typography.css')}}" />
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
@@ -73,30 +29,28 @@
             <div class="col-12">
                 <div class="card table-responsive">
                     <div class="card-body">
-                        <div class="row">
-
-                            <!-- MULAI TOMBOL TAMBAH -->
-                            @if($canAddProposal)
-                            <div class="mb-3">
-                                <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                            </div>
-                            @else
-                            <div class="mb-3">
-                                <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di validasi oleh Rektorat! Mohon periksa kembali status proposal atau status laporan proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
-                            </div>
-                            @endif
-                            <!-- AKHIR TOMBOL -->
-                            <div class="col-sm-2 mb-3">
-                                <fieldset class="form-group">
-                                    <select style="cursor:pointer;" class="select2 form-control border" id="status" name="status" required>
+                        <div class="mb-3">
+                            <div class="row">
+                                <!-- Button -->
+                                <div class="col-auto">
+                                    @if($canAddProposal)
+                                        <a href="{{route('tampilan-proposal-baru')}}" class="dropdown-shortcuts-add text-body" id="proposal-baru"><button type="button" class="btn btn-outline-primary"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                                    @else
+                                        <a href="javascript:void(0)" class="dropdown-shortcuts-add text-muted"><button type="button" class="btn btn-outline-secondary" onclick="alert('Anda dapat mengajukan proposal baru setelah menyelesaikan laporan pertanggung-jawaban proposal Anda sebelumnya dan telah di validasi oleh Rektorat! Mohon periksa kembali status proposal atau status laporan proposal Anda.')"><i class="bx bx-plus-circle bx-spin-hover"></i> Proposal Baru</button></a>
+                                    @endif
+                                </div>
+                                <!-- Select Option -->
+                                <div class="col-sm-2">
+                                    <select class="select2 form-control" style="cursor: pointer;" id="status" name="status" required>
                                         <option value="all" selected>Semua data (default)</option>
                                         <option value="pending">Pending</option>
                                         <option value="accepted">Diterima</option>
                                         <option value="denied">Ditolak</option>
                                     </select>
-                                </fieldset>
+                                </div>
                             </div>
                         </div>
+                                
                         <table class="table table-hover table-responsive" id="table_proposal">
                             <thead>
                             <tr>
@@ -156,7 +110,7 @@
                     {{-- Info detil keterangan --}}
 
                     <!-- Mulai modal lihat lampiran -->
-                    <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true" data-bs-backdrop="static">
+                    <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -165,9 +119,6 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="table_lampiran" class="col-sm-12 table-responsive mb-3"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>

@@ -10,29 +10,34 @@ use App\Models\Master\Jabatan;
 use App\Models\General\TahunAkademik;
 use App\Models\General\DataFakultasBiro;
 use Illuminate\Support\Facades\Session;
+use App\Imports\RkatsImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Auth;
 
 class FormRkatController extends Controller
 {
     public function index(Request $request)
     {
-        // $recentRole = Session::get('selected_peran');
-        if(session()->get('selected_peran') == ''){
-            $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
-                ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
-                ->select('jabatan_pegawais.id AS jab_id','jabatans.kode_jabatan','jabatans.id AS id_jabatan')
-                ->first();
-            $recentRole = $getPeran->kode_jabatan;
-            $recentRoleId = $getPeran->jab_id;
-        } else {
-            $getPeran = Jabatan::leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
-                ->where('jabatans.kode_jabatan',session()->get('selected_peran'))->select('jabatans.id AS id_jabatan','jabatan_pegawais.id AS jab_id')->first();
-            $recentRoleId = $getPeran->jab_id;
-        }
+        # $recentRole = Session::get('selected_peran');
+        # No more using this, cuz only WRSDP and Superadmin who be able to insert the RKAT since April 24 2025
+        // if(session()->get('selected_peran') == ''){
+        //     $getPeran = JabatanPegawai::leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
+        //         ->where('jabatan_pegawais.id_pegawai',Auth::user()->id)
+        //         ->select('jabatan_pegawais.id AS jab_id','jabatans.kode_jabatan','jabatans.id AS id_jabatan')
+        //         ->first();
+        //     $recentRole = $getPeran->kode_jabatan;
+        //     $recentRoleId = $getPeran->jab_id;
+        // } else {
+        //     $getPeran = Jabatan::leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
+        //         ->where('jabatans.kode_jabatan',session()->get('selected_peran'))->select('jabatans.id AS id_jabatan','jabatan_pegawais.id AS jab_id')->first();
+        //     $recentRoleId = $getPeran->jab_id;
+        // }
 
         $datas = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
-            ->select('form_rkats.id AS id','form_rkats.*','tahun_akademiks.year')
-            ->where('form_rkats.penanggung_jawab',$recentRoleId)
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','form_rkats.id_fakultas_biro')
+            ->select('form_rkats.id AS id','form_rkats.*','tahun_akademiks.year','data_fakultas_biros.nama_fakultas_biro')
+            ->where('tahun_akademiks.is_active',1)
+            // ->where('form_rkats.penanggung_jawab',$recentRoleId) # no longer used April 24 2025
             ->get();
 
         if($request->ajax()){
@@ -134,10 +139,31 @@ class FormRkatController extends Controller
     public function dataForm(Request $request)
     {
         $datas = FormRkat::leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
-            ->where('tahun_akademiks.is_active',1)
-            ->select('form_rkats.id AS id','form_rkats.*','tahun_akademiks.is_active','tahun_akademiks.year','tahun_akademiks.id AS id_year')
+            ->leftJoin('data_fakultas_biros','data_fakultas_biros.id','=','form_rkats.id_fakultas_biro')
+            ->where([['tahun_akademiks.is_active',1],['form_rkats.status_validasi',1]])
+            ->select('form_rkats.id AS id','form_rkats.*','data_fakultas_biros.kode_fakultas_biro','tahun_akademiks.is_active','tahun_akademiks.year','tahun_akademiks.id AS id_year')
+            ->orderBy('form_rkats.id_fakultas_biro','DESC')
             ->get();
         return response()->json($datas);
+
+    }
+
+    public function importDataRkat(Request $request) 
+    {
+    	$request->validate([
+           'file_csv' => 'required|file',
+        ],[
+            'file_csv.required' => 'Anda belum memilih berkas CSV'
+        ]);
+
+        $idFakultasBiro = $request->pilih_fakultas_biro;
+
+		$file = $request->file('file_csv'); 
+		$nama_file = rand().$file->getClientOriginalName();
+        $file->move('file_import_rkat',$nama_file);
+        
+		$post = Excel::import(new RkatsImport($idFakultasBiro), public_path('/file_import_rkat/'.$nama_file));
+        return response()->json($post);
 
     }
 }

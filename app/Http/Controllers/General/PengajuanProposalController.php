@@ -34,6 +34,7 @@ class PengajuanProposalController extends Controller
 {
     public function index(Request $request)
     {
+        // dd($this->canAddProposal());
         $statusMapping = [
             '' => [],
             'all' => [],
@@ -166,6 +167,16 @@ class PengajuanProposalController extends Controller
     {
         $userId = Auth::user()->user_id;
 
+        # Logic to restrict automatically 
+        # Terms and conditions
+        # First of all: Get all the datas, ordered by proposal id to make sure data per data
+        # Then concern on these conditions how the user be able to create new proposal
+        # 1. Check if user never create the proposal at all
+        # 2. Check if the proposal has been archived
+        # 3. If unarchived and the state value is 5 (or verified), check the report of the proposal. 
+        #    The report's state should be verified
+        # 4. Restrict if the proposal still on going
+
         // Ambil data proposal gabungan
         $datas = Proposal::leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
             ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
@@ -178,40 +189,34 @@ class PengajuanProposalController extends Controller
                 'tahun_akademiks.year'
             )
             ->where('proposals.user_id', '=', $userId)
-            ->orderBy('proposals.id', 'ASC')
+            ->orderBy('proposals.id', 'ASC') // Urutkan berdasarkan id_proposal
             ->get();
 
-        // Kondisi 1: Jika user belum pernah membuat proposal
         if ($datas->isEmpty()) {
-            return true; // User dapat membuat proposal baru
+            return true; 
         }
 
         foreach ($datas as $data) {
-            // Kondisi 2: Jika proposal diarsip
             if ($data->is_archived == 1) {
-                return true; // User dapat membuat proposal baru
+                continue; 
             }
 
-            // Kondisi 3: Jika status proposal sudah bernilai 5
             if ($data->status_proposal == 5) {
                 if (is_null($data->status_laporan_proposal)) {
-                    return false; // Laporan tidak ada, user tidak dapat membuat proposal baru
+                    return false; 
                 }
 
                 if ($data->status_laporan_proposal != 5) {
-                    return false; // Laporan belum selesai, user tidak dapat membuat proposal baru
+                    return false;
                 }
 
-                continue; // Laporan selesai, lanjut ke proposal berikutnya
+                continue;
             }
 
-            // Kondisi 4: Jika status proposal belum bernilai 5
             if ($data->status_proposal < 5) {
-                return false; // User tidak dapat membuat proposal baru
+                return false;
             }
         }
-
-        // Default: Jika semua kondisi terpenuhi
         return true;
     }
 
@@ -304,6 +309,19 @@ class PengajuanProposalController extends Controller
         ]); 
         
         $getIdTahunAkademik = TahunAkademik::where('is_active',1)->select('id')->first();
+
+        $existingProposal = Proposal::where([
+            'id_tahun_akademik' => $getIdTahunAkademik->id,
+            'id_jenis_kegiatan' => $request->id_jenis_kegiatan,
+            'id_form_rkat'      => $request->pilihan_rkat,
+            'tgl_event'         => $request->tgl_event,
+            'user_id'           => Auth::user()->id,
+            'validasi'   => 1 
+        ])->first();
+    
+        if ($existingProposal) {
+            return response()->json(['message' => 'Proposal already submitted.'], 400);
+        }
 
         $post = Proposal::updateOrCreate(['id' => $request->id],
                 [
@@ -447,7 +465,6 @@ class PengajuanProposalController extends Controller
             if (!empty($insertData)) {
                 DB::table('lampiran_proposals')->insert($insertData);
             }
-            // return redirect()->route('submission-of-proposal.index');
         }
 
         # get Email Dekan
@@ -465,8 +482,6 @@ class PengajuanProposalController extends Controller
                 'body' => 'Anda memiliki pengajuan proposal kegiatan: '.$request->nama_kegiatan.'',
             ];
             Mail::to([$emailAddress, 'bennyalfian@uvers.ac.id'])->send(new KirimEmail($isiData));
-        } else {
-            return 'No valid email addresses found';
         } 
         
         return response()->json($post);
@@ -543,8 +558,6 @@ class PengajuanProposalController extends Controller
         return response()->json(['card' => $html]);
     }
 
-
-
     public function previewproposal($id)
     {
         $ID = decrypt($id);
@@ -581,7 +594,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
                 ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
                 ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-                ->where('proposals.id','=',$r->id)
+                ->where([['proposals.id','=',$r->id],['jabatans.kode_jabatan','=','PEGS']])
                 ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
 
@@ -605,6 +618,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                 ->leftJoin('handle_proposals','handle_proposals.id_pegawai','=','pegawais.id')
                 ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->where('jabatans.kode_jabatan','!=','PEGS')
                 ->select('jabatans.kode_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
                 
@@ -638,7 +652,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('jabatan_pegawais','jabatan_pegawais.id_jabatan','=','jabatans.id')
                 ->leftJoin('pegawais','pegawais.id','=','jabatan_pegawais.id_pegawai')
                 ->leftJoin('proposals','proposals.user_id','=','pegawais.user_id')
-                ->where('proposals.id','=',$r->id_proposal)
+                ->where([['proposals.id','=',$r->id_proposal],['jabatans.kode_jabatan','=','PEGS']])
                 ->select('jabatans.nama_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan')
                 ->first();
 
@@ -662,6 +676,7 @@ class PengajuanProposalController extends Controller
                 ->leftJoin('jabatans','jabatans.id','=','jabatan_pegawais.id_jabatan')
                 ->leftJoin('handle_proposals','handle_proposals.id_pegawai','=','pegawais.id')
                 ->whereJsonContains('handle_proposals.id_jenis_kegiatan',(string) $r->id_jenis_kegiatan)
+                ->where('jabatans.kode_jabatan','!=','PEGS')
                 ->select('jabatans.kode_jabatan','pegawais.nama_pegawai','jabatan_pegawais.ket_jabatan','jabatans.nama_jabatan')
                 ->first();
         }

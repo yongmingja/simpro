@@ -32,7 +32,7 @@
     }
     .footer_auditor, .trfooterauditor, .tdfooterauditor {
         border: 0;
-        font-size: 12px;
+        font-size: 14px;
         text-align: center;
     }
     .footer_auditor{
@@ -62,10 +62,13 @@
     }
     .tag-kode {
         text-align: left;
-        font-size: 12px;
+        font-size: 14px;
         line-height: 14px;
         margin-left: 1em;
         margin-top: 3em;
+    }
+    .footer_tanggal {
+        font-size: 14px;
     }
 </style>
 <body>
@@ -235,7 +238,7 @@
             <div class="justify-text">
                 <p>{!!$penutup->lap_penutup!!}</p>
             </div>
-            <p style="margin-top: 2em;">Batam, {{date('d-m-Y', strtotime($penutup->tgl_laporan))}}</p>
+            <p style="margin-top: 2em;" class="footer_tanggal">Batam, {{date('d-m-Y', strtotime($penutup->tgl_laporan))}}</p>
             @endforeach
 
             <div>

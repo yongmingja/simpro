@@ -23,7 +23,7 @@
     <section id="basic-datatable">
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card table-responsive">
                     <div class="card-body">
                         <form id="form-export-data" name="form-export-data" class="form-horizontal">
                             @csrf

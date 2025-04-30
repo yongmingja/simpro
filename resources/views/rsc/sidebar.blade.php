@@ -55,7 +55,7 @@
 <!-- Navbar -->
 <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
     <div class="container-fluid"> 
-    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0   d-xl-none ">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none ">
         <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
         <i class="bx bx-menu bx-sm"></i>
         </a>
@@ -308,8 +308,8 @@
                 @if($idvalidator->kode_jabatan == $recentPeranIs)
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('submission-of-proposal.index')}} OR {{set_active('tampilan-proposal-baru')}} OR {{set_active('my-report')}} OR {{set_active('index-laporan')}}">
-                    <i class="menu-icon tf-icons bx bx-plus-circle bx-tada-hover"></i>
-                    <div data-i18n="Buat Proposal">Buat Proposal</div>
+                    <i class="menu-icon tf-icons bx bx-book-alt bx-tada-hover"></i>
+                    <div data-i18n="Proposal Kegiatan">Proposal Kegiatan</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item">

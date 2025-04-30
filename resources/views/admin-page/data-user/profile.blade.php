@@ -37,7 +37,7 @@
             @endif
           @endforeach
         @endif        
-        <div class="col-sm-3">
+        <div class="col-sm-3 mt-2">
             <div class="card text-center">
                 <img src="{{asset('assets/img/avatars/22.png')}}" class="card-img-top rounded-circle mx-auto d-block mt-4 img-fluid img-thumbnail" alt="user-image" style="width: 10rem;">
                 <div class="card-body">
@@ -46,7 +46,7 @@
                 </div>
               </div>
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-9 mt-2">
             <div class="nav-align-top">
                 <ul class="nav nav-tabs" role="tablist" id="tabMenu">
                   <li class="nav-item">

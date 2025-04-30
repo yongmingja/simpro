@@ -47,7 +47,7 @@ class DataProposalController extends Controller
                 ->leftJoin('status_proposals', 'status_proposals.id_proposal', '=', 'proposals.id')
                 ->leftJoin('form_rkats', 'form_rkats.id', '=', 'proposals.id_form_rkat')
                 ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
-                ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai AS nama_user', 'form_rkats.total')
+                ->select('proposals.id AS id', 'proposals.*', 'jenis_kegiatans.nama_jenis_kegiatan', 'data_fakultas_biros.nama_fakultas_biro', 'data_prodi_biros.nama_prodi_biro', 'pegawais.nama_pegawai AS nama_user','status_proposals.status_approval','status_proposals.keterangan_ditolak', 'form_rkats.total')
                 ->where([['proposals.id_fakultas_biro', $getJabatanIs->id_fakultas_biro], ['tahun_akademiks.is_active', 1]]);
             
             $statusMapping = [
@@ -70,8 +70,47 @@ class DataProposalController extends Controller
         if($request->ajax()){
             return datatables()->of($datas)
             ->addColumn('action', function($data){
-                $btn = $this->statusProposal($data->id);                
-                return $btn;
+                if (!$data->status_approval) {
+                    return 'x'; // Jika tidak ada data pada status_proposals
+                }
+            
+                $isArchived = $data->is_archived == 1;
+                $statusApproval = $data->status_approval;
+                $keteranganDitolak = $data->keterangan_ditolak;
+            
+                if ($isArchived) {
+                    $titles = [
+                        1 => 'Status terakhir: menunggu validasi atasan',
+                        2 => 'Status terakhir: ditolak atasan',
+                        3 => 'Status terakhir: menunggu validasi rektorat',
+                        4 => 'Status terakhir: ditolak rektorat',
+                        5 => 'Status terakhir: ACC rektorat',
+                    ];
+            
+                    $title = $titles[$statusApproval] ?? 'Status terakhir: menunggu validasi atasan';
+                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="' . $title . '">'
+                        . '<small class="text-warning">Dibatalkan oleh user</small>&nbsp;&nbsp;<span class="badge bg-danger badge-notifications">?</span></a>';
+                }
+            
+                switch ($statusApproval) {
+                    case 1:
+                        return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $data->id . '" data-placement="bottom" title="Ditolak" class="tombol-no btn btn-xs btn-danger"><small"><i class="bx bx-xs bx-x"></i></small></a>&nbsp;&nbsp;'
+                            . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $data->id . '" data-placement="bottom" title="Setuju atau di ACC" class="tombol-yes btn btn-xs btn-success"><small><i class="bx bx-xs bx-check-double"></i></small></a>';
+                    case 2:
+                        return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $keteranganDitolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
+                            . '<span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
+                                <span class="badge bg-danger badge-notifications">?</span></a>';
+                    case 3:
+                        return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
+                    case 4:
+                        return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $keteranganDitolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
+                            . '<span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
+                            <span class="badge bg-danger badge-notifications">?</span></a>';
+                    case 5:
+                        return '<small><i class="text-success">ACC Rektorat</i></small>';
+                    default:
+                        return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>';
+                }
             })->addColumn('preview', function($data){
                 # check any attachment
                 $q = DB::table('lampiran_proposals')->where('id_proposal',$data->id)->count();
@@ -188,68 +227,9 @@ class DataProposalController extends Controller
                 'body' => 'Mohon maaf, proposal anda tidak dapat dilanjutkan. Silahkan periksa catatan atau alasan ditolak',
             ];
             $post = Mail::to(strtolower($getEmail->email))->send(new EmailDitolakDekan($content));        
-        } else {
-            return 'No valid email addresses found';
-        }
+        } 
 
         return response()->json($post);
-    }
-
-    protected function statusProposal($id)
-    {
-        // Mengambil data proposal dan status_proposals
-        $proposal = Proposal::where('id', $id)->select('is_archived')->first();
-        $query = DB::table('status_proposals')
-            ->select('status_approval', 'keterangan_ditolak')
-            ->where('id_proposal', '=', $id)
-            ->get();
-
-        if ($query->isEmpty()) {
-            return 'x'; // Jika tidak ada data pada status_proposals
-        }
-
-        $data = $query->first(); // Mengambil data pertama
-
-        if ($proposal->is_archived != 1) { // Kondisi jika tidak diarsip
-            switch ($data->status_approval) {
-                case 1:
-                    return '<a href="javascript:void(0)" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Ditolak" class="tombol-no btn btn-xs btn-danger"><small"><i class="bx bx-xs bx-x"></i></small></a>&nbsp;&nbsp;'
-                        . '<a href="javascript:void(0)" name="see-file" data-toggle="tooltip" data-id="' . $id . '" data-placement="bottom" title="Setuju atau di ACC" class="tombol-yes btn btn-xs btn-success"><small><i class="bx bx-xs bx-check-double"></i></small></a>';
-                case 2:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
-                            <span class="badge bg-danger badge-notifications">?</span></a>';
-                case 3:
-                    return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>';
-                case 4:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
-                        <span class="badge bg-danger badge-notifications">?</span></a>';
-                case 5:
-                    return '<small><i class="text-success">ACC Rektorat</i></small>';
-                default:
-                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>';
-            }
-        } else { // Kondisi jika diarsip
-            switch ($data->status_approval) {
-                case 1:
-                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                case 2:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<span class="text-danger"><small><i>Ditolak Atasan&nbsp;</i></small></span>
-                            <span class="badge bg-danger badge-notifications">?</span></a>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                case 3:
-                    return '<small><i class="text-warning">Menunggu validasi rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                case 4:
-                    return '<a href="javascript:void(0)" class="info-ditolakdekan" data-keteranganditolak="' . $data->keterangan_ditolak . '" data-toggle="tooltip" data-placement="bottom" title="Klik untuk melihat keterangan ditolak">'
-                        . '<span class="text-danger"><small><i>Ditolak Rektorat&nbsp;</i></small></span>
-                        <span class="badge bg-danger badge-notifications">?</span></a>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                case 5:
-                    return '<small><i class="text-success">ACC Rektorat</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-                default:
-                    return '<small><i class="text-secondary">Menunggu validasi atasan</i></small>&nbsp;|&nbsp;<small class="text-warning"><i>(archived)</i></small>';
-            }
-        }
     }
 
     public function lihatDetailAnggaran(Request $request)

@@ -80,6 +80,7 @@
                                 <th>Laporan</th>
                                 <th>Kategori</th>
                                 <th>Nama Kegiatan</th>
+                                <th>Lampiran</th>
                                 <th>Tgl dibuat</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -226,6 +227,22 @@
                     </div>
                 </div>
                 <!-- End of modal informasi-->
+
+                <!-- Mulai modal lihat lampiran laporan proposal -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="show-lampiran" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title justify-content-center">Lampiran Laporan Proposal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="table_lampiran" class="col-sm-12 table-responsive mb-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of modal lihat lampiran laporan proposal -->
             </div>
         </div>
     </section>
@@ -258,6 +275,7 @@
                 {data: 'laporan',name: 'laporan'},
                 {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                 {data: 'nama_kegiatan',name: 'nama_kegiatan'},
+                {data: 'lampiran',name: 'lampiran'},
                 {data: 'tgl_proposal',name: 'tgl_proposal',
                     render: function ( data, type, row ){
                         if(row.tgl_proposal == null){
@@ -586,6 +604,22 @@
                 });
             },
         });
+    });
+
+    $('body').on('click','.v-lampiran', function(){
+        var data_id = $(this).data('id');
+        $.ajax({
+            url: "{{route('view-lampiran-laporan-proposal')}}",
+            method: "GET",
+            data: {
+                proposal_id: data_id,  
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function(response, data){
+                $('#show-lampiran').modal('show');
+                $("#table_lampiran").html(response.card)
+            }
+        })
     });
 
 

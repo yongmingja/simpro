@@ -146,46 +146,52 @@
                                 <div class="container">
                                     <div id="page-3" class="content mt-3">
                                         <div class="row g-3">
-                                          <table class="table table-bordered table-hover">
-                                            <thead>
-                                              <tr>
-                                                  <th>#</th>
-                                                  <th>Item</th>
-                                                  <th>Biaya Satuan</th>
-                                                  <th width="12%;">Qty</th>
-                                                  <th width="12%;">Freq.</th>
-                                                  <th>Total Biaya</th>
-                                                  <th>Sumber Dana</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                            @if($anggarans->count() > 0)
-                                                @foreach($anggarans as $no => $data)
-                                                <tr>
-                                                    <td>{{++$no}}</td>
-                                                    <td>{{$data->item}}</td>
-                                                    <td>{{currency_IDR($data->biaya_satuan)}}</td>
-                                                    <td>{{$data->quantity}}</td>
-                                                    <td>{{$data->frequency}}</td>
-                                                    @php $total = 0; $total = $data->biaya_satuan * $data->quantity * $data->frequency; @endphp
-                                                    <td>{{currency_IDR($total)}}</td>
-                                                    <td>@if($data->sumber_dana == '1') Kampus @else Mandiri @endif</td>
-                                                </tr>
-                                                @endforeach
-                                                <tr>
-                                                    <td colspan="5" style="text-align: right;"><b>Grand Total</b></td>
-                                                    <td><b>{{currency_IDR($grandTotal['grandTotal'])}}</b></td>
-                                                    <td></td>
-                                                </tr>
-                                            @else
-                                                <tr>
-                                                    <td colspan="7" style="text-align: center;">Tidak ada data rencana anggaran</td>
-                                                </tr>
-                                            @endif
-                                            </tbody>
-                                          </table>
-                                          <hr>
-                                          <div class="divider">
+                                            <div class="divider divider-dashed text-start">
+                                                <div class="divider-text">
+                                                    <a class="text-info" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Klik untuk melihat data rencana anggaran </a>
+                                                </div>
+                                            </div>
+                                            <div class="collapse" id="collapseExample">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Item</th>
+                                                        <th>Biaya Satuan</th>
+                                                        <th width="12%;">Qty</th>
+                                                        <th width="12%;">Freq.</th>
+                                                        <th>Total Biaya</th>
+                                                        <th>Sumber Dana</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @if($anggarans->count() > 0)
+                                                        @foreach($anggarans as $no => $data)
+                                                        <tr>
+                                                            <td>{{++$no}}</td>
+                                                            <td>{{$data->item}}</td>
+                                                            <td>{{currency_IDR($data->biaya_satuan)}}</td>
+                                                            <td>{{$data->quantity}}</td>
+                                                            <td>{{$data->frequency}}</td>
+                                                            @php $total = 0; $total = $data->biaya_satuan * $data->quantity * $data->frequency; @endphp
+                                                            <td>{{currency_IDR($total)}}</td>
+                                                            <td>@if($data->sumber_dana == '1') Kampus @else Mandiri @endif</td>
+                                                        </tr>
+                                                        @endforeach
+                                                        <tr>
+                                                            <td colspan="5" style="text-align: right;"><b>Grand Total</b></td>
+                                                            <td><b>{{currency_IDR($grandTotal['grandTotal'])}}</b></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    @else
+                                                        <tr>
+                                                            <td colspan="7" style="text-align: center;">Tidak ada data rencana anggaran</td>
+                                                        </tr>
+                                                    @endif
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                          <div class="divider text-start">
                                               <div class="divider-text">Masukkan Data Realisasi Anggaran</div>
                                           </div>
                                           <table class="table table-borderless" id="dynamicAddRemoveAnggaran">
@@ -340,8 +346,52 @@
           });
           });
       }
+
       if (wizardVerticalBtnSubmit) {
           wizardVerticalBtnSubmit.addEventListener('click', event => {
+            const fileInputs = document.querySelectorAll('input[name^="berkas"]');
+            const maxSize = 2 * 1024 * 1024; 
+            let isValid = true;
+
+            fileInputs.forEach((fileInput, index) => {
+                const errorMsgId = `berkasErrorMsg_${index}`; // ID unik untuk setiap pesan error
+                let errorMsg = document.getElementById(errorMsgId);
+
+                // Jika elemen pesan error tidak ada, buat elemen baru
+                if (!errorMsg) {
+                    errorMsg = document.createElement('span');
+                    errorMsg.id = errorMsgId;
+                    errorMsg.className = 'text-danger';
+                    errorMsg.style.fontSize = '10px';
+                    fileInput.parentNode.appendChild(errorMsg); // Tambahkan ke DOM
+                }
+
+                const files = fileInput.files;
+                if (files.length > 0) {
+                    const file = files[0]; // Ambil file pertama di input
+                    if (file.size > maxSize) {
+                        errorMsg.innerHTML = 'Ukuran berkas tidak boleh melebihi 2MB.';
+                        fileInput.value = ''; // Reset input file
+                        Swal.fire({
+                            title: 'Error!',
+                            text: `Terdapat ukuran berkas lebih dari 2MB. Silakan unggah file dengan ukuran maksimal 2MB.`,
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-primary'
+                            },
+                            buttonsStyling: false,
+                        });
+                        isValid = false; // Tandai validasi gagal
+                    } else {
+                        errorMsg.innerHTML = ''; // Hapus pesan error jika valid
+                    }
+                }
+            });
+
+            if (!isValid) {
+                return; // Hentikan proses submit jika ada file yang tidak valid
+            }
+
             if ($("#form-laporan-proposal").length > 0) {
             $("#form-laporan-proposal").validate({
                     submitHandler: function (form) {
@@ -384,7 +434,7 @@
                                     },
                                     buttonsStyling: false,
                                     timer: 2000
-                                })
+                                });
                             }
                         });
                     }

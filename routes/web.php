@@ -143,6 +143,8 @@ Route::middleware(['auth:pegawai','verified'])->group(function() {
     Route::get('check-done-revision-proposal','General\PengajuanProposalController@doneRevision')->name('check-done-revision-proposal');
     Route::post('confirm-done-revision-proposal','General\PengajuanProposalController@confirmSubmitUlang')->name('confirm-done-revision-proposal');
 
+    Route::get('view-lampiran-laporan-proposal','General\LaporanProposalController@viewlampiran')->name('view-lampiran-laporan-proposal');
+
 });
 
 /* 
@@ -196,8 +198,8 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:SADM,WAREK,RKT,PEGS'])->g
 
 Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT,SADM'])->group(function(){
     Route::get('index-export-proposal','General\LaporanProposalController@indexExportProposal')->name('index-export-proposal');
-    Route::get('show-data-proposal-html/{year}','General\LaporanProposalController@showDataProposalHtml')->name('show-data-proposal-html');
-    Route::get('download-proposal-excel/{year}','General\LaporanProposalController@downloadProposalExcel')->name('download-proposal-excel');
+    Route::get('show-data-proposal-html/{year}/{lembaga}','General\LaporanProposalController@showDataProposalHtml')->name('show-data-proposal-html');
+    Route::get('download-proposal-excel/{year}/{lembaga}','General\LaporanProposalController@downloadProposalExcel')->name('download-proposal-excel');
     Route::get('index-export-fpku','General\LaporanFpkuController@indexExportFpku')->name('index-export-fpku');
     Route::get('show-data-fpku-html/{year}','General\LaporanFpkuController@showDataFpkuHtml')->name('show-data-fpku-html');
     Route::get('download-fpku-excel/{year}','General\LaporanFpkuController@downloadFpkuExcel')->name('download-fpku-excel');
@@ -206,4 +208,5 @@ Route::middleware(['auth:pegawai','verified', 'cekrole:WAREK,RKT,SADM'])->group(
     Route::get('index-monitoring-fpkus','RektoratPage\DashboardController@indexMonitoringFpku')->name('index-monitoring-fpkus');
     Route::get('index-monitoring-laporan-fpkus','RektoratPage\DashboardController@indexMonitoringLaporanFpku')->name('index-monitoring-laporan-fpkus');
     Route::get('status-monitoring-sarpras','RektoratPage\DashboardController@statusSarpras')->name('status-monitoring-sarpras');
+    Route::post('import-rkat','Master\FormRkatController@importDataRkat')->name('import-data-rkat');
 });

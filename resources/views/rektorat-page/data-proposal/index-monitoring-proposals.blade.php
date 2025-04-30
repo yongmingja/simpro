@@ -57,7 +57,7 @@
                                                     <option value="ditolakatasan">Ditolak Atasan</option>
                                                     <option value="diterimaatasan">Diterima Atasan</option>
                                                     <option value="ditolakrektorat">Ditolak Rektorat</option>
-                                                    <option value="diterimarektorat">Diterima Rektorat</option>
+                                                    <option value="diterimarektorat">ACC Rektorat</option>
                                                 </select>
                                             </fieldset>
                                         </div>

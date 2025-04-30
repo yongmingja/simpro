@@ -31,7 +31,7 @@
                         <center>Data Proposal dan Laporan Pertanggungjawaban Kegiatan</center>
                     </h4>                
                     <h5 class="mb-3">
-                        <center>Tahun Akademik {{$getYear}}</center>
+                    <center>{{$getFacBiro}} &ndash; Tahun Akademik {{$getYear}}</center>
                     </h5>
                 <table class="table table-bordered table-hover mt-2 table-sm">
                     <thead>
