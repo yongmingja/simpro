@@ -7,6 +7,7 @@ use App\Models\General\Proposal;
 use App\Models\General\LaporanProposal;
 use App\Models\Master\JabatanPegawai;
 use App\Models\Master\HandleProposal;
+use App\Models\Master\FormRkat;
 use Auth; use DB;
 use Illuminate\Support\Facades\Session;
 
@@ -137,9 +138,8 @@ class HomeController extends Controller
                 ->leftJoin('status_laporan_proposals','status_laporan_proposals.id_laporan_proposal','=','proposals.id')
                 ->where([['status_laporan_proposals.status_approval','=',4],['proposals.id_fakultas_biro',$getJabatanIs->id_fakultas_biro]])->count();
 
-            # Chart
-            $actualData = DB::table('proposals')
-                ->leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+            # Chart RKAT
+            $actualData = Proposal::leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
                 ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
                 ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
                 ->select(
@@ -147,13 +147,12 @@ class HomeController extends Controller
                     DB::raw('COALESCE(data_fakultas_biros.kode_fakultas_biro, "Rektorat") as kode_fakultas_biro'),
                     DB::raw('SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as actual')
                 )
-                ->where([['data_realisasi_anggarans.sumber_dana', '=', 1],['tahun_akademiks.is_active',1]])
+                ->where([['data_realisasi_anggarans.sumber_dana', '=', 1],['tahun_akademiks.is_active',1],['proposals.id_jenis_kegiatan',1]])
                 ->groupBy('data_fakultas_biros.kode_fakultas_biro', 'tahun_akademiks.year')
                 ->get();
 
 
-            $expectedData = DB::table('form_rkats')
-                ->join('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'form_rkats.id_fakultas_biro')
+            $expectedData = FormRkat::join('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'form_rkats.id_fakultas_biro')
                 ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
                 ->select(
                     DB::raw('COALESCE(data_fakultas_biros.kode_fakultas_biro, "Rektorat") as kode_fakultas_biro'),
@@ -178,6 +177,41 @@ class HomeController extends Controller
                             'strokeColor' => '#ed2da7' # fce626
                         ]
                     ]
+                ];
+            })->keyBy('x')->values();
+
+
+            # Chart Non-RKAT
+            $actualData2 = Proposal::leftJoin('tahun_akademiks', 'tahun_akademiks.id', '=', 'proposals.id_tahun_akademik')
+                ->leftJoin('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'proposals.id_fakultas_biro')
+                ->leftJoin('data_realisasi_anggarans', 'data_realisasi_anggarans.id_proposal', '=', 'proposals.id')
+                ->select(
+                    'tahun_akademiks.year',
+                    DB::raw('COALESCE(data_fakultas_biros.kode_fakultas_biro, "Rektorat") as kode_fakultas_biro'),
+                    DB::raw('SUM(data_realisasi_anggarans.biaya_satuan * data_realisasi_anggarans.quantity * data_realisasi_anggarans.frequency) as actual')
+                )
+                ->where([['data_realisasi_anggarans.sumber_dana', '=', 1],['tahun_akademiks.is_active',1],['proposals.id_jenis_kegiatan',2]])
+                ->groupBy('data_fakultas_biros.kode_fakultas_biro', 'tahun_akademiks.year')
+                ->get();
+
+
+            $expectedData2 = FormRkat::join('data_fakultas_biros', 'data_fakultas_biros.id', '=', 'form_rkats.id_fakultas_biro')
+                ->leftJoin('tahun_akademiks','tahun_akademiks.id','=','form_rkats.id_tahun_akademik')
+                ->select(
+                    DB::raw('COALESCE(data_fakultas_biros.kode_fakultas_biro, "Rektorat") as kode_fakultas_biro'),
+                    DB::raw('SUM(form_rkats.total) as expected')
+                )
+                ->where('tahun_akademiks.is_active',1)
+                ->groupBy('data_fakultas_biros.kode_fakultas_biro')
+                ->get();
+            
+
+            $mergedData2 = $actualData2->map(function ($actual) use ($expectedData2) {
+                $expected = $expectedData2->firstWhere('kode_fakultas_biro', $actual->kode_fakultas_biro);
+            
+                return [
+                    'x' => (string) $actual->kode_fakultas_biro,
+                    'y' => $actual->actual,
                 ];
             })->keyBy('x')->values();
 
@@ -211,7 +245,8 @@ class HomeController extends Controller
                 'totalLaporanProposalPendingDekanBiro',
                 'totalLaporanProposalDiterimaDekanBiro',
                 'totalLaporanProposalDitolakDekanBiro',
-                'mergedData'
+                'mergedData',
+                'mergedData2'
             ]));
         } else {
             return redirect()->intended('/');

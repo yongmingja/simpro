@@ -93,9 +93,13 @@ class DataPegawaiController extends Controller
 
     public function resetPass(Request $request)
     {
-        $post = Pegawai::where('user_id',$request->user_id)->update([
-            'password' => Hash::make($request->user_id)
+        $data = Pegawai::where('user_id', $request->user_id)->value('tanggal_lahir');
+        $old_password = $data ? date('dmY', strtotime($data)) : $request->user_id;
+
+        $post = Pegawai::where('user_id', $request->user_id)->update([
+            'password' => Hash::make($old_password)
         ]);
+
         return response()->json($post);
     }
 
