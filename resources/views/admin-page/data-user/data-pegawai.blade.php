@@ -77,9 +77,9 @@
                                                 <span class="text-danger" id="emailErrorMsg" style="font-size: 10px;"></span>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="password" class="form-label">Password</label>
-                                                <input type="password" class="form-control" id="password" name="password" value="" />
-                                                <span class="text-danger" id="passwordErrorMsg" style="font-size: 10px;"></span>
+                                                <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" value="" />
+                                                <span class="text-danger" id="tanggalLahirErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             
                                             <div class="mb-3">
@@ -91,22 +91,6 @@
                                                 </select>
                                                 <span class="text-danger" id="jenisKelaminErrorMsg" style="font-size: 10px;"></span>
                                             </div>
-
-                                            {{-- <div class="mb-3">
-                                                <label class="form-label" for="agama">Agama</label>
-                                                <select class="select2 form-control border border-primary" id="agama" name="agama" aria-label="Default select example" style="cursor:pointer;">
-                                                    <option option value="" id="choose_agama" readonly>- Select -</option>
-                                                    <option value="Buddha">Buddha</option>
-                                                    <option value="Buddha Maitreya">Buddha Maitreya</option>
-                                                    <option value="Islam">Islam</option>
-                                                    <option value="Katholik">Katholik</option>
-                                                    <option value="Kristen">Kristen</option>
-                                                    <option value="Konghucu">Konghucu</option>
-                                                    <option value="Hindu">Hindu</option>
-                                                    <option value="Lainnya">Lainnya</option>
-                                                </select>
-                                                <span class="text-danger" id="agamaErrorMsg" style="font-size: 10px;"></span>
-                                            </div> --}}
                                             
                                             <div class="col-sm-offset-2 col-sm-12">
                                                 <hr class="mt-2">
@@ -134,9 +118,18 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
+                                    <div class="card border">
+                                        <div class="card-body">
+                                            <p><i class="bx bx-spa"></i> Sebelum anda import data pegawai berikut sedikit petunjuk:<br>
+                                            <li>Anda bisa mengunduh terlebih dahulu format berkas CSV <a href="{{ asset('template/data-pegawai.csv')}}" target="_blank">di sini</a>.<br>
+                                            <li>Pilihlah file berekstensi .csv pada komputer anda.<br>
+                                            <li>Langkah terakhir adalah klik tombol Import. Selesai!
+                                            </p>
+                                        </div>
+                                    </div>
                                     <form id="form-import-csv" name="form-import-csv" enctype="multipart/form-data">
                                         @csrf
-                                        <div class="row">
+                                        <div class="row mt-3">
                                             <div class="mb-3">
                                                 <label for="file_csv" class="form-label">File Excel/CSV</label>
                                                 <div class="form-group mt-1 mb-1">
@@ -239,7 +232,7 @@
                         $('#nipErrorMsg').text(response.responseJSON.errors.user_id);
                         $('#nameErrorMsg').text(response.responseJSON.errors.nama_pegawai);
                         $('#emailErrorMsg').text(response.responseJSON.errors.email);
-                        $('#passwordErrorMsg').text(response.responseJSON.errors.password);
+                        $('#tanggalLahirErrorMsg').text(response.responseJSON.errors.tanggal_lahir);
                         $('#jenisKelaminErrorMsg').text(response.responseJSON.errors.jenis_kelamin);
                         $('#tombol-simpan').html('Save');
                         Swal.fire({
@@ -270,8 +263,8 @@
             $('#user_id').val(data.user_id);
             $('#nama_pegawai').val(data.nama_pegawai);
             $('#email').val(data.email);
+            $('#tanggal_lahir').val(data.tanggal_lahir);
             $('#jenis_kelamin').val(data.jenis_kelamin);
-            $('#agama').val(data.agama);
         })
     });
 

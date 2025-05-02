@@ -15,7 +15,8 @@ class CreateJabatanPegawaisTable extends Migration
     {
         Schema::create('jabatan_pegawais', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_pegawai');
+            $table->unsignedInteger('id_pegawai');
+            $table->foreign('id_pegawai')->references('id')->on('pegawais')->onDelete('cascade');
             $table->integer('id_jabatan');
             $table->integer('id_fakultas_biro')->nullable();
             $table->string('ket_jabatan')->nullable();

@@ -41,12 +41,12 @@ class DataPegawaiController extends Controller
             'user_id'       => 'required',
             'nama_pegawai'  => 'required',
             'email'         => 'required',
-            'password'      => 'required',
+            'tanggal_lahir' => 'required',
         ],[
-            'user_id.required'      => 'Anda belum menginputkan NIP',
-            'nama_pegawai.required' => 'Anda belum menginputkan nama pegawai',
-            'email.required'        => 'Anda belum menginputkan email',
-            'password.required'     => 'Anda belum menginputkan password',
+            'user_id.required'       => 'Anda belum menginputkan NIP',
+            'nama_pegawai.required'  => 'Anda belum menginputkan nama pegawai',
+            'email.required'         => 'Anda belum menginputkan email',
+            'tanggal_lahir.required' => 'Anda belum menginputkan tanggal lahir',
         ]);
 
         $post = Pegawai::updateOrCreate(['id' => $request->id],
@@ -54,9 +54,9 @@ class DataPegawaiController extends Controller
                     'user_id'           => $request->user_id,
                     'nama_pegawai'      => $request->nama_pegawai,
                     'email'             => $request->email,
-                    'password'          => Hash::make($request['password']),
+                    'password'          => Hash::make(date('dmY', strtotime($request->tanggal_lahir))),
+                    'tanggal_lahir'     => $request->tanggal_lahir,
                     'jenis_kelamin'     => $request->jenis_kelamin,
-                    // 'agama'             => $request->agama,
                     'id_status_pegawai' => 1,
                 ]); 
 
