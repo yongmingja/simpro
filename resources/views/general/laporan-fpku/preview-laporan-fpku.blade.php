@@ -32,7 +32,6 @@
     }
     .footer_auditor, .trfooterauditor, .tdfooterauditor {
         border: 0;
-        font-size: 12px;
         text-align: center;
     }
     .footer_auditor{

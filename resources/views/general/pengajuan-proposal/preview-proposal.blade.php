@@ -32,7 +32,6 @@
     }
     .footer_auditor, .trfooterauditor, .tdfooterauditor {
         border: 0;
-        font-size: 14px;
         text-align: center;
     }
     .footer_auditor{
@@ -66,12 +65,6 @@
         line-height: 14px;
         margin-left: 1em;
         margin-top: 3em;
-    }
-    .footer_tanggal {
-        font-size: 14px;
-    }
-    .footer_name {
-        font-size: 14px;
     }
 </style>
 <body>
@@ -228,7 +221,7 @@
                 <div class="justify-text">
                     <p>{!!$penutup->penutup!!}</p>
                 </div>
-                <p style="margin-top: 2em;" class="footer_tanggal">Batam, {{tanggal_indonesia($penutup->created_at)}}</p>
+                <p style="margin-top: 2em;">Batam, {{tanggal_indonesia($penutup->created_at)}}</p>
                 @endforeach
 
                 <div class="footer_name">

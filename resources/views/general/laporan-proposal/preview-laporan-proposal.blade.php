@@ -32,7 +32,6 @@
     }
     .footer_auditor, .trfooterauditor, .tdfooterauditor {
         border: 0;
-        font-size: 14px;
         text-align: center;
     }
     .footer_auditor{
@@ -66,9 +65,6 @@
         line-height: 14px;
         margin-left: 1em;
         margin-top: 3em;
-    }
-    .footer_tanggal {
-        font-size: 14px;
     }
 </style>
 <body>
