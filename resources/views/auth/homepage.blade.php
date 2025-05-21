@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            background: linear-gradient(135deg, #0b6db8, #5eb3f3, #a1c4fd);
             height: 100vh;
             display: flex;
             align-items: center;
@@ -68,6 +68,13 @@
             z-index: 2; /* Pastikan berada di atas elemen lain */
         }
 
+        .ikon {
+            color: #000;
+            font-size: inherit; /* Warna ikon agar senada */
+            vertical-align: middle; /* Menyelaraskan ikon dengan teks */
+        }
+
+
         @media (max-width: 768px) {
             .login-card {
                 width: 90%;
@@ -86,10 +93,13 @@
     </style>
 </head>
 <body>
+    <div class="warna">
+        
+    </div>
     <div class="login-card">
         <img src="{{asset('assets/img/logo-uvers.png')}}" class="logo" alt="logolpm">
-        <h4>Welcome to SIMPRO</h4>
-        <p class="text-muted">Sistem Informasi Pengajuan Proposal</p>
+        <h4>Welcome to SIMPR<i id="ganti-warna" class="bx bx-lemon ikon" style="cursor:pointer; font-size: 1.5rem;"></i></h4>
+        <p class="text-muted">Sistem Informasi Proposal Kegiatan</p>
         <form id="loginForm" action="{{ route('postLogin') }}" method="POST">
             @csrf
             @if($errors->any())
@@ -126,6 +136,27 @@
                 toggleIcon.classList.add('bx-hide');
             }
         }
+
+        const warnaList = [
+            'linear-gradient(135deg, #2c3e50, #4b79a1)', 
+            'linear-gradient(135deg, #1a252f, #2c3e50)',
+            'linear-gradient(135deg, #4facfe, #00f2fe)',
+            'linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb)',
+            'linear-gradient(135deg, #a1c4fd, #c2e9fb, #89f7fe)',
+            'linear-gradient(135deg, #2b5876, #4e4376)',
+            'linear-gradient(135deg, #0b6db8, #5eb3f3, #a1c4fd)',
+            'linear-gradient(135deg, #ff7e5f, #feb47b, #ff9a44)',
+            'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
+            'linear-gradient(135deg, #1c1c3c, #493240, #6e45e2)'
+        ];
+        let currentWarnaIndex = 0;
+
+        document.getElementById('ganti-warna').addEventListener('click', function() {
+            const body = document.body;
+            currentWarnaIndex = (currentWarnaIndex + 1) % warnaList.length; // Loop melalui daftar warna
+            body.style.background = warnaList[currentWarnaIndex];
+        });
+
     </script>
 </body>
 </html>
