@@ -320,7 +320,8 @@
             submitHandler: function (form) {
                 var actionType = $('#tombol-import').val();
                 var formData = new FormData($("#form-import-csv")[0]);
-                $('#tombol-import').html('Importing..');
+                $('#tombol-import').html('');
+                $('#tombol-import').prop("disabled", true);
 
                 $.ajax({
                     data: formData,
@@ -329,10 +330,16 @@
                     url: "{{ route('import-data-pegawai') }}",
                     type: "POST",
                     dataType: 'json',
+                    beforeSend: function () {
+                        $("#tombol-import").append(
+                            '<i class="bx bx-loader-circle bx-spin text-warning"></i>' +
+                            ' Sedang import ...');
+                    },
                     success: function (data) {
                         $('#form-import-csv').trigger("reset");
                         $('#import-pegawai').modal('hide');
                         $('#tombol-import').html('Import');
+                        $('#tombol-import').prop("disabled", true);
                         $('#table_pegawai').DataTable().ajax.reload(null, true);
                         Swal.fire({
                             title: 'Good job!',
@@ -348,6 +355,7 @@
                     error: function(response) {
                         $('#fileErrorMsg').text(response.responseJSON.errors.file_csv);
                         $('#tombol-import').html('Import');
+                        $('#tombol-import').prop("disabled", false);
                         Swal.fire({
                             title: 'Error!',
                             text: 'Data failed to import!',

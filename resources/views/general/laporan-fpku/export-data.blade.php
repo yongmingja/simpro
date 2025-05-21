@@ -22,14 +22,14 @@
 <div class="container-fluid flex-grow-1">
     <section id="basic-datatable">
         <div class="row">
-            <div class="col-12">
-                <div class="card table-responsive">
+            <div class="col-sm-3">
+                <div class="card">
                     <div class="card-body">
                         <form id="form-export-data" name="form-export-data" class="form-horizontal">
                             @csrf
                             <div class="row mb-3">
                                 <div class="container">
-                                    <div class="col-sm-3 mt-2">
+                                    <div class="col-sm-12 mt-2">
                                         <div class="form-group">
                                             <label for="tahun_fpku" class="form-label">Pilih Tahun Akademik</label>
                                             <select class="select2 form-select" id="tahun_fpku" name="tahun_fpku" aria-label="Default select example" style="cursor:pointer;">
@@ -65,25 +65,27 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mt-3 p-3">
-                            <div class="col-sm-12 mb-3">
-                                <table class="table table-hover table-responsive" id="table-fpku">
-                                    <thead>
-                                        <th>#</th>
-                                        <th>Tahun Akademik</th>
-                                        <th>No. FPKU</th>
-                                        <th>Nama Kegiatan</th>
-                                        <th>Tgl Kegiatan</th>
-                                        <th>Ketua Pelaksana</th>
-                                        <th>Anggota Pelaksana</th>
-                                        <th>Status Laporan</th>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>    
+                        </div>   
                     </div>
                 </div>    
+            </div>
+            <div class="col-sm-9">
+                <div class="card table-responsive">
+                    <div class="card-body">
+                        <table class="table table-hover table-responsive" id="table-fpku">
+                            <thead>
+                                <th>#</th>
+                                <th>Tahun Akademik</th>
+                                <th>No. FPKU</th>
+                                <th>Nama Kegiatan</th>
+                                <th>Tgl Kegiatan</th>
+                                <th>Ketua Pelaksana</th>
+                                <th>Anggota Pelaksana</th>
+                                <th>Status Laporan</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

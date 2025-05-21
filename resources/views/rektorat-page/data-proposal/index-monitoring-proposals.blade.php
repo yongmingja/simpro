@@ -16,6 +16,22 @@
 </nav>
 </div>
 @endsection
+<style>
+    td.details-control {
+        cursor: pointer;
+        text-align: center;
+        font-size: 20px;
+    }
+    td.details-control .toggle-icon {
+        color: #30e603; /* Blue for expand */
+    }
+    tr.shown td.details-control .toggle-icon.active {
+        color: #da1e06; /* Red for collapse */
+    }
+    div.slider {
+        display: none;
+    }
+</style>
 
 @section('content')
 
@@ -64,21 +80,18 @@
                                     </div>
                                 </div>
                             </div>
-                            <table class="table table-hover table-responsive table-sm" id="table_proposal">
+                            <table class="table table-hover table-responsive" id="table_proposal">
                               <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Preview</th>
+                                    <th>Detail</th>
+                                    <th></th>
+                                    <th>Nama Kegiatan</th>
                                     <th>Kategori</th>
                                     <th>Kode Renstra</th>
-                                    <th>Nama Kegiatan</th>
                                     <th>Tgl Kegiatan</th>
                                     <th>Proposal Dibuat</th>
-                                    <th>Detail Anggaran</th>
-                                    <th>Detail Sarpras</th>
                                     <th>Unit Penyelenggara</th>
                                     <th>Status</th>
-                                    <th>History Delegasi</th>
                                 </tr>
                               </thead>
                             </table>
@@ -131,9 +144,6 @@
                                 <div class="modal-body">
                                     <div id="table_show_history" class="col-sm-12 table-responsive mb-3"></div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -173,6 +183,16 @@
         });
     });
 
+    function formatData (item) {
+        return '<div class="slider mb-2">'+   
+        '<p class="mb-2">Detail lainnya:</p>'+
+            '<button type="button" class="lihat-lampiran btn btn-outline-info btn-sm" data-id="'+item.id+'" title="Lihat data lampiran"><span class="bx bx-file"></span>  Lihat lampiran proposal</button>&nbsp;'+
+            '<button type="button" class="detail-anggaran btn btn-outline-info btn-sm" data-id="'+item.id+'" title="Informasi detail anggaran"><span class="bx bx-money"></span>  Lihat detail anggaran</button>&nbsp;'+
+            '<button type="button" class="detail-sarpras btn btn-outline-info btn-sm" data-id="'+item.id+'" title="Informasi detail sarpras"><span class="bx bx-car"></span> Lihat detail sarpras</button>&nbsp;'+
+            '<button type="button" class="detail-history btn btn-outline-info btn-sm" data-id="'+item.id+'" title="Informasi histori delegasi"><span class="bx bx-history"></span> Lihat Delegasi</button>&nbsp;'+
+            '</div>'
+    }    
+
     // DATATABLE
     $(document).ready(function () {
         fill_datatable();
@@ -190,15 +210,18 @@
                     }
                 },
                 columns: [
-                    {data: null,sortable:false,
-                        render: function (data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
+                    {
+                        data: null, 
+                        class: "details-control", 
+                        orderable: false,
+                        render: function() {
+                            return '<i class="bx bx-plus-circle toggle-icon"></i>';
                         }
-                    }, 
+                    },
+                    {data: 'id',name: 'id', visible: false},
                     {data: 'preview',name: 'preview'},
                     {data: 'nama_jenis_kegiatan',name: 'nama_jenis_kegiatan'},
                     {data: 'kode_renstra',name: 'kode_renstra'},
-                    {data: 'nama_kegiatan',name: 'nama_kegiatan'},
                     {data: 'tgl_event',name: 'tgl_event',
                         render: function ( data, type, row ){
                             return moment(row.tgl_event).format("DD MMM YYYY")
@@ -209,12 +232,45 @@
                             return moment(row.created_at).format("DD MMM YYYY")
                         }
                     },
-                    {data: 'detail',name: 'detail'},
-                    {data: 'detail_sarpras',name: 'detail_sarpras'},
                     {data: 'nama_fakultas_biro',name: 'nama_fakultas_biro'},
-                    {data: 'status',name: 'status'},
-                    {data: 'history',name: 'history'},
-                ]
+                    {data: 'status',name: 'status'},                    
+                ],
+                createdRow: function(row, data, index) {
+                    $('td', row).eq(1).attr("nowrap","nowrap");
+                },
+                
+            });
+
+            // Detail
+            $('#table_proposal tbody').on('click', 'td.details-control', function(){
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                // Tutup semua baris lain sebelum membuka yang baru
+                $('#table_proposal tbody tr.shown').not(tr).each(function() {
+                    var otherRow = table.row($(this));
+                    if (otherRow.child.isShown()) {
+                        $('div.slider', otherRow.child()).slideUp(function(){
+                            otherRow.child.hide();
+                            $(this).removeClass('shown');
+                        });
+                        $(this).find('.toggle-icon').removeClass('bx-minus-circle active').addClass('bx-plus-circle');
+                    }
+                });
+
+                // Cek apakah baris yang diklik sedang terbuka atau tertutup
+                if (row.child.isShown()) {
+                    $('div.slider', row.child()).slideUp(function(){
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    });
+                    tr.find('.toggle-icon').removeClass('bx-minus-circle active').addClass('bx-plus-circle');
+                } else {
+                    row.child(formatData(row.data()), 'no-padding').show();
+                    tr.addClass('shown');
+                    $('div.slider', row.child()).slideDown();
+                    tr.find('.toggle-icon').removeClass('bx-plus-circle').addClass('bx-minus-circle active');
+                }
             });
         }
         $('#tahun_akademik, #lembaga, #status').on('change', function(e){
@@ -233,12 +289,69 @@
         });
     });
 
-    $('body').on('click','.v-lampiran', function(){
-        var data_id = $(this).data('id');
+    // $('body').on('click','.v-lampiran', function(){
+    //     var data_id = $(this).data('id');
+    //     $.ajax({
+    //         url: "{{route('view-lampiran-proposal')}}",
+    //         method: "GET",
+    //         data: {proposal_id: data_id},
+    //         success: function(response, data){
+    //             $('#show-detail').modal('show');
+    //             $("#table_l").html(response.card)
+    //         }
+    //     })
+    // });
+
+    // $('body').on('click','.lihat-detail', function(){
+    //     var data_id = $(this).data('id');
+    //     $.ajax({
+    //         url: "{{route('lihat-detail-anggaran')}}",
+    //         method: "GET",
+    //         data: {
+    //             proposal_id: data_id,  
+    //             "_token": "{{ csrf_token() }}",
+    //         },
+    //         success: function(response, data){
+    //             $('#show-detail-anggaran').modal('show');
+    //             $("#table_detail_anggaran").html(response.card)
+    //         }
+    //     })
+    // });
+
+    // $('body').on('click','.lihat-delegasi', function(){
+    //     var id_proposal = $(this).data('id');
+    //     $.ajax({
+    //         url: "{{route('lihat-history-delegasi-proposal')}}",
+    //         method: "GET",
+    //         data: {proposal_id: id_proposal},
+    //         success: function(response, data){
+    //             $('#show-history').modal('show');
+    //             $("#table_show_history").html(response.card)
+    //         }
+    //     })
+    // });
+
+    // $(document).on('click','.status-mon-sarpras', function(){
+    //     dataId = $(this).data('id');
+    //     $.ajax({
+    //         url: "{{route('status-monitoring-sarpras')}}",
+    //         method: "GET",
+    //         data: {proposal_id: dataId},
+    //         success: function(response, data){
+    //             $('#status-sarpras').modal('show');
+    //             $("#table_sarpras").html(response.card)
+    //         }
+    //     })
+    // });
+
+    ///// Tombol Details /////
+
+    $(document).on('click', '.lihat-lampiran', function() {
+        var proposalId = $(this).data('id');
         $.ajax({
             url: "{{route('view-lampiran-proposal')}}",
             method: "GET",
-            data: {proposal_id: data_id},
+            data: {proposal_id: proposalId},
             success: function(response, data){
                 $('#show-detail').modal('show');
                 $("#table_l").html(response.card)
@@ -246,13 +359,13 @@
         })
     });
 
-    $('body').on('click','.lihat-detail', function(){
-        var data_id = $(this).data('id');
+    $(document).on('click', '.detail-anggaran', function() {
+        var proposalId = $(this).data('id');
         $.ajax({
             url: "{{route('lihat-detail-anggaran')}}",
             method: "GET",
             data: {
-                proposal_id: data_id,  
+                proposal_id: proposalId,  
                 "_token": "{{ csrf_token() }}",
             },
             success: function(response, data){
@@ -262,12 +375,25 @@
         })
     });
 
-    $('body').on('click','.lihat-delegasi', function(){
-        var id_proposal = $(this).data('id');
+    $(document).on('click', '.detail-sarpras', function() {
+        var proposalId = $(this).data('id');
+        $.ajax({
+            url: "{{route('status-monitoring-sarpras')}}",
+            method: "GET",
+            data: {proposal_id: proposalId},
+            success: function(response, data){
+                $('#status-sarpras').modal('show');
+                $("#table_sarpras").html(response.card)
+            }
+        })
+    });
+
+    $(document).on('click', '.detail-history', function() {
+        var proposalId = $(this).data('id');
         $.ajax({
             url: "{{route('lihat-history-delegasi-proposal')}}",
             method: "GET",
-            data: {proposal_id: id_proposal},
+            data: {proposal_id: proposalId},
             success: function(response, data){
                 $('#show-history').modal('show');
                 $("#table_show_history").html(response.card)
@@ -275,18 +401,7 @@
         })
     });
 
-    $(document).on('click','.status-mon-sarpras', function(){
-        dataId = $(this).data('id');
-        $.ajax({
-            url: "{{route('status-monitoring-sarpras')}}",
-            method: "GET",
-            data: {proposal_id: dataId},
-            success: function(response, data){
-                $('#status-sarpras').modal('show');
-                $("#table_sarpras").html(response.card)
-            }
-        })
-    });
+    ///// Tombol Details /////
 
 </script>
 

@@ -457,8 +457,7 @@
 
                 if (!isValid) {
                     return; // Hentikan proses submit jika ada file yang tidak valid
-                }  }
-            }
+                } 
 
             if ($("#form-laporan-proposal").length > 0) {
             $("#form-laporan-proposal").validate({

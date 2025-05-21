@@ -50,11 +50,15 @@
 @elseif(Auth::guard('mahasiswa')->user())
     
 @endif
-
+<style>
+    .menu-item.open .menu-sub {
+        display: block !important;
+    }
+</style>
 
 <!-- Navbar -->
 <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
-    <div class="container-fluid"> 
+    <div class="container-fluid">         
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none ">
         <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
         <i class="bx bx-menu bx-sm"></i>
@@ -63,8 +67,10 @@
 
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
+        <p id="tanggalServer"></p>&nbsp;
+        <p id="jamServer"></p>
         <ul class="navbar-nav flex-row align-items-center ms-auto"> 
-            
+                
             <!-- Switching role -->
             @if (Auth::guard('pegawai')->user() && $countRole == 1)
                 <li class="mt-1 nav-item me-2 me-xl-0">
@@ -500,6 +506,29 @@
 
 @push('after-scripts')
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Temukan semua menu dengan sub-menu
+        var menuItems = document.querySelectorAll(".menu-item");
+
+        menuItems.forEach(function(item) {
+            var link = item.querySelector(".menu-link");
+
+            // Cek apakah menu memiliki sub-menu yang perlu diperluas
+            var subMenu = item.querySelector(".menu-sub");
+
+            if (link && subMenu) {
+                // Cek apakah salah satu sub-menu memiliki kelas 'active'
+                var activeSubMenu = subMenu.querySelector(".menu-link.active");
+
+                if (activeSubMenu) {
+                    item.classList.add("open"); // Menandai menu utama tetap terbuka
+                    subMenu.style.display = "block"; // Tampilkan sub-menu
+                }
+            }
+        });
+    });
+</script>
+<script>
     // Inisialisasi Select2 pada elemen select
     $(document).ready(function () {
         $('#selectPeran').select2();
@@ -562,5 +591,18 @@
         });
     });
 
+</script>
+<script>
+    function updateTime() {
+        var now = new Date();
+        
+        var options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+        document.getElementById("tanggalServer").innerText = now.toLocaleDateString('id-ID', options);
+        
+        document.getElementById("jamServer").innerText = now.toLocaleTimeString('id-ID');
+    }
+    
+    setInterval(updateTime, 500);
+    updateTime();
 </script>
 @endpush

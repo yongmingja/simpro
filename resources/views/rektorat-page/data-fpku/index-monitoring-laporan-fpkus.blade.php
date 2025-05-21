@@ -29,7 +29,7 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Undangan</th>
+                                <th>Laporan</th>
                                 <th>No FPKU</th>
                                 <th>Nama Kegiatan</th>
                                 <th>Ketua Pelaksana</th>

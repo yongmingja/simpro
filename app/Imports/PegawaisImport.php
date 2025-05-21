@@ -27,8 +27,9 @@ class PegawaisImport implements ToCollection, WithHeadingRow
                 'nama_pegawai'          => $row['nama_pegawai'],
                 'user_id'               => $row['user_id'],
                 'email'                 => $row['alamat_email'], 
-                'password'              => Hash::make(date('Ymd',strtotime($row['tanggal_lahir']))),
+                'password'              => Hash::make(date('dmY',strtotime($row['tanggal_lahir']))),
                 'jenis_kelamin'         => $row['jenis_kelamin'],
+                'tanggal_lahir'         => date('Y-m-d',strtotime($row['tanggal_lahir'])),
                 'id_status_pegawai'     => $row['status']
               ]);
            } else {
@@ -36,8 +37,9 @@ class PegawaisImport implements ToCollection, WithHeadingRow
                    'nama_pegawai'          => $row['nama_pegawai'],
                    'user_id'               => $row['user_id'],
                    'email'                 => $row['alamat_email'], 
-                   'password'              => Hash::make(date('Ymd',strtotime($row['tanggal_lahir']))),
+                   'password'              => Hash::make(date('dmY',strtotime($row['tanggal_lahir']))),
                    'jenis_kelamin'         => $row['jenis_kelamin'],
+                   'tanggal_lahir'         => date('Y-m-d',strtotime($row['tanggal_lahir'])),
                    'id_status_pegawai'     => $row['status'],
                ]);
            }

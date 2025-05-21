@@ -276,7 +276,7 @@
         if(kodeJabatan == 'PEG' || kodeJabatan == 'PEGS'){ // Remember the position's code
         document.getElementById("showForm").innerHTML=`
             <div class="mb-3">
-                <label for="id_fakultas_biro" class="form-label">Fakultas / Biro *(Jika Jabatan Dekan atau Ka.Biro)</label>
+                <label for="id_fakultas_biro" class="form-label">Fakultas / Biro <sup class="text-danger">*(Wajib diisi jika jabatan Dekan atau Ka.Biro atau Dosen)</sup></label>
                 <select class="select2 form-select" id="id_fakultas_biro" name="id_fakultas_biro" aria-label="Default select example" style="cursor:pointer;">
                     <option value="" id="pilih_fakultas">- Pilih -</option>
                     @foreach($getFakultasBiro as $fakultas_biro)
@@ -286,14 +286,14 @@
                 <span class="text-danger" id="idJabatanErrorMsg" style="font-size: 10px;"></span>
             </div>
             <div class="mb-3">
-                <label for="ket_jabatan" class="form-label">Nama Jabatan (Dokumen Proposal)</label>
+                <label for="ket_jabatan" class="form-label">Nama Jabatan <sup class="text-danger">*(Wajib diisi untuk dokumen proposal)</sup></label>
                 <input type="text" class="form-control" id="ket_jabatan" name="ket_jabatan" value="" placeholder="e.g. Dekan Fakultas Komputer" />
                 <span class="text-danger" id="ketJabatanErrorMsg" style="font-size: 10px;"></span>
             </div>`;
         } else {
         document.getElementById("showForm").innerHTML=`
             <div class="mb-3">
-                <label for="ket_jabatan" class="form-label">Nama Jabatan (Dokumen Proposal)</label>
+                <label for="ket_jabatan" class="form-label">Nama Jabatan <sup class="text-danger">*(Wajib diisi untuk dokumen proposal)</sup></label>
                 <input type="text" class="form-control" id="ket_jabatan" name="ket_jabatan" value="" placeholder="e.g. Dekan Fakultas Komputer" />
                 <span class="text-danger" id="ketJabatanErrorMsg" style="font-size: 10px;"></span>
             </div>`;
