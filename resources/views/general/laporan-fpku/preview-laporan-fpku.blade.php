@@ -250,7 +250,7 @@
                             @endif
                             <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                                 <img src="data:image/png;base64, {!! base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate($qr->generate_qrcode)) !!}">
-                                <br><br><b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
+                                <br><br><b>Benny Roesly, S.T., M.Pd.</b><br><i>Wakil Rektor Bidang Sumber Daya dan Pengembangan</i>
                             </td>
                         </tr>
                         @endforeach
@@ -264,7 +264,7 @@
                             @endif
                             <td class="tdfooterauditor">Disetujui oleh,<br><br> 
                                 <p style="margin-top: 2em;"></p>
-                                <br><br> <b>Benny Roesly, S.T., M.Pd.</b><br><i>WRSDP</i>
+                                <br><br> <b>Benny Roesly, S.T., M.Pd.</b><br><i>Wakil Rektor Bidang Sumber Daya dan Pengembangan</i>
                             </td>
                         </tr>
                     @endif  

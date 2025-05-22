@@ -119,7 +119,7 @@
                                                     <option value="{{$pegawai->id}}">{{$pegawai->nama_pegawai}}</option>
                                                     @endforeach
                                                 </select>
-                                                <div class="mt-2 text-info" style="font-size: 11px;">**Anda bisa memilih lebih dari satu peserta</div>
+                                                <div class="mt-2 text-info" style="font-size: 11px;">**Mohon input kembali Ketua Pelaksana. Anda bisa memilih lebih dari satu peserta</div>
                                                 <span class="text-danger" id="idPegawaiErrorMsg" style="font-size: 10px;"></span>
                                             </div> 
                                             

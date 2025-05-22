@@ -352,7 +352,7 @@
             @endforeach        
         @endif
 
-        @if($roleDefault == "WAREK" || $roleDefault == "SADM")
+        @if(($roleDefault == "WAREK" AND $recentPeranKet == "Wakil Rektor Bidang Sumber Daya dan Pengembangan") || $roleDefault == "SADM")
         <li class="menu-item">
             <a href="{{route('form-rkat.index')}}" class="menu-link {{set_active('form-rkat.index')}}">
             <i class="menu-icon tf-icons bx bx-list-plus bx-tada-hover"></i>
@@ -388,7 +388,7 @@
             <li class="menu-header small fw-medium">
                 <div data-i18n="VALIDASI REKTORAT">VALIDASI REKTORAT</div>
             </li> 
-            @if($recentPeranKet == "WRAK" || $recentPeranKet == "WRSDP")
+            @if($recentPeranKet == "Wakil Rektor Bidang Akademik" || $recentPeranKet == "Wakil Rektor Bidang Sumber Daya dan Pengembangan")
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('dashboard-rektorat')}} OR {{set_active('index-hal-laporan')}}">
                 <i class="menu-icon tf-icons bx bx-file bx-tada-hover"></i>
@@ -408,7 +408,7 @@
                 </ul>
             </li> 
             @endif
-            @if($recentPeranKet == "WRSDP")
+            @if($recentPeranKet == "Wakil Rektor Bidang Sumber Daya dan Pengembangan")
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle {{set_active('rundanganfpku')}} OR {{set_active('rlaporanfpku')}}">
                     <i class="menu-icon tf-icons bx bx-user-check bx-tada-hover"></i>
